@@ -1,43 +1,45 @@
-/***********************************************************************
- * Module:  Room.java
- * Author:  cr007
- * Purpose: Defines the Class Room
- ***********************************************************************/
-
 package com.example.BookingAppTeam05.model;
 
-import java.util.*;
+import javax.persistence.*;
 
+@Entity
+@Table(name="rooms", uniqueConstraints={
+        @UniqueConstraint(columnNames = {"roomNum", "cottage_id"})})
 public class Room {
-   private int id;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+   @Column(name="roomNum", nullable = false)
    private int roomNum;
+
+   @Column(name="numOfBeds", nullable = false)
    private int numOfBeds;
-   
+
+   public Room() {}
+
+   public Room(int roomNum, int numOfBeds) {
+      this.roomNum = roomNum;
+      this.numOfBeds = numOfBeds;
+   }
+
+   public Long getId() {
+      return id;
+   }
+
    public int getRoomNum() {
       return roomNum;
    }
-   
-   /** @param newRoomNum */
-   public void setRoomNum(int newRoomNum) {
-      roomNum = newRoomNum;
-   }
-   
+
    public int getNumOfBeds() {
       return numOfBeds;
    }
-   
-   /** @param newNumOfBeds */
-   public void setNumOfBeds(int newNumOfBeds) {
-      numOfBeds = newNumOfBeds;
-   }
-   
-   public int getId() {
-      return id;
-   }
-   
-   /** @param newId */
-   public void setId(int newId) {
-      id = newId;
+
+   public void setRoomNum(int roomNum) {
+      this.roomNum = roomNum;
    }
 
+   public void setNumOfBeds(int numOfBeds) {
+      this.numOfBeds = numOfBeds;
+   }
 }

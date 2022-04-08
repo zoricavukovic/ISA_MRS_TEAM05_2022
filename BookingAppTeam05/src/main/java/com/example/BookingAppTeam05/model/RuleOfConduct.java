@@ -1,43 +1,45 @@
-/***********************************************************************
- * Module:  RuleOfConduct.java
- * Author:  cr007
- * Purpose: Defines the Class RuleOfConduct
- ***********************************************************************/
-
 package com.example.BookingAppTeam05.model;
 
-import java.util.*;
+import javax.persistence.*;
 
+@Entity
+@Table(name="rulesOfConduct")
 public class RuleOfConduct {
-   private int id;
+
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+   @Column(name="ruleName", nullable = false)
    private String ruleName;
+
+   @Column(name="allowed", nullable = false)
    private boolean allowed;
-   
-   public int getId() {
+
+   public RuleOfConduct() {}
+
+   public RuleOfConduct(String ruleName, boolean allowed) {
+      this.ruleName = ruleName;
+      this.allowed = allowed;
+   }
+
+   public Long getId() {
       return id;
    }
-   
-   /** @param newId */
-   public void setId(int newId) {
-      id = newId;
-   }
-   
+
    public String getRuleName() {
       return ruleName;
    }
-   
-   /** @param newRuleName */
-   public void setRuleName(String newRuleName) {
-      ruleName = newRuleName;
-   }
-   
-   public boolean getAllowed() {
+
+   public boolean isAllowed() {
       return allowed;
    }
-   
-   /** @param newAllowed */
-   public void setAllowed(boolean newAllowed) {
-      allowed = newAllowed;
+
+   public void setRuleName(String ruleName) {
+      this.ruleName = ruleName;
    }
 
+   public void setAllowed(boolean allowed) {
+      this.allowed = allowed;
+   }
 }

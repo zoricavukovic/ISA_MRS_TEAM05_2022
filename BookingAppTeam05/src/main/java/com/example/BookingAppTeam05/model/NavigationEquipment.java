@@ -1,17 +1,33 @@
-/***********************************************************************
- * Module:  NavigationEquipment.java
- * Author:  cr007
- * Purpose: Defines the Class NavigationEquipment
- ***********************************************************************/
-
 package com.example.BookingAppTeam05.model;
 
-import java.util.*;
+import javax.persistence.*;
 
-public enum NavigationEquipment {
-   GPS,
-   RADAR,
-   VHF_RADIO,
-   FISHFINDER;
+@Entity
+@Table(name="navigationEquipments")
+public class NavigationEquipment {
 
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+   @Column(name="name", nullable = false, unique = true)
+   private String name;
+
+   public NavigationEquipment() {}
+
+   public NavigationEquipment(String name) {
+      this.name = name;
+   }
+
+   public Long getId() {
+      return id;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
 }

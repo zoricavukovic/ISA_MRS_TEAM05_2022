@@ -1,78 +1,28 @@
-/***********************************************************************
- * Module:  Instructor.java
- * Author:  cr007
- * Purpose: Defines the Class Instructor
- ***********************************************************************/
-
 package com.example.BookingAppTeam05.model;
 
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.*;
 
+@Entity
+@Table(name="instructors")
 public class Instructor extends User {
-   public List<Adventure> adventures;
-   
-   
-   /** @pdGenerated default getter */
-   public List<Adventure> getAdventures() {
-      if (adventures == null)
-         adventures = new ArrayList<Adventure>();
-      return adventures;
-   }
-   
-   /** @pdGenerated default iterator getter */
-   public Iterator getIteratorAdventures() {
-      if (adventures == null)
-         adventures = new ArrayList<Adventure>();
-      return adventures.iterator();
-   }
-   
-   /** @pdGenerated default setter
-     * @param newAdventures */
-   public void setAdventures(List<Adventure> newAdventures) {
-      removeAllAdventures();
-      for (Iterator iter = newAdventures.iterator(); iter.hasNext();)
-         addAdventures((Adventure)iter.next());
-   }
-   
-   /** @pdGenerated default add
-     * @param newAdventure */
-   public void addAdventures(Adventure newAdventure) {
-      if (newAdventure == null)
-         return;
-      if (this.adventures == null)
-         this.adventures = new ArrayList<Adventure>();
-      if (!this.adventures.contains(newAdventure))
-      {
-         this.adventures.add(newAdventure);
-         newAdventure.setInstructor(this);
-      }
-   }
-   
-   /** @pdGenerated default remove
-     * @param oldAdventure */
-   public void removeAdventures(Adventure oldAdventure) {
-      if (oldAdventure == null)
-         return;
-      if (this.adventures != null)
-         if (this.adventures.contains(oldAdventure))
-         {
-            this.adventures.remove(oldAdventure);
-            oldAdventure.setInstructor((Instructor)null);
-         }
-   }
-   
-   /** @pdGenerated default removeAll */
-   public void removeAllAdventures() {
-      if (adventures != null)
-      {
-         Adventure oldAdventure;
-         for (Iterator iter = getIteratorAdventures(); iter.hasNext();)
-         {
-            oldAdventure = (Adventure)iter.next();
-            iter.remove();
-            oldAdventure.setInstructor((Instructor)null);
-         }
-      }
+
+   @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   public Set<Adventure> adventures;
+
+   public Instructor() {}
+
+   public Instructor(String email, String firstName, String lastName, LocalDate dateOfBirth, String address, String phoneNumber, String password, int loyaltyPoints, boolean accountAllowed, Place place, UserType userType, LoyaltyProgram loyaltyProgram, Set<Adventure> adventures) {
+      super(email, firstName, lastName, dateOfBirth, address, phoneNumber, password, loyaltyPoints, accountAllowed, place, userType, loyaltyProgram);
+      this.adventures = adventures;
    }
 
+   public Set<Adventure> getAdventures() {
+      return adventures;
+   }
+
+   public void setAdventures(Set<Adventure> adventures) {
+      this.adventures = adventures;
+   }
 }

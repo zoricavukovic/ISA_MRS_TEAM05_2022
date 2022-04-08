@@ -1,67 +1,68 @@
-/***********************************************************************
- * Module:  Report.java
- * Author:  cr007
- * Purpose: Defines the Class Report
- ***********************************************************************/
-
 package com.example.BookingAppTeam05.model;
 
-import java.util.*;
+import javax.persistence.*;
 
+@Entity
+@Table(name="reports")
 public class Report {
-   private int id;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+   @Column(name="comment", nullable = false)
    private String comment;
+
+   @Column(name="penalizeClient", nullable = false)
    private boolean penalizeClient;
+
+   @Column(name="processed", nullable = false)
    private boolean processed;
-   
+
+   @OneToOne(fetch = FetchType.LAZY)
    public Reservation reservation;
-   
+
+   public Report(String comment, boolean penalizeClient, boolean processed, Reservation reservation) {
+      this.comment = comment;
+      this.penalizeClient = penalizeClient;
+      this.processed = processed;
+      this.reservation = reservation;
+   }
+
+   public Report(){ }
+
+   public Long getId() {
+      return id;
+   }
+
    public String getComment() {
       return comment;
    }
-   
-   /** @param newComment */
-   public void setComment(String newComment) {
-      comment = newComment;
-   }
-   
-   public boolean getPenalizeClient() {
+
+   public boolean isPenalizeClient() {
       return penalizeClient;
    }
-   
-   /** @param newPenalizeClient */
-   public void setPenalizeClient(boolean newPenalizeClient) {
-      penalizeClient = newPenalizeClient;
-   }
-   
-   public boolean getProcessed() {
+
+   public boolean isProcessed() {
       return processed;
    }
-   
-   /** @param newProcessed */
-   public void setProcessed(boolean newProcessed) {
-      processed = newProcessed;
-   }
-   
-   public int getId() {
-      return id;
-   }
-   
-   /** @param newId */
-   public void setId(int newId) {
-      id = newId;
-   }
-   
-   
-   /** @pdGenerated default parent getter */
+
    public Reservation getReservation() {
       return reservation;
    }
-   
-   /** @pdGenerated default parent setter
-     * @param newReservation */
-   public void setReservation(Reservation newReservation) {
-      this.reservation = newReservation;
+
+   public void setComment(String comment) {
+      this.comment = comment;
    }
 
+   public void setPenalizeClient(boolean penalizeClient) {
+      this.penalizeClient = penalizeClient;
+   }
+
+   public void setProcessed(boolean processed) {
+      this.processed = processed;
+   }
+
+   public void setReservation(Reservation reservation) {
+      this.reservation = reservation;
+   }
 }
