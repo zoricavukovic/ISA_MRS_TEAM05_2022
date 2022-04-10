@@ -40,6 +40,7 @@ function UserProfile(props) {
 
 
     const [userData, setUserData] = useState({});
+    const [isLoading, setLoading] = useState(true);
     const history = useHistory();
     const userId = props.history.location.state.userId;
     const urlPath = "http://localhost:8091/bookingApp/users/" + userId;
@@ -53,10 +54,13 @@ function UserProfile(props) {
 
     useEffect(() => {
         console.log(props.history.location.state.userId);
-        
+        axios.get(urlPath).then(res => {
+            setUserData(res.data);
+            setLoading(false);
+        })
     }, []);
 
-
+    if (isLoading) { return <div className="App">Loading...</div> }
     return (
 
         <div className="App">
@@ -72,7 +76,7 @@ function UserProfile(props) {
                         sx={{ mr: 2, display: { xs: 'none', color: 'black', fontWeight: "bold", md: 'flex' } }}
 
                     >
-                        Ime i prezime
+                        {userData.firstName} {userData.lastName}
                     </Typography>
                     </div>
                     <Typography
@@ -82,7 +86,7 @@ function UserProfile(props) {
                         sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex' } }}
 
                     >
-                        Email
+                        {userData.email}
                     </Typography>
                     <Typography
                         variant="h7"
@@ -92,7 +96,7 @@ function UserProfile(props) {
                         sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex'} }}
 
                     >
-                        Tip
+                        {userData.userType}
                     </Typography>
 
                 </div>
@@ -120,7 +124,7 @@ function UserProfile(props) {
                                         <ListItemIcon sx={{ fontSize: 20 }}>🔥 Loyalty Type</ListItemIcon>
                                         <ListItemText
                                             sx={{ my: 0 }}
-                                            primary="Loyalty pr"
+                                            primary={userData.loyaltyProgram}
                                             primaryTypographyProps={{
                                                 fontSize: 20,
                                                 fontWeight: 'medium',
@@ -136,7 +140,7 @@ function UserProfile(props) {
                                          Loyalty Points
                                         </ListItemIcon>
                                             <ListItemText
-                                                primary="12"
+                                                primary={userData.loyaltyPoints}
                                                 primaryTypographyProps={{
                                                     color: 'primary',
                                                     fontSize: 20,
@@ -148,7 +152,6 @@ function UserProfile(props) {
 
                                     </ListItem>
                                     <Divider />
-                                    
 
                                 </FireNav>
                             </Paper>
@@ -172,7 +175,7 @@ function UserProfile(props) {
                     <TextField
                         id="outlined-read-only-input"
                         label="First Name"
-                        defaultValue="Ime"
+                        defaultValue={userData.firstName}
                         InputProps={{
                             readOnly: true,
                         }}
@@ -180,7 +183,7 @@ function UserProfile(props) {
                     <TextField
                         id="outlined-read-only-input"
                         label="Last Name"
-                        defaultValue="Prezime"
+                        defaultValue={userData.lastName}
                         InputProps={{
                             readOnly: true,
                         }}
@@ -188,7 +191,7 @@ function UserProfile(props) {
                     <TextField
                         id="outlined-read-only-input"
                         label="Email Address"
-                        defaultValue="Email"
+                        defaultValue={userData.email}
                         InputProps={{
                             readOnly: true,
                         }}
@@ -196,7 +199,7 @@ function UserProfile(props) {
                     <TextField
                         id="outlined-read-only-input"
                         label="Phone Number"
-                        defaultValue="Telefon"
+                        defaultValue={userData.phoneNumber}
                         InputProps={{
                             readOnly: true,
                         }}
@@ -204,7 +207,7 @@ function UserProfile(props) {
                     <TextField
                         id="outlined-read-only-input"
                         label="Date Of Birth"
-                        defaultValue="Datum"
+                        defaultValue={userData.dateOfBirth}
                         InputProps={{
                             readOnly: true,
                         }}
@@ -212,7 +215,7 @@ function UserProfile(props) {
                     <TextField
                         id="outlined-read-only-input"
                         label="Location"
-                        defaultValue="Adresa"
+                        defaultValue={userData.address + ", " + userData.place.cityName + ", " + userData.place.zipCode + ", " + userData.place.stateName}
                         InputProps={{
                             readOnly: true,
                         }}
