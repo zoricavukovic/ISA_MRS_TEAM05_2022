@@ -40,7 +40,7 @@ const Navbar = () => {
     event.preventDefault();
     history.push({
       pathname: "/userProfile",
-      state: { userId: 301 } //OVDE SE MENJA ID
+      state: { userId: 3 } //OVDE SE MENJA ID
   })
      
   };  

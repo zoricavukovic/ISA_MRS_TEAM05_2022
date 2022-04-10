@@ -152,7 +152,26 @@ function UserProfile(props) {
 
                                     </ListItem>
                                     <Divider />
+                                    {userData.userType === "CLIENT"?(
+                                        <ListItem component="div" disablePadding>
+                                            <ListItemButton sx={{ height: 56 }}>
+                                                <ListItemIcon sx={{ fontSize: 20 }}>
+                                                    <FormatListNumberedIcon color="primary" />
+                                                    Penalties
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={userData.penalties}
+                                                    primaryTypographyProps={{
+                                                        color: 'primary',
+                                                        fontSize: 20,
+                                                        fontWeight: 'medium',
+                                                        variant: 'body2',
+                                                    }}
+                                                />
+                                            </ListItemButton>
 
+                                        </ListItem>
+                                    ):(<div></div>)}
                                 </FireNav>
                             </Paper>
                         </ThemeProvider>
