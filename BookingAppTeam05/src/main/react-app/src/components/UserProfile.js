@@ -100,7 +100,7 @@ function UserProfile(props) {
                     </Typography>
 
                 </div>
-
+                    {userData.userType !== "ADMIN" ? (
                     <Box sx={{ display: 'flex', float: 'right' }}>
                         <ThemeProvider
                             theme={createTheme({
@@ -157,11 +157,12 @@ function UserProfile(props) {
                             </Paper>
                         </ThemeProvider>
                     </Box>
+                    ) : (<div></div>)}
 
             </div>
 
 
-            <Box style={{ backgroundColor: 'aliceblue', marginTop:'10%', marginLeft: '13%', marginRight: '13%', padding: '2%', borderRadius: '10px' }}
+            <Box style={{ backgroundColor: 'aliceblue', marginTop:'5%', marginLeft: '13%', marginRight: '13%', padding: '2%', borderRadius: '10px' }}
                 component="form"
                 sx={{
                     '& .MuiTextField-root': { m: 1, width: '25ch' },
