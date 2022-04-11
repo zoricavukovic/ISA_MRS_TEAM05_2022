@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useHistory} from "react-router-dom";
 
-const pages = ['Cottage Profile', 'Add Cottage', 'Blog'];
+const pages = ['Cottage Profile', 'Add Cottage', 'Adventure Profile', 'Add adventure'];
 const settings = ['Profile', 'Edit Profile', 'Change Password', 'Logout'];
 
 const Navbar = () => {
@@ -27,14 +27,13 @@ const Navbar = () => {
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
 
   const showProfile = (event) => {
     event.preventDefault();
@@ -42,21 +41,36 @@ const Navbar = () => {
       pathname: "/userProfile",
       state: { userId: 3 } //OVDE SE MENJA ID
   })
-     
-  };  
+  };
+
   const editProfile = (event) => {
     event.preventDefault();
     history.push("/editUserProfile");
   };   
 
+
   const showCottageProfile = (event) => {
     event.preventDefault();
     history.push("/showCottageProfile");
-  };   
+  };
+
   const addCottage = (event) => {
     event.preventDefault();
     history.push("/addCottage");
-  }; 
+  };
+
+
+  const addAdventure = (event) => {
+    event.preventDefault();
+    history.push("/addAdventure");
+  };
+  const showAdventureProfile = (event) => {
+    event.preventDefault();
+    history.push({
+      pathname: "/showAdventureProfile",
+      state: { adventureId: 203 } //OVDE SE MENJA ID
+    })
+  };
 
   const getHomePage = (event) => {
     event.preventDefault();
@@ -111,10 +125,13 @@ const Navbar = () => {
                 <MenuItem key={pages[1]} onClick={addCottage}>
                   <Typography textAlign="center">{pages[1]}</Typography>
                 </MenuItem>
-                <MenuItem key={pages[2]} onClick={handleCloseNavMenu}>
+                <MenuItem key={pages[2]} onClick={showAdventureProfile}>
                   <Typography textAlign="center">{pages[2]}</Typography>
                 </MenuItem>
-              
+                <MenuItem key={pages[3]} onClick={addAdventure}>
+                  <Typography textAlign="center">{pages[3]}</Typography>
+                </MenuItem>
+
             </Menu>
           </Box>
           <Typography
@@ -132,8 +149,11 @@ const Navbar = () => {
                 <MenuItem key={pages[1]} onClick={addCottage}>
                   <Typography textAlign="center">{pages[1]}</Typography>
                 </MenuItem>
-                <MenuItem key={pages[2]} onClick={handleCloseNavMenu}>
+                <MenuItem key={pages[2]} onClick={showAdventureProfile}>
                   <Typography textAlign="center">{pages[2]}</Typography>
+                </MenuItem>
+                <MenuItem key={pages[3]} onClick={addAdventure}>
+                  <Typography textAlign="center">{pages[3]}</Typography>
                 </MenuItem>
           </Box>
 
@@ -179,8 +199,6 @@ const Navbar = () => {
                     <Typography textAlign="center">{settings[3]}</Typography>
                   </MenuItem>
                 }
-                
-              
             </Menu>
           </Box>
         </Toolbar>
