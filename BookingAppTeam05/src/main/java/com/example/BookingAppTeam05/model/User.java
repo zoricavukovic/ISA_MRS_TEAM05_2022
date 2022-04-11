@@ -41,7 +41,7 @@ public abstract class User {
    @Column(name="accountAllowed", nullable = false)
    private boolean accountAllowed;
 
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    public Place place;
 
    @Column(name="userType", nullable = false)

@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.dto;
 
+import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.User;
 import com.example.BookingAppTeam05.model.UserType;
@@ -19,6 +20,7 @@ public class UserDTO {
     private boolean accountAllowed;
     private Place place;
     private UserType userType;
+    private LoyaltyProgram loyaltyProgram;
 
     public UserDTO() {}
 
@@ -34,6 +36,7 @@ public class UserDTO {
         this.loyaltyPoints = user.getLoyaltyPoints();
         this.accountAllowed = user.isAccountAllowed();
         this.userType = user.getUserType();
+        this.loyaltyProgram = user.getLoyaltyProgram();
     }
 
     public Long getId() {
@@ -126,5 +129,13 @@ public class UserDTO {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public LoyaltyProgram getLoyaltyProgram() {
+        return loyaltyProgram;
+    }
+
+    public void setLoyaltyProgram(LoyaltyProgram loyaltyProgram) {
+        this.loyaltyProgram = loyaltyProgram;
     }
 }
