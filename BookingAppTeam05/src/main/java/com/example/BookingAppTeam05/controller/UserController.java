@@ -2,6 +2,7 @@ package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.model.*;
+import com.example.BookingAppTeam05.service.PlaceService;
 import com.example.BookingAppTeam05.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private UserService userService;
+    private PlaceService placeService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PlaceService placeService) {
+
         this.userService = userService;
+        this.placeService = placeService;
     }
 
     @GetMapping(value="/{id}")
@@ -59,6 +63,22 @@ public class UserController {
         assert userDTO != null;
         userDTO.setPlace(u.getPlace());
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO)  {
+        User user = userService.getUserById(userId);
+        user.setAddress(userDTO.getAddress());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setDateOfBirth(userDTO.getDateOfBirth());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        Place place = placeService.getPlaceByZipCode(userDTO.getPlace().getZipCode());
+        user.setPlace(place);
+
+        final User updatedUser = userService.save(user);
+
+        return ResponseEntity.ok(updatedUser);
     }
 
 }

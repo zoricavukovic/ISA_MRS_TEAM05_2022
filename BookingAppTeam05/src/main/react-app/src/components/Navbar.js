@@ -45,7 +45,10 @@ const Navbar = () => {
 
   const editProfile = (event) => {
     event.preventDefault();
-    history.push("/editUserProfile");
+    history.push({
+      pathname:"/editUserProfile",
+      state: {userId: 3}
+    });
   };   
 
 

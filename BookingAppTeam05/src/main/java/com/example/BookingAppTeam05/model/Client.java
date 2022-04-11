@@ -1,6 +1,8 @@
 package com.example.BookingAppTeam05.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
@@ -12,7 +14,8 @@ public class Client extends User {
    @Column(name="penalties")
    private int penalties;
 
-   @ManyToMany(mappedBy = "subscribedClients", fetch = FetchType.LAZY)
+   @ManyToMany(mappedBy = "subscribedClients", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @JsonIgnore
    private Set<BookingEntity>watchedEntities;
 
    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
