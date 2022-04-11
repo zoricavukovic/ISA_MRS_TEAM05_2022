@@ -64,7 +64,14 @@ export default function CardIm() {
     };
 
     useEffect(() => {
-        
+        axios.get(urlCottagePath).then(res => {
+            setCottageBasicData(res.data);
+            setLoadingCottage(false);
+        })
+        axios.get(urlPricelistPath).then(result => {
+            setPricelistData(result.data);
+            setLoadingPricelist(false);
+        })
     }, []);
     if (isLoadingCottage || isLoadingPricelist) { return <div className="App">Loading...</div> }
     return (
