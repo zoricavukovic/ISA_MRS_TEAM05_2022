@@ -43,7 +43,7 @@ function UserProfile(props) {
     const [isLoading, setLoading] = useState(true);
     const history = useHistory();
     const userId = props.history.location.state.userId;
-    const urlPath = "http://localhost:8091/bookingApp/users/" + userId;
+    const urlPath = "http://localhost:8092/bookingApp/users/" + userId;
     const avatar = <Avatar
         alt="Zorica Vukovic"
         src="./slika.jpeg"
