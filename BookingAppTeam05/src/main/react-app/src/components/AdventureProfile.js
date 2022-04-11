@@ -66,7 +66,14 @@ export default function AdventureProfile(props) {
 
 
     useEffect(() => {
-
+        axios.get(urlAdventurePath).then(res => {
+            setAdventureData(res.data);
+            setLoading(false);
+        })
+        axios.get(urlPricelistPath).then(result => {
+            setPricelistData(result.data);
+            setLoadingPricelist(false);
+        })
     }, [])
 
     if (isLoading || isLoadingPricelist) {
