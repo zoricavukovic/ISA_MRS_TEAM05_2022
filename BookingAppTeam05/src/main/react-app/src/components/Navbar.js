@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useHistory} from "react-router-dom";
 
-const pages = ['Products', 'Pricing', 'Blog'];
+const pages = ['Cottage Profile', 'Add Cottage', 'Blog'];
 const settings = ['Profile', 'Edit Profile', 'Change Password', 'Logout'];
 
 const Navbar = () => {
@@ -48,6 +48,16 @@ const Navbar = () => {
     event.preventDefault();
     history.push("/editUserProfile");
   };   
+
+  const showCottageProfile = (event) => {
+    event.preventDefault();
+    history.push("/showCottageProfile");
+  };   
+  const addCottage = (event) => {
+    event.preventDefault();
+    history.push("/addCottage");
+  }; 
+
   const getHomePage = (event) => {
     event.preventDefault();
     history.push("/homePageCottageOwner");
@@ -95,11 +105,16 @@ const Navbar = () => {
               sx={{
                 display: { xs: 'block', md: 'none'},
               }}>
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={pages[0]} onClick={showCottageProfile}>
+                  <Typography textAlign="center">{pages[0]}</Typography>
                 </MenuItem>
-              ))}
+                <MenuItem key={pages[1]} onClick={addCottage}>
+                  <Typography textAlign="center">{pages[1]}</Typography>
+                </MenuItem>
+                <MenuItem key={pages[2]} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{pages[2]}</Typography>
+                </MenuItem>
+              
             </Menu>
           </Box>
           <Typography
@@ -111,15 +126,15 @@ const Navbar = () => {
             NatureBooking
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'} }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+              <MenuItem key={pages[0]} onClick={showCottageProfile}>
+                  <Typography textAlign="center">{pages[0]}</Typography>
+                </MenuItem>
+                <MenuItem key={pages[1]} onClick={addCottage}>
+                  <Typography textAlign="center">{pages[1]}</Typography>
+                </MenuItem>
+                <MenuItem key={pages[2]} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{pages[2]}</Typography>
+                </MenuItem>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
