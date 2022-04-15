@@ -1591,7 +1591,7 @@ VALUES
     ('True','Children policies',77),
     ('False','Age restrictions',24),
     ('False','Weed',29),
-    ('True','Pets',78),
+    ('True','Pets',203),
     ('True','Loud music',266),
     ('True','Calling owner',105),
     ('True','Age restrictions',172),
@@ -2878,3 +2878,13 @@ VALUES
 (8,'adserv17',308);
 
 
+
+
+
+
+
+
+--- dodavanje slika za avanturu
+INSERT INTO public.pictures (picture_path, entity_id) VALUES ('adventure1.jpg', 203);
+INSERT INTO public.pictures (picture_path, entity_id) VALUES ('adventure2.jpg', 203);
+INSERT INTO public.pictures (picture_path, entity_id) VALUES ('adventure3.jpg', 203);

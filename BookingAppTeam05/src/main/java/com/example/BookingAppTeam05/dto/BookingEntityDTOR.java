@@ -17,11 +17,11 @@ public class BookingEntityDTOR {
 
     public Place place;
     private Set<Reservation> reservations;
-    private Set<Picture> pictures;
     public Set<RuleOfConduct> rulesOfConduct;
     public Set<Client> subscribedClients;
     private Set<UnavailableDate> unavailableDates;
     public Set<Pricelist> pricelists;
+    private Set<Picture> pictures;
 
     public BookingEntityDTOR() {}
     public BookingEntityDTOR(BookingEntity bookingEntity) {
@@ -39,6 +39,14 @@ public class BookingEntityDTOR {
 
     public String getPromoDescription() {
         return promoDescription;
+    }
+
+    public Set<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(Set<Picture> pictures) {
+        this.pictures = pictures;
     }
 
     public void setPromoDescription(String promoDescription) {
@@ -93,13 +101,6 @@ public class BookingEntityDTOR {
         this.reservations = reservations;
     }
 
-    public Set<Picture> getPictures() {
-        return pictures;
-    }
-
-    public void setPictures(Set<Picture> pictures) {
-        this.pictures = pictures;
-    }
 
     public Set<RuleOfConduct> getRulesOfConduct() {
         return rulesOfConduct;

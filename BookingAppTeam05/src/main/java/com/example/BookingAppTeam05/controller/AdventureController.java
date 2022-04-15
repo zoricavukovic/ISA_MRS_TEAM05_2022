@@ -34,6 +34,7 @@ public class AdventureController {
         adventureDTO.setPlace(adventure.getPlace());
         adventureDTO.setRulesOfConduct((adventure.getRulesOfConduct()));
         adventureDTO.setFishingEquipment(adventure.getFishingEquipment());
+        adventureDTO.setPictures(adventure.getPictures());
         return new ResponseEntity<>(adventureDTO, HttpStatus.OK);
     }
 }
