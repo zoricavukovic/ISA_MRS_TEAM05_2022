@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlaceService {
@@ -22,7 +23,10 @@ public class PlaceService {
         return placeRepository.findAll();
     }
 
-    public Place getPlaceById(Long id) {return placeRepository.getById(id); }
+    public Place getPlaceById(Long id) {
+        Optional<Place> placeResult =  placeRepository.findById(id);
+        return placeResult.orElse(null);
+    }
 
     public Place getPlaceByZipCode(String zipCode) { return placeRepository.getPlaceByZipCode(zipCode);  }
 }
