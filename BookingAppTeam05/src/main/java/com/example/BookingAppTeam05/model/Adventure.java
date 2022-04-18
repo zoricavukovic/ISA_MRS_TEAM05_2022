@@ -24,6 +24,7 @@ public class Adventure extends BookingEntity {
 
    public Adventure() {}
 
+
    public Adventure(String promoDescription, Set<Picture> pictures, String address, String name, Set<UnavailableDate> unavailableDates, float entityCancelationRate, EntityType entityType, Set<Pricelist> pricelists, Place place, Set<RuleOfConduct> rulesOfConduct, Set<Client> subscribedClients, String shortBio, int maxNumOfPersons, Set<FishingEquipment> fishingEquipment, Instructor instructor) {
       super(promoDescription, pictures, address, name, unavailableDates, entityCancelationRate, entityType, pricelists, place, rulesOfConduct, subscribedClients);
       this.shortBio = shortBio;
@@ -31,6 +32,13 @@ public class Adventure extends BookingEntity {
       this.fishingEquipment = fishingEquipment;
       this.instructor = instructor;
    }
+
+   public Adventure(String promoDescription, String address, String name, float entityCancelationRate, String shortBio, int maxNumOfPersons) {
+      super(promoDescription, address, name, entityCancelationRate, EntityType.ADVENTURE);
+      this.shortBio = shortBio;
+      this.maxNumOfPersons = maxNumOfPersons;
+   }
+
 
    public String getShortBio() {
       return shortBio;

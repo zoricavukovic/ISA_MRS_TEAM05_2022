@@ -14,11 +14,11 @@ public class RuleOfConduct {
    private String ruleName;
 
    @Column(name="allowed", nullable = false)
-   private boolean allowed;
+   private Boolean allowed;
 
    public RuleOfConduct() {}
 
-   public RuleOfConduct(String ruleName, boolean allowed) {
+   public RuleOfConduct(String ruleName, Boolean allowed) {
       this.ruleName = ruleName;
       this.allowed = allowed;
    }
@@ -31,7 +31,7 @@ public class RuleOfConduct {
       return ruleName;
    }
 
-   public boolean isAllowed() {
+   public Boolean isAllowed() {
       return allowed;
    }
 
@@ -39,7 +39,7 @@ public class RuleOfConduct {
       this.ruleName = ruleName;
    }
 
-   public void setAllowed(boolean allowed) {
+   public void setAllowed(Boolean allowed) {
       this.allowed = allowed;
    }
 }

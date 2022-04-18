@@ -1,15 +1,22 @@
 package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.AdventureDTO;
-import com.example.BookingAppTeam05.dto.CottageDTO;
+import com.example.BookingAppTeam05.dto.NewAdventureDTO;
 import com.example.BookingAppTeam05.model.Adventure;
-import com.example.BookingAppTeam05.model.Cottage;
+import com.example.BookingAppTeam05.model.Instructor;
+import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.service.AdventureService;
+import com.example.BookingAppTeam05.service.InstructorService;
+import com.example.BookingAppTeam05.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.util.Optional;
 
 
 @RestController
@@ -18,10 +25,14 @@ import org.springframework.web.bind.annotation.*;
 public class AdventureController {
 
     private AdventureService adventureService;
+    private PlaceService placeService;
+    private InstructorService instructorService;
 
     @Autowired
-    public AdventureController(AdventureService adventureService) {
+    public AdventureController(AdventureService adventureService, PlaceService placeService, InstructorService instructorService) {
+        this.placeService = placeService;
         this.adventureService = adventureService;
+        this.instructorService = instructorService;
     }
 
     @GetMapping(value="/{id}")
@@ -36,5 +47,23 @@ public class AdventureController {
         adventureDTO.setFishingEquipment(adventure.getFishingEquipment());
         adventureDTO.setPictures(adventure.getPictures());
         return new ResponseEntity<>(adventureDTO, HttpStatus.OK);
+    }
+
+    @Transactional
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createAdventure(@Valid @RequestBody NewAdventureDTO newAdventureDTO) {
+        Place place = placeService.getPlaceById(newAdventureDTO.getPlaceId());
+        if (place == null) {
+            return new ResponseEntity<>("Cant find place with id: " + newAdventureDTO.getPlaceId(), HttpStatus.BAD_REQUEST);
+        }
+        Instructor instructor = instructorService.findById(newAdventureDTO.getInstructorId());
+        if (instructor == null) {
+            return new ResponseEntity<>("Cant find instructor with id: " + newAdventureDTO.getInstructorId(), HttpStatus.BAD_REQUEST);
+        }
+        Adventure newAdventure = adventureService.createNewAdventure(newAdventureDTO, place, instructor);
+        if (newAdventure == null) {
+            return new ResponseEntity<>("Error. Cant create adventure", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(newAdventure.getId().toString(), HttpStatus.OK);
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public interface PricelistRepository extends JpaRepository<Pricelist, Long> {
     List<Pricelist> getPricelistByBookingEntity_IdOrderByStartDateDesc(Long id);
 
-    @Query("select distinct p from Pricelist p join fetch p.additionalServices ad where p.bookingEntity.id=?1 order by p.startDate desc")
+    @Query("select distinct p from Pricelist p left join fetch p.additionalServices ad where p.bookingEntity.id=?1 order by p.startDate desc")
     List<Pricelist> getCurrentPricelistByBookingEntityId(Long id);
 
 }

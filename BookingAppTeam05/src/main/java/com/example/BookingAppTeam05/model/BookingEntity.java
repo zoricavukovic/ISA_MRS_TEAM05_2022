@@ -20,11 +20,11 @@ public abstract class BookingEntity {
     private String promoDescription;
 
     @OneToMany(mappedBy = "bookingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Reservation> reservations;
+    private Set<Reservation> reservations = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="entity_id")
-    private Set<Picture> pictures;
+    private Set<Picture> pictures = new HashSet<>();
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -34,7 +34,7 @@ public abstract class BookingEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="entity_id")
-    private Set<UnavailableDate> unavailableDates;
+    private Set<UnavailableDate> unavailableDates = new HashSet<>();
 
     @Column(name = "entityCancelationRate")
     private float entityCancelationRate;
@@ -44,18 +44,18 @@ public abstract class BookingEntity {
     public EntityType entityType;
 
     @OneToMany(mappedBy = "bookingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    public Set<Pricelist> pricelists;
+    public Set<Pricelist> pricelists = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public Place place;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="entity_id")
-    public Set<RuleOfConduct> rulesOfConduct;
+    public Set<RuleOfConduct> rulesOfConduct = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "subscribers", joinColumns = @JoinColumn(name = "booking_entity_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))
-    public Set<Client> subscribedClients;
+    public Set<Client> subscribedClients = new HashSet<>();
 
     public BookingEntity() {
     }
@@ -73,6 +73,21 @@ public abstract class BookingEntity {
         this.rulesOfConduct = rulesOfConduct;
         this.subscribedClients = subscribedClients;
     }
+
+    public BookingEntity(String promoDescription, String address, String name, float entityCancelationRate, EntityType entityType) {
+        this.promoDescription = promoDescription;
+        this.address = address;
+        this.name = name;
+        this.entityCancelationRate = entityCancelationRate;
+        this.entityType = entityType;
+    }
+
+    public void addPriceList(Pricelist pricelist) {
+        pricelists.add(pricelist);
+        pricelist.setBookingEntity(this);
+    }
+
+
 
     public Long getId() {
         return id;

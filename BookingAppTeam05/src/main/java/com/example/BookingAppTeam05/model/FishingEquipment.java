@@ -9,7 +9,7 @@ public class FishingEquipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="equipmentName", nullable = false, unique = true)
+    @Column(name="equipmentName", nullable = false)
     private String equipmentName;
 
     public FishingEquipment() {}

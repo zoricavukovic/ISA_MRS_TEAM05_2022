@@ -9,8 +9,9 @@ import AddCottage from "./AddCottage";
 import EditCottage from "./EditCottage";
 
 import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
-import AdventureProfile from "./AdventureProfile";
+import AdventureProfile from './adventures/AdventureProfile';
 import showCottages from "./ShowCottages";
+import AddAdventure from './adventures/AddAdventure';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                     <Route path="/showCottages" component={showCottages} />
 
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
+                    <Route path="/addAdventure" component={AddAdventure} />
 
                     <Redirect to="/"></Redirect>
                 </Switch>
