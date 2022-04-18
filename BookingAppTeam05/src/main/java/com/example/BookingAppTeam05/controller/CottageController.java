@@ -46,6 +46,7 @@ public class CottageController {
             CottageDTO cDTO = new CottageDTO(cottage);
             cDTO.setPlace(cottage.getPlace());
             cDTO.setRulesOfConduct(cottage.getRulesOfConduct());
+            //cDTO.setCottageOwner(cottage.getCottageOwner());
             cottageDTOs.add(cDTO);
         }
 

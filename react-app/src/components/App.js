@@ -11,6 +11,7 @@ import EditCottage from "./EditCottage";
 import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import AdventureProfile from "./AdventureProfile";
 import showCottages from "./ShowCottages";
+import AllBoats from "./AllBoats";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/addCottage" component={AddCottage} />
                     <Route path="/editCottage" component={EditCottage} />
                     <Route path="/showCottages" component={showCottages} />
+                    <Route path="/allBoats" component={AllBoats} />
 
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
 
