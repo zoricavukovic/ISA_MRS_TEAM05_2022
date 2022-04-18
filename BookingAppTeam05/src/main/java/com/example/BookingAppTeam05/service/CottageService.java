@@ -34,5 +34,20 @@ public class CottageService {
         return cottageRepository.save(cottage);
     }
 
+    public List<Cottage> searchCottagesOfOwner(Long ownerId, String cottageName, String firstOp, String city, String secondOp, float rate) {
+
+        if (firstOp.equals("AND") && secondOp.equals("AND")){
+            return cottageRepository.searchCottagesOfOwnerAndAnd(ownerId, cottageName, city, rate);
+        }
+        else if (firstOp.equals("AND") && secondOp.equals("OR")) {
+            return cottageRepository.searchCottagesOfOwnerAndOr(ownerId, cottageName, city, rate);
+        }
+        else if (firstOp.equals("OR") && secondOp.equals("AND")) {
+            return cottageRepository.searchCottagesOfOwnerOrAnd(ownerId, cottageName, city, rate);
+        }
+        else {
+            return cottageRepository.searchCottagesOfOwnerOrOr(ownerId, cottageName, city, rate);
+        }
+    }
 
 }

@@ -7,6 +7,7 @@ import EditUserProfile from "./EditUserProfile";
 import ShowCottageProfile from "./ShowCottageProfile";
 import AddCottage from "./AddCottage";
 import EditCottage from "./EditCottage";
+import ShowCottagesCottageOwner from "./showCottagesCottageOwner.js";
 
 import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import AdventureProfile from "./AdventureProfile";
@@ -21,13 +22,18 @@ function App() {
                 <Navbar/>
                 <Switch>
                     <Route exact path="/homePageCottageOwner" component={HomePageCottageOwner} />
+                    
+                    <Route path="/allBoats" component={AllBoats} />
+                    <Route exact path="/homePageCottageOwner" component={HomePageCottageOwner} />
                     <Route path="/userProfile" component={UserProfile} />
                     <Route path="/editUserProfile" component={EditUserProfile} />
                     <Route path="/showCottageProfile" component={ShowCottageProfile} />
                     <Route path="/addCottage" component={AddCottage} />
                     <Route path="/editCottage" component={EditCottage} />
                     <Route path="/showCottages" component={showCottages} />
-                    <Route path="/allBoats" component={AllBoats} />
+                    <Route path="/showCottagesOwner" component={ShowCottagesCottageOwner} />
+                    <Route path="/showAdventureProfile" component={AdventureProfile} />
+
 
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
 

@@ -16,6 +16,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { CircularProgress, NativeSelect} from "@mui/material";
 import { useForm } from "react-hook-form";
+import {useHistory} from "react-router-dom";
 
 import axios from "axios";
 
@@ -40,6 +41,7 @@ export default function EditCottage(props) {
   const [selectedPlace, setSelectedPlace] = useState({});
   const [country,setCountry] = useState("");
   const [city,setCity] = useState("");
+  const history = useHistory();
   const [error, setError] = useState({
       cottageName: ""
   });
@@ -193,10 +195,13 @@ const cityChanged = (event) =>{
         }).catch(res=>{
             console.log("Greska!!");})    
     axios.post(urlPricelistPath + "/" + cottageBasicData.id, pricelistData).then(result => {
-      console.log("Uspesno!!");
-            //alert("Changes saved");
+          history.push({
+            pathname: "/showCottageProfile",
+            state: { cottageId: cottageBasicData.id } //OVDE SE MENJA ID
+        })
         }).catch(res=>{
-            console.log("Greska!!");})    
+    console.log("Greska!!");})    
+      
   };
 
   function refreshPage(){

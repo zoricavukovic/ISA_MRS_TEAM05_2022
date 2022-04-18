@@ -1,10 +1,18 @@
 package com.example.BookingAppTeam05.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name="additionalServices", uniqueConstraints={
         @UniqueConstraint(columnNames = {"serviceName", "price_list_id"})})
+@SQLDelete(sql
+        = "UPDATE additionalServices "
+        + "SET deleted = true "
+        + "WHERE id = ?")
+@Where(clause = "deleted = false")
 public class AdditionalService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,11 +24,15 @@ public class AdditionalService {
     @Column(name="serviceName", nullable = false)
     private String serviceName;
 
+    @Column(name="deleted")
+    private boolean deleted;
+
     public AdditionalService() { }
 
-    public AdditionalService(double price, String serviceName) {
+    public AdditionalService(double price, String serviceName, boolean deleted) {
         this.price = price;
         this.serviceName = serviceName;
+        this.deleted = deleted;
     }
 
     public Long getId() {
@@ -42,4 +54,13 @@ public class AdditionalService {
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }
+
