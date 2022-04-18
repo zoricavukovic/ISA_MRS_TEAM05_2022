@@ -4,14 +4,11 @@ import com.example.BookingAppTeam05.model.Adventure;
 import com.example.BookingAppTeam05.model.FishingEquipment;
 import com.example.BookingAppTeam05.model.Instructor;
 
-import javax.persistence.*;
 import java.util.Set;
 
-public class AdventureDTO extends BookingEntityDTOR{
+public class AdventureDTO extends BookingEntityDTO {
     private String shortBio;
     private int maxNumOfPersons;
-
-
     private Set<FishingEquipment> fishingEquipment;
     public Instructor instructor;
 
