@@ -122,7 +122,9 @@ public class CottageController {
 
         Cottage oldCottage = cottageService.getCottageById(cottageDTO.getId());
         Set<Room> rooms = new HashSet<Room>();
+
         for (Room oldRoom: oldCottage.getRooms()) {
+
             boolean found = false;
             for (Room room: cottageDTO.getRooms()){
                 if (room.getRoomNum() == oldRoom.getRoomNum()){
@@ -138,6 +140,7 @@ public class CottageController {
         for (Room room: cottageDTO.getRooms()){
             boolean found = false;
             for (Room addedRoom: rooms){
+
                 if (room.getRoomNum() == addedRoom.getRoomNum()){
                     found = true;
                     break;
@@ -145,6 +148,7 @@ public class CottageController {
             }
             if (!found) { rooms.add(room); }
         }
+
         cottage.setRooms(rooms);
 
         Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();
@@ -184,5 +188,39 @@ public class CottageController {
 
         cottage = cottageService.save(cottage);
         return new ResponseEntity<>(new CottageDTO(cottage), HttpStatus.OK);
+    }
+
+    @GetMapping(value="/{ownerId}/search/{cottageName}/{city}/{rate}/{cost}/{firstOp}/{secondOp}/{thirdOp}")
+    public ResponseEntity<List<CottageDTO>> searchCottages(@PathVariable Long ownerId, @PathVariable String cottageName, @PathVariable String city,
+                                                           @PathVariable float rate,  @PathVariable double cost, @PathVariable String firstOp,
+                                                           @PathVariable String secondOp, @PathVariable String thirdOp) {
+        System.out.println(cottageName + " ime i adresa " + city + " " + rate + " " + firstOp + " " + secondOp + " " + thirdOp);
+        List<Cottage> firstList = cottageService.searchCottagesOfOwner(ownerId, cottageName, firstOp, city, secondOp, rate);
+
+        List<Cottage> cottages = new ArrayList<Cottage>();
+        for (Cottage cottage: firstList){
+            List<Pricelist> pricelistList =  pricelistService.getCurrentPricelistByBookingEntityId(cottage.getId());
+            if (pricelistList == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Pricelist p = pricelistList.get(0);
+
+            if (thirdOp.equals("AND") && cost != 0){
+                if (p.getEntityPricePerPerson() >= cost){
+                    cottages.add(cottage);
+                }
+            }else{
+                cottages.add(cottage);
+            }
+        }
+        List<CottageDTO> cottageDTOs = new ArrayList<>();
+        for (Cottage cottage:cottages) {
+            CottageDTO cDTO = new CottageDTO(cottage);
+            cDTO.setPlace(cottage.getPlace());
+            cDTO.setRulesOfConduct(cottage.getRulesOfConduct());
+            cDTO.setRooms(cottage.getRooms());
+            cottageDTOs.add(cDTO);
+        }
+
+        return ResponseEntity.ok(cottageDTOs);
     }
 }

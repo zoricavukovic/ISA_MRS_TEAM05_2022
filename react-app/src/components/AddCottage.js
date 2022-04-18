@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import { CircularProgress, NativeSelect} from "@mui/material";
 import { useForm } from "react-hook-form";
+import {useHistory} from "react-router-dom";
 import axios from "axios";
 
 const Input = styled(MuiInput)`
@@ -34,6 +35,7 @@ export default function AddCottage() {
     const [country,setCountry] = useState("");
     const [city,setCity] = useState("");
     const [isLoadingPlaces, setLoadingPlaces] = useState(true);
+    const history = useHistory();
     const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists";
     const [newCottage, setNewCottage] = React.useState(
       {
@@ -216,12 +218,12 @@ export default function AddCottage() {
         //countryName.backgroundColor = "red";
         return;
     }
-    console.log(newCottage);
     //PROMENITIIITITITIITITITITIT
     axios.post("http://localhost:8092/bookingApp/cottages" + "/1", newCottage).then(res=>{
-        axios.post(urlPricelistPath + "/" + res.data.id, newPricelist).then(result => {
-            console.log("Uspesno!!");
-               alert("Changes saved");
+        axios.post(urlPricelistPath + "/" + res.data, newPricelist).then(result => {
+          history.push({
+            pathname:"/showCottagesOwner"
+          });
         }).catch(res=>{
             console.log("Greska!!");})
     }).catch(res=>{
