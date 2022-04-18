@@ -12,7 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useHistory} from "react-router-dom";
 
-const pages = ['Cottage Profile', 'Add Cottage', 'Adventure Profile', 'Add adventure'];
+const pages = ['Cottage Profile Of Owner', 'Add Cottage', 'Show Cottages', 'Adventure Profile', 'Add adventure'];
 const settings = ['Profile', 'Edit Profile', 'Change Password', 'Logout'];
 
 const Navbar = () => {
@@ -38,7 +38,7 @@ const Navbar = () => {
     event.preventDefault();
     history.push({
       pathname: "/userProfile",
-      state: { userId: 3 } //OVDE SE MENJA ID
+      state: { userId: 1 } //OVDE SE MENJA ID
   })
   };
 
@@ -50,10 +50,13 @@ const Navbar = () => {
     });
   };   
 
-
-  const showCottageProfile = (event) => {
+  const showCottages = (event) => {
     event.preventDefault();
-    history.push("/showCottageProfile");
+    history.push("/showCottages");
+  };
+  const showCottagesOfOwner = (event) => {
+    event.preventDefault();
+    history.push("/showCottagesOwner");
   };
 
   const addCottage = (event) => {
@@ -121,17 +124,20 @@ const Navbar = () => {
               sx={{
                 display: { xs: 'block', md: 'none'},
               }}>
-                <MenuItem key={pages[0]} onClick={showCottageProfile}>
+                <MenuItem key={pages[0]} onClick={showCottagesOfOwner}>
                   <Typography textAlign="center">{pages[0]}</Typography>
                 </MenuItem>
                 <MenuItem key={pages[1]} onClick={addCottage}>
                   <Typography textAlign="center">{pages[1]}</Typography>
                 </MenuItem>
-                <MenuItem key={pages[2]} onClick={showAdventureProfile}>
+                <MenuItem key={pages[2]} onClick={showCottages}>
                   <Typography textAlign="center">{pages[2]}</Typography>
                 </MenuItem>
-                <MenuItem key={pages[3]} onClick={addAdventure}>
+                <MenuItem key={pages[3]} onClick={showAdventureProfile}>
                   <Typography textAlign="center">{pages[3]}</Typography>
+                </MenuItem>
+                <MenuItem key={pages[4]} onClick={addAdventure}>
+                  <Typography textAlign="center">{pages[4]}</Typography>
                 </MenuItem>
 
             </Menu>
@@ -145,17 +151,20 @@ const Navbar = () => {
             NatureBooking
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'} }}>
-              <MenuItem key={pages[0]} onClick={showCottageProfile}>
+              <MenuItem key={pages[0]} onClick={showCottagesOfOwner}>
                   <Typography textAlign="center">{pages[0]}</Typography>
                 </MenuItem>
                 <MenuItem key={pages[1]} onClick={addCottage}>
                   <Typography textAlign="center">{pages[1]}</Typography>
                 </MenuItem>
-                <MenuItem key={pages[2]} onClick={showAdventureProfile}>
+                <MenuItem key={pages[2]} onClick={showCottages}>
                   <Typography textAlign="center">{pages[2]}</Typography>
                 </MenuItem>
-                <MenuItem key={pages[3]} onClick={addAdventure}>
+                <MenuItem key={pages[3]} onClick={showAdventureProfile}>
                   <Typography textAlign="center">{pages[3]}</Typography>
+                </MenuItem>
+                <MenuItem key={pages[4]} onClick={addAdventure}>
+                  <Typography textAlign="center">{pages[4]}</Typography>
                 </MenuItem>
           </Box>
 

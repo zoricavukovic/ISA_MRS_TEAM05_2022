@@ -84,6 +84,29 @@ public class CottageController {
         return ResponseEntity.ok(cottageDTOs);
     }
 
+    @PostMapping(value = "{idCottageOwner}", consumes = "application/json")
+    @Transactional
+    public ResponseEntity<String> saveCottage(@PathVariable Long idCottageOwner, @RequestBody CottageDTO cottageDTO) {
+
+        Cottage cottage = new Cottage();
+        cottage.setName(cottageDTO.getName());
+        cottage.setAddress(cottageDTO.getAddress());
+        cottage.setPromoDescription(cottageDTO.getPromoDescription());
+        cottage.setEntityCancelationRate(cottageDTO.getEntityCancelationRate());
+
+        cottage.setEntityType(EntityType.COTTAGE);
+        Place place1 = placeService.getPlaceByZipCode(cottageDTO.getPlace().getZipCode());
+        if (place1 == null) return new ResponseEntity<>("Cant find place with zip code: " + cottageDTO.getPlace().getZipCode(), HttpStatus.BAD_REQUEST);
+        cottage.setPlace(place1);
+        CottageOwner co = (CottageOwner) userService.getUserById(idCottageOwner);
+        if (co == null) return new ResponseEntity<>("Cant find cottage owner with id: " + idCottageOwner, HttpStatus.BAD_REQUEST);
+        cottage.setCottageOwner(co);
+        cottage.setRooms(cottageDTO.getRooms());
+        cottage.setRulesOfConduct(cottageDTO.getRulesOfConduct());
+        cottage = cottageService.save(cottage);
+
+        return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.CREATED);
+    }
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<CottageDTO> updateCottage(@RequestBody CottageDTO cottageDTO) {
