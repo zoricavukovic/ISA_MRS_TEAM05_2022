@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/cottages")
 public class CottageController {
 
@@ -53,6 +52,16 @@ public class CottageController {
         }
         return new ResponseEntity<>(cottageDTO, HttpStatus.OK);
     }
+    @GetMapping(value="/editQue/{cottageId}")
+    public ResponseEntity<String> checkIfCanEdit(@PathVariable Long cottageId) {
+        Cottage cottage = cottageService.findCottageByCottageIdWithOwner(cottageId);
+        if (cottage == null) return new ResponseEntity<String>("Cottage for editing is not found.", HttpStatus.BAD_REQUEST);
+        if (cottageService.checkExistActiveReservations(cottageId)){
+            return new ResponseEntity<String>("Cannot edit cottage cause has reservations.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Cottage can edit.", HttpStatus.OK);
+    }
+
     @GetMapping(value="/owner/{id}")
     public ResponseEntity<List<CottageDTO>> getCottageByOwnerId(@PathVariable Long id) {
         List<Cottage> cottageFound = cottageService.getCottagesByOwnerId(id);
@@ -223,4 +232,6 @@ public class CottageController {
 
         return ResponseEntity.ok(cottageDTOs);
     }
+
+
 }

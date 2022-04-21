@@ -2,6 +2,16 @@ package com.example.BookingAppTeam05.repository;
 
 import com.example.BookingAppTeam05.model.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+
+    @Query(value="select r from Reservation r where r.bookingEntity.id=?1 and r.canceled=false")
+    List<Reservation> findAllActiveReservationsForCottage(Long cottageOwner);
+
 }
