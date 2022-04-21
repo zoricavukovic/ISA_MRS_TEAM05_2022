@@ -43,6 +43,9 @@ public interface CottageRepository extends JpaRepository<Cottage, Long> {
             "where (c.name=?2 or p.cityName =?3 or c.entityCancelationRate =?4) and c.cottageOwner.id=?1 and c.deleted = false")
     List<Cottage> searchCottagesOfOwnerOrOr(Long ownerId, String cottageName, String city, float rate);
 
+    @Query(value = "update cottages as c set deleted = true where c.id = ?1 and c.deleted = false", nativeQuery = true)
+    @Modifying
+    void logicalDeleteById(Long id);
 
     @Query(value="select c from Cottage c left join c.cottageOwner owner where c.id=?1 and c.deleted = false ")
     Cottage findCottageByCottageIdWithOwner(Long cottageId);

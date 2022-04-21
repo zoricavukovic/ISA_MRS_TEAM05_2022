@@ -30,8 +30,12 @@ public class CottageService {
     public List<Cottage> getCottagesByOwnerId(Long id) {
         return cottageRepository.getCottagesByOwnerId(id);
     }
-
-
+    
+    public boolean logicalDeleteCottageById(Long id){
+        if (checkExistActiveReservations(id)) return false;
+        cottageRepository.logicalDeleteById(id);
+        return true;
+    }
     public boolean checkExistActiveReservations(Long id) {
         List<Reservation> reservations = reservationService.findAllActiveReservationsForCottage(id);
         for (Reservation r : reservations){

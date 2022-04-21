@@ -61,7 +61,20 @@ export default function ImgMediaCard(props) {
         });
     }, [])
     const logicDeleteCottage = (event) => {
-      
+      axios.delete("http://localhost:8092/bookingApp/cottages/" + props.bookingEntityId + "/" + password).then(res => {
+        setPassword("");
+        handleClick();
+        setTypeAlert("success");
+        setMessage("Successfully delete cottage " + props.cottage.name);
+        window.location.reload();
+        
+        }).catch(res=>{
+          setTypeAlert("error");
+          setMessage(res.response.data);
+          handleClick();
+          return;
+        })    
+        setOpenDialog(false);
       
           
     }
