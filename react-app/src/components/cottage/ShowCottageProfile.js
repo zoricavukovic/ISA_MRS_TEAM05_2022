@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import ImageCard from "./ImageCard";
+import ImageCard from "../ImageCard";
 
 function ShowCottageProfile(props) {
 

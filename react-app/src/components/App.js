@@ -4,10 +4,10 @@ import Navbar from "./Navbar";
 import HomePageCottageOwner from "./HomePageCottageOwner";
 import UserProfile from "./UserProfile";
 import EditUserProfile from "./EditUserProfile";
-import ShowCottageProfile from "./ShowCottageProfile";
-import AddCottage from "./AddCottage";
-import EditCottage from "./EditCottage";
-import ShowCottagesCottageOwner from "./showCottagesCottageOwner.js";
+import ShowCottageProfile from "./cottage/ShowCottageProfile";
+import AddCottage from "./cottage/AddCottage";
+import EditCottage from "./cottage/EditCottage";
+import ShowCottagesCottageOwner from "./cottage/showCottagesCottageOwner.js";
 
 import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import AdventureProfile from "./AdventureProfile";

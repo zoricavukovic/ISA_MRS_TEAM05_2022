@@ -124,7 +124,21 @@ VALUES
     (nextval('entities_id_gen'), '4369 Mauris St.',45,'COTTAGE','Sollicitudin Commodo Ipsum Limited','lacus. Mauris non dui',16,1, true),
     (nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',89,1, false);
 
-
+INSERT INTO ship_owners (id, account_allowed,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,user_type,place_id)
+VALUES
+    (nextval('users_id_gen'), 'True','Ap #392-5411 Ac, St.','2005-03-15','parturient@hotmail.couk','Kristen','Banks',8,'YJE87JTL5YD','057-62-242-87','SHIP_OWNER',98),
+    (nextval('users_id_gen'), 'True','3598 Ut, St.','1994-12-09','in.lobortis@google.com','Ann','Newton',37,'FLF93CMD7BC','035-98-372-38','SHIP_OWNER',6),
+    (nextval('users_id_gen'), 'False','Ap #181-605 Est. St.','1987-04-08','in.tempus.eu@protonmail.couk','Stuart','Knight',69,'JQV66RAU4YE','016-17-140-44','SHIP_OWNER',47);
+INSERT INTO clients (id, account_allowed,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,user_type,place_id,penalties)
+VALUES
+    (nextval('users_id_gen'), 'True','Ap #769-2030 Mauris. Rd.','1971-12-20','elit.sed@outlook.net','Jescie','Mullins',78,'KFU83ISI1QU','034-33-356-88','CLIENT',83,2),
+    (nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','molestie.dapibus.ligula@icloud.org','Carolyn','Gutierrez',91,'CIH34YCT0GK','083-34-238-21','CLIENT',55,3);
+INSERT INTO ships (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,engine_num,engine_power,length,max_num_of_persons,max_speed,ship_type,ship_owner_id)
+VALUES
+    (nextval('entities_id_gen'), 'Ap #379-679 Enim, St.',26,'SHIP','Gretchen','Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum',88,'N1N 1F5',2002,24,10,51,'BAY_BOAT',3),
+    (nextval('entities_id_gen'), '368-5360 In Ave',47,'SHIP','Molly','Nulla aliquet. Proin',4,'U5F 2U3',1806,30,14,24,'BAY_BOAT',3),
+    (nextval('entities_id_gen'), '3885 Lacus Road',44,'SHIP','Yeo','magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt',70,'U9K 1M2',1171,8,12,45,'INFLATABLE_BOAT',3),
+    (nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',48,'W4T 5A6',469,23,19,88,'FLAT_BOAT',4);
 --RESERVATIONS
 
 -- rules of conduct
@@ -167,5 +181,11 @@ VALUES
     (65,'jacuzzi',1, true),
     (33,'air condition',2, false);
 
+
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled)
+VALUES
+    ('2019-03-12 5:00 am',1,17,1,6,'False','False'),
+    ('2022-05-01 7:00 pm',26,3,1,7,'False','True'),
+    ('2022-04-19 7:00 pm',4,3,1,7,'False','False');
 
 --aditional services for adventures

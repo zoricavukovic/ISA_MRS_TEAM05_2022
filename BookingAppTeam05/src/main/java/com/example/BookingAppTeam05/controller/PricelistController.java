@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/pricelists")
 public class PricelistController {
 

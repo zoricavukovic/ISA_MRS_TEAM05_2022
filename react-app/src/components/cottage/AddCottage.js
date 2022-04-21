@@ -4,19 +4,18 @@ import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 import { useEffect, useState } from "react";
 import MuiInput from '@mui/material/Input';
-import AddingAdditionalService from './AddingAdditionalService.js';
-import AddingRooms from './AddingRooms.js';
+import AddingAdditionalService from '../AddingAdditionalService.js';
+import AddingRooms from '../AddingRooms.js';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
-import AddingRulesOfConduct from './AddingRulesOfConduct.js';
+import AddingRulesOfConduct from '../AddingRulesOfConduct.js';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import { CircularProgress, NativeSelect} from "@mui/material";
-import { useForm } from "react-hook-form";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 
@@ -26,7 +25,6 @@ const Input = styled(MuiInput)`
 export default function AddCottage() {
     //PROMENITI ID COTTAGE OWNERA
     const [value, setValue] = React.useState(0);
-    const { register, handleSubmit, formState: { errors } } = useForm();
     const [ruleConData, setRuleCon] = useState([]);
     const [roomData, setRoom] = useState([]);
     const [addSerData, setAddSerData] = useState([]);
