@@ -199,6 +199,18 @@ public class CottageController {
         return new ResponseEntity<>(new CottageDTO(cottage), HttpStatus.OK);
     }
 
+    @DeleteMapping(value="/{cottageId}/{confirmPass}")
+    @Transactional
+    public ResponseEntity<String> logicalDeleteCottageById(@PathVariable Long cottageId, @PathVariable String confirmPass){
+        Cottage cottage = cottageService.findCottageByCottageIdWithOwner(cottageId);
+        if (cottage == null) return new ResponseEntity<String>("Cottage for deleting is not found.", HttpStatus.BAD_REQUEST);
+        if (!cottage.getCottageOwner().getPassword().equals(confirmPass)) return new ResponseEntity<String>("Confirmation password is incorrect.", HttpStatus.BAD_REQUEST);
+        if (!cottageService.logicalDeleteCottageById(cottageId)){
+            return new ResponseEntity<String>("Cottage is not delete cause has reservations.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Cottage is deleted.", HttpStatus.CREATED);
+    }
+
     @GetMapping(value="/{ownerId}/search/{cottageName}/{city}/{rate}/{cost}/{firstOp}/{secondOp}/{thirdOp}")
     public ResponseEntity<List<CottageDTO>> searchCottages(@PathVariable Long ownerId, @PathVariable String cottageName, @PathVariable String city,
                                                            @PathVariable float rate,  @PathVariable double cost, @PathVariable String firstOp,
