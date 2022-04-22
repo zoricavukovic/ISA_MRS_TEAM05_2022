@@ -20,7 +20,6 @@ import java.util.Optional;
 
 
 @RestController
-@CrossOrigin
 @RequestMapping("/adventures")
 public class AdventureController {
 

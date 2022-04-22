@@ -10,6 +10,6 @@ import java.util.List;
 public interface ShipRepository extends JpaRepository<Ship, Long> {
 
 
-    @Query("select s from Ship s join fetch s.place p join fetch s.rulesOfConduct r join fetch s.shipOwner owner")
+    @Query("select s from Ship s left join fetch s.place p left join fetch s.rulesOfConduct r left join fetch s.shipOwner owner")
     List<Ship> findAll();
 }

@@ -27,7 +27,7 @@ export default function AddingAdditionalService(props) {
 
   const [chipData, setChipData] = React.useState([
   ]);
-  const { register, handleInsertSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   useEffect(() => {
     let chipArray = [];
@@ -65,6 +65,8 @@ export default function AddingAdditionalService(props) {
   };
 
   const handleInsertNewItem = (event) => {
+    //event.preventDefault();
+    
     let keyToInsert = 1;
     if (chipData.length !== 0){
       keyToInsert = chipData[chipData.length-1].key + 1
@@ -80,14 +82,16 @@ export default function AddingAdditionalService(props) {
     newArray.push(data);
     setChipData(newArray);
     setChipData((chips) => chips.filter((chip) => chip.key !== null));
+    console.log(chipData);
     props.onClick(chipData);
   };
 
   return (
+    <form onSubmit={handleSubmit(handleInsertNewItem)} noValidate>
+
+
     <Box sx={{ ml: '4%', width: '100%', maxWidth: 350, bgcolor: 'background.paper' }}
-    component="form"
-      //noValidate
-      //onSubmit={handleInsertNewItem}
+    
       >
       <Box sx={{ my: 2, mx: 3 }}>
         <Grid container alignItems="center">
@@ -98,7 +102,7 @@ export default function AddingAdditionalService(props) {
           </Grid>
           <Grid item>
             <TextField name="service" size="small" onChange={makeChange} style={{ width: '60%', marginLeft: '2.5%' }} id="outlined-basic" label="Add service" variant="outlined"
-            //{...register("service", { required: true, maxLength: 10 })} 
+            {...register("service", { required: true, maxLength: 10 })} 
             />
             {errors.service && <p style={{ color: '#ED6663' }}>Please check service name</p>}
             <br />
@@ -112,11 +116,11 @@ export default function AddingAdditionalService(props) {
                 value={addSer.value}
                 startAdornment={<InputAdornment position="start">€</InputAdornment>}
                 label="Amount"
-                //{...register("amount", { required: true, min: 1, max: 100000 })}
+                {...register("amount", { required: true, min: 1, max: 100000 })}
               />
             </FormControl>
             {errors.amount && <p style={{ color: '#ED6663' }}>Please enter valid amount</p>}
-            <Button onClick={handleInsertNewItem} label="Extra Soft" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', borderRadius: '10px', marginLeft: '2.5%', marginTop: '3%', backgroundColor: 'rgb(244, 177, 77)' }}>Add</Button>
+            <Button type="submit" label="Extra Soft" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', borderRadius: '10px', marginLeft: '2.5%', marginTop: '3%', backgroundColor: 'rgb(244, 177, 77)' }}>Add</Button>
           </Grid>
         </Grid>
 
@@ -169,5 +173,6 @@ export default function AddingAdditionalService(props) {
       </Box>
 
     </Box>
+    </form>
   );
 }

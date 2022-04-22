@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/cottages")
 public class CottageController {
 
@@ -53,6 +52,16 @@ public class CottageController {
         }
         return new ResponseEntity<>(cottageDTO, HttpStatus.OK);
     }
+    @GetMapping(value="/editQue/{cottageId}")
+    public ResponseEntity<String> checkIfCanEdit(@PathVariable Long cottageId) {
+        Cottage cottage = cottageService.findCottageByCottageIdWithOwner(cottageId);
+        if (cottage == null) return new ResponseEntity<String>("Cottage for editing is not found.", HttpStatus.BAD_REQUEST);
+        if (cottageService.checkExistActiveReservations(cottageId)){
+            return new ResponseEntity<String>("Cannot edit cottage cause has reservations.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Cottage can edit.", HttpStatus.OK);
+    }
+
     @GetMapping(value="/owner/{id}")
     public ResponseEntity<List<CottageDTO>> getCottageByOwnerId(@PathVariable Long id) {
         List<Cottage> cottageFound = cottageService.getCottagesByOwnerId(id);
@@ -122,7 +131,9 @@ public class CottageController {
 
         Cottage oldCottage = cottageService.getCottageById(cottageDTO.getId());
         Set<Room> rooms = new HashSet<Room>();
+
         for (Room oldRoom: oldCottage.getRooms()) {
+
             boolean found = false;
             for (Room room: cottageDTO.getRooms()){
                 if (room.getRoomNum() == oldRoom.getRoomNum()){
@@ -138,6 +149,7 @@ public class CottageController {
         for (Room room: cottageDTO.getRooms()){
             boolean found = false;
             for (Room addedRoom: rooms){
+
                 if (room.getRoomNum() == addedRoom.getRoomNum()){
                     found = true;
                     break;
@@ -145,6 +157,7 @@ public class CottageController {
             }
             if (!found) { rooms.add(room); }
         }
+
         cottage.setRooms(rooms);
 
         Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();
@@ -185,4 +198,52 @@ public class CottageController {
         cottage = cottageService.save(cottage);
         return new ResponseEntity<>(new CottageDTO(cottage), HttpStatus.OK);
     }
+
+    @DeleteMapping(value="/{cottageId}/{confirmPass}")
+    @Transactional
+    public ResponseEntity<String> logicalDeleteCottageById(@PathVariable Long cottageId, @PathVariable String confirmPass){
+        Cottage cottage = cottageService.findCottageByCottageIdWithOwner(cottageId);
+        if (cottage == null) return new ResponseEntity<String>("Cottage for deleting is not found.", HttpStatus.BAD_REQUEST);
+        if (!cottage.getCottageOwner().getPassword().equals(confirmPass)) return new ResponseEntity<String>("Confirmation password is incorrect.", HttpStatus.BAD_REQUEST);
+        if (!cottageService.logicalDeleteCottageById(cottageId)){
+            return new ResponseEntity<String>("Cottage is not delete cause has reservations.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Cottage is deleted.", HttpStatus.CREATED);
+    }
+
+    @GetMapping(value="/{ownerId}/search/{cottageName}/{city}/{rate}/{cost}/{firstOp}/{secondOp}/{thirdOp}")
+    public ResponseEntity<List<CottageDTO>> searchCottages(@PathVariable Long ownerId, @PathVariable String cottageName, @PathVariable String city,
+                                                           @PathVariable float rate,  @PathVariable double cost, @PathVariable String firstOp,
+                                                           @PathVariable String secondOp, @PathVariable String thirdOp) {
+        System.out.println(cottageName + " ime i adresa " + city + " " + rate + " " + firstOp + " " + secondOp + " " + thirdOp);
+        List<Cottage> firstList = cottageService.searchCottagesOfOwner(ownerId, cottageName, firstOp, city, secondOp, rate);
+
+        List<Cottage> cottages = new ArrayList<Cottage>();
+        for (Cottage cottage: firstList){
+            List<Pricelist> pricelistList =  pricelistService.getCurrentPricelistByBookingEntityId(cottage.getId());
+            if (pricelistList == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Pricelist p = pricelistList.get(0);
+
+            if (thirdOp.equals("AND") && cost != 0){
+                if (p.getEntityPricePerPerson() >= cost){
+                    cottages.add(cottage);
+                }
+            }else{
+                cottages.add(cottage);
+            }
+        }
+        List<CottageDTO> cottageDTOs = new ArrayList<>();
+        for (Cottage cottage:cottages) {
+            CottageDTO cDTO = new CottageDTO(cottage);
+            cDTO.setPlace(cottage.getPlace());
+            cDTO.setRulesOfConduct(cottage.getRulesOfConduct());
+            cDTO.setRooms(cottage.getRooms());
+            cottageDTOs.add(cDTO);
+        }
+
+        return ResponseEntity.ok(cottageDTOs);
+    }
+
+
 }

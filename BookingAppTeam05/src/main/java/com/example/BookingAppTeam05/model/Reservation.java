@@ -120,4 +120,11 @@ public class Reservation {
       this.canceled = canceled;
    }
 
+   public int getNumOfDays() {
+      return numOfDays;
+   }
+
+   public void setNumOfDays(int numOfDays) {
+      this.numOfDays = numOfDays;
+   }
 }

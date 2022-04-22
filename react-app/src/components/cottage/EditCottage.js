@@ -4,18 +4,19 @@ import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
 import { styled } from '@mui/material/styles';
 import MuiInput from '@mui/material/Input';
-import AddingAdditionalService from './AddingAdditionalService.js';
-import AddingRooms from './AddingRooms.js';
+import AddingAdditionalService from '../AddingAdditionalService.js';
+import AddingRooms from '../AddingRooms.js';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
-import AddingRulesOfConduct from './AddingRulesOfConduct.js';
+import AddingRulesOfConduct from '../AddingRulesOfConduct.js';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { CircularProgress, NativeSelect} from "@mui/material";
 import { useForm } from "react-hook-form";
+import {useHistory} from "react-router-dom";
 
 import axios from "axios";
 
@@ -40,6 +41,7 @@ export default function EditCottage(props) {
   const [selectedPlace, setSelectedPlace] = useState({});
   const [country,setCountry] = useState("");
   const [city,setCity] = useState("");
+  const history = useHistory();
   const [error, setError] = useState({
       cottageName: ""
   });
@@ -188,15 +190,21 @@ const cityChanged = (event) =>{
     console.log(cottageBasicData);
     console.log(pricelistData);
     axios.put(urlCottagePath, cottageBasicData).then(result => {
-      console.log("Uspesno!!");
-            
+      
+          axios.post(urlPricelistPath + "/" + cottageBasicData.id, pricelistData).then(result => {
+            history.push({
+              pathname: "/showCottageProfile",
+              state: { cottageId: cottageBasicData.id } 
+    }).catch(result=>{
+                console.log("Greska!!");
+                return;
+          })
         }).catch(res=>{
-            console.log("Greska!!");})    
-    axios.post(urlPricelistPath + "/" + cottageBasicData.id, pricelistData).then(result => {
-      console.log("Uspesno!!");
-            //alert("Changes saved");
-        }).catch(res=>{
-            console.log("Greska!!");})    
+            console.log("Greska!!");
+            return;
+        })    
+        
+  })
   };
 
   function refreshPage(){
