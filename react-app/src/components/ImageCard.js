@@ -40,15 +40,17 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export default function CardIm() {
+export default function CardIm(props) {
     const [expanded, setExpanded] = React.useState(false);
     const [cottageBasicData, setCottageBasicData] = useState({});
     const [pricelistData, setPricelistData] = useState({});
     const [isLoadingCottage, setLoadingCottage] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
     const history = useHistory();
-    const urlCottagePath = "http://localhost:8092/bookingApp/cottages/" + 115;
-    const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists/" + 115;
+    
+    const urlCottagePath = "http://localhost:8092/bookingApp/cottages/";
+    const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists/";
+    
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -60,15 +62,19 @@ export default function CardIm() {
 
     const editCottage = (event) => {
         event.preventDefault();
-        history.push("./editCottage");
+        
+        history.push({
+            pathname: "./editCottage",
+            state: { cottageId: props.cottageId } 
+        })
     };
 
     useEffect(() => {
-        axios.get(urlCottagePath).then(res => {
+        axios.get(urlCottagePath+ props.cottageId).then(res => {
             setCottageBasicData(res.data);
             setLoadingCottage(false);
         })
-        axios.get(urlPricelistPath).then(result => {
+        axios.get(urlPricelistPath + props.cottageId).then(result => {
             setPricelistData(result.data);
             setLoadingPricelist(false);
         })
@@ -114,16 +120,17 @@ export default function CardIm() {
                 </ExpandMore>
             </CardActions>
 
-            <CardContent>
-                <Typography variant="body2" color="text.secondary" style={{ backgroundColor: 'aliceblue', borderRadius: '5px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%' }}>
+            <div style={{display: "flex", flexDirection: "row", flexWrap: 'wrap'}}>
+                <Typography variant="body2" color="text.secondary" style={{ width:'30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%' , margin:'2%'}}>
                     <h4>Promo Description: </h4><h3>{cottageBasicData.promoDescription} </h3>
                 </Typography>
-                <Typography variant="body2" color="text.secondary" style={{ width: 'fit', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '5px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%' }}>
+                <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin:'2%' }}>
                     <h4>Cost Per Night: {pricelistData.entityPricePerPerson} € </h4>
                     <RatingEntity value='3' />
                 </Typography>
-            </CardContent>
+            </div >
             <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <div style={{display: "flex", flexDirection: "row", flexWrap: 'wrap'}}>
                 <CardContent>
 
                     <Box sx={{ width: '100%', maxWidth: 350, bgcolor: 'background.paper' }}>
@@ -249,6 +256,7 @@ export default function CardIm() {
                         </Box>
 
         </CardContent>
+        </div>
       </Collapse>
     </Card>
     

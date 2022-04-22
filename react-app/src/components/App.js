@@ -12,7 +12,7 @@ import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom
 import AdventureProfile from './adventures/AdventureProfile';
 import showCottages from "./ShowCottages";
 import AddAdventure from './adventures/AddAdventure';
-
+import AllBoats from "./AllBoats";
 
 function App() {
     return (
@@ -27,6 +27,7 @@ function App() {
                     <Route path="/addCottage" component={AddCottage} />
                     <Route path="/editCottage" component={EditCottage} />
                     <Route path="/showCottages" component={showCottages} />
+                    <Route path="/allBoats" component={AllBoats} />
 
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />

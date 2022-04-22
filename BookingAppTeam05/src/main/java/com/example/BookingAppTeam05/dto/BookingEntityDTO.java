@@ -2,19 +2,15 @@ package com.example.BookingAppTeam05.dto;
 
 import com.example.BookingAppTeam05.model.*;
 
-import javax.persistence.*;
 import java.util.Set;
 
-public class BookingEntityDTOR {
+public class BookingEntityDTO {
     private Long id;
     private String promoDescription;
     private String address;
     private String name;
     private float entityCancelationRate;
     public EntityType entityType;
-
-
-
     public Place place;
     private Set<Reservation> reservations;
     public Set<RuleOfConduct> rulesOfConduct;
@@ -23,8 +19,8 @@ public class BookingEntityDTOR {
     public Set<Pricelist> pricelists;
     private Set<Picture> pictures;
 
-    public BookingEntityDTOR() {}
-    public BookingEntityDTOR(BookingEntity bookingEntity) {
+    public BookingEntityDTO() {}
+    public BookingEntityDTO(BookingEntity bookingEntity) {
         this.id = bookingEntity.getId();
         this.promoDescription = bookingEntity.getPromoDescription();
         this.address = bookingEntity.getAddress();
