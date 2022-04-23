@@ -19,6 +19,7 @@ import Divider from '@mui/material/Divider';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from "axios";
+import { getUserById } from '../service/UserService';
 
 
 function UserProfile(props) {
@@ -38,12 +39,13 @@ function UserProfile(props) {
         },
     });
 
+    
 
     const [userData, setUserData] = useState({});
     const [isLoading, setLoading] = useState(true);
     const history = useHistory();
     const userId = props.history.location.state.userId;
-    const urlPath = "http://localhost:8092/bookingApp/users/" + userId;
+   // const urlPath = "http://localhost:8092/bookingApp/users/" + userId;
     const avatar = <Avatar
         alt="Zorica Vukovic"
         src="./slika.jpeg"
@@ -53,8 +55,8 @@ function UserProfile(props) {
     />
 
     useEffect(() => {
-        console.log(props.history.location.state.userId);
-        axios.get(urlPath).then(res => {
+        console.log(props.history.location.state);
+        getUserById(props.history.location.state.userId).then(res => {
             setUserData(res.data);
             setLoading(false);
         })
@@ -62,9 +64,9 @@ function UserProfile(props) {
 
     if (isLoading) { return <div className="App">Loading...</div> }
     return (
-
+        
         <div className="App">
-
+            {console.log(userData)}
             <div style={{ backgroundColor: 'aliceblue', margin: '8%', padding: '2%', borderRadius: '10px', minHeight: '55px' }} >
 
                 <div>
@@ -96,11 +98,11 @@ function UserProfile(props) {
                         sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex'} }}
 
                     >
-                        {userData.userType}
+                        {userData.userType.name}
                     </Typography>
 
                 </div>
-                    {userData.userType !== "ADMIN" ? (
+                    {userData.userType.name !== "ROLE_ADMIN" ? (
                     <Box sx={{ display: 'flex', float: 'right' }}>
                         <ThemeProvider
                             theme={createTheme({
@@ -152,7 +154,7 @@ function UserProfile(props) {
 
                                     </ListItem>
                                     <Divider />
-                                    {userData.userType === "CLIENT"?(
+                                    {userData.userType.name === "ROLE_CLIENT"?(
                                         <ListItem component="div" disablePadding>
                                             <ListItemButton sx={{ height: 56 }}>
                                                 <ListItemIcon sx={{ fontSize: 20 }}>

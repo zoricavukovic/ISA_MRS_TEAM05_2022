@@ -38,7 +38,7 @@ const Navbar = () => {
     event.preventDefault();
     history.push({
       pathname: "/userProfile",
-      state: { userId: 1 } //OVDE SE MENJA ID
+      state: { userId: 3 } //OVDE SE MENJA ID
   })
   };
 
@@ -73,14 +73,9 @@ const Navbar = () => {
     event.preventDefault();
     history.push({
       pathname: "/showAdventureProfile",
-      state: { adventureId: 203 } //OVDE SE MENJA ID
+      state: { adventureId: 11 } //OVDE SE MENJA ID
     })
   };
-
-  const getHomePage = (event) => {
-    event.preventDefault();
-    history.push("/homePageCottageOwner");
-  };   
 
   return (
     <AppBar position="static" >
@@ -91,7 +86,6 @@ const Navbar = () => {
             noWrap
             component="div"
             sx={{ mr: 2, display: { xs: 'none', color: 'white', fontWeight: "bold", md: 'flex' } }}
-            onClick={getHomePage}
           >
             NatureBooking
           </Typography>

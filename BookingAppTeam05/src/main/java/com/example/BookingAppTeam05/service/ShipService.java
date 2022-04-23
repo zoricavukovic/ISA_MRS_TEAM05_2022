@@ -1,9 +1,11 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.model.Ship;
+import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.repository.ShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -21,4 +23,5 @@ public class ShipService {
     public List<Ship> findAll() {
         return shipRepository.findAll();
     }
+
 }

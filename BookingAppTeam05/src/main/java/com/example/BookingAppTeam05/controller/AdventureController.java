@@ -2,8 +2,8 @@ package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.AdventureDTO;
 import com.example.BookingAppTeam05.dto.NewAdventureDTO;
-import com.example.BookingAppTeam05.model.Adventure;
-import com.example.BookingAppTeam05.model.Instructor;
+import com.example.BookingAppTeam05.model.entities.Adventure;
+import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.service.AdventureService;
 import com.example.BookingAppTeam05.service.InstructorService;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.Optional;
 
 
 @RestController

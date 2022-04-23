@@ -1,10 +1,11 @@
-package com.example.BookingAppTeam05.model;
+package com.example.BookingAppTeam05.model.entities;
 
-import javax.naming.spi.ResolveResult;
+import com.example.BookingAppTeam05.model.*;
+import com.example.BookingAppTeam05.model.users.Client;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.util.*;
-import java.time.LocalDate;
 
 import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
 
@@ -41,21 +42,25 @@ public abstract class BookingEntity {
 
     @Column(name = "entityType")
     @Enumerated(EnumType.STRING)
-    public EntityType entityType;
+    private EntityType entityType;
 
     @OneToMany(mappedBy = "bookingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    public Set<Pricelist> pricelists = new HashSet<>();
+    private Set<Pricelist> pricelists = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    public Place place;
+    private Place place;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="entity_id")
-    public Set<RuleOfConduct> rulesOfConduct = new HashSet<>();
+    private Set<RuleOfConduct> rulesOfConduct = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "subscribers", joinColumns = @JoinColumn(name = "booking_entity_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))
-    public Set<Client> subscribedClients = new HashSet<>();
+    private Set<Client> subscribedClients = new HashSet<>();
+
+    @Column(name="deleted", nullable = false)
+    private boolean deleted = false;
+
 
     public BookingEntity() {
     }
@@ -82,12 +87,27 @@ public abstract class BookingEntity {
         this.entityType = entityType;
     }
 
+
     public void addPriceList(Pricelist pricelist) {
         pricelists.add(pricelist);
         pricelist.setBookingEntity(this);
     }
 
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
 
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Long getId() {
         return id;

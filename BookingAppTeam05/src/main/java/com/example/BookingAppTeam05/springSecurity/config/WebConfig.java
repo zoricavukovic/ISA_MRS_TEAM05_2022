@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.config;
+package com.example.BookingAppTeam05.springSecurity.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

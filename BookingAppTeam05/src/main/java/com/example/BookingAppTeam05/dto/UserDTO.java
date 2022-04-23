@@ -2,8 +2,8 @@ package com.example.BookingAppTeam05.dto;
 
 import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.Place;
-import com.example.BookingAppTeam05.model.User;
-import com.example.BookingAppTeam05.model.UserType;
+import com.example.BookingAppTeam05.model.users.Role;
+import com.example.BookingAppTeam05.model.users.User;
 
 import java.time.LocalDate;
 
@@ -19,7 +19,7 @@ public class UserDTO {
     private int loyaltyPoints;
     private boolean accountAllowed;
     private Place place;
-    private UserType userType;
+    private Role userType;
     private LoyaltyProgram loyaltyProgram;
 
     public UserDTO() {}
@@ -34,8 +34,8 @@ public class UserDTO {
         this.phoneNumber = user.getPhoneNumber();
         this.password = user.getPassword();
         this.loyaltyPoints = user.getLoyaltyPoints();
-        this.accountAllowed = user.isAccountAllowed();
-        this.userType = user.getUserType();
+        this.accountAllowed = user.isNotYetActivated();
+        this.userType = user.getRole();
         this.loyaltyProgram = user.getLoyaltyProgram();
     }
 
@@ -43,72 +43,76 @@ public class UserDTO {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getEmail() {
         return email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public int getLoyaltyPoints() {
-        return loyaltyPoints;
-    }
-
-    public boolean isAccountAllowed() {
-        return accountAllowed;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public int getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
     public void setLoyaltyPoints(int loyaltyPoints) {
         this.loyaltyPoints = loyaltyPoints;
+    }
+
+    public boolean isAccountAllowed() {
+        return accountAllowed;
     }
 
     public void setAccountAllowed(boolean accountAllowed) {
@@ -123,11 +127,11 @@ public class UserDTO {
         this.place = place;
     }
 
-    public UserType getUserType() {
+    public Role getUserType() {
         return userType;
     }
 
-    public void setUserType(UserType userType) {
+    public void setUserType(Role userType) {
         this.userType = userType;
     }
 

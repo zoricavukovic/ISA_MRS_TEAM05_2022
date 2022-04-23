@@ -7,16 +7,18 @@ import Typography from "@mui/material/Typography";
 import CardMedia from "@mui/material/CardMedia";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import { getAllCottages } from '../service/CottageService';
 
 function ShowCottages() {
 
     const [cottages,setCottages] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8092/bookingApp/cottages/").then(res => {
+
+        getAllCottages().then(res => {
             setCottages(res.data);
             console.log(res.data);
-        })
+        });
     }, []);
 
     return (

@@ -1,18 +1,16 @@
 package com.example.BookingAppTeam05.controller;
 
-import com.example.BookingAppTeam05.dto.CottageDTO;
 import com.example.BookingAppTeam05.dto.ShipDTO;
-import com.example.BookingAppTeam05.model.Cottage;
-import com.example.BookingAppTeam05.model.Ship;
+import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +26,14 @@ public class ShipController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ShipDTO>> getCottages() {
+    public ResponseEntity<List<ShipDTO>> getShips() {
         List<Ship> ships = shipService.findAll();
+
+        System.out.println("-=----------------");
+        for (Ship ship : ships) {
+            System.out.println(ship.getName() + ship.getEngineNum());
+        }
+        System.out.println("-=----------------");
 
         List<ShipDTO> shipDTOs = new ArrayList<>();
 

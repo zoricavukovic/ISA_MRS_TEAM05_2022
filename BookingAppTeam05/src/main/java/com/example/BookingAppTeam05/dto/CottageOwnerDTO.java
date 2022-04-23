@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.dto;
 
-import com.example.BookingAppTeam05.model.CottageOwner;
+import com.example.BookingAppTeam05.model.users.CottageOwner;
 
 public class CottageOwnerDTO extends UserDTO{
     public CottageOwnerDTO() {

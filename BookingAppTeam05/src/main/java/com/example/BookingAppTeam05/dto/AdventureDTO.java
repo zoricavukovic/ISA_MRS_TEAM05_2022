@@ -1,9 +1,8 @@
 package com.example.BookingAppTeam05.dto;
 
-import com.example.BookingAppTeam05.model.Adventure;
+import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.FishingEquipment;
-import com.example.BookingAppTeam05.model.Instructor;
-import com.example.BookingAppTeam05.model.Picture;
+import com.example.BookingAppTeam05.model.users.Instructor;
 
 import java.util.Set;
 

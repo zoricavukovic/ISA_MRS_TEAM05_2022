@@ -7,13 +7,14 @@ import Typography from "@mui/material/Typography";
 import CardMedia from "@mui/material/CardMedia";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import { getAllShips } from '../service/ShipService';
 
 function AllBoats() {
 
     const [boats,setBoats] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8092/bookingApp/ships/").then(res => {
+        getAllShips().then(res => {
             setBoats(res.data);
             console.log(res.data);
         })

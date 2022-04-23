@@ -1,10 +1,9 @@
 package com.example.BookingAppTeam05.dto;
 
 import com.example.BookingAppTeam05.model.AdditionalService;
-import com.example.BookingAppTeam05.model.BookingEntity;
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.Pricelist;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 

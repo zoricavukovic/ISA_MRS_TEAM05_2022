@@ -1,6 +1,8 @@
 package com.example.BookingAppTeam05.dto;
 
 import com.example.BookingAppTeam05.model.*;
+import com.example.BookingAppTeam05.model.entities.Cottage;
+import com.example.BookingAppTeam05.model.entities.EntityType;
 
 import java.util.Set;
 

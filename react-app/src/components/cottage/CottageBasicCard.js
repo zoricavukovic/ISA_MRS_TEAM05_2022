@@ -19,6 +19,8 @@ import axios from "axios";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
+import { getPricelistByEntityId } from '../../service/Pricelists.js';
+import { deleteCottageById } from '../../service/CottageService.js';
 
 export default function ImgMediaCard(props) {
     const history = useHistory();
@@ -56,28 +58,46 @@ export default function ImgMediaCard(props) {
         })
     };
     useEffect(() => {
-        axios.get("http://localhost:8092/bookingApp/pricelists/" + props.bookingEntityId).then(res => {
+        // axios.get("http://localhost:8092/bookingApp/pricelists/" + props.bookingEntityId).then(res => {
+        //     setPricelist(res.data);
+        // });
+      getPricelistByEntityId(props.bookingEntityId).then(res => {
             setPricelist(res.data);
-        });
+        }); 
+
     }, [])
     const logicDeleteCottage = (event) => {
-      axios.delete("http://localhost:8092/bookingApp/cottages/" + props.bookingEntityId + "/" + password).then(res => {
+      // axios.delete("http://localhost:8092/bookingApp/cottages/" + props.bookingEntityId + "/" + password).then(res => {
+      //   setPassword("");
+      //   handleClick();
+      //   setTypeAlert("success");
+      //   setMessage("Successfully delete cottage " + props.cottage.name);
+      //   window.location.reload();
+        
+      //   }).catch(res=>{
+      //     setTypeAlert("error");
+      //     setMessage(res.response.data);
+      //     handleClick();
+      //     return;
+      //   })    
+      //   setOpenDialog(false);
+      deleteCottageById(props.bookingEntityId, password).then(res => {
         setPassword("");
         handleClick();
         setTypeAlert("success");
         setMessage("Successfully delete cottage " + props.cottage.name);
         window.location.reload();
-        
         }).catch(res=>{
+          setPassword("");
           setTypeAlert("error");
           setMessage(res.response.data);
           handleClick();
           return;
         })    
         setOpenDialog(false);
-      
-          
-    }
+  }
+
+
   return (
     <Card style={{margin:"2%"}} sx={{ maxWidth: 345 }}>
       <Dialog open={openDialog} onClose={handleCloseDialog}>

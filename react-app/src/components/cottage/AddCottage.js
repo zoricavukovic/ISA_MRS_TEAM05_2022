@@ -18,6 +18,9 @@ import Slider from '@mui/material/Slider';
 import { CircularProgress, NativeSelect} from "@mui/material";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
+import { getAllPlaces } from '../../service/PlaceService.js';
+import { addNewCottage } from '../../service/CottageService.js';
+import { addNewPriceListForEntityId } from '../../service/Pricelists.js';
 
 const Input = styled(MuiInput)`
   width: 42px;
@@ -34,7 +37,7 @@ export default function AddCottage() {
     const [city,setCity] = useState("");
     const [isLoadingPlaces, setLoadingPlaces] = useState(true);
     const history = useHistory();
-    const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists";
+    //const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists";
     const [newCottage, setNewCottage] = React.useState(
       {
       "id": 1,
@@ -60,10 +63,15 @@ export default function AddCottage() {
     );
 
     useEffect(() => {
-        axios.get("http://localhost:8092/bookingApp/places/").then(results =>{
+        // axios.get("http://localhost:8092/bookingApp/places/").then(results =>{
+        //     setPlaces(results.data);
+        //     setLoadingPlaces(false);
+        // })
+        getAllPlaces().then(results =>{
             setPlaces(results.data);
             setLoadingPlaces(false);
         })
+
       }, []);
 
     const getRuleCon = (ruleCon) =>{
@@ -216,9 +224,22 @@ export default function AddCottage() {
         //countryName.backgroundColor = "red";
         return;
     }
+
     //PROMENITIIITITITIITITITITIT
-    axios.post("http://localhost:8092/bookingApp/cottages" + "/1", newCottage).then(res=>{
-        axios.post(urlPricelistPath + "/" + res.data, newPricelist).then(result => {
+    // axios.post("http://localhost:8092/bookingApp/cottages" + "/1", newCottage).then(res=>{
+    //     axios.post(urlPricelistPath + "/" + res.data, newPricelist).then(result => {
+    //       history.push({
+    //         pathname:"/showCottagesOwner"
+    //       });
+    //     }).catch(res=>{
+    //         console.log("Greska!!");})
+    // }).catch(res=>{
+    //     console.log("Greska!!");
+    // })
+
+
+    addNewCottage(1, newCottage).then(res=>{
+        addNewPriceListForEntityId(res.data, newPricelist).then(result => {
           history.push({
             pathname:"/showCottagesOwner"
           });
@@ -227,6 +248,7 @@ export default function AddCottage() {
     }).catch(res=>{
         console.log("Greska!!");
     })
+
         
     
   }

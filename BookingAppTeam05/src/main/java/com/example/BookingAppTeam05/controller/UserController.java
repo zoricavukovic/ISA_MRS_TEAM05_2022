@@ -2,15 +2,17 @@ package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.model.*;
+import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.PlaceService;
 import com.example.BookingAppTeam05.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/users")
 public class UserController {
 
@@ -30,28 +32,28 @@ public class UserController {
         if (u == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         UserDTO userDTO = null;
-        switch(u.getUserType()){
-            case CLIENT: {
+        switch(u.getRole().getName()){
+            case "ROLE_CLIENT": {
                 Client client = (Client) u;
                 userDTO = new ClientDTO(client);
                 break;
             }
-            case ADMIN: {
+            case "ROLE_ADMIN": {
                 Admin admin = (Admin) u;
                 userDTO = new AdminDTO(admin);
                 break;
             }
-            case COTTAGE_OWNER: {
+            case "ROLE_COTTAGE_OWNER": {
                 CottageOwner cottageOwner = (CottageOwner) u;
                 userDTO = new CottageOwnerDTO(cottageOwner);
                 break;
             }
-            case SHIP_OWNER: {
+            case "ROLE_SHIP_OWNER": {
                 ShipOwner shipOwner = (ShipOwner) u;
                 userDTO = new ShipOwnerDTO(shipOwner);
                 break;
             }
-            case INSTRUCTOR: {
+            case "ROLE_INSTRUCTOR": {
                 Instructor instructor = (Instructor) u;
                 userDTO = new InstructorDTO(instructor);
                 break;
@@ -64,7 +66,7 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO)  {
         User user = userService.getUserById(userId);
         user.setAddress(userDTO.getAddress());
@@ -78,6 +80,18 @@ public class UserController {
         final User updatedUser = userService.save(user);
 
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/foo")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> getFoo() {
+        return new ResponseEntity<>("nesto", HttpStatus.OK);
+    }
+
+    @GetMapping("/fooDrugi")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<String> getFooClient() {
+        return new ResponseEntity<>("nesto", HttpStatus.OK);
     }
 
 }

@@ -21,6 +21,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
 import ImageSlider from "../image_slider/ImageSlider";
+import { getAdventureById } from "../../service/AdventureService";
+import { getPricelistByEntityId } from "../../service/Pricelists";
 
 
 const ExpandMore = styled((props) => {
@@ -153,8 +155,6 @@ export default function AdventureProfile(props) {
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
 
     const adventureId = props.history.location.state.adventureId;
-    const urlAdventurePath = "http://localhost:8092/bookingApp/adventures/" + adventureId;
-    const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists/" + adventureId;
     const urlPicturePath = "http://localhost:8092/bookingApp/pictures/";
 
     const handleExpandClick = () => {
@@ -162,11 +162,11 @@ export default function AdventureProfile(props) {
     };
 
     useEffect(() => {
-        axios.get(urlAdventurePath).then(res => {
+        getAdventureById(adventureId).then(res => {
             setAdventureData(res.data);
             setLoading(false);
         })
-        axios.get(urlPricelistPath).then(result => {
+        getPricelistByEntityId(adventureId).then(result => {
             setPricelistData(result.data);
             setLoadingPricelist(false);
         })

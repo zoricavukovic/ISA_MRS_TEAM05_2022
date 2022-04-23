@@ -2,12 +2,12 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.NewAdventureDTO;
 import com.example.BookingAppTeam05.model.*;
+import com.example.BookingAppTeam05.model.entities.Adventure;
+import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.repository.AdventureRepository;
-import org.apache.tomcat.util.digester.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Service

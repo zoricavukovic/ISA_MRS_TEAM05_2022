@@ -1,13 +1,10 @@
 package com.example.BookingAppTeam05.dto;
 
-import com.example.BookingAppTeam05.model.EntityType;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.lang.annotation.Native;
 import java.util.List;
 
 public class NewAdventureDTO {

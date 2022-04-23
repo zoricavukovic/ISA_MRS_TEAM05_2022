@@ -1,5 +1,8 @@
 package com.example.BookingAppTeam05.model;
 
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
+import com.example.BookingAppTeam05.model.users.Client;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;

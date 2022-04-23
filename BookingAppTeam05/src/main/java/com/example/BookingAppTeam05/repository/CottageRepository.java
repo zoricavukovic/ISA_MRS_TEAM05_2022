@@ -1,10 +1,6 @@
 package com.example.BookingAppTeam05.repository;
 
-import com.example.BookingAppTeam05.model.Cottage;
-import com.example.BookingAppTeam05.model.CottageOwner;
-import com.example.BookingAppTeam05.model.Room;
-import com.example.BookingAppTeam05.model.User;
-import org.springframework.data.jpa.repository.EntityGraph;
+import com.example.BookingAppTeam05.model.entities.Cottage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -12,15 +12,14 @@ import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
 import {useHistory} from "react-router-dom";
+import { getAllPlaces } from "../../service/PlaceService.js";
+import { addNewAdventure } from "../../service/AdventureService.js";
 
 export default function AddAdventure() {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const allPlacesUrl = "http://localhost:8092/bookingApp/places";
-    const addAdventureUrl = "http://localhost:8092/bookingApp/adventures";
     const [isLoading, setLoading] = useState(true);
     const history = useHistory();
-
 
 
     ////////////////IMAGES//////////////////////////////////
@@ -214,7 +213,7 @@ export default function AddAdventure() {
             return;
         }
         const newAdventure = {
-            instructorId: 549, // ovde promeniti posle u zavisnosti od ulogovanog korisnika
+            instructorId: 9, // ovde promeniti posle u zavisnosti od ulogovanog korisnika
             name : data.name,
             address: data.address,
             placeId: selectedPlaceId,
@@ -231,7 +230,7 @@ export default function AddAdventure() {
         console.log(images);
         console.log(newAdventure);
 
-        axios.post(addAdventureUrl, newAdventure)
+        addNewAdventure(newAdventure)
             .then(res => {
                 console.log(res);
                 console.log(res.data);
@@ -247,11 +246,9 @@ export default function AddAdventure() {
             });
 
         
-        
     }
-
     useEffect(() => {
-        axios.get(allPlacesUrl)
+        getAllPlaces()
             .then(res => {
                 setPlaces(res.data);
                 setLoading(false);

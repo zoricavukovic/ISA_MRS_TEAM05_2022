@@ -14,11 +14,15 @@ import AddingRulesOfConduct from '../AddingRulesOfConduct.js';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { CircularProgress, NativeSelect} from "@mui/material";
+import { CircularProgress, NativeSelect } from "@mui/material";
 import { useForm } from "react-hook-form";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import axios from "axios";
+
+import { addNewPriceListForEntityId, getPricelistByEntityId } from '../../service/Pricelists.js';
+import { getAllPlaces } from '../../service/PlaceService.js';
+import { editCottageByIdReal, getCottageById } from '../../service/CottageService.js';
 
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -39,73 +43,92 @@ export default function EditCottage(props) {
   const [addSerData, setAddSerData] = useState([]);
   const [places, setPlaces] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState({});
-  const [country,setCountry] = useState("");
-  const [city,setCity] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
   const history = useHistory();
   const [error, setError] = useState({
-      cottageName: ""
+    cottageName: ""
   });
-  const urlCottagePath = "http://localhost:8092/bookingApp/cottages";
-  const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists";
+  //const urlCottagePath = "http://localhost:8092/bookingApp/cottages";
+  //const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists";
+
+
+  // useEffect(() => {
+  //   console.log(props.history.location.state);
+  //   axios.get(urlCottagePath + "/" + props.history.location.state.cottageId).then(res => {
+  //     setCottageBasicData(res.data);
+  //     setCountry(res.data.place.stateName);
+  //     setLoadingCottage(false);
+  //   })
+  //   axios.get(urlPricelistPath + "/" + props.history.location.state.cottageId).then(result => {
+  //     setPricelistData(result.data);
+  //     setLoadingPricelist(false);
+  //   })
+  //   axios.get("http://localhost:8092/bookingApp/places/").then(results =>{
+  //           setPlaces(results.data);
+  //           setLoadingPlaces(false);
+  //       })
+  // }, []);
 
 
   useEffect(() => {
-    console.log(props.history.location.state);
-    axios.get(urlCottagePath + "/" + props.history.location.state.cottageId).then(res => {
+    getCottageById(props.history.location.state.cottageId).then(res => {
       setCottageBasicData(res.data);
       setCountry(res.data.place.stateName);
       setLoadingCottage(false);
     })
-    axios.get(urlPricelistPath + "/" + props.history.location.state.cottageId).then(result => {
+    getPricelistByEntityId(props.history.location.state.cottageId).then(result => {
       setPricelistData(result.data);
       setLoadingPricelist(false);
     })
-    axios.get("http://localhost:8092/bookingApp/places/").then(results =>{
-            setPlaces(results.data);
-            setLoadingPlaces(false);
-        })
+    getAllPlaces().then(results => {
+      setPlaces(results.data);
+      setLoadingPlaces(false);
+    })
   }, []);
-  
-  const getRuleCon = (ruleCon) =>{
+
+
+
+  const getRuleCon = (ruleCon) => {
     let newRulesCond = [];
     for (let obj of ruleCon) {
       let tokens = obj.label.split(":");
       let newRulCon = {
-        ruleName:tokens[0],
-        allowed:tokens[1]
+        ruleName: tokens[0],
+        allowed: tokens[1]
       }
       newRulesCond.push(newRulCon);
     }
     setRuleCon(newRulesCond);
   };
 
-  const getRooms = (rooms) =>{
+  const getRooms = (rooms) => {
     let newRooms = [];
     for (let obj of rooms) {
       let tokens = obj.label.split(":");
       let valueRoomNum = parseFloat(tokens[0]);
-      if (isNaN(valueRoomNum)) {alert("Samo broj sme."); return;}
-      let valueNumOfBeds= parseFloat(tokens[1]);
-      if (isNaN(valueNumOfBeds)) {alert("Samo broj sme."); return;}
+      if (isNaN(valueRoomNum)) { alert("Samo broj sme."); return; }
+      let valueNumOfBeds = parseFloat(tokens[1]);
+      if (isNaN(valueNumOfBeds)) { alert("Samo broj sme."); return; }
       let newRoom = {
-        roomNum:valueRoomNum,
-        numOfBeds:valueNumOfBeds
+        roomNum: valueRoomNum,
+        numOfBeds: valueNumOfBeds
       }
       newRooms.push(newRoom);
     }
     setRoom(newRooms);
   };
 
-  const getAddSer = (services) =>{
+  const getAddSer = (services) => {
     let newServices = [];
     for (let obj of services) {
       let tokens = obj.label.split(":");
       let valuePrice = parseFloat(tokens[1]);
-      if (valuePrice === NaN) {alert("Samo broj sme."); return;}
+      if (valuePrice === NaN) { alert("Samo broj sme."); return; }
       let newAddS = {
 
-        price:valuePrice,
-        serviceName:tokens[0]
+        price: valuePrice,
+        serviceName: tokens[0]
       }
       newServices.push(newAddS);
     }
@@ -131,39 +154,39 @@ export default function EditCottage(props) {
   };
   useEffect(() => {
     setCottageBasicData(prevState => ({
-        ...prevState,
-        place: selectedPlace
+      ...prevState,
+      place: selectedPlace
     }));
-},[selectedPlace])
+  }, [selectedPlace])
 
   useEffect(() => {
     console.log(places);
     let countryPlace = places.find(function (element) {
-        let someCityInCountry = element.stateName.localeCompare(country) === 0;
-        if(city)
-            return someCityInCountry && element.cityName.localeCompare(city)===0;
-        else
-            return someCityInCountry;
+      let someCityInCountry = element.stateName.localeCompare(country) === 0;
+      if (city)
+        return someCityInCountry && element.cityName.localeCompare(city) === 0;
+      else
+        return someCityInCountry;
     })
 
     setSelectedPlace(countryPlace);
-}, [country,city])
+  }, [country, city])
 
-useEffect(() => {
-  setCottageBasicData(prevState => ({
+  useEffect(() => {
+    setCottageBasicData(prevState => ({
       ...prevState,
       place: selectedPlace
-  }));
-},[city])
+    }));
+  }, [city])
 
 
-const countryChanged = (event) =>{
-  setCountry(event.target.value);
-}
+  const countryChanged = (event) => {
+    setCountry(event.target.value);
+  }
 
-const cityChanged = (event) =>{
-  setCity(event.target.value);
-};
+  const cityChanged = (event) => {
+    setCity(event.target.value);
+  };
 
   const saveChanges = () => {
     let newData = cottageBasicData;
@@ -180,34 +203,54 @@ const cityChanged = (event) =>{
     setCottageBasicData(newData);
     setPricelistData(newPricelistData);
     console.log(cottageBasicData.name.length);
-    if (cottageBasicData.name.length > 255){
-        let err = error;
-        err.cottageName = "Max length is 255 characters!";
-        setError(err);
-        return;
+    if (cottageBasicData.name.length > 255) {
+      let err = error;
+      err.cottageName = "Max length is 255 characters!";
+      setError(err);
+      return;
     }
     console.log("Poslednja provera.");
     console.log(cottageBasicData);
     console.log(pricelistData);
-    axios.put(urlCottagePath, cottageBasicData).then(result => {
-      
-          axios.post(urlPricelistPath + "/" + cottageBasicData.id, pricelistData).then(result => {
-            history.push({
-              pathname: "/showCottageProfile",
-              state: { cottageId: cottageBasicData.id } 
-    }).catch(result=>{
-                console.log("Greska!!");
-                return;
-          })
-        }).catch(res=>{
-            console.log("Greska!!");
-            return;
-        })    
-        
-  })
+
+
+
+    //   axios.put(urlCottagePath, cottageBasicData).then(result => {
+
+    //         axios.post(urlPricelistPath + "/" + cottageBasicData.id, pricelistData).then(result => {
+    //           history.push({
+    //             pathname: "/showCottageProfile",
+    //             state: { cottageId: cottageBasicData.id } 
+    //   }).catch(result=>{
+    //               console.log("Greska!!");
+    //               return;
+    //         })
+    //       }).catch(res=>{
+    //           console.log("Greska!!");
+    //           return;
+    //       })    
+
+    // })
+
+    editCottageByIdReal(cottageBasicData).then(result => {
+
+      addNewPriceListForEntityId(cottageBasicData.id, pricelistData).then(result => {
+        history.push({
+          pathname: "/showCottageProfile",
+          state: { cottageId: cottageBasicData.id }
+        }).catch(result => {
+          console.log("Greska!!");
+          return;
+        })
+      }).catch(res => {
+        console.log("Greska!!");
+        return;
+      })
+    })
+
   };
 
-  function refreshPage(){
+  function refreshPage() {
     window.location.reload(false);
   }
 
@@ -217,7 +260,7 @@ const cityChanged = (event) =>{
     <div style={{ backgroundColor: 'aliceblue', margin: '5%', padding: '1%', borderRadius: '10px', height: '100%' }} >
       <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '42%', padding: '1%', borderRadius: '10px', width: '15%' }} >
         Edit Cottage
-        </div>
+      </div>
       <Box sx={{ marginTop: '1%', marginLeft: '5%', marginRight: '5%', width: '90%' }}>
         <Box
           component="form"
@@ -238,7 +281,7 @@ const cityChanged = (event) =>{
                     label="Cottage Name"
                     placeholder="Cottage Name"
                     defaultValue={cottageBasicData.name}
-                    onChange = {e => {
+                    onChange={e => {
                       let data = cottageBasicData;
                       data.name = e.target.value;
                       setCottageBasicData(data);
@@ -247,7 +290,7 @@ const cityChanged = (event) =>{
                     size="small"
                     style={{ width: '200px' }}
                   />
-                  <div onChange={setError} style={{color:"red", fontSize:"10px"}}>{error.cottageName}</div>
+                  <div onChange={setError} style={{ color: "red", fontSize: "10px" }}>{error.cottageName}</div>
                 </td>
                 <td>
                   <FormControl sx={{ m: 1 }}>
@@ -256,11 +299,11 @@ const cityChanged = (event) =>{
                       id="outlined-adornment-amount"
                       size="small"
                       defaultValue={pricelistData.entityPricePerPerson}
-                      onChange = {e => {
+                      onChange={e => {
                         let data = pricelistData;
                         let cost = parseInt(e.target.value);
                         if (cost === NaN) alert("Greska");
-                        else{
+                        else {
                           data.entityPricePerPerson = cost;
                         }
                         setPricelistData(data);
@@ -278,7 +321,7 @@ const cityChanged = (event) =>{
                     placeholder="Address"
                     multiline
                     defaultValue={cottageBasicData.address}
-                    onChange = {e => {
+                    onChange={e => {
                       let dataAdd = cottageBasicData;
                       dataAdd.address = e.target.value;
                       setCottageBasicData(dataAdd);
@@ -288,47 +331,47 @@ const cityChanged = (event) =>{
                   />
                 </td>
                 <td>
-                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                        Country
-                    </InputLabel>
-                    <NativeSelect
-                        defaultValue={cottageBasicData.place.stateName}
-                        onChange = {countryChanged}
-                        inputProps={{
-                            name: 'Country',
-                            id: 'uncontrolled-native',
-                        }}
-                    >
-                        {places.map((place)=>(
-                            <option value={place.stateName}>{place.stateName}</option>
-                        ))}
-                    </NativeSelect>
+                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                    Country
+                  </InputLabel>
+                  <NativeSelect
+                    defaultValue={cottageBasicData.place.stateName}
+                    onChange={countryChanged}
+                    inputProps={{
+                      name: 'Country',
+                      id: 'uncontrolled-native',
+                    }}
+                  >
+                    {places.map((place) => (
+                      <option value={place.stateName}>{place.stateName}</option>
+                    ))}
+                  </NativeSelect>
                 </td>
 
               </tr>
               <tr>
                 <td>
-                  
-                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                    City
-                                </InputLabel>
-                                <NativeSelect
-                                    defaultValue={cottageBasicData.place.cityName}
-                                    onChange = {cityChanged}
-                                    inputProps={{
-                                        name: 'city',
-                                        id: 'uncontrolled-native',
-                                    }}
-                                >
-                                    {places.map(place=> {
-                                            if (place.stateName === country)
-                                                return <option value={place.cityName}>{place.cityName}</option>
-                                            return <></>
-                                        }
-                                    )}
-                                </NativeSelect>
+
+                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                    City
+                  </InputLabel>
+                  <NativeSelect
+                    defaultValue={cottageBasicData.place.cityName}
+                    onChange={cityChanged}
+                    inputProps={{
+                      name: 'city',
+                      id: 'uncontrolled-native',
+                    }}
+                  >
+                    {places.map(place => {
+                      if (place.stateName === country)
+                        return <option value={place.cityName}>{place.cityName}</option>
+                      return <></>
+                    }
+                    )}
+                  </NativeSelect>
                 </td>
-                
+
                 <td>
                   <TextField
                     size="small"
@@ -336,7 +379,7 @@ const cityChanged = (event) =>{
                     label="Promo Description"
                     multiline
                     rows={2}
-                    onChange = {e => {
+                    onChange={e => {
                       let data = cottageBasicData;
                       data.promoDescription = e.target.value;
                       setCottageBasicData(data);
@@ -350,7 +393,7 @@ const cityChanged = (event) =>{
                   <Box sx={{ width: 250 }}>
                     <Typography id="input-slider" gutterBottom>
                       Cancelation Rate
-                                        </Typography>
+                    </Typography>
                     <Grid container alignItems="center" style={{ width: '200px', marginLeft: '24%' }}>
 
                       <Grid item>
@@ -379,19 +422,19 @@ const cityChanged = (event) =>{
       </Box>
 
       <Box style={{ display: "flex", flexDirection: "row" }}>
-        <AddingAdditionalService float="left" onClick={getAddSer} onDelete={getAddSer} services={pricelistData.additionalServices}/>
-        
-        <AddingRooms float="left" onClick={getRooms} onDelete={getRooms} rooms={cottageBasicData.rooms}/>
-        <AddingRulesOfConduct float="left" onClick={getRuleCon} onDelete={getRuleCon} rules={cottageBasicData.rulesOfConduct}/>
+        <AddingAdditionalService float="left" onClick={getAddSer} onDelete={getAddSer} services={pricelistData.additionalServices} />
+
+        <AddingRooms float="left" onClick={getRooms} onDelete={getRooms} rooms={cottageBasicData.rooms} />
+        <AddingRulesOfConduct float="left" onClick={getRuleCon} onDelete={getRuleCon} rules={cottageBasicData.rulesOfConduct} />
       </Box>
 
       <Box style={{ display: "flex", flexDirection: "row" }}>
         <Button onClick={saveChanges} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '36%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
           Save Changes
-            </Button>
+        </Button>
         <Button variant="contained" onClick={refreshPage} style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
           Reset
-            </Button>
+        </Button>
       </Box>
 
     </div>

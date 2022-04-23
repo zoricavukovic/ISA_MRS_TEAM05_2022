@@ -1,6 +1,9 @@
 package com.example.BookingAppTeam05.dto;
 
 import com.example.BookingAppTeam05.model.*;
+import com.example.BookingAppTeam05.model.entities.Ship;
+import com.example.BookingAppTeam05.model.users.ShipOwner;
+
 import java.util.Set;
 
 public class ShipDTO extends BookingEntityDTO{

@@ -13,6 +13,8 @@ import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {useHistory} from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import axios from "axios";
+import { editUserById, getAllUsers, getUserById } from '../service/UserService';
+import { getAllPlaces, getPlaceById } from '../service/PlaceService';
 
 
 function EditUserProfile(props) {
@@ -41,7 +43,6 @@ function EditUserProfile(props) {
     const [isLoading2, setLoading2] = useState(true);
     const history = useHistory();
     const userId = props.history.location.state.userId;
-    const urlPath = "http://localhost:8092/bookingApp/users/" + userId;
     const avatar = <Avatar
         alt="Zorica Vukovic"
         src="./slika.jpeg"
@@ -55,14 +56,14 @@ function EditUserProfile(props) {
 
     useEffect(() => {
         console.log(props.history.location.state.userId);
-        axios.get(urlPath).then(res => {
+        getUserById(userId).then(res => {
             setUserData(res.data);
             setChangedUserData(res.data);
             setLoading(false);
             setCountry(res.data.place.stateName);
         })
 
-        axios.get("http://localhost:8092/bookingApp/places/").then(results =>{
+        getAllPlaces().then(results =>{
             setPlaces(results.data);
             setLoading2(false);
         })
@@ -70,24 +71,19 @@ function EditUserProfile(props) {
 
 
     const saveChanges = (event) => {
-
         console.log("CHanged user data:",changedUserData);
-
-        axios.put("http://localhost:8092/bookingApp/users/update/"+userId, changedUserData).then(res=>{
+        editUserById(userId, changedUserData).then(res=>{
             console.log("Uspesno!!");
             console.log(res.data);
             alert("Changes saved");
         }).catch(res=>{
             console.log("Greska!!");
-
-
         })
     };
 
     const reset = (event)=>{
         setState( { key: Date.now() } );
     }
-
 
     const makeChange = (event)=>{
         setChangedUserData(prevState => ({
@@ -187,11 +183,11 @@ function EditUserProfile(props) {
                         sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex'} }}
 
                     >
-                        {userData.userType}
+                        {userData.userType.name}
                     </Typography>
 
                 </div>
-                {userData.userType !== "ADMIN" ? (
+                {userData.userType.name !== "ROLE_ADMIN" ? (
                     <Box sx={{ display: 'flex', float: 'right' }}>
                         <ThemeProvider
                             theme={createTheme({
@@ -243,7 +239,7 @@ function EditUserProfile(props) {
 
                                     </ListItem>
                                     <Divider />
-                                    {userData.userType === "CLIENT"?(
+                                    {userData.userType.name === "ROLE_CLIENT"?(
                                         <ListItem component="div" disablePadding>
                                             <ListItemButton sx={{ height: 56 }}>
                                                 <ListItemIcon sx={{ fontSize: 20 }}>

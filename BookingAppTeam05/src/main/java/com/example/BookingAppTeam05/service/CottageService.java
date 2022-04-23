@@ -1,11 +1,8 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.model.Cottage;
+import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.Reservation;
-import com.example.BookingAppTeam05.model.Room;
-import com.example.BookingAppTeam05.model.User;
 import com.example.BookingAppTeam05.repository.CottageRepository;
-import com.example.BookingAppTeam05.repository.PricelistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import '../App.css';
 import Navbar from "./Navbar";
-import HomePageCottageOwner from "./HomePageCottageOwner";
 import UserProfile from "./UserProfile";
 import EditUserProfile from "./EditUserProfile";
 import ShowCottageProfile from "./cottage/ShowCottageProfile";
@@ -21,10 +20,7 @@ function App() {
             <Router>
                 <Navbar/>
                 <Switch>
-                    <Route exact path="/homePageCottageOwner" component={HomePageCottageOwner} />
-                    
                     <Route path="/allBoats" component={AllBoats} />
-                    <Route exact path="/homePageCottageOwner" component={HomePageCottageOwner} />
                     <Route path="/userProfile" component={UserProfile} />
                     <Route path="/editUserProfile" component={EditUserProfile} />
                     <Route path="/showCottageProfile" component={ShowCottageProfile} />

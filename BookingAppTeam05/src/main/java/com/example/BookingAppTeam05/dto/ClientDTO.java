@@ -1,7 +1,5 @@
 package com.example.BookingAppTeam05.dto;
-import com.example.BookingAppTeam05.model.Client;
-
-import java.util.List;
+import com.example.BookingAppTeam05.model.users.Client;
 
 public class ClientDTO extends UserDTO{
     private int penalties;
