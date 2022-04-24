@@ -4,25 +4,29 @@ import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
 import { styled } from '@mui/material/styles';
 import MuiInput from '@mui/material/Input';
-import AddingAdditionalService from '../AddingAdditionalService.js';
-import AddingRooms from '../AddingRooms.js';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
-import AddingRulesOfConduct from '../AddingRulesOfConduct.js';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import { Divider } from "@mui/material";
+import ImageUploader from "../image_uploader/ImageUploader.js";
 import { CircularProgress, NativeSelect } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
+import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
+import Autocomplete from '@mui/material/Autocomplete';
 
 import axios from "axios";
 
 import { addNewPriceListForEntityId, getPricelistByEntityId } from '../../service/Pricelists.js';
 import { getAllPlaces } from '../../service/PlaceService.js';
-import { editCottageByIdReal, getCottageById } from '../../service/CottageService.js';
+import { editCottageById, editCottageByIdReal, getCottageById } from '../../service/CottageService.js';
+import AddingRooms from '../AddingRooms.js';
+import { EditOutlined } from '@mui/icons-material';
 
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -38,218 +42,292 @@ export default function EditCottage(props) {
   const [isLoadingPlaces, setLoadingPlaces] = useState(true);
   const [cottageBasicData, setCottageBasicData] = useState({});
   const [pricelistData, setPricelistData] = useState({});
-  const [ruleConData, setRuleCon] = useState([]);
-  const [roomData, setRoom] = useState([]);
-  const [addSerData, setAddSerData] = useState([]);
   const [places, setPlaces] = useState([]);
-  const [selectedPlace, setSelectedPlace] = useState({});
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
   const history = useHistory();
-  const [error, setError] = useState({
-    cottageName: ""
-  });
-  //const urlCottagePath = "http://localhost:8092/bookingApp/cottages";
-  //const urlPricelistPath = "http://localhost:8092/bookingApp/pricelists";
 
 
-  // useEffect(() => {
-  //   console.log(props.history.location.state);
-  //   axios.get(urlCottagePath + "/" + props.history.location.state.cottageId).then(res => {
-  //     setCottageBasicData(res.data);
-  //     setCountry(res.data.place.stateName);
-  //     setLoadingCottage(false);
-  //   })
-  //   axios.get(urlPricelistPath + "/" + props.history.location.state.cottageId).then(result => {
-  //     setPricelistData(result.data);
-  //     setLoadingPricelist(false);
-  //   })
-  //   axios.get("http://localhost:8092/bookingApp/places/").then(results =>{
-  //           setPlaces(results.data);
-  //           setLoadingPlaces(false);
-  //       })
-  // }, []);
+    ////////////////IMAGES//////////////////////////////////
+    const [images, setImages] = React.useState([]);
+    const maxNumber = 69;
+    const onChange = (imageList, addUpdateIndex) => {
+        console.log(imageList, addUpdateIndex);
+        setImages(imageList);
+    };
+    const getImagesInJsonBase64 = () => {
+        if (images.length === 0) {
+            return [];
+        }
+        let retVal = [];
+        
+        for (let img of images) {
+            retVal.push({
+                imageName: img.file.name,
+                dataBase64: getBase64String(img.data_url),
+            });
+        }
+        return retVal;
+    }
+
+    const getBase64String = (data_url) => {
+        return data_url.split(";")[1].split(',')[1];
+    }
+    /////////////////////////////////////
 
 
+    //////////////////ADITIONAL SERVICES////////////////////////
+    const [additionalServices, setAdditionalServices] = React.useState([
+    ]);
+
+    const handleDeleteAdditionalServiceChip = (chipToDelete) => {
+        setAdditionalServices((chips) => chips.filter((chip) => chip.serviceName !== chipToDelete.serviceName));
+        
+    };
+
+    const handleAddAdditionalServiceChip = (data) => {
+        let sName = data.additionalService;
+        let newKey = 1;
+        if (additionalServices.length != 0) {
+            for (let chip of additionalServices) {
+                if (chip.serviceName.toLowerCase() === sName.toLowerCase())
+                    return;
+            }
+            newKey = Math.max.apply(Math, additionalServices.map(chip => chip.key)) + 1;    
+        }
+        let newAmount = data.amount;
+        let newObj = {
+            "key": newKey,
+            "serviceName": sName,
+            "price": newAmount
+        };
+        let newChipData = [...additionalServices];
+        newChipData.push(newObj);
+        setAdditionalServices(newChipData);
+    }
+
+    const getAdditionalServicesJson = () => {
+        if (additionalServices.length === 0) {
+            return []
+        }
+        let retVal = [];
+        for (let service of additionalServices) {
+            retVal.push({
+                serviceName : service.serviceName,
+                price : service.price
+            });
+        }
+        return retVal;
+    }
+    ////////////////////////////////////////////
+
+
+
+    ////////////ROOM ///////////////////////////
+    const [room, setRoom] = React.useState([
+    ]);
+
+    const handleDeleteRoomChip = (chipToDelete) => {
+        console.log(chipToDelete);
+        setRoom((chips) => chips.filter((chip) => chip.roomNum !== chipToDelete.roomNum));
+    };
+
+    const handleAddRoomChip = (data) => {
+        let rNum = data.roomNum;
+        let rNumOfBeds = data.numOfBeds;
+        let newKey = 1;
+        if (room.length != 0) {
+            for (let chip of room) {
+                if (chip.roomNum == rNum)
+                    return;
+            }
+            newKey = Math.max.apply(Math, room.map(chip => chip.key)) + 1;    
+        }
+        
+        let newObj = {
+            "key": newKey,
+            "roomNum": parseInt(rNum),
+            "numOfBeds":parseInt(rNumOfBeds)
+        };
+        let newChipData = [...room];
+        newChipData.push(newObj);
+        
+        setRoom(newChipData);
+    }
+    const getRoomsJson = () => {
+      if (room.length === 0) {
+        return []
+      }
+      let retVal = [];
+      for (let r of room) {
+          retVal.push({
+              roomNum : r.roomNum,
+              numOfBeds : r.numOfBeds, 
+              deleted:false
+          });
+      }
+      return retVal;
+    }
+    /////////////////////////////////////////////////////////////////////
+
+
+
+    ////////////////////////RULES OF CONDUCT///////////////////////////////////////
+    const [checked, setChecked] = React.useState(false);
+    const [rulesOfConduct, setRulesOfConduct] = React.useState([
+    ]);
+
+    const handleRuleCheckedChange = (event) => {
+        setChecked(event.target.checked);
+      };
+    
+    const handleDeleteRuleChip = (chipToDelete) => {
+        setRulesOfConduct((chips) => chips.filter((chip) => chip.ruleName !== chipToDelete.ruleName));
+    };
+
+    const handleAddRuleChip = (data) => {
+        let rName = data.ruleName;
+        let newKey = 1;
+        if (rulesOfConduct.length != 0) {
+            for (let chip of rulesOfConduct) {
+                if (chip.ruleName.toLowerCase() === rName.toLowerCase())
+                    return;
+            }    
+            newKey = Math.max.apply(Math, rulesOfConduct.map(chip => chip.key)) + 1;
+        }
+        let isAllowed = checked;
+
+        let newObj = {
+            "key": newKey,
+            "ruleName": rName,
+            "allowed": isAllowed
+        };
+        let newChipData = [...rulesOfConduct];
+        newChipData.push(newObj);
+        setRulesOfConduct(newChipData);
+    }
+    const getRuleNamesJson = () => {
+        if (rulesOfConduct.length === 0) {
+            return []
+        }
+        let retVal = [];
+        for (let r of rulesOfConduct) {
+            retVal.push({
+                ruleName : r.ruleName,
+                allowed : r.allowed,
+            });
+        }
+        return retVal;
+    }
+    ///////////////////////////////////////////////////////////////////////////
+
+    ///////////////// PLACES ///////////////////////////
+    
+    const [selectedPlaceZip, setSelectedPlaceZip] = useState('');
+    const [indexFirstPlace, setIndexPlace] = useState(-1);
+    let allPlacesList;
+
+    const placeOnChange = (event, newValue) => {
+        if (newValue != null && newValue != undefined && newValue != '') {
+          setSelectedPlaceZip(newValue.zip);
+        } else {
+          setSelectedPlaceZip('');
+        }
+    }
+    const getAllPlacesForTheList = () => {
+      let newArray = []
+      for (let plac of places) {
+        newArray.push({ 'label': plac.cityName + ',' + plac.zipCode + ',' + plac.stateName, 'zip': plac.zipCode });
+       
+      }
+      allPlacesList = newArray;
+  }
+  const getIndexPl = () => {
+    
+    let i = 0;
+    for (let plac of places) {
+      if (plac.zipCode==cottageBasicData.place.zipCode){
+        
+        return allPlacesList[i];
+      }
+      i++;
+    };
+    return allPlacesList[i];
+  }
+    ///////////////////////////////////////////////////
+
+    const onFormSubmit = data => {
+      const cottageRate = cottageBasicData.entityCancelationRate;
+      let zip = cottageBasicData.place.zipCode;
+      if (selectedPlaceZip != null && selectedPlaceZip != undefined && selectedPlaceZip != '') {
+          zip = selectedPlaceZip;
+      }
+      let id = cottageBasicData.id;
+      const editedCottage = {
+        cottageId: id,
+        entityCancelationRate: cottageRate,
+        name : data.name,
+        address: data.address,
+        place:{
+          stateName:"",
+          cityName:"",
+          zipCode:zip
+        },
+        promoDescription : data.promoDescription,
+        entityCancelationRate: data.entityCancelationRate, 
+        additionalServices: getAdditionalServicesJson(),
+        rooms: getRoomsJson(),
+        rulesOfConduct: getRuleNamesJson(),
+        images: getImagesInJsonBase64(),
+    } 
+    editedCottage.entityCancelationRate = cottageRate;
+    let newPricelistData = pricelistData;
+    newPricelistData.entityPricePerPerson =  parseInt(data.costPerNight);
+    newPricelistData.additionalServices = getAdditionalServicesJson();
+    setPricelistData(newPricelistData);
+    editCottageByIdReal(cottageBasicData.id, editedCottage).then(result => {
+      
+      addNewPriceListForEntityId(cottageBasicData.id, pricelistData).then(result => {
+        history.push({
+          pathname: "/showCottageProfile",
+          state: { cottageId: cottageBasicData.id } 
+        })
+    }).catch(res=>{
+        console.log("Greska!!");
+        return;
+    })    
+  })
+      
+  }
   useEffect(() => {
     getCottageById(props.history.location.state.cottageId).then(res => {
       setCottageBasicData(res.data);
-      setCountry(res.data.place.stateName);
+      setRoom(res.data.rooms);
+      setRulesOfConduct(res.data.rulesOfConduct);
       setLoadingCottage(false);
     })
     getPricelistByEntityId(props.history.location.state.cottageId).then(result => {
       setPricelistData(result.data);
+      setAdditionalServices(result.data.additionalServices);
       setLoadingPricelist(false);
     })
+    
     getAllPlaces().then(results => {
+      
       setPlaces(results.data);
-      setLoadingPlaces(false);
+        setLoadingPlaces(false);
+      
     })
   }, []);
 
-
-
-  const getRuleCon = (ruleCon) => {
-    let newRulesCond = [];
-    for (let obj of ruleCon) {
-      let tokens = obj.label.split(":");
-      let newRulCon = {
-        ruleName: tokens[0],
-        allowed: tokens[1]
-      }
-      newRulesCond.push(newRulCon);
-    }
-    setRuleCon(newRulesCond);
-  };
-
-  const getRooms = (rooms) => {
-    let newRooms = [];
-    for (let obj of rooms) {
-      let tokens = obj.label.split(":");
-      let valueRoomNum = parseFloat(tokens[0]);
-      if (isNaN(valueRoomNum)) { alert("Samo broj sme."); return; }
-      let valueNumOfBeds = parseFloat(tokens[1]);
-      if (isNaN(valueNumOfBeds)) { alert("Samo broj sme."); return; }
-      let newRoom = {
-        roomNum: valueRoomNum,
-        numOfBeds: valueNumOfBeds
-      }
-      newRooms.push(newRoom);
-    }
-    setRoom(newRooms);
-  };
-
-  const getAddSer = (services) => {
-    let newServices = [];
-    for (let obj of services) {
-      let tokens = obj.label.split(":");
-      let valuePrice = parseFloat(tokens[1]);
-      if (valuePrice === NaN) { alert("Samo broj sme."); return; }
-      let newAddS = {
-
-        price: valuePrice,
-        serviceName: tokens[0]
-      }
-      newServices.push(newAddS);
-    }
-    setAddSerData(newServices);
-  };
-
+  //rate/////
+  const [rate, setRate] = React.useState();
   const handleInputChange = (event) => {
     let newData = cottageBasicData;
     newData.entityCancelationRate = event.target.value === '' ? '' : Number(event.target.value);
     setCottageBasicData(newData);
+    setRate(parseFloat(event.target.value));
+    
   };
-
-  const handleBlur = () => {
-    if (cottageBasicData.entityCancelationRate < 0) {
-      let newData = cottageBasicData;
-      newData.entityCancelationRate = 0;
-      setCottageBasicData(newData);
-    } else if (cottageBasicData.entityCancelationRate > 50) {
-      let newData = cottageBasicData;
-      newData.entityCancelationRate = 50;
-      setCottageBasicData(newData);
-    }
-  };
-  useEffect(() => {
-    setCottageBasicData(prevState => ({
-      ...prevState,
-      place: selectedPlace
-    }));
-  }, [selectedPlace])
-
-  useEffect(() => {
-    console.log(places);
-    let countryPlace = places.find(function (element) {
-      let someCityInCountry = element.stateName.localeCompare(country) === 0;
-      if (city)
-        return someCityInCountry && element.cityName.localeCompare(city) === 0;
-      else
-        return someCityInCountry;
-    })
-
-    setSelectedPlace(countryPlace);
-  }, [country, city])
-
-  useEffect(() => {
-    setCottageBasicData(prevState => ({
-      ...prevState,
-      place: selectedPlace
-    }));
-  }, [city])
-
-
-  const countryChanged = (event) => {
-    setCountry(event.target.value);
-  }
-
-  const cityChanged = (event) => {
-    setCity(event.target.value);
-  };
-
-  const saveChanges = () => {
-    let newData = cottageBasicData;
-    newData.rulesOfConduct = ruleConData;
-    newData.rooms = roomData;
-    newData.additionalServices = addSerData;
-    let newPricelistData = pricelistData;
-    newPricelistData.additionalServices = addSerData;
-    if (cottageBasicData.entityCancelationRate < 0) {
-      newData.entityCancelationRate = 0;
-    } else if (cottageBasicData.entityCancelationRate > 50) {
-      newData.entityCancelationRate = 50;
-    }
-    setCottageBasicData(newData);
-    setPricelistData(newPricelistData);
-    console.log(cottageBasicData.name.length);
-    if (cottageBasicData.name.length > 255) {
-      let err = error;
-      err.cottageName = "Max length is 255 characters!";
-      setError(err);
-      return;
-    }
-    console.log("Poslednja provera.");
-    console.log(cottageBasicData);
-    console.log(pricelistData);
-
-
-
-    //   axios.put(urlCottagePath, cottageBasicData).then(result => {
-
-    //         axios.post(urlPricelistPath + "/" + cottageBasicData.id, pricelistData).then(result => {
-    //           history.push({
-    //             pathname: "/showCottageProfile",
-    //             state: { cottageId: cottageBasicData.id } 
-    //   }).catch(result=>{
-    //               console.log("Greska!!");
-    //               return;
-    //         })
-    //       }).catch(res=>{
-    //           console.log("Greska!!");
-    //           return;
-    //       })    
-
-    // })
-
-    editCottageByIdReal(cottageBasicData).then(result => {
-
-      addNewPriceListForEntityId(cottageBasicData.id, pricelistData).then(result => {
-        history.push({
-          pathname: "/showCottageProfile",
-          state: { cottageId: cottageBasicData.id }
-        }).catch(result => {
-          console.log("Greska!!");
-          return;
-        })
-      }).catch(res => {
-        console.log("Greska!!");
-        return;
-      })
-    })
-
-  };
-
+ 
   function refreshPage() {
     window.location.reload(false);
   }
@@ -258,21 +336,24 @@ export default function EditCottage(props) {
 
   return (
     <div style={{ backgroundColor: 'aliceblue', margin: '5%', padding: '1%', borderRadius: '10px', height: '100%' }} >
-      <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '42%', padding: '1%', borderRadius: '10px', width: '15%' }} >
+      {getAllPlacesForTheList()}
+      <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '15%', padding: '1%', borderRadius: '10px', width: '15%' }} >
         Edit Cottage
       </div>
-      <Box sx={{ marginTop: '1%', marginLeft: '5%', marginRight: '5%', width: '90%' }}>
+      
+      <h4 style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', marginLeft:"15%" }}>Basic Information About Cottage</h4>
+         
+      <Box sx={{ marginTop: '1%', marginLeft: '11%', marginRight: '5%', width: '90%' }}
+      component="form"
+      onSubmit={handleSubmit(onFormSubmit)}>
         <Box
-          component="form"
           sx={{
             '& .MuiTextField-root': { m: 1, width: '28ch' },
           }}
-          noValidate
-          autoComplete="off"
+          style={{ display: "flex", flexDirection: "row"}}
         >
-
-          <h4 style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold' }}>Basic Information About Cottage</h4>
-          <div style={{ display: 'block', color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(191, 230, 255)', margin: '1%', padding: '1%', borderRadius: '10px', width: '100%', height: '100%' }} >
+          
+          <div style={{  display: "flex", flexDirection: "row", color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'left', backgroundColor: 'rgb(191, 230, 255)', marginLeft: '4%', padding: '1%', borderRadius: '10px', width: '30%', height: '100%', minWidth:"320px" }} >
             <table>
               <tr>
                 <td>
@@ -280,6 +361,7 @@ export default function EditCottage(props) {
                     id="outlined-textarea"
                     label="Cottage Name"
                     placeholder="Cottage Name"
+                    name="name"
                     defaultValue={cottageBasicData.name}
                     onChange={e => {
                       let data = cottageBasicData;
@@ -288,16 +370,69 @@ export default function EditCottage(props) {
                     }}
                     multiline
                     size="small"
+                    {...register("name", { required: true, maxLength: 50 })}
                     style={{ width: '200px' }}
                   />
-                  <div onChange={setError} style={{ color: "red", fontSize: "10px" }}>{error.cottageName}</div>
+                   
+                 </td>      
+              </tr>
+              <tr><td>{errors.name && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check name: maxLength 50</p>}</td></tr>
+              <tr>
+                <td>
+                    <TextField
+                      id="outlined-textarea"
+                      label="Address"
+                      placeholder="Address"
+                      multiline
+                      defaultValue={cottageBasicData.address}
+                      name="address"
+                      onChange={e => {
+                        let dataAdd = cottageBasicData;
+                        dataAdd.address = e.target.value;
+                        setCottageBasicData(dataAdd);
+                      }}
+                      size="small"
+                      {...register("address", { required: true, maxLength: 50 })}
+                      style={{ width: '200px' }}
+                    />
+                  
+                  </td>
+              </tr>
+              <tr><td> {errors.address && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check address: maxLength 50</p>}</td></tr>
+              <tr>
+              <td>
+                <Grid item>
+                    <Autocomplete
+                        disablePortal
+                        id="place"
+                        size="small"
+                        name="place"
+                        value={getIndexPl()}
+                        options={allPlacesList}
+                        selectedPlaceZip={cottageBasicData.place.zipCode}
+                        onChange={placeOnChange}
+                        renderInput={(params) => <TextField {...params} label="Place" />}
+                    />
+                    </Grid>
                 </td>
+                </tr>
+            </table>
+          </div>
+          
+          
+          
+          
+          <div style={{ display: 'block', color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'left', backgroundColor: 'rgb(191, 230, 255)', marginLeft: '4%', marginBottom:"1%",padding: '1%', borderRadius: '10px', width: '40%', height: '100%', minWidth:"300px" }} >
+            <table>
+              <tr>
                 <td>
                   <FormControl sx={{ m: 1 }}>
                     <InputLabel htmlFor="outlined-adornment-amount">Cost Per Night</InputLabel>
                     <OutlinedInput
                       id="outlined-adornment-amount"
                       size="small"
+                      name="costPerNight"
+                      type="number"
                       defaultValue={pricelistData.entityPricePerPerson}
                       onChange={e => {
                         let data = pricelistData;
@@ -311,72 +446,22 @@ export default function EditCottage(props) {
                       placeholder="Cost Per Night"
                       startAdornment={<InputAdornment position="start">€</InputAdornment>}
                       label="Cost Per Night"
+                      {...register("costPerNight", { required: true, min: 1, max: 100000 })}
                     />
                   </FormControl>
-                </td>
-                <td>
-                  <TextField
-                    id="outlined-textarea"
-                    label="Address"
-                    placeholder="Address"
-                    multiline
-                    defaultValue={cottageBasicData.address}
-                    onChange={e => {
-                      let dataAdd = cottageBasicData;
-                      dataAdd.address = e.target.value;
-                      setCottageBasicData(dataAdd);
-                    }}
-                    size="small"
-                    style={{ width: '200px' }}
-                  />
-                </td>
-                <td>
-                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                    Country
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={cottageBasicData.place.stateName}
-                    onChange={countryChanged}
-                    inputProps={{
-                      name: 'Country',
-                      id: 'uncontrolled-native',
-                    }}
-                  >
-                    {places.map((place) => (
-                      <option value={place.stateName}>{place.stateName}</option>
-                    ))}
-                  </NativeSelect>
-                </td>
-
-              </tr>
+                  
+                  </td>
+                </tr>
+                <tr>{errors.costPerNight && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check cost per night between 1-100000€</p>}</tr>
+               
+              
               <tr>
-                <td>
-
-                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                    City
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={cottageBasicData.place.cityName}
-                    onChange={cityChanged}
-                    inputProps={{
-                      name: 'city',
-                      id: 'uncontrolled-native',
-                    }}
-                  >
-                    {places.map(place => {
-                      if (place.stateName === country)
-                        return <option value={place.cityName}>{place.cityName}</option>
-                      return <></>
-                    }
-                    )}
-                  </NativeSelect>
-                </td>
-
                 <td>
                   <TextField
                     size="small"
                     id="outlined-multiline-static"
                     label="Promo Description"
+                    name="promoDescription"
                     multiline
                     rows={2}
                     onChange={e => {
@@ -386,22 +471,33 @@ export default function EditCottage(props) {
                     }}
                     defaultValue={cottageBasicData.promoDescription}
                     placeholder="Promo Description"
+                    {...register("promoDescription", { maxLength: 250 })}
                     style={{ width: '200px' }}
                   />
                 </td>
+                </tr>
+                <tr> {errors.promoDescription && <p style={{ color: '#ED6663', fontSize:"10px" }}>Max num of characters is 250.</p>}
+                 </tr>
+                <tr>
                 <td>
-                  <Box sx={{ width: 250 }}>
                     <Typography id="input-slider" gutterBottom>
                       Cancelation Rate
                     </Typography>
-                    <Grid container alignItems="center" style={{ width: '200px', marginLeft: '24%' }}>
-
-                      <Grid item>
                         <Input
                           defaultValue={cottageBasicData.entityCancelationRate}
                           size="small"
-                          onChange={handleInputChange}
-                          onBlur={handleBlur}
+                          onChange={e => {
+                            let data = cottageBasicData;
+                            let cost = parseFloat(e.target.value);
+                            if (cost === NaN) alert("Greska");
+                            else {
+                              data.entityCancelationRate = cost;
+                            }
+                            setCottageBasicData(data);
+                          
+                          }}
+                          type="number"
+                          name="entityCancelationRate"
                           inputProps={{
                             step: 1,
                             min: 0,
@@ -410,28 +506,31 @@ export default function EditCottage(props) {
                             'aria-labelledby': 'input-slider',
                           }}
                         />
-                      </Grid>
-                    </Grid>
-                  </Box>
                 </td>
+              </tr>
+              <tr>
+                <td><br />
+                <Divider />
+            <br />
+            <ImageUploader images={images} maxNumber={maxNumber} onChange={onChange} />
+            <br /></td>
               </tr>
             </table>
 
           </div>
+          
         </Box>
       </Box>
-
       <Box style={{ display: "flex", flexDirection: "row" }}>
-        <AddingAdditionalService float="left" onClick={getAddSer} onDelete={getAddSer} services={pricelistData.additionalServices} />
-
-        <AddingRooms float="left" onClick={getRooms} onDelete={getRooms} rooms={cottageBasicData.rooms} />
-        <AddingRulesOfConduct float="left" onClick={getRuleCon} onDelete={getRuleCon} rules={cottageBasicData.rulesOfConduct} />
+                    <AddingAdditionalServiceAdventure data={additionalServices} onDeleteChip={handleDeleteAdditionalServiceChip} onSubmit={handleAddAdditionalServiceChip} float="left" />
+                    <AddingRooms data={room} onDeleteChip={handleDeleteRoomChip} onSubmit={handleAddRoomChip} float="left" />
+                    <AddingRulesOfConductAdventure data={rulesOfConduct} onDeleteChip={handleDeleteRuleChip} onSubmit={handleAddRuleChip} ruleChecked={checked} handleRuleCheckedChange={handleRuleCheckedChange} float="left" />
       </Box>
 
       <Box style={{ display: "flex", flexDirection: "row" }}>
-        <Button onClick={saveChanges} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '36%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
-          Save Changes
-        </Button>
+      <Button type="submit" onClick={handleSubmit(onFormSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+          Save
+      </Button>
         <Button variant="contained" onClick={refreshPage} style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
           Reset
         </Button>

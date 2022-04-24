@@ -22,6 +22,6 @@ export function deleteCottageById(id, password) {
     return api.delete('/cottages/' + id + '/' + password);
 }
 
-export function editCottageByIdReal(editedCottage) {
-    return api.put('/cottages', editedCottage);
+export function editCottageByIdReal(id, editedCottage) {
+    return api.put('/cottages/' + id, editedCottage);
 }

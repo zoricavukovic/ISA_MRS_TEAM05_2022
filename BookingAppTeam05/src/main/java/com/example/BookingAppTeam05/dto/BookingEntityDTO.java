@@ -70,7 +70,7 @@ public class BookingEntityDTO {
     }
 
     public float getEntityCancelationRate() {
-        return entityCancelationRate;
+        return this.entityCancelationRate;
     }
 
     public void setEntityCancelationRate(float entityCancelationRate) {
