@@ -7,7 +7,7 @@ function ShowCottageProfile(props) {
       
     return (
         <div>
-            <ImageCard cottageId = {props.history.location.state.cottageId}/>
+            <ImageCard cottageId = {props.history.location.state.bookingEntityId}/>
         </div>
     );
 }

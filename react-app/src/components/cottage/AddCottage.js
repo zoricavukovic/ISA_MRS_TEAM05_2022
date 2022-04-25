@@ -481,7 +481,7 @@ export default function AddCottage(props) {
                 <td><br />
                 <Divider />
             <br />
-            <ImageUploader images={images} maxNumber={maxNumber} onChange={onChange} />
+            <ImageUploader style={{maxWidth:"10px"}} images={images} maxNumber={maxNumber} onChange={onChange} />
             <br /></td>
               </tr>
             </table>
