@@ -42,7 +42,7 @@ export default function ImgMediaCard(props) {
       setOpen(false);
     };
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (event) => {
       setOpenDialog(true);
     };
   
@@ -51,41 +51,25 @@ export default function ImgMediaCard(props) {
     };
 
     const [pricelist, setPricelist] = useState([]);
-    function showCottage(){
+    function showBookingEntity(){
+      console.log(props.bookingEntityId);
         history.push({
             pathname: "/showCottageProfile",
-            state: { cottageId: props.cottage.id } //OVDE SE MENJA ID
+            state: { bookingEntityId: props.bookingEntityId }
         })
     };
     useEffect(() => {
-        // axios.get("http://localhost:8092/bookingApp/pricelists/" + props.bookingEntityId).then(res => {
-        //     setPricelist(res.data);
-        // });
       getPricelistByEntityId(props.bookingEntityId).then(res => {
             setPricelist(res.data);
         }); 
 
     }, [])
-    const logicDeleteCottage = (event) => {
-      // axios.delete("http://localhost:8092/bookingApp/cottages/" + props.bookingEntityId + "/" + password).then(res => {
-      //   setPassword("");
-      //   handleClick();
-      //   setTypeAlert("success");
-      //   setMessage("Successfully delete cottage " + props.cottage.name);
-      //   window.location.reload();
-        
-      //   }).catch(res=>{
-      //     setTypeAlert("error");
-      //     setMessage(res.response.data);
-      //     handleClick();
-      //     return;
-      //   })    
-      //   setOpenDialog(false);
+    const logicDeleteBookingEntity = (event) => {
       deleteCottageById(props.bookingEntityId, password).then(res => {
         setPassword("");
         handleClick();
         setTypeAlert("success");
-        setMessage("Successfully delete cottage " + props.cottage.name);
+        setMessage("Successfully delete entity " + props.bookingEntity.name);
         window.location.reload();
         }).catch(res=>{
           setPassword("");
@@ -99,12 +83,12 @@ export default function ImgMediaCard(props) {
 
 
   return (
-    <Card style={{margin:"2%"}} sx={{ maxWidth: 345 }}>
+    <Card  style={{margin:"2%"}} sx={{ maxWidth: 345 }}>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirm Deleting</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To delete this cottage, please enter your password for security reasons.
+            To delete this entity, please enter your password for security reasons.
           </DialogContentText>
           <TextField
             autoFocus
@@ -122,7 +106,7 @@ export default function ImgMediaCard(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={logicDeleteCottage}>Confirm</Button>
+          <Button onClick={logicDeleteBookingEntity}>Confirm</Button>
         </DialogActions>
       </Dialog>
       <CardMedia
@@ -133,23 +117,33 @@ export default function ImgMediaCard(props) {
       />
       <CardContent>
         <Typography style={{textAlign:"left"}} gutterBottom variant="h5" component="div">
-          {props.cottage.name}
+          {props.bookingEntity.name}
         </Typography>
         <Typography style={{textAlign:"left"}} gutterBottom variant="h7" component="div">
-        <text style={{backgroundColor:"aliceblue"}}>Location:</text> {props.cottage.address}, {props.cottage.place.cityName} {props.cottage.place.zipCode}, {props.cottage.place.stateName}
+        <text style={{backgroundColor:"aliceblue"}}>Location:</text> {props.bookingEntity.address}, {props.bookingEntity.place.cityName} {props.bookingEntity.place.zipCode}, {props.bookingEntity.place.stateName}
         </Typography>
+        
         <Typography style={{textAlign:"left"}} gutterBottom variant="h7" component="div">
-          <text style={{backgroundColor:"aliceblue"}}>Cost Per Night:</text> {pricelist.entityPricePerPerson} €
-        </Typography>
+        {props.bookingEntity.entityType === "COTTAGE" ? (
+          <div>
+              <text style={{backgroundColor:"aliceblue"}}>Cost Per Night:</text> {pricelist.entityPricePerPerson} € 
+          </div>
+           
+          ):(<div>
+            <text style={{backgroundColor:"aliceblue"}}>Cost Per Person:</text> {pricelist.entityPricePerPerson} € 
+          
+          </div>)}
+         </Typography>
         <Typography style={{textAlign:"left"}} gutterBottom variant="h7" component="div">
           <RatingEntity value="2"></RatingEntity>
         </Typography>
         <Typography style={{textAlign:"left"}} variant="body2" color="text.secondary">
-            {props.cottage.promoDescription}
+            {props.bookingEntity.promoDescription}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={showCottage}><ReadMoreIcon fontSize="large" style={{margin:"5px"}}/> Details</Button>
+        <Button size="small" onClick={showBookingEntity}><ReadMoreIcon fontSize="large" style={{margin:"5px"}}/> Details</Button>
+        
         <Button size="small" onClick={handleClickOpen}><DeleteIcon/>Delete</Button>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>

@@ -5,6 +5,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 public class NewAdditionalServiceDTO {
+
+    private Long id;
+
     @NotBlank
     private String serviceName;
 
@@ -13,6 +16,16 @@ public class NewAdditionalServiceDTO {
     private double price;
 
     public NewAdditionalServiceDTO() {}
+
+    public NewAdditionalServiceDTO(Long id, String serviceName, double price) {
+        this.id = id;
+        this.serviceName = serviceName;
+        this.price = price;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public String getServiceName() {
         return serviceName;

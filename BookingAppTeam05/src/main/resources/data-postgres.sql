@@ -204,8 +204,8 @@ VALUES
 INSERT INTO additional_services (price,service_name,price_list_id)
 VALUES
 (13,'food bar',1),
-(59,'drink bar',1),
-(65,'jacuzzi',1),
+(59,'drink bar',2),
+(65,'jacuzzi',2),
 (33,'air condition',4),
 (50,'add service',4);
 
@@ -274,7 +274,11 @@ VALUES
     ('2022-05-01 7:00 pm',26,3,1,7,'False','True'),
     ('2022-04-24 7:00 pm',4,3,1,7,'False','False');
 
-
+INSERT INTO public.reservation_additional_service(reservation_id, additional_service_id)
+VALUES
+       (1, 2),
+       (1,3),
+       (2,3);
 
 
 --- dodavanje slika za avanturu

@@ -1,21 +1,42 @@
 package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.model.Reservation;
+import com.example.BookingAppTeam05.model.entities.Cottage;
+import com.example.BookingAppTeam05.repository.CottageRepository;
 import com.example.BookingAppTeam05.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ReservationService {
 
     private ReservationRepository reservationRepository;
+    private CottageRepository cottageRepository;
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository){
+    public ReservationService(ReservationRepository reservationRepository, CottageRepository cottageRepository){
         this.reservationRepository = reservationRepository;
+        this.cottageRepository = cottageRepository;
     }
 
     public List<Reservation> findAllActiveReservationsForCottage(Long cottageId){return reservationRepository.findAllActiveReservationsForCottage(cottageId);}
+
+    public List<Reservation> getReservationsByCottageOwnerId(Long ownerId) {
+        List<Cottage> cottages = cottageRepository.getCottagesByOwnerId(ownerId);
+        List<Reservation> reservations = new ArrayList<>();
+        for (Cottage cottage: cottages){
+            List<Reservation> reservationsByCottageId = getReservationsByCottageId(cottage.getId());
+            for (Reservation reservation: reservationsByCottageId){
+                reservation.setBookingEntity(cottage);
+                reservations.add(reservation);
+            }
+        }
+        return reservations;
+    }
+
+    public List<Reservation> getReservationsByCottageId(Long cottageId){return reservationRepository.getReservationsByCottageId(cottageId);}
+
 }

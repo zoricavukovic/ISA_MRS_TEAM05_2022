@@ -12,7 +12,7 @@ import java.util.*;
 public class Reservation {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private int id;
+   private Long id;
 
    @Column(name="startDate", nullable = false)
    private LocalDateTime startDate;
@@ -54,7 +54,7 @@ public class Reservation {
       this.numOfDays = numOfDays;
    }
 
-   public int getId() {
+   public Long getId() {
       return id;
    }
 

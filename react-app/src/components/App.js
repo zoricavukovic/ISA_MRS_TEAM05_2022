@@ -13,6 +13,9 @@ import AdventureProfile from './adventures/AdventureProfile';
 import showCottages from "./ShowCottages";
 import AddAdventure from './adventures/AddAdventure';
 import AllBoats from "./AllBoats";
+import ShowReservationsOwner from "./reservations/ShowReservationsOwner.js";
+import ShowReservationsDetails from "./reservations/ReservationDetails";
+
 
 function App() {
     return (
@@ -29,8 +32,8 @@ function App() {
                     <Route path="/showCottages" component={showCottages} />
                     <Route path="/showCottagesOwner" component={ShowCottagesCottageOwner} />
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
-
-
+                    <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
+                    <Route path="/showReservationDetails" component={ShowReservationsDetails} />
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />
 
