@@ -5,9 +5,9 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import axios from "axios";
 import Autocomplete from '@mui/material/Autocomplete';
-import AddingAdditionalServiceAdventure from "./AddingAdditionalServiceAdventure.js";
-import AddingEquipmentAdventure from "./AddingEquipmentAdventure.js";
-import AddingRulesOfConductAdventure from "./AddingRulesOfConductAdventure.js";
+import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
+import AddingEquipmentAdventure from "../AddingEquipment.js";
+import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
@@ -319,7 +319,7 @@ export default function AddAdventure() {
                             {...register("address", { required: true, maxLength: 50 })}
                         />
                     </Grid>
-                    {errors.name && <p style={{ color: '#ED6663' }}>Please check the address name</p>}
+                    {errors.name && <p style={{ color: '#ED6663' }}>Please check the address</p>}
                     <Grid item xs={12} sm={12}>
                         <Autocomplete
                             disablePortal
