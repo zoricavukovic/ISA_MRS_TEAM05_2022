@@ -64,4 +64,23 @@ public class AdventureController {
         }
         return new ResponseEntity<>(newAdventure.getId().toString(), HttpStatus.OK);
     }
+
+    @Transactional
+    @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> editAdventure(@RequestBody NewAdventureDTO newAdventureDTO, @PathVariable Long id) {
+        Place place = placeService.getPlaceById(newAdventureDTO.getPlaceId());
+        if (place == null) {
+            return new ResponseEntity<>("Cant find place with id: " + newAdventureDTO.getPlaceId(), HttpStatus.BAD_REQUEST);
+        }
+        Instructor instructor = instructorService.findById(newAdventureDTO.getInstructorId());
+        if (instructor == null) {
+            return new ResponseEntity<>("Cant find instructor with id: " + newAdventureDTO.getInstructorId(), HttpStatus.BAD_REQUEST);
+        }
+        Adventure adventure = adventureService.getAdventureById(id);
+        if (adventure == null) {
+            return new ResponseEntity<>("Cant find adventure with id: " + id, HttpStatus.BAD_REQUEST);
+        }
+        Adventure updated = adventureService.editAdventureById(id, newAdventureDTO, place);
+        return new ResponseEntity<>("entity changed", HttpStatus.OK);
+    }
 }

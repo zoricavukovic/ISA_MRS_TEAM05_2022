@@ -12,7 +12,9 @@ import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom
 import AdventureProfile from './adventures/AdventureProfile';
 import showCottages from "./ShowCottages";
 import AddAdventure from './adventures/AddAdventure';
+
 import AllBoats from "./AllBoats";
+import EditAdventure from './adventures/EditAdventure';
 
 function App() {
     return (
@@ -28,12 +30,9 @@ function App() {
                     <Route path="/editCottage" component={EditCottage} />
                     <Route path="/showCottages" component={showCottages} />
                     <Route path="/showCottagesOwner" component={ShowCottagesCottageOwner} />
-                    <Route path="/showAdventureProfile" component={AdventureProfile} />
-
-
-                    <Route path="/showAdventureProfile" component={AdventureProfile} />
+                    <Route path="/showAdventureProfile/:adventureId" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />
-
+                    <Route path="/editAdventure/:adventureId" component={EditAdventure} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>

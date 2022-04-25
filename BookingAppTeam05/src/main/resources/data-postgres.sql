@@ -222,9 +222,15 @@ VALUES
 ('True','Children policies',3),
 ('False','Weed',3),
 ('True','Smoking',2),
-('True','Parties',1);
+('True','Parties',1),
+('True','rule1',11),
+('False','rule2',11),
+('True','rule3',11);
 
 
+
+INSERT INTO adventure_fishing_equipment(adventure_entity_id, fishing_equipment_id) VALUES (11, 1);
+INSERT INTO adventure_fishing_equipment(adventure_entity_id, fishing_equipment_id) VALUES (11, 2);
 
 
 -- pricelists for adventures  8 - 14
@@ -241,6 +247,8 @@ VALUES
 INSERT INTO additional_services (price,service_name,price_list_id)
 VALUES
 (13,'food bar',8),
+(32,'add serv2',8),
+(50,'add serv3',8),
 (59,'drink bar',9),
 (65,'add 1',10),
 (33,'air condition',11);

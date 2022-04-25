@@ -1,15 +1,18 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.dto.NewAdventureDTO;
+import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.repository.AdventureRepository;
+import org.apache.tomcat.util.digester.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
-
+import java.util.List;
 @Service
 public class AdventureService {
     private AdventureRepository adventureRepository;
@@ -55,9 +58,121 @@ public class AdventureService {
             adventure.setPictures(createdPictures);
         }
 
-        Pricelist createNewPricelist = pricelistService.createPrilistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerNight());
+        Pricelist createNewPricelist = pricelistService.createPrilistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
         adventure.addPriceList(createNewPricelist);
         adventure = adventureRepository.save(adventure);
         return adventure;
     }
+
+    public Adventure editAdventureById(Long id, NewAdventureDTO newAdventureDTO, Place place) {
+        Adventure existingAdventure = adventureRepository.getAdventureById(id);
+        existingAdventure.setName(newAdventureDTO.getName());
+        existingAdventure.setAddress(newAdventureDTO.getAddress());
+        existingAdventure.setMaxNumOfPersons(newAdventureDTO.getMaxNumOfPersons());
+        existingAdventure.setShortBio(newAdventureDTO.getShortBio());
+        existingAdventure.setEntityCancelationRate(newAdventureDTO.getEntityCancelationRate());
+        existingAdventure.setPromoDescription(newAdventureDTO.getPromoDescription());
+
+        updateRulesOfConductForAdventure(existingAdventure, newAdventureDTO.getRulesOfConduct());
+        Set<FishingEquipment> fishingEquipment = fishingEquipmentService.createEquipmentFromDTOArray(newAdventureDTO.getFishingEquipment());
+        existingAdventure.setFishingEquipment(fishingEquipment);
+        setNewPricelistIfNeeded(existingAdventure, newAdventureDTO);
+        setNewImages(existingAdventure, newAdventureDTO.getImages());
+
+        existingAdventure = adventureRepository.save(existingAdventure);
+        return existingAdventure;
+    }
+
+    private void setNewImages(Adventure existingAdventure, List<NewImageDTO> images) {
+        Set<Picture> pictures = new HashSet<>();
+
+        for (Picture currentPicture : existingAdventure.getPictures()) {
+            boolean found = false;
+            for (NewImageDTO newImage : images) {
+                if (newImage.getImageName().equals(currentPicture.getPicturePath())) {
+                    found = true;
+                    pictures.add(currentPicture);
+                    break;
+                }
+            }
+            if (!found) {
+                pictureService.deletePictureByName(currentPicture.getPicturePath());
+            }
+        }
+        for (NewImageDTO newImage : images) {
+            boolean found = false;
+            for (Picture picture : pictures) {
+                if (picture.getPicturePath().equals(newImage.getImageName())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                pictureService.tryToSaveNewPictureAndAddToOtherPictures(pictures, newImage);
+            }
+        }
+        existingAdventure.setPictures(pictures);
+
+    }
+
+    private void setNewPricelistIfNeeded(Adventure adventure, NewAdventureDTO newAdventureDTO) {
+        Pricelist pricelist = pricelistService.getCurrentPricelistForEntityId(adventure.getId());
+        double newCostPerPerson = newAdventureDTO.getCostPerPerson();
+        Pricelist createNewPricelist = null;
+        if (pricelist.getEntityPricePerPerson() != newCostPerPerson) {
+            createNewPricelist = pricelistService.createPrilistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
+            adventure.addPriceList(createNewPricelist);
+            return;
+        }
+        for (AdditionalService currService : pricelist.getAdditionalServices()) {
+            boolean found = false;
+            for (NewAdditionalServiceDTO newService : newAdventureDTO.getAdditionalServices()) {
+                if (newService.getServiceName().equals(currService.getServiceName()) &&
+                        newService.getPrice() == currService.getPrice()) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                createNewPricelist = pricelistService.createPrilistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
+                adventure.addPriceList(createNewPricelist);
+                return;
+            }
+        }
+    }
+
+    private void updateRulesOfConductForAdventure(Adventure adventure, List<NewRuleOfConductDTO> newRules) {
+        Set<RuleOfConduct> updatedRules = new HashSet<>();
+
+        for (RuleOfConduct oldRule: adventure.getRulesOfConduct()) {
+            boolean found = false;
+            for (NewRuleOfConductDTO newRule: newRules) {
+                if (newRule.getRuleName().equals(oldRule.getRuleName())) {
+                    if (newRule.getAllowed() != oldRule.isAllowed()) {
+                        ruleOfConductService.updateAllowedRuleById(oldRule.getId(), !oldRule.isAllowed());
+                        oldRule.setAllowed(newRule.getAllowed());
+                    }
+                    updatedRules.add(oldRule);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                ruleOfConductService.deleteRuleById(oldRule.getId());
+            }
+        }
+
+        for (NewRuleOfConductDTO newRule: newRules){
+            boolean found = false;
+            for (RuleOfConduct addedRule: updatedRules ){
+                if (newRule.getRuleName().equals(addedRule.getRuleName())){
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) { updatedRules.add(new RuleOfConduct(newRule.getRuleName(), newRule.getAllowed())); }
+        }
+        adventure.setRulesOfConduct(updatedRules);
+    }
+
 }

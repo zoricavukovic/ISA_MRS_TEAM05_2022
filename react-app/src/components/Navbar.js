@@ -71,10 +71,7 @@ const Navbar = () => {
   };
   const showAdventureProfile = (event) => {
     event.preventDefault();
-    history.push({
-      pathname: "/showAdventureProfile",
-      state: { adventureId: 11 } //OVDE SE MENJA ID
-    })
+    history.push("/showAdventureProfile/11");
   };
 
   return (
