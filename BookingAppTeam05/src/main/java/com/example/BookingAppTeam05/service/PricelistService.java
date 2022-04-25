@@ -25,6 +25,10 @@ public class PricelistService {
         return pricelistRepository.getCurrentPricelistByBookingEntityId(id);
     }
 
+    public Pricelist getCurrentPricelistForEntityId(Long id) {
+        return pricelistRepository.getCurrentPricelistByBookingEntityId(id).get(0);
+    }
+
     public Pricelist save(Pricelist pricelist) {
         return pricelistRepository.save(pricelist);
 

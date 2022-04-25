@@ -23,7 +23,7 @@ import { styled } from "@mui/material/styles";
 import ImageSlider from "../image_slider/ImageSlider";
 import { getAdventureById } from "../../service/AdventureService";
 import { getPricelistByEntityId } from "../../service/Pricelists";
-
+import { useParams } from "react-router-dom";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -47,7 +47,7 @@ function AdventureBasicInfo(props) {
                 <h4>Short Bio: </h4><h3>{props.adventureData.shortBio} </h3>
             </Typography>
             <Typography variant="body2" color="text.secondary" style={{ width: 'fit', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '5px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%' }}>
-                <h4>Cost Per Night: {props.adventureData.entityPricePerPerson} € </h4>
+                <h4>Cost Per Night: {props.pricelistData.entityPricePerPerson} € </h4>
                 <RatingEntity value='3' />
             </Typography>
         </CardContent>
@@ -115,11 +115,10 @@ function RenderFishingEquipment(props) {
 }
 
 function AdventureActions(props) {
-    const history = useHistory();
 
     const editAdventure = (event) => {
         event.preventDefault();
-        history.push("./editAdventure");
+        props.history.push("/editAdventure/" + props.adventureId);
     };
 
     return (
@@ -154,13 +153,15 @@ export default function AdventureProfile(props) {
     const [isLoading, setLoading] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
 
-    const adventureId = props.history.location.state.adventureId;
+    const { adventureId } = useParams();
+    const history = useHistory();
     const urlPicturePath = "http://localhost:8092/bookingApp/pictures/";
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
+    
     useEffect(() => {
         getAdventureById(adventureId).then(res => {
             setAdventureData(res.data);
@@ -185,11 +186,13 @@ export default function AdventureProfile(props) {
                     subheader={adventureData.address + ", " + adventureData.place.cityName + ", " + adventureData.place.zipCode + ", " + adventureData.place.stateName}
                 />
                 <AdventureActions
+                    history={history}
                     expanded={expanded}
+                    adventureId={adventureId}
                     handleExpandClick={() => handleExpandClick()}
                 />
 
-                <AdventureBasicInfo adventureData={adventureData} />
+                <AdventureBasicInfo adventureData={adventureData} pricelistData={pricelistData} />
 
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <Grid container spacing={2}>
