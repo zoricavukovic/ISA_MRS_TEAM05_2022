@@ -29,6 +29,9 @@ public class Cottage extends BookingEntity {
       this.rooms = rooms;
       this.cottageOwner = owner;
    }
+   public Cottage(String promoDescription, Set<Picture> pictures, String address, String name, float entityCancelationRate, EntityType entityType) {
+      super(promoDescription, address, name, entityCancelationRate, EntityType.COTTAGE);
+   }
 
    public Set<Room> getRooms() {
       return rooms;
@@ -46,4 +49,13 @@ public class Cottage extends BookingEntity {
       this.cottageOwner = owner;
    }
 
+   @Override
+   public String toString() {
+      StringBuilder s= new StringBuilder();
+      s.append("Bla ba ");
+      for (Room r: rooms){
+         s.append(" ").append(r.getRoomNum());
+      }
+      return s.toString();
+   }
 }

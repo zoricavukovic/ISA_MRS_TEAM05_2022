@@ -155,11 +155,11 @@ return (
             <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
                 <CardContent>
 
-                    <Box sx={{ width: '100%', maxWidth: 350, bgcolor: 'background.paper' }}>
+                    <Box sx={{ width: '100%', maxWidth: 350, minWidth:300, bgcolor: 'background.paper' }}>
                         <Box sx={{ my: 2, mx: 3 }}>
                             <Grid container alignItems="center">
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="h5" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
+                                    <Typography gutterBottom variant="h6" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2%' }}>
                                         Rules Of Conduct
                                     </Typography>
                                 </Grid>
@@ -179,11 +179,13 @@ return (
 
 
                                 {cottageBasicData.rulesOfConduct.map((page) => (
+                                    <Card>
+                                        <Typography textAlign="center" style={{display: "inline-block", whiteSpace: "wrap", margin:"5%"}}>{page.ruleName}
 
-                                    <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
-                                        <FormControlLabel disabled control={<Checkbox size="small" checked={page.allowed} />} />
-                                        <Typography textAlign="center">{page.ruleName}</Typography>
-                                    </Button>
+                                        <Checkbox size="small" checked={page.allowed} />
+                                        </Typography>
+                                    </Card>
+                                       
                                 ))}
 
                             </Stack>
@@ -193,11 +195,11 @@ return (
                 </CardContent>
                 <CardContent>
 
-                    <Box sx={{ width: '100%', maxWidth: 350, bgcolor: 'background.paper' }}>
+                    <Box sx={{ width: '100%', maxWidth: 350, minWidth:300, bgcolor: 'background.paper', display: "inline-block", whiteSpace: "nowrap" }}>
                         <Box sx={{ my: 2, mx: 3 }}>
                             <Grid container alignItems="center">
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="h5" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
+                                    <Typography gutterBottom variant="h6" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
                                         Additional Services
                                     </Typography>
                                 </Grid>
@@ -212,28 +214,27 @@ return (
                                 pb: 1,
                                 display: 'grid',
                                 gap: 1,
-                                gridTemplateColumns: 'repeat(2, 1fr)',
+                                gridTemplateColumns: 'repeat(1, 1fr)',
                             }} direction="row" spacing={1}>
 
 
                                 {pricelistData.additionalServices.map((service) => (
 
                                     <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={service.name}>
-
-                                        <Typography textAlign="center">{service.serviceName + "    " + service.price + " €"}</Typography>
+                                        <Typography textAlign="center">{"Service: " + service.serviceName + ", Amount: " + service.price + "€"}</Typography>
                                     </Button>
                                 ))}
                             </Stack>
                         </Box>
                     </Box>
                 </CardContent>
-                <CardContent>
+                <CardContent >
 
-                    <Box sx={{ width: '100%', maxWidth: 350, bgcolor: 'background.paper' }}>
+                    <Box sx={{ width: '100%', maxWidth: 350,minWidth:300, bgcolor: 'background.paper',  display: "inline-block", whiteSpace: "nowrap"}}>
                         <Box sx={{ my: 2, mx: 3 }}>
                             <Grid container alignItems="center">
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="h5" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
+                                    <Typography gutterBottom variant="h6" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
                                         Rooms
                                     </Typography>
                                 </Grid>

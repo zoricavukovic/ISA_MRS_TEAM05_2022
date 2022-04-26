@@ -11,9 +11,13 @@ import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom
 import AdventureProfile from './adventures/AdventureProfile';
 import showCottages from "./ShowCottages";
 import AddAdventure from './adventures/AddAdventure';
+
 import AllBoats from "./AllBoats";
 import Sidebar from "./Sidebar";
 import Login from './Login';
+import ShowReservationsOwner from "./reservations/ShowReservationsOwner.js";
+import ShowReservationsDetails from "./reservations/ReservationDetails";
+import EditAdventure from './adventures/EditAdventure.js';
 
 function App() {
     const [currentUser,setCurrentUser] = useState({});
@@ -32,11 +36,12 @@ function App() {
                     <Route path="/showCottagesOwner" component={ShowCottagesCottageOwner} />
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
                     <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route>
-
-
+                    <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
+                    <Route path="/showReservationDetails" component={ShowReservationsDetails} />
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
+                    <Route path="/showAdventureProfile/:adventureId" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />
-
+                    <Route path="/editAdventure/:adventureId" component={EditAdventure} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>

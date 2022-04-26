@@ -20,6 +20,8 @@ public class AdditionalServiceService {
         return additionalServiceRepository.getById(id);
     }
 
+    public List<AdditionalService> findAdditionalServicesByReservationId(Long resId){return additionalServiceRepository.findAdditionalServicesByReservationId(resId);}
+
     public List<AdditionalService> saveAll(List<AdditionalService> ad) {
         return additionalServiceRepository.saveAll(ad);
     }
@@ -27,5 +29,6 @@ public class AdditionalServiceService {
     public AdditionalService save(AdditionalService as){
         return  additionalServiceRepository.save(as);
     }
+
 }
 

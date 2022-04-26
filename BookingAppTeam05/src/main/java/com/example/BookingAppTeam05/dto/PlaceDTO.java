@@ -4,6 +4,7 @@ import com.example.BookingAppTeam05.model.Place;
 
 public class PlaceDTO {
 
+    private Long id;
     private String zipCode;
     private String cityName;
     private String stateName;
@@ -16,7 +17,11 @@ public class PlaceDTO {
         this.zipCode = place.getZipCode();
         this.stateName = place.getStateName();
         this.cityName = place.getCityName();
+        this.id = place.getId();
+    }
 
+    public Long getId() {
+        return id;
     }
 
     public String getZipCode() {

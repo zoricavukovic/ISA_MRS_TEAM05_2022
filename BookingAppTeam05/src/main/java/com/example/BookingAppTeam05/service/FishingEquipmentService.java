@@ -34,4 +34,8 @@ public class FishingEquipmentService {
         }
         return retVal;
     }
+
+    public void deleteAdventureFishingEquipment(Long adventureId, Long fishingEquipmentId) {
+        fishingEquipmentRepository.deleteFishingEqupmentIdForAdventureId(adventureId, fishingEquipmentId);
+    }
 }

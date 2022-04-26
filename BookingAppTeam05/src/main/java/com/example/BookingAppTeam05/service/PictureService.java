@@ -19,29 +19,19 @@ import java.util.Base64;
 
 @Service
 public class PictureService {
-    @Autowired
     private PictureRepository pictureRepository;
-
     public PictureService() {}
 
+    @Autowired
     public PictureService(PictureRepository pictureRepository) {
         this.pictureRepository = pictureRepository;
     }
 
-//    public byte[] getPictureDataByName(String name) {
-//        String picturePath = "images/" + name;
-//        ClassPathResource imgFile = new ClassPathResource(picturePath);
-//        try {
-//            return StreamUtils.copyToByteArray(imgFile.getInputStream());
-//        } catch (IOException e) {
-//            return null;
-//        }
-//    }
-
     public byte[] getPictureDataByName(String name) {
         try {
-            String fullPath = "D:\\BOOKING_APP\\images\\" + name;
-            RandomAccessFile f = new RandomAccessFile(fullPath, "r");
+            String path = new File("src/main/resources/images/" + name)
+                    .getAbsolutePath();
+            RandomAccessFile f = new RandomAccessFile(path, "r");
             byte[] bytes = new byte[(int) f.length()];
             f.read(bytes);
             f.close();
@@ -54,12 +44,10 @@ public class PictureService {
 
     private boolean tryConvertBase64ToImageAndSave(String imageName, String base64) {
         try{
-            String fullPath = "D:\\BOOKING_APP\\images\\" + imageName;
-            System.out.println("Image full path............");
-            System.out.println(fullPath);
-            System.out.println("Image full path............");
+            String path = new File("src/main/resources/images/" + imageName)
+                    .getAbsolutePath();
             byte[] image = Base64.getDecoder().decode(base64);
-            OutputStream out = new FileOutputStream(fullPath);
+            OutputStream out = new FileOutputStream(path);
             out.write(image);
             out.flush();
             out.close();
@@ -72,12 +60,40 @@ public class PictureService {
     public Set<Picture> createPicturesFromDTO(List<NewImageDTO> images) {
         Set<Picture> pictures = new HashSet<>();
         for (NewImageDTO img : images) {
-            String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
-            String newImageName = timeStamp + img.getImageName();
-            if (tryConvertBase64ToImageAndSave(newImageName, img.getDataBase64())) {
-                pictures.add(new Picture(newImageName));
-            }
+            tryToSaveNewPictureAndAddToOtherPictures(pictures, img);
         }
         return pictures;
+    }
+
+    public List<String> findAllPictureNamesForEntityId(Long id) {
+        return this.pictureRepository.findAllPictureNamesForEntityId(id);
+    }
+
+    public String convertPictureToBase64ByName(String s) {
+        byte[] pictureData = getPictureDataByName(s);
+        if (pictureData == null)
+            return null;
+        return Base64.getEncoder().encodeToString(pictureData);
+    }
+
+
+    public boolean tryToSaveNewPictureAndAddToOtherPictures(Set<Picture> otherPictures, NewImageDTO newImage) {
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+        String newImageName = timeStamp + newImage.getImageName();
+        if (tryConvertBase64ToImageAndSave(newImageName, newImage.getDataBase64())) {
+            otherPictures.add(new Picture(newImageName));
+            return true;
+        }
+        return false;
+    }
+
+    public void deletePictureByName(String picturePath) {
+        String path = new File("src/main/resources/images/" + picturePath)
+                .getAbsolutePath();
+        try {
+            pictureRepository.deleteByPicturePath(picturePath);
+            File f = new File(path);
+            f.delete();
+        } catch (Exception ignored) { }
     }
 }

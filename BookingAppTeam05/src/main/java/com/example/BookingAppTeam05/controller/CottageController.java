@@ -20,6 +20,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/cottages")
+@CrossOrigin
 public class CottageController {
 
     private CottageService cottageService;
@@ -81,7 +82,6 @@ public class CottageController {
     }
 
     @GetMapping
-
     public ResponseEntity<List<CottageDTO>> getCottages() {
         List<Cottage> cottages = cottageService.findAll();
 
@@ -123,10 +123,10 @@ public class CottageController {
         return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.CREATED);
     }
 
-    @PutMapping(consumes = "application/json")
+    @PutMapping(value="/{id}", consumes = "application/json")
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<CottageDTO> updateCottage(@RequestBody CottageDTO cottageDTO) {
-        Cottage cottage = cottageService.getCottageById(cottageDTO.getId());
+    public ResponseEntity<CottageDTO> updateCottage(@RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
+        Cottage cottage = cottageService.getCottageById(id);
         if (cottage == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         cottage.setName(cottageDTO.getName());
         cottage.setAddress(cottageDTO.getAddress());
@@ -135,12 +135,10 @@ public class CottageController {
         cottage.setEntityType(EntityType.COTTAGE);
         Place place = placeService.getPlaceByZipCode(cottageDTO.getPlace().getZipCode());
         cottage.setPlace(place);
-
-        Cottage oldCottage = cottageService.getCottageById(cottageDTO.getId());
+        Cottage oldCottage = cottageService.getCottageById(id);
         Set<Room> rooms = new HashSet<Room>();
 
         for (Room oldRoom: oldCottage.getRooms()) {
-
             boolean found = false;
             for (Room room: cottageDTO.getRooms()){
                 if (room.getRoomNum() == oldRoom.getRoomNum()){
@@ -153,6 +151,7 @@ public class CottageController {
                 rooms.add(oldRoom);
             }
         }
+        System.out.println("Veli " + cottageDTO.getRooms().size());
         for (Room room: cottageDTO.getRooms()){
             boolean found = false;
             for (Room addedRoom: rooms){
@@ -164,7 +163,7 @@ public class CottageController {
             }
             if (!found) { rooms.add(room); }
         }
-
+        System.out.println("Stigao dovde 44");
         cottage.setRooms(rooms);
 
         Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();

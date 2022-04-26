@@ -22,7 +22,7 @@ public class NewAdventureDTO {
 
     @Min(1)
     @Max(100000)
-    private Double costPerNight;
+    private Double costPerPerson;
 
     @Min(1)
     @Max(100)
@@ -88,12 +88,12 @@ public class NewAdventureDTO {
         this.placeId = placeId;
     }
 
-    public Double getCostPerNight() {
-        return costPerNight;
+    public Double getCostPerPerson() {
+        return costPerPerson;
     }
 
-    public void setCostPerNight(Double costPerNight) {
-        this.costPerNight = costPerNight;
+    public void setCostPerPerson(Double costPerPerson) {
+        this.costPerPerson = costPerPerson;
     }
 
     public Integer getMaxNumOfPersons() {
