@@ -13,12 +13,24 @@ import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
 import {useHistory} from "react-router-dom";
 import { getAllPlaces } from "../../service/PlaceService.js";
-import { addNewAdventure } from "../../service/AdventureService.js";
+import { addNewAdventure, editAdventureById, getAdventureById } from "../../service/AdventureService.js";
+import { getPricelistByEntityId } from "../../service/Pricelists.js";
+import { getAllPictureBase64ForEntityId } from "../../service/PictureService.js";
+import { dataURLtoFile} from "../../service/PictureService.js";
+import { useParams } from "react-router-dom";
 
-export default function AddAdventure() {
+export default function EditAdventure(props) {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const [isLoading, setLoading] = useState(true);
+    const [currentAdventure, setCurrentAdventure] = useState({});
+    const { adventureId} = useParams();
+    const [pricelist, setPricelist] = useState({});
+    const [base64Images, setBase64Images] = useState([]);
+
+    const [isLoadingAdventure, setLoadingAdventure] = useState(true);
+    const [isLoadingPricelist, setLoadingPriceList] = useState(true);
+    const [isLoadingPlaces, setLoadingPlaces] = useState(true);
+    const [isLoadinBase64Images, setLoadingBase64Images] = useState(true);
     const history = useHistory();
 
 
@@ -47,6 +59,28 @@ export default function AddAdventure() {
     const getBase64String = (data_url) => {
         return data_url.split(";")[1].split(',')[1];
     }
+
+    const fillImageListFromBase64Images = () => {
+        let imgArray = [];
+        for (let img of base64Images) {
+            let imgName = img.split(',')[0];
+            let mimeType = imgName.split('.')[1];
+            let base64Part = img.split(',')[1];
+            if (mimeType === 'jpg') {
+                mimeType = 'jpeg';
+            }
+            let dataUrl = "data:image/" + mimeType + ";base64," + base64Part;
+            let newFile = dataURLtoFile(dataUrl, imgName);
+            let newImgObj = {
+                data_url : dataUrl,
+                file: newFile
+            };
+            console.log(newImgObj);
+            imgArray.push(newImgObj);
+        }
+        setImages(imgArray);
+    }
+
     /////////////////////////////////////
 
 
@@ -77,6 +111,19 @@ export default function AddAdventure() {
         let newChipData = [...additionalServices];
         newChipData.push(newObj);
         setAdditionalServices(newChipData);
+    }
+
+    const setInitialAdditionalServices = (data) => {
+        let serviceData = []
+        for (let s of data) {
+            let newObj = {
+                "key": s.id,
+                "serviceName": s.serviceName,
+                "amount": s.price
+            };
+            serviceData.push(newObj);
+        }
+        setAdditionalServices(serviceData);
     }
 
     const getAdditionalServicesJson = () => {
@@ -124,6 +171,19 @@ export default function AddAdventure() {
         
         setFishingEquipment(newChipData);
     }
+
+    const setInitialFishingEquipment = (data) => {
+        let equipmentData = []
+        for (let eq of data) {
+            let newObj = {
+                "key": eq.id,
+                "equipmentName": eq.equipmentName,
+            };
+            equipmentData.push(newObj);
+        }
+        setFishingEquipment(equipmentData);
+    }
+
     const getFishingEquipmentNamesJson = () => {
         if (fishingEquipment.length === 0) {
             return []
@@ -174,6 +234,20 @@ export default function AddAdventure() {
         newChipData.push(newObj);
         setRulesOfConduct(newChipData);
     }
+
+    const setInitialRulesOfConduct = (data) => {
+        let ruleData = []
+        for (let rule of data) {
+            let newObj = {
+                "key": rule.id,
+                "ruleName": rule.ruleName,
+                "allowed": rule.allowed
+            };
+            ruleData.push(newObj);
+        }
+        setRulesOfConduct(ruleData);
+    }
+
     const getRuleNamesJson = () => {
         if (rulesOfConduct.length === 0) {
             return []
@@ -197,7 +271,6 @@ export default function AddAdventure() {
     let allPlacesList;
 
     const placeOnChange = (event, newValue) => {
-        console.log(newValue);
         if (newValue != null && newValue != undefined && newValue != '') {
             setSelectedPlaceId(newValue.id);
         } else {
@@ -213,7 +286,7 @@ export default function AddAdventure() {
             alert("Please select place");
             return;
         }
-        const newAdventure = {
+        const editedAdventure = {
             instructorId: 13, // ovde promeniti posle u zavisnosti od ulogovanog korisnika
             name : data.name,
             address: data.address,
@@ -228,50 +301,72 @@ export default function AddAdventure() {
             rulesOfConduct: getRuleNamesJson(),
             images: getImagesInJsonBase64(),
         }
-        console.log(images);
-        console.log(newAdventure);
-
-        addNewAdventure(newAdventure)
+        editAdventureById(adventureId, editedAdventure)
             .then(res => {
                 console.log(res);
-                console.log(res.data);
-                alert("Adventure  successfully creacted. Redirecting to created adventure..." + res.data);
-                history.push("/showAdventureProfile/" + res.data);
+                alert("Adventure  successfully updated. Redirecting to updated adventure...");
+                history.push({
+                    pathname: "/showAdventureProfile",
+                    state: { adventureId: parseInt(adventureId) }
+                  });
             })
             .catch(res => {
                 console.log(res);
-                alert("Error happened on server. Can't create adventure.");
+                alert("Error happened on server. Update not succesfull.");
             });
-
-        
     }
+
+
     useEffect(() => {
+        getAdventureById(adventureId).then(res => {
+            setCurrentAdventure(res.data);
+            setSelectedPlaceId(res.data.place.id);
+            setInitialRulesOfConduct(res.data.rulesOfConduct);
+            setInitialFishingEquipment(res.data.fishingEquipment);
+            setLoadingAdventure(false);
+        })
+        getAllPictureBase64ForEntityId(adventureId).then(res => {
+            setBase64Images(res.data);
+            setLoadingBase64Images(false);
+        });
+
         getAllPlaces()
             .then(res => {
                 setPlaces(res.data);
-                setLoading(false);
-            })
+                setLoadingPlaces(false);
+        })
+        getPricelistByEntityId(adventureId).then(res => {
+            setPricelist(res.data);
+            setInitialAdditionalServices(res.data.additionalServices);
+            setLoadingPriceList(false);
+        })
     }, [])
 
+    useEffect(() => {
+        if (isLoadinBase64Images) {
+            return;
+        }
+        fillImageListFromBase64Images();
+    }, [isLoadinBase64Images]);
 
     const getAllPlacesForTheList = () => {
-        let newArray = [];
+        let newArray = []
         for (let place of places) {
             newArray.push({ 'label': place.cityName + ',' + place.zipCode + ',' + place.stateName, 'id': place.id });
         }
         allPlacesList = newArray;
-        console.log(allPlacesList);
     }
 
-    if (isLoading) {
+    if (isLoadingAdventure || isLoadingPlaces || isLoadingPricelist || isLoadinBase64Images) {
         return <div className="App">Loading...</div>
     }
     return (
         <div style={{ backgroundColor: 'aliceblue', margin: '5%', padding: '1%', borderRadius: '10px', height: '100%' }} >
-            
+
             {getAllPlacesForTheList()}
+
             <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '42%', padding: '1%', borderRadius: '10px', width: '15%' }} >
-                New adventure
+                Edit adventure
             </div>
             <br />
             <Divider />
@@ -297,6 +392,7 @@ export default function AddAdventure() {
                     <Grid item xs={12} sm={12}>
                         <TextField
                             name="name"
+                            defaultValue={currentAdventure.name}
                             id="name"
                             label="Name"
                             placeholder="Name"
@@ -311,6 +407,7 @@ export default function AddAdventure() {
                         <TextField
                             name="address"
                             id="address"
+                            defaultValue={currentAdventure.address}
                             label="Address"
                             placeholder="Address"
                             multiline
@@ -319,11 +416,12 @@ export default function AddAdventure() {
                             {...register("address", { required: true, maxLength: 50 })}
                         />
                     </Grid>
-                    {errors.name && <p style={{ color: '#ED6663' }}>Please check the address</p>}
+                    {errors.name && <p style={{ color: '#ED6663' }}>Please check the address name</p>}
                     <Grid item xs={12} sm={12}>
                         <Autocomplete
                             disablePortal
                             id="place"
+                            defaultValue={currentAdventure.place.cityName + ',' + currentAdventure.place.zipCode + ',' + currentAdventure.place.stateName}
                             options={allPlacesList}
                             sx={{ width: '300px' }}
                             onChange={placeOnChange}
@@ -335,17 +433,19 @@ export default function AddAdventure() {
                             name="costPerPerson"
                             id="costPerPerson"
                             type="number"
+                            defaultValue={pricelist.entityPricePerPerson}
                             label="Cost Per Person €"
                             placeholder="Cost Per Person €"
                             style={{ width: '300px' }}
                             {...register("costPerPerson", { required: true, min: 1, max: 100000 })}
                         />
                     </Grid>
-                    {errors.costPerPerson && <p style={{ color: '#ED6663' }}>Please check cost per night</p>}
+                    {errors.costPerNight && <p style={{ color: '#ED6663' }}>Please check cost per person</p>}
                     <Grid item xs={12} sm={12}>
                         <TextField
                             type="number"
                             name="maxNumOfPersons"
+                            defaultValue={currentAdventure.maxNumOfPersons}
                             label="Max Num Of Persons"
                             placeholder="Max No. Of Persons"
                             style={{ width: '300px' }}
@@ -360,6 +460,7 @@ export default function AddAdventure() {
                         <TextField
                             name="promoDescription"
                             size="small"
+                            defaultValue={currentAdventure.promoDescription}
                             id="promoDescription"
                             label="Promo Description"
                             multiline
@@ -373,6 +474,7 @@ export default function AddAdventure() {
                         <TextField
                             name="shortBio"
                             size="small"
+                            defaultValue={currentAdventure.shortBio}
                             id="shortBio"
                             label="Short Bio"
                             multiline
@@ -386,6 +488,7 @@ export default function AddAdventure() {
                         <TextField
                             type="number"
                             name="entityCancelationRate"
+                            defaultValue={currentAdventure.entityCancelationRate}
                             label="Entity Cancelation Rate %"
                             placeholder="Entity Cancelation Rate %"
                             style={{ width: '300px' }}
@@ -414,18 +517,22 @@ export default function AddAdventure() {
                         onClick={() => {
                             reset(
                                 {
-                                    name: "",
-                                    address: "",
-                                    maxNumOfPersons: 0,
-                                    entityCancelationRate: 0,
-                                    shortBio: "",
-                                    promoDescription: "",
-                                    costPerPerson: 0,
+                                    name: currentAdventure.name,
+                                    address: currentAdventure.address,
+                                    costPerNight: pricelist.entityPricePerPerson,
+                                    maxNumOfPersons: currentAdventure.maxNumOfPersons,
+                                    entityCancelationRate: currentAdventure.entityCancelationRate,
+                                    shortBio: currentAdventure.shortBio,
+                                    promoDescription: currentAdventure.promoDescription,
                                 }, {
                                 keepDefaultValues: false,
                                 keepErrors: true,
                             }
                             );
+                            setInitialRulesOfConduct(currentAdventure.rulesOfConduct);
+                            setInitialFishingEquipment(currentAdventure.fishingEquipment);
+                            setInitialAdditionalServices(pricelist.additionalServices);
+                            fillImageListFromBase64Images();
                         }}
                     >
                         Reset

@@ -51,14 +51,14 @@ public abstract class BookingEntity {
     private Place place;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="entity_id")
+    @JoinColumn(name="entity_id", nullable = false)
     private Set<RuleOfConduct> rulesOfConduct = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "subscribers", joinColumns = @JoinColumn(name = "booking_entity_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))
     private Set<Client> subscribedClients = new HashSet<>();
 
-    @Column(name="deleted", nullable = false)
+    @Column(name="deleted")
     private boolean deleted = false;
 
 

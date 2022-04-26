@@ -105,18 +105,18 @@ INSERT INTO ROLE (name) VALUES ('ROLE_COTTAGE_OWNER');
 INSERT INTO ROLE (name) VALUES ('ROLE_SHIP_OWNER');
 INSERT INTO ROLE (name) VALUES ('ROLE_INSTRUCTOR');
 
-INSERT INTO public.fishing_equipments(equipment_name) VALUES ('Fishing rod');
-INSERT INTO public.fishing_equipments(equipment_name) VALUES ('Bait');
-INSERT INTO public.fishing_equipments(equipment_name) VALUES ('Fishing nets');
-INSERT INTO public.fishing_equipments(equipment_name) VALUES ('First aid kit');
-INSERT INTO public.fishing_equipments(equipment_name) VALUES ('Bucket');
-INSERT INTO public.fishing_equipments(equipment_name) VALUES ('Rope');
+INSERT INTO fishing_equipments(equipment_name) VALUES ('Fishing rod');
+INSERT INTO fishing_equipments(equipment_name) VALUES ('Bait');
+INSERT INTO fishing_equipments(equipment_name) VALUES ('Fishing nets');
+INSERT INTO fishing_equipments(equipment_name) VALUES ('First aid kit');
+INSERT INTO fishing_equipments(equipment_name) VALUES ('Bucket');
+INSERT INTO fishing_equipments(equipment_name) VALUES ('Rope');
 
 
-INSERT INTO public.navigation_equipments(name) VALUES ('GPS');
-INSERT INTO public.navigation_equipments(name) VALUES ('RADAR');
-INSERT INTO public.navigation_equipments(name) VALUES ('VHF_RADIO');
-INSERT INTO public.navigation_equipments(name) VALUES ('FISHFINDER');
+INSERT INTO navigation_equipments(name) VALUES ('GPS');
+INSERT INTO navigation_equipments(name) VALUES ('RADAR');
+INSERT INTO navigation_equipments(name) VALUES ('VHF_RADIO');
+INSERT INTO navigation_equipments(name) VALUES ('FISHFINDER');
 
 
 INSERT INTO cottage_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number, place_id, deleted, role_id)
@@ -222,9 +222,15 @@ VALUES
 ('True','Children policies',3),
 ('False','Weed',3),
 ('True','Smoking',2),
-('True','Parties',1);
+('True','Parties',1),
+('True','rule1',11),
+('False','rule2',11),
+('True','rule3',11);
 
 
+
+INSERT INTO adventure_fishing_equipment(adventure_entity_id, fishing_equipment_id) VALUES (11, 1);
+INSERT INTO adventure_fishing_equipment(adventure_entity_id, fishing_equipment_id) VALUES (11, 2);
 
 
 -- pricelists for adventures  8 - 14
@@ -241,6 +247,8 @@ VALUES
 INSERT INTO additional_services (price,service_name,price_list_id)
 VALUES
 (13,'food bar',8),
+(32,'add serv2',8),
+(50,'add serv3',8),
 (59,'drink bar',9),
 (65,'add 1',10),
 (33,'air condition',11);
@@ -274,17 +282,16 @@ VALUES
     ('2022-05-01 7:00 pm',26,3,1,7,'False','True'),
     ('2022-04-24 7:00 pm',4,3,1,7,'False','False');
 
-INSERT INTO public.reservation_additional_service(reservation_id, additional_service_id)
+INSERT INTO reservation_additional_service(reservation_id, additional_service_id)
 VALUES
        (1, 2),
        (1,3),
        (2,3);
 
-
 --- dodavanje slika za avanturu
-INSERT INTO public.pictures (picture_path, entity_id) VALUES ('adventure1.jpg', 11);
-INSERT INTO public.pictures (picture_path, entity_id) VALUES ('adventure2.jpg', 11);
-INSERT INTO public.pictures (picture_path, entity_id) VALUES ('adventure3.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure2.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure3.jpg', 11);
 --aditional services for adventures
 
 
