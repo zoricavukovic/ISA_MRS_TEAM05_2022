@@ -8,21 +8,22 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import axios from "axios";
 import { getReservationsByOwnerId, getReservationsByOwnerIdAndFilter } from '../../service/ReservationService.js';
+import ReactPaginate from "react-paginate";
+import "../../App.css"
 
 function ShowReservationsOwner() {
 
     const [reservations, setReservations] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    const [pagination, setPagination] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [numAddedCottages, setNumAddedCottages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const entitiesPerPage = 6;
+    const pagesVisited = currentPage*entitiesPerPage;
     const [valueFirst, setValueFirst] = React.useState();
     const [options, setOptions] = React.useState([]);
     let ownerId = 1; //IZMENNEEEEEEEEE!!!!!!!!!!!!!!!
     useEffect(() => {
         getReservationsByOwnerId(ownerId).then(res => {
             setReservations(res.data);
-            setPagination(Math.ceil(res.data.length / 6));
             let newOpts = [];
             for (let res of res.data){
                 let found = false;
@@ -46,11 +47,21 @@ function ShowReservationsOwner() {
         setLoading(true);
         getReservationsByOwnerIdAndFilter(ownerId, valueFirst).then(res => {
             setReservations(res.data);
-            setPagination(Math.ceil(res.data.length / 6));
             setLoading(false);
         })
     }
+
     
+    const displayReservations = reservations.slice(pagesVisited, pagesVisited + entitiesPerPage)
+    .map(res=> {
+        return <ImgReservation reservation={res} reservationId={res.id} details="true"></ImgReservation>
+    })
+
+    const pageCount = Math.ceil(reservations.length / entitiesPerPage);
+    const changePage=({selected})=>{
+        setCurrentPage(selected);
+    }
+
     if (isLoading) { return <div><CircularProgress /></div> }
     return (
         <div>
@@ -77,20 +88,22 @@ function ShowReservationsOwner() {
 
             </div>
             <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }} className="App">
-                {reservations.map(reservation=> {
-                    if (numAddedCottages !== 2){
-                        let i = numAddedCottages + 1;
-                        //setNumAddedCottages(i);
-                        console.log({reservation});
-                        return <ImgReservation key={i} reservation={reservation} reservationId={reservation.id} details="true"></ImgReservation>
-                    }
-                })}
-
+                {displayReservations}
+                <ReactPaginate
+                previousLabel="Previous"
+                nextLabel="Next"
+                pageCount={pageCount}
+                onPageChange={changePage}
+                containerClassName={"paginationBttns"}
+                previousLinkClassName={"previosBttn"}
+                nextLinkClassName={"nextBttn"}
+                disabledClassName={"paginationDisabled"}
+                activeClassName={"paginationActive"}
+            />
             </div>
-            <BasicPagination count={pagination} />
+            
+            
         </div>
-
-
     );
 }
 

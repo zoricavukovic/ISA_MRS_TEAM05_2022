@@ -280,7 +280,7 @@ INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client
 VALUES
     ('2019-03-12 5:00 am',1,17,1,8,'False','False'),
     ('2022-05-01 7:00 pm',26,3,1,7,'False','True'),
-    ('2022-04-24 7:00 pm',4,3,1,7,'False','False');
+    ('2022-04-20 7:00 pm',4,3,1,7,'False','False');
 
 INSERT INTO reservation_additional_service(reservation_id, additional_service_id)
 VALUES
@@ -292,6 +292,12 @@ VALUES
 INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1.jpg', 11);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure2.jpg', 11);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure3.jpg', 11);
+
+--- dodavanje slika za vikendicu
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1a.jpg', 1);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1b.jpg', 1);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1c.jpg', 1);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1d.jpg', 1);
 --aditional services for adventures
 
 
