@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("/users")
 public class UserController {
 
@@ -27,6 +27,7 @@ public class UserController {
     }
 
     @GetMapping(value="/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
         User u = userService.getUserById(id);
         if (u == null)
@@ -67,6 +68,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
     public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO)  {
         User user = userService.getUserById(userId);
         user.setAddress(userDTO.getAddress());
@@ -81,18 +83,5 @@ public class UserController {
 
         return ResponseEntity.ok(updatedUser);
     }
-
-    @GetMapping("/foo")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> getFoo() {
-        return new ResponseEntity<>("nesto", HttpStatus.OK);
-    }
-
-    @GetMapping("/fooDrugi")
-    @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<String> getFooClient() {
-        return new ResponseEntity<>("nesto", HttpStatus.OK);
-    }
-
 }
 

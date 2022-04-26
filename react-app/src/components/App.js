@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import '../App.css';
-import Navbar from "./Navbar";
 import UserProfile from "./UserProfile";
 import EditUserProfile from "./EditUserProfile";
 import ShowCottageProfile from "./cottage/ShowCottageProfile";
@@ -13,12 +12,15 @@ import AdventureProfile from './adventures/AdventureProfile';
 import showCottages from "./ShowCottages";
 import AddAdventure from './adventures/AddAdventure';
 import AllBoats from "./AllBoats";
+import Sidebar from "./Sidebar";
+import Login from './Login';
 
 function App() {
+    const [currentUser,setCurrentUser] = useState({});
     return (
         <>
             <Router>
-                <Navbar/>
+                <Sidebar curUser={currentUser} setCurUser={setCurrentUser}/>
                 <Switch>
                     <Route path="/allBoats" component={AllBoats} />
                     <Route path="/userProfile" component={UserProfile} />
@@ -29,6 +31,7 @@ function App() {
                     <Route path="/showCottages" component={showCottages} />
                     <Route path="/showCottagesOwner" component={ShowCottagesCottageOwner} />
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
+                    <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route>
 
 
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
