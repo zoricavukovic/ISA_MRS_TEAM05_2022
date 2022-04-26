@@ -9,6 +9,7 @@ import com.example.BookingAppTeam05.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -102,6 +103,7 @@ public class CottageController {
 
     @PostMapping(value = "{idCottageOwner}", consumes = "application/json")
     @Transactional
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<String> saveCottage(@PathVariable Long idCottageOwner, @RequestBody CottageDTO cottageDTO) {
 
         Cottage cottage = new Cottage();
@@ -129,6 +131,7 @@ public class CottageController {
     }
 
     @PutMapping(value="/{id}", consumes = "application/json")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<CottageDTO> updateCottage(@RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
         Cottage cottage = cottageService.getCottageById(id);
         if (cottage == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -211,6 +214,7 @@ public class CottageController {
 
     @DeleteMapping(value="/{cottageId}/{confirmPass}")
     @Transactional
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<String> logicalDeleteCottageById(@PathVariable Long cottageId, @PathVariable String confirmPass){
         Cottage cottage = cottageService.findCottageByCottageIdWithOwner(cottageId);
         if (cottage == null) return new ResponseEntity<String>("Cottage for deleting is not found.", HttpStatus.BAD_REQUEST);
