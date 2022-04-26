@@ -13,20 +13,18 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
-import { CircularProgress, NativeSelect } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
 import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
 import Autocomplete from '@mui/material/Autocomplete';
-
-import axios from "axios";
-
+import { dataURLtoFile} from "../../service/PictureService.js";
 import { addNewPriceListForEntityId, getPricelistByEntityId } from '../../service/Pricelists.js';
 import { getAllPlaces } from '../../service/PlaceService.js';
-import { editCottageById, editCottageByIdReal, getCottageById } from '../../service/CottageService.js';
+import { editCottageByIdReal, getCottageById } from '../../service/CottageService.js';
 import AddingRooms from '../AddingRooms.js';
-import { EditOutlined } from '@mui/icons-material';
+import { getAllPictureBase64ForEntityId } from "../../service/PictureService.js";
 
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -40,6 +38,7 @@ export default function EditCottage(props) {
   const [isLoadingCottage, setLoadingCottage] = useState(true);
   const [isLoadingPricelist, setLoadingPricelist] = useState(true);
   const [isLoadingPlaces, setLoadingPlaces] = useState(true);
+  const [isLoadinBase64Images, setLoadingBase64Images] = useState(true);
   const [cottageBasicData, setCottageBasicData] = useState({});
   const [pricelistData, setPricelistData] = useState({});
   const [places, setPlaces] = useState([]);
@@ -48,6 +47,7 @@ export default function EditCottage(props) {
 
     ////////////////IMAGES//////////////////////////////////
     const [images, setImages] = React.useState([]);
+    const [base64Images, setBase64Images] = useState([]);
     const maxNumber = 69;
     const onChange = (imageList, addUpdateIndex) => {
         console.log(imageList, addUpdateIndex);
@@ -71,6 +71,29 @@ export default function EditCottage(props) {
     const getBase64String = (data_url) => {
         return data_url.split(";")[1].split(',')[1];
     }
+
+    const fillImageListFromBase64Images = () => {
+        let imgArray = [];
+        for (let img of base64Images) {
+            let imgName = img.split(',')[0];
+            let mimeType = imgName.split('.')[1];
+            let base64Part = img.split(',')[1];
+            if (mimeType === 'jpg') {
+                mimeType = 'jpeg';
+            }
+            let dataUrl = "data:image/" + mimeType + ";base64," + base64Part;
+            let newFile = dataURLtoFile(dataUrl, imgName);
+            let newImgObj = {
+                data_url : dataUrl,
+                file: newFile
+            };
+            console.log(newImgObj);
+            imgArray.push(newImgObj);
+        }
+        setImages(imgArray);
+    }
+
+
     /////////////////////////////////////
 
 
@@ -298,12 +321,19 @@ export default function EditCottage(props) {
       
   }
   useEffect(() => {
+    if (props.history.location.state === undefined){
+      return;
+    }
     getCottageById(props.history.location.state.cottageId).then(res => {
       setCottageBasicData(res.data);
       setRoom(res.data.rooms);
       setRulesOfConduct(res.data.rulesOfConduct);
       setLoadingCottage(false);
     })
+    getAllPictureBase64ForEntityId(props.history.location.state.cottageId).then(res => {
+      setBase64Images(res.data);
+      setLoadingBase64Images(false);
+  });
     getPricelistByEntityId(props.history.location.state.cottageId).then(result => {
       setPricelistData(result.data);
       setAdditionalServices(result.data.additionalServices);
@@ -317,6 +347,13 @@ export default function EditCottage(props) {
       
     })
   }, []);
+
+  useEffect(() => {
+    if (isLoadinBase64Images) {
+        return;
+    }
+    fillImageListFromBase64Images();
+}, [isLoadinBase64Images]);
 
   //rate/////
   const [rate, setRate] = React.useState();
@@ -332,7 +369,7 @@ export default function EditCottage(props) {
     window.location.reload(false);
   }
 
-  if (isLoadingCottage || isLoadingPricelist || isLoadingPlaces) { return <div className="App"><CircularProgress /></div> }
+  if (isLoadingCottage || isLoadingPricelist || isLoadingPlaces || isLoadinBase64Images) { return <div className="App"><CircularProgress /></div> }
 
   return (
     <div style={{ backgroundColor: 'aliceblue', margin: '5%', padding: '1%', borderRadius: '10px', height: '100%' }} >

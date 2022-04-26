@@ -15,6 +15,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import ImageSlider from "../image_slider/ImageSlider";
 import axios from "axios";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
@@ -27,14 +28,14 @@ export default function ImgMediaCard(props) {
     const [open, setOpen] = React.useState(false);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [password, setPassword] = React.useState("");
-  
+    const urlPicturePath = "http://localhost:8092/bookingApp/pictures/";
     const [message, setMessage] = React.useState("");
     const [typeAlert, setTypeAlert] = React.useState("");
     const handleClick = () => {
       setOpen(true);
     };
   
-    const handleClose = (event, reason) => {
+    const handleClose = (_event, reason) => {
       if (reason === 'clickaway') {
         return;
       }
@@ -109,12 +110,23 @@ export default function ImgMediaCard(props) {
           <Button onClick={logicDeleteBookingEntity}>Confirm</Button>
         </DialogActions>
       </Dialog>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="/static/images/cards/contemplative-reptile.jpg"
+      {props.bookingEntity.pictures.length === 0 ? (
+          <CardMedia
+          component="img"
+          height="140"
+          alt="No Images"
       />
+           
+          ):(
+            <CardMedia
+          component="img"
+          height="140"
+          alt="No Images"
+          image={urlPicturePath + props.bookingEntity.pictures[0].picturePath}
+      >
+         
+      </CardMedia>
+        )}
       <CardContent>
         <Typography style={{textAlign:"left"}} gutterBottom variant="h5" component="div">
           {props.bookingEntity.name}

@@ -53,7 +53,10 @@ export default function ImgReservation(props) {
             }
         })
     };
+    
     useEffect(() => {
+      console.log("Jedan ");
+      console.log(props.reservation);
         let end = new Date(props.reservation.startDate[0], props.reservation.startDate[1]-1, props.reservation.startDate[2],props.reservation.startDate[3],props.reservation.startDate[4]);
         end.setDate(end.getDate() + props.reservation.numOfDays);
         setDates({
@@ -67,7 +70,6 @@ export default function ImgReservation(props) {
             let updatedResCost = res.data.entityPricePerPerson*props.reservation.numOfDays*props.reservation.numOfPersons;
             if (addServices.data.length>0){
               for (let addService of addServices.data){
-                console.log(addService.price);
                 updatedResCost += addService.price;
               }
             }
@@ -78,7 +80,7 @@ export default function ImgReservation(props) {
             
         });
         
-    }, [])
+    }, [props.reservation])
     if (isLoading || isLoadingAddServices) { return <div className="App"><CircularProgress /></div> }
   return (
     <Card button onClick={showReservation} style={{margin:"2%"}} sx={{ maxWidth: 400, minWidth:250}}>

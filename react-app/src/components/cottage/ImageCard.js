@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ToggleButton from '@mui/material/ToggleButton';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
-
+import ImageSlider from "../image_slider/ImageSlider";
 import Box from '@mui/material/Box';
 import { useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
@@ -29,7 +29,6 @@ import Snackbar from '@mui/material/Snackbar';
 import axios from "axios";
 import { editCottageById, getCottageById } from '../../service/CottageService';
 import { getPricelistByEntityId } from '../../service/Pricelists';
-
 import cottageImg from "../cottage.jpg";
 
 const ExpandMore = styled((props) => {
@@ -51,6 +50,7 @@ export default function CardIm(props) {
     const [pricelistData, setPricelistData] = useState({});
     const [isLoadingCottage, setLoadingCottage] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
+    const urlPicturePath = "http://localhost:8092/bookingApp/pictures/";
     const history = useHistory();
 
     const handleClick = () => {
@@ -104,12 +104,16 @@ export default function CardIm(props) {
 if (isLoadingCottage || isLoadingPricelist) { return <div className="App">Loading...</div> }
 return (
     <Card sx={{}}>
-        <CardMedia
-            component="img"
-            height="300"
-            src={cottageImg}
-            alt="Slika vikendice"
-        />
+        {cottageBasicData.pictures.length === 0 ? (
+          <CardMedia
+          component="img"
+          height="300"
+          alt="No Images"
+      />
+           
+          ):(
+        <ImageSlider slides={cottageBasicData.pictures.map((im) => ({'image':  urlPicturePath + im.picturePath}))} />  
+        )}
         <CardHeader
 
             title={cottageBasicData.name}
@@ -153,6 +157,10 @@ return (
         </div >
         <Collapse in={expanded} timeout="auto" unmountOnExit>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
+                {/* <CardContent>
+                <MapContainer></MapContainer>
+                    
+                </CardContent> */}
                 <CardContent>
 
                     <Box sx={{ width: '100%', maxWidth: 350, minWidth:300, bgcolor: 'background.paper' }}>

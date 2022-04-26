@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.model.entities;
 
+import com.example.BookingAppTeam05.dto.NewImageDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.model.users.CottageOwner;
@@ -21,6 +22,7 @@ public class Cottage extends BookingEntity {
    @JoinColumn(name="cottage_owner_id")
    private CottageOwner cottageOwner;
 
+
    public Cottage() {}
 
    public Cottage(String promoDescription, Set<Picture> pictures, String address, String name, Set<UnavailableDate> unavailableDates, float entityCancelationRate, EntityType entityType, Set<Pricelist> pricelists, Place place, Set<RuleOfConduct> rulesOfConduct,
@@ -29,7 +31,7 @@ public class Cottage extends BookingEntity {
       this.rooms = rooms;
       this.cottageOwner = owner;
    }
-   public Cottage(String promoDescription, Set<Picture> pictures, String address, String name, float entityCancelationRate, EntityType entityType) {
+   public Cottage(String promoDescription, String address, String name, float entityCancelationRate) {
       super(promoDescription, address, name, entityCancelationRate, EntityType.COTTAGE);
    }
 
@@ -47,15 +49,5 @@ public class Cottage extends BookingEntity {
 
    public void setCottageOwner(CottageOwner owner) {
       this.cottageOwner = owner;
-   }
-
-   @Override
-   public String toString() {
-      StringBuilder s= new StringBuilder();
-      s.append("Bla ba ");
-      for (Room r: rooms){
-         s.append(" ").append(r.getRoomNum());
-      }
-      return s.toString();
    }
 }

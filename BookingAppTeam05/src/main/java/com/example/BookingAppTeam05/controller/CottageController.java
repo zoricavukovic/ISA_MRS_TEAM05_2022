@@ -54,6 +54,7 @@ public class CottageController {
         if (cottage.getRooms() != null){
             cottageDTO.setRooms(cottage.getRooms());
         }
+        cottageDTO.setPictures(cottage.getPictures());
         return new ResponseEntity<>(cottageDTO, HttpStatus.OK);
     }
     @GetMapping(value="/editQue/{cottageId}")
@@ -74,6 +75,7 @@ public class CottageController {
         for (Cottage cottage:cottageFound) {
             CottageDTO cDTO = new CottageDTO(cottage);
             cDTO.setPlace(cottage.getPlace());
+            cDTO.setPictures(cottage.getPictures());
             cottageDTOs.add(cDTO);
         }
 
@@ -91,6 +93,7 @@ public class CottageController {
             cDTO.setPlace(cottage.getPlace());
             cDTO.setRulesOfConduct(cottage.getRulesOfConduct());
             cDTO.setRooms(cottage.getRooms());
+            cDTO.setPictures(cottage.getPictures());
             cottageDTOs.add(cDTO);
         }
 
@@ -116,6 +119,10 @@ public class CottageController {
         cottage.setCottageOwner(co);
         cottage.setRooms(cottageDTO.getRooms());
         cottage.setRulesOfConduct(cottageDTO.getRulesOfConduct());
+//        if (!cottageDTO.getImages().isEmpty()) {
+//            Set<Picture> createdPictures = pictureService.createPicturesFromDTO(newAdventureDTO.getImages());
+//            adventure.setPictures(createdPictures);
+//        }
         cottage = cottageService.save(cottage);
 
         return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.CREATED);
@@ -197,7 +204,7 @@ public class CottageController {
             if (!found) { rules.add(rule); }
         }
         cottage.setRulesOfConduct(rules);
-
+        cottageService.setNewImages(cottage, cottage.getPictures());
         cottage = cottageService.save(cottage);
         return new ResponseEntity<>(new CottageDTO(cottage), HttpStatus.OK);
     }

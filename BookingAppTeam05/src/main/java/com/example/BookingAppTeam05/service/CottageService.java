@@ -1,5 +1,7 @@
 package com.example.BookingAppTeam05.service;
 
+import com.example.BookingAppTeam05.dto.NewImageDTO;
+import com.example.BookingAppTeam05.model.Picture;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.repository.CottageRepository;
@@ -7,17 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CottageService {
     private CottageRepository cottageRepository;
     private ReservationService reservationService;
+    private PictureService pictureService;
 
     @Autowired
-    public CottageService(CottageRepository cottageRepository, ReservationService reservationService) {
+    public CottageService(CottageRepository cottageRepository, ReservationService reservationService, PictureService pictureService) {
         this.cottageRepository = cottageRepository;
         this.reservationService = reservationService;
+        this.pictureService = pictureService;
     }
 
     public Cottage getCottageById(Long id) {
@@ -66,4 +72,36 @@ public class CottageService {
     }
     public Cottage findCottageByCottageIdWithOwner(Long cottageId) { return cottageRepository.findCottageByCottageIdWithOwner(cottageId);}
 
+    public void setNewImages(Cottage existingCottage, Set<Picture> images) {
+        Set<Picture> pictures = new HashSet<>();
+
+        for (Picture currentPicture : existingCottage.getPictures()) {
+            boolean found = false;
+            for (Picture newPicture : images) {
+                System.out.println(newPicture.getPicturePath());
+                if (newPicture.getPicturePath().equals(currentPicture.getPicturePath())) {
+                    found = true;
+                    pictures.add(currentPicture);
+                    break;
+                }
+            }
+            if (!found) {
+                pictureService.deletePictureByName(currentPicture.getPicturePath());
+            }
+        }
+        for (Picture newImage : images) {
+            boolean found = false;
+            for (Picture picture : pictures) {
+                if (picture.getPicturePath().equals(newImage.getPicturePath())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                //pictureService.tryToSaveNewPictureAndAddToOtherPictures(pictures, newImage);
+            }
+        }
+        existingCottage.setPictures(pictures);
+
+    }
 }

@@ -244,6 +244,7 @@ export default function AddCottage(props) {
     ///////////////////////////////////////////////////
 
     const onFormSubmit = data => {
+      console.log(getImagesInJsonBase64());
       const cottageRate = cottageBasicData.entityCancelationRate;
       let zip = 0;
       if (selectedPlaceZip != null && selectedPlaceZip != undefined && selectedPlaceZip != '') {
@@ -268,7 +269,7 @@ export default function AddCottage(props) {
         additionalServices: getAdditionalServicesJson(),
         rooms: getRoomsJson(),
         rulesOfConduct: getRuleNamesJson(),
-        images: getImagesInJsonBase64(),
+        pictures: getImagesInJsonBase64(),
     } 
     newCottage.entityCancelationRate = cottageRate;
     let newPricel = newPricelist;
