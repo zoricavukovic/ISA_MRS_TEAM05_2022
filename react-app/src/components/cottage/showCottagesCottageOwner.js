@@ -79,7 +79,7 @@ function ShowCottagesCottageOwner() {
     if (isLoading) { return <div><CircularProgress /></div> }
     return (
         <div>
-            <div style={{ display: "flex", flexDirection: "row", margin: "2%", width:"100%", alignItems: "stretch", backgroundColor: "aliceblue", borderRadius: "5px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", flexDirection: "row", margin: "2%", width:"100%", alignItems: "stretch", backgroundColor: "aliceblue", borderRadius: "5px" }}>
                 
                 <TextField
                 

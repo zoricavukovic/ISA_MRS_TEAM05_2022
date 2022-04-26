@@ -15,6 +15,7 @@ import AddAdventure from './adventures/AddAdventure';
 
 import AllBoats from "./AllBoats";
 import EditAdventure from './adventures/EditAdventure';
+import Adventures from './adventures/Adventures';
 
 function App() {
     return (
@@ -33,6 +34,7 @@ function App() {
                     <Route path="/showAdventureProfile/:adventureId" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />
                     <Route path="/editAdventure/:adventureId" component={EditAdventure} />
+                    <Route path="/adventures" component={Adventures} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>
