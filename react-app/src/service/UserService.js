@@ -11,3 +11,7 @@ export function getUserById(id) {
 export function editUserById(id, editedUser) {
     return api.put('/users/' + id, editedUser);
 }
+
+export function sendLogInForm(form){
+    return api.post('/users/login',form);
+}

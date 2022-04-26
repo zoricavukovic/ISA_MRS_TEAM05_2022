@@ -2,6 +2,7 @@ package com.example.BookingAppTeam05.controller;
 
 import javax.servlet.http.HttpServletResponse;
 import com.example.BookingAppTeam05.dto.JwtAuthenticationRequestDTO;
+import com.example.BookingAppTeam05.dto.UserDTO;
 import com.example.BookingAppTeam05.dto.UserRequestDTO;
 import com.example.BookingAppTeam05.dto.UserTokenStateDTO;
 import com.example.BookingAppTeam05.model.users.User;
@@ -42,7 +43,7 @@ public class AuthenticationController {
         // Ukoliko kredencijali nisu ispravni, logovanje nece biti uspesno, desice se
         // AuthenticationException
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+                authenticationRequest.getEmail(), authenticationRequest.getPassword()));
 
         // Ukoliko je autentifikacija uspesna, ubaci korisnika u trenutni security
         // kontekst
@@ -54,7 +55,7 @@ public class AuthenticationController {
         int expiresIn = tokenUtils.getExpiredIn();
 
         // Vrati token kao odgovor na uspesnu autentifikaciju
-        return ResponseEntity.ok(new UserTokenStateDTO(jwt, expiresIn));
+        return ResponseEntity.ok(new UserTokenStateDTO(jwt, expiresIn, new UserDTO(user)));
     }
 
     // Endpoint za registraciju novog korisnika
