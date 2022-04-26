@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import '../App.css';
-import Navbar from "./Navbar";
 import UserProfile from "./UserProfile";
 import EditUserProfile from "./EditUserProfile";
 import ShowCottageProfile from "./cottage/ShowCottageProfile";
@@ -16,12 +15,17 @@ import AddAdventure from './adventures/AddAdventure';
 import AllBoats from "./AllBoats";
 import EditAdventure from './adventures/EditAdventure';
 import Adventures from './adventures/Adventures';
+import Sidebar from "./Sidebar";
+import Login from './Login';
+import ShowReservationsOwner from "./reservations/ShowReservationsOwner.js";
+import ShowReservationsDetails from "./reservations/ReservationDetails";
 
 function App() {
+    const [currentUser,setCurrentUser] = useState({});
     return (
         <>
             <Router>
-                <Navbar/>
+                <Sidebar curUser={currentUser} setCurUser={setCurrentUser}/>
                 <Switch>
                     <Route path="/allBoats" component={AllBoats} />
                     <Route path="/userProfile" component={UserProfile} />
@@ -31,6 +35,11 @@ function App() {
                     <Route path="/editCottage" component={EditCottage} />
                     <Route path="/showCottages" component={showCottages} />
                     <Route path="/showCottagesOwner" component={ShowCottagesCottageOwner} />
+                    <Route path="/showAdventureProfile" component={AdventureProfile} />
+                    <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route>
+                    <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
+                    <Route path="/showReservationDetails" component={ShowReservationsDetails} />
+                    <Route path="/showAdventureProfile" component={AdventureProfile} />
                     <Route path="/showAdventureProfile/:adventureId" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />
                     <Route path="/editAdventure/:adventureId" component={EditAdventure} />

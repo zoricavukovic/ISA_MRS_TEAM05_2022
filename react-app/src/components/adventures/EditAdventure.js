@@ -280,7 +280,6 @@ export default function EditAdventure(props) {
     /////////////////////////////////////////////////////////////////////////////
 
 
-
     const onFormSubmit = data => {
         if (selectedPlaceId === '') {
             alert("Please select place");
@@ -299,7 +298,7 @@ export default function EditAdventure(props) {
             additionalServices: getAdditionalServicesJson(),
             fishingEquipment: getFishingEquipmentNamesJson(),
             rulesOfConduct: getRuleNamesJson(),
-            images: getImagesInJsonBase64(),
+            //images: getImagesInJsonBase64(),
         }
         editAdventureById(adventureId, editedAdventure)
             .then(res => {

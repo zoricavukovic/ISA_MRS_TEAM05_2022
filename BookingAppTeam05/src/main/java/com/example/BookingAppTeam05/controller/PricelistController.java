@@ -9,6 +9,7 @@ import com.example.BookingAppTeam05.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,7 @@ public class PricelistController {
     }
 
     @PostMapping(value="/{idCottage}", consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER','ROLE_SHIP_OWNER')")
     public ResponseEntity<PricelistDTO> updatePricelist(@PathVariable Long idCottage, @RequestBody PricelistDTO pricelistDTO)  {
         Pricelist pricelist = new Pricelist();
         pricelist.setEntityPricePerPerson(pricelistDTO.getEntityPricePerPerson());

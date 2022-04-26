@@ -177,12 +177,13 @@ function ShowCottagesCottageOwner() {
 
             </div>
             <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }} className="App">
+                
                 {cottages.map(cottage=> {
                     if (numAddedCottages !== 2){
                         let i = numAddedCottages + 1;
                         //setNumAddedCottages(i);
                         console.log({cottage});
-                        return <ImgMediaCard key={i} cottage={cottage} bookingEntityId={cottage.id}></ImgMediaCard>
+                        return <ImgMediaCard key={i} bookingEntity={cottage} bookingEntityId={cottage.id}></ImgMediaCard>
                     }
                 })}
 

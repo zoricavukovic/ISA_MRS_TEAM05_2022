@@ -67,6 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/**").permitAll()
                 .antMatchers("/ships/**").permitAll()
                 .antMatchers("/pictures/**").permitAll()
+                .antMatchers("/reservations/**").permitAll()
+                .antMatchers("/additionalServices/**").permitAll()
 
                 .antMatchers("/bookingEntities/**").permitAll()
 
@@ -102,7 +104,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
 
         // Ovim smo dozvolili pristup statickim resursima aplikacije
-        web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**", "/*.html", "favicon.ico", "/**/*.html",
+        web.ignoring().antMatchers(HttpMethod.GET,  "/","/webjars/**", "/*.html", "favicon.ico", "/**/*.html",
                 "/**/*.css", "/**/*.js");
     }
 
