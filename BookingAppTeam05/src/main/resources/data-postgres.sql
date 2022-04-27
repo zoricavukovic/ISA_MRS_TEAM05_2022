@@ -318,9 +318,15 @@ VALUES
        (2,3);
 
 --- dodavanje slika za avanturu
-INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1.jpg', 11);
-INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure2.jpg', 11);
-INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure3.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1_1.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1_2.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1_3.jpg', 11);
+
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure2_1.jpg', 12);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure2_2.jpg', 12);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure3_1.jpg', 13);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure4_1.jpg', 14);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure5_1.jpg', 15);
 
 --- dodavanje slika za vikendicu
 INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1a.jpg', 1);

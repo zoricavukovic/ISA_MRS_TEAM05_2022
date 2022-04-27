@@ -23,7 +23,7 @@ const navbarDefaultList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/ShowCottages'
+    url:'/showCottages'
   },
   {
     icon: Sailing,
@@ -31,7 +31,7 @@ const navbarDefaultList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/allBoats'
+    url:'/showBoats'
   },
   {
     icon: Phishing,
@@ -39,7 +39,7 @@ const navbarDefaultList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/showAdventures'
   },
   
 ];
@@ -93,7 +93,7 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/cottages'
   },
   {
     icon: Handshake,
@@ -121,7 +121,7 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/ships'
   },
   {
     icon: Handshake,
@@ -141,7 +141,7 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/addAdventure'
   },
   {
     icon: FolderOpen,
@@ -149,7 +149,7 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/adventures'
   },
   {
     icon: Handshake,

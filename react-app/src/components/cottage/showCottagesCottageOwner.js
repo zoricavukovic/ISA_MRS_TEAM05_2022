@@ -164,7 +164,8 @@ function ShowCottagesCottageOwner() {
                     onChange = {makeChange}
                     size="small"
                     name="cost"
-                    placeholder="Min Cost Per Night"
+                    placeholder="M
+                    in Cost Per Night"
                     InputLabelProps={{
                         shrink: true,
                     }}

@@ -5,6 +5,10 @@ export function getAllAdventures() {
     return api.get('/adventures');
 }
 
+export function getAllAdventuresView() {
+    return api.get('/adventures/view')
+}
+
 export function getAdventureById(id) {
     return api.get('/adventures/' + id);
 }

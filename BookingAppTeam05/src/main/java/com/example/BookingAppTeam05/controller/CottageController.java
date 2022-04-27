@@ -6,8 +6,10 @@ import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.users.CottageOwner;
 import com.example.BookingAppTeam05.service.*;
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,16 +31,18 @@ public class CottageController {
     private RoomService roomService;
     private RuleOfConductService ruleOfConductService;
     private PricelistService pricelistService;
+    private BookingEntityService bookingEntityService;
 
     @Autowired
     public CottageController(CottageService cottageService, PlaceService placeService, UserService userService,
-                             RoomService roomService, RuleOfConductService ruleOfConductService, PricelistService pricelistService) {
+                             RoomService roomService, RuleOfConductService ruleOfConductService, PricelistService pricelistService, BookingEntityService bookingEntityService) {
         this.cottageService = cottageService;
         this.placeService = placeService;
         this.userService = userService;
         this.roomService = roomService;
         this.ruleOfConductService = ruleOfConductService;
         this.pricelistService = pricelistService;
+        this.bookingEntityService = bookingEntityService;
     }
 
     @GetMapping(value="/{id}")
@@ -81,6 +85,18 @@ public class CottageController {
         }
 
         return ResponseEntity.ok(cottageDTOs);
+    }
+
+
+    @GetMapping(value="/view", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getCottagesForView() {
+        List<Cottage> cottages = cottageService.findAll();
+        List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
+        for (Cottage c : cottages) {
+            SearchedBookingEntityDTO s = bookingEntityService.getSearchedBookingEntityDTOByEntityId(c.getId());
+            retVal.add(s);
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @GetMapping

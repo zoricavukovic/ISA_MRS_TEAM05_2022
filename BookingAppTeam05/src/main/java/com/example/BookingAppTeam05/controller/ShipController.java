@@ -1,10 +1,14 @@
 package com.example.BookingAppTeam05.controller;
 
+import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ShipDTO;
+import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.Ship;
+import com.example.BookingAppTeam05.service.BookingEntityService;
 import com.example.BookingAppTeam05.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +24,12 @@ import java.util.List;
 public class ShipController {
 
     private ShipService shipService;
+    private BookingEntityService bookingEntityService;
 
     @Autowired
-    public ShipController(ShipService shipService){
+    public ShipController(ShipService shipService, BookingEntityService bookingEntityService){
         this.shipService = shipService;
+        this.bookingEntityService = bookingEntityService;
     }
 
     @GetMapping
@@ -47,5 +53,18 @@ public class ShipController {
 
         return ResponseEntity.ok(shipDTOs);
     }
+
+
+    @GetMapping(value="/view", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getShipsForView() {
+        List<Ship> ships = shipService.findAll();
+        List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
+        for (Ship ship : ships) {
+            SearchedBookingEntityDTO s = bookingEntityService.getSearchedBookingEntityDTOByEntityId(ship.getId());
+            retVal.add(s);
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
 
 }

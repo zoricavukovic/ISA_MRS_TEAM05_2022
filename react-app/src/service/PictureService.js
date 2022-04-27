@@ -5,6 +5,7 @@ export function getAllPictureBase64ForEntityId(id) {
     return api.get('/pictures/entity/' + id);
 }
 
+export const URL_PICTURE_PATH = "http://localhost:8092/bookingApp/pictures/";
 
 export function dataURLtoFile(dataurl, filename) {
     let arr = dataurl.split(','),

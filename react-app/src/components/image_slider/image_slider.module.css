@@ -19,7 +19,7 @@
 .rightArrow {
     position: absolute;
     top: 50%;
-    right: 32px;
+    right: 9%;
     font-size: 3rem;
     color: #000;
     z-index: 10;
@@ -30,7 +30,7 @@
 .leftArrow {
     position: absolute;
     top: 50%;
-    left: 32px;
+    left: 9%;
     font-size: 3rem;
     color: #000;
     z-index: 10;

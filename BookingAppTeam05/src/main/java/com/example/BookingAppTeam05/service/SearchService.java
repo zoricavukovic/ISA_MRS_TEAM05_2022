@@ -46,7 +46,7 @@ public class SearchService {
         Double maxCost = s.getMaxCostPerPerson();
 
         if (minCost != null && maxCost != null) {
-            result = result.stream().filter(i -> i.getEntityPricePerPerson() >= minCost && i.getEntityPricePerPerson() <= maxCost).collect(Collectors.toList());
+            result = result.stream().filter(i -> (i.getEntityPricePerPerson() >= minCost && i.getEntityPricePerPerson() <= maxCost)).collect(Collectors.toList());
         } else if (minCost != null) {
             result = result.stream().filter(i -> i.getEntityPricePerPerson() >= minCost).collect(Collectors.toList());
         } else if (maxCost != null) {
@@ -55,23 +55,19 @@ public class SearchService {
         return result;
     }
 
-    private boolean endSearch(List<SearchedBookingEntityDTO> entities) {
-        return (entities.size() == 0 || entities.size() == 1);
-    }
-
     public List<SearchedBookingEntityDTO> simpleFilterSearchForBookingEntities(List<SearchedBookingEntityDTO> entities, SimpleSearchForBookingEntityDTO s) {
         List<SearchedBookingEntityDTO> result;
         result = searchByName(entities, s);
-        if (endSearch(result)) return result;
+        if (result.size() == 0) return result;
 
         result = searchByAddress(result, s);
-        if (endSearch(result)) return result;
+        if (result.size() == 0) return result;
 
         result = searchByPlaceId(result, s);
-        if (endSearch(result)) return result;
+        if (result.size() == 0) return result;
 
         result = searchByRating(result, s);
-        if (endSearch(result)) return result;
+        if (result.size() == 0) return result;
 
         result = searchByMinAndMaxPrice(result, s);
         return result;

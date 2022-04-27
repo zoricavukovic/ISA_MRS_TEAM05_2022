@@ -23,7 +23,8 @@ import { styled } from "@mui/material/styles";
 import ImageSlider from "../image_slider/ImageSlider";
 import { getAdventureById } from "../../service/AdventureService";
 import { getPricelistByEntityId } from "../../service/Pricelists";
-import { useParams } from "react-router-dom";
+import { URL_PICTURE_PATH } from "../../service/PictureService";
+
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -118,7 +119,10 @@ function AdventureActions(props) {
 
     const editAdventure = (event) => {
         event.preventDefault();
-        props.history.push("/editAdventure/" + props.adventureId);
+        props.history.push({
+            pathname: "/editAdventure/",
+            state: { bookingEntityId: props.adventureId }
+        });
     };
 
     return (
@@ -153,15 +157,14 @@ export default function AdventureProfile(props) {
     const [isLoading, setLoading] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
 
-    const { adventureId } = useParams();
     const history = useHistory();
-    const urlPicturePath = "http://localhost:8092/bookingApp/pictures/";
+    const adventureId = props.history.location.state.bookingEntityId;
+
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
-    
     useEffect(() => {
         getAdventureById(adventureId).then(res => {
             setAdventureData(res.data);
@@ -178,8 +181,8 @@ export default function AdventureProfile(props) {
     }
     else {
         return (
-            <Card sx={{}}>
-                <ImageSlider slides={adventureData.pictures.map((im) => ({'image':  urlPicturePath + im.picturePath}))} />
+            <Card style={{ margin: "1% 9% 1% 9%"}} sx={{}}>
+                <ImageSlider slides={adventureData.pictures.map((im) => ({ 'image': URL_PICTURE_PATH + im.picturePath }))} />
                 <br />
                 <CardHeader
                     title={adventureData.name}
@@ -200,19 +203,19 @@ export default function AdventureProfile(props) {
                             <AdventureAdditionalInfo
                                 header="Rules of conduct"
                                 additionalData={<RenderRulesOfConduct rulesOfConduct={adventureData.rulesOfConduct} />}
-                            />    
+                            />
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <AdventureAdditionalInfo
                                 header="Additional services"
                                 additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
-                            />    
+                            />
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <AdventureAdditionalInfo
                                 header="Fishing equipment"
                                 additionalData={<RenderFishingEquipment fishingEquipment={adventureData.fishingEquipment} />}
-                            />    
+                            />
                         </Grid>
                     </Grid>
                 </Collapse>

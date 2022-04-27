@@ -65,15 +65,28 @@ public class BookingEntityService {
             }
         }
         for (SearchedBookingEntityDTO s : retVal) {
-            Float avgRating = ratingService.getAverageRatingForEntityId(s.getId());
-            s.setAverageRating(avgRating);
-            Pricelist pricelist = pricelistService.getCurrentPricelistForEntityId(s.getId());
-            s.setEntityPricePerPerson(pricelist.getEntityPricePerPerson());
+            setPriceListAndRatingForSearchedBookingEntityDTO(s);
         }
         return retVal;
     }
 
+    private void setPriceListAndRatingForSearchedBookingEntityDTO(SearchedBookingEntityDTO s) {
+        Float avgRating = ratingService.getAverageRatingForEntityId(s.getId());
+        s.setAverageRating(avgRating);
+        Pricelist pricelist = pricelistService.getCurrentPricelistForEntityId(s.getId());
+        s.setEntityPricePerPerson(pricelist.getEntityPricePerPerson());
+    }
+
     public List<SearchedBookingEntityDTO> simpleFilterSearchForBookingEntities(List<SearchedBookingEntityDTO> entities, SimpleSearchForBookingEntityDTO s) {
         return searchService.simpleFilterSearchForBookingEntities(entities, s);
+    }
+
+    public SearchedBookingEntityDTO getSearchedBookingEntityDTOByEntityId(Long id) {
+        BookingEntity bookingEntity = bookingEntityRepository.getEntityById(id);
+        if (bookingEntity == null)
+            return null;
+        SearchedBookingEntityDTO retVal = new SearchedBookingEntityDTO(bookingEntity);
+        setPriceListAndRatingForSearchedBookingEntityDTO(retVal);
+        return retVal;
     }
 }

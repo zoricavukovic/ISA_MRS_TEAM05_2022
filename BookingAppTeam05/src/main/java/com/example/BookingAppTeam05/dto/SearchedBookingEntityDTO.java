@@ -2,6 +2,10 @@ package com.example.BookingAppTeam05.dto;
 
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
+import com.example.BookingAppTeam05.model.entities.EntityType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchedBookingEntityDTO {
     private Long id;
@@ -11,18 +15,10 @@ public class SearchedBookingEntityDTO {
     private String promoDescription;
     private double entityPricePerPerson;
     private Float averageRating;
+    private List<String> pictures;
+    private EntityType entityType;
 
     public SearchedBookingEntityDTO() {}
-
-    public SearchedBookingEntityDTO(Long id, String name, String address, Place place, String promoDescription, double entityPricePerPerson, Float averageRating) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.place = place;
-        this.promoDescription = promoDescription;
-        this.entityPricePerPerson = entityPricePerPerson;
-        this.averageRating = averageRating;
-    }
 
     public SearchedBookingEntityDTO(BookingEntity bookingEntity) {
         this.id = bookingEntity.getId();
@@ -30,6 +26,25 @@ public class SearchedBookingEntityDTO {
         this.address = bookingEntity.getAddress();
         this.place = bookingEntity.getPlace();
         this.promoDescription = bookingEntity.getPromoDescription();
+        this.pictures = new ArrayList<>();
+        this.entityType = bookingEntity.getEntityType();
+        bookingEntity.getPictures().forEach(p -> this.pictures.add(p.getPicturePath()));
+    }
+
+    public EntityType getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(EntityType entityType) {
+        this.entityType = entityType;
+    }
+
+    public List<String> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<String> pictures) {
+        this.pictures = pictures;
     }
 
     public Long getId() {

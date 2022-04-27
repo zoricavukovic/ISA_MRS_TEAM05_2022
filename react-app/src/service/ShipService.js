@@ -5,6 +5,10 @@ export function getAllShips() {
     return api.get('/ships');
 }
 
+export function getAllShipsView() {
+    return api.get('/ships/view')
+}
+
 export function getShipById(id) {
     return api.get('/ships/' + id);
 }

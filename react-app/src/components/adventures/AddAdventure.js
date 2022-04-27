@@ -269,7 +269,7 @@ export default function AddAdventure() {
         return <div className="App">Loading...</div>
     }
     return (
-        <div style={{ backgroundColor: 'aliceblue', margin: '5%', padding: '1%', borderRadius: '10px', height: '100%' }} >
+        <div style={{ backgroundColor: 'aliceblue', margin: '1% 9% 1% 9%', padding: '1%', borderRadius: '10px', height: '100%' }} >
             
             {getAllPlacesForTheList()}
             <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '42%', padding: '1%', borderRadius: '10px', width: '15%' }} >

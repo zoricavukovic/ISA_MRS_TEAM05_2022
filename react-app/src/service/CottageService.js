@@ -5,6 +5,9 @@ import api from "./baseApi";
 export function getAllCottages() {
     return api.get('/cottages');
 }
+export function getAllCottagesView() {
+    return api.get('/cottages/view')
+}
 
 export function getCottageById(id) {
     return api.get('/cottages/' + id);

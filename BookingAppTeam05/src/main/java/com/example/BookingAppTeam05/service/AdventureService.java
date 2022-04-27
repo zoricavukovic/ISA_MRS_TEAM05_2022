@@ -38,6 +38,10 @@ public class AdventureService {
     }
 
 
+    public List<Adventure> findAll() {
+        return this.adventureRepository.findAll();
+    }
+
     public List<Adventure> getAdventuresByOwnerId(Long id) {
         return this.adventureRepository.getAdventuresForOwnerId(id);
     }
