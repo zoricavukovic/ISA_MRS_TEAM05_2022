@@ -2,10 +2,13 @@ package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.AdventureDTO;
 import com.example.BookingAppTeam05.dto.NewAdventureDTO;
+import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.model.entities.Adventure;
+import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.service.AdventureService;
+import com.example.BookingAppTeam05.service.BookingEntityService;
 import com.example.BookingAppTeam05.service.InstructorService;
 import com.example.BookingAppTeam05.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -26,12 +31,14 @@ public class AdventureController {
     private AdventureService adventureService;
     private PlaceService placeService;
     private InstructorService instructorService;
+    private BookingEntityService bookingEntityService;
 
     @Autowired
-    public AdventureController(AdventureService adventureService, PlaceService placeService, InstructorService instructorService) {
+    public AdventureController(AdventureService adventureService, PlaceService placeService, InstructorService instructorService, BookingEntityService bookingEntityService) {
         this.placeService = placeService;
         this.adventureService = adventureService;
         this.instructorService = instructorService;
+        this.bookingEntityService = bookingEntityService;
     }
 
     @GetMapping(value="/{id}")
@@ -85,4 +92,16 @@ public class AdventureController {
         Adventure updated = adventureService.editAdventureById(id, newAdventureDTO, place);
         return new ResponseEntity<>("entity changed", HttpStatus.OK);
     }
+
+    @GetMapping(value="/view", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getShipsForView() {
+        List<Adventure> adventures = adventureService.findAll();
+        List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
+        for (Adventure adventure : adventures) {
+            SearchedBookingEntityDTO s = bookingEntityService.getSearchedBookingEntityDTOByEntityId(adventure.getId());
+            retVal.add(s);
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
 }

@@ -35,7 +35,9 @@ export default function ImageUploader(props) {
                     </div>
                     {imageList.map((image, index) => (
                         <div key={index} className={styles.imageItem}>
-                            <img src={image.data_url} alt="" width="300" />
+                            <div className={styles.imageScaled}>
+                                <img src={image.data_url} alt="" width="200" />    
+                            </div>
                             <div className={styles.imageItemBtnWrapper}>
                                 <button className={styles.imageButton} onClick={() => onImageUpdate(index)}>Update</button>
                                 <button className={styles.imageButton} onClick={() => onImageRemove(index)}>Remove</button>

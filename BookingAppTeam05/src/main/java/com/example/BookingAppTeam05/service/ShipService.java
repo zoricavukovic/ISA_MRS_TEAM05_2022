@@ -24,4 +24,7 @@ public class ShipService {
         return shipRepository.findAll();
     }
 
+    public List<Ship> getShipsByOwnerId(Long id) {
+        return shipRepository.getShipsByOwnerId(id);
+    }
 }

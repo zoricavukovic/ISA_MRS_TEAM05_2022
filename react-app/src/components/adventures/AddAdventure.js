@@ -5,9 +5,11 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import axios from "axios";
 import Autocomplete from '@mui/material/Autocomplete';
+
 import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
-import AddingEquipmentAdventure from "../AddingEquipment.js";
 import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
+import AddingEquipmentAdventure from "../AddingEquipment.js";
+
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
@@ -267,7 +269,7 @@ export default function AddAdventure() {
         return <div className="App">Loading...</div>
     }
     return (
-        <div style={{ backgroundColor: 'aliceblue', margin: '5%', padding: '1%', borderRadius: '10px', height: '100%' }} >
+        <div style={{ backgroundColor: 'aliceblue', margin: '1% 9% 1% 9%', padding: '1%', borderRadius: '10px', height: '100%' }} >
             
             {getAllPlacesForTheList()}
             <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '42%', padding: '1%', borderRadius: '10px', width: '15%' }} >
@@ -319,7 +321,7 @@ export default function AddAdventure() {
                             {...register("address", { required: true, maxLength: 50 })}
                         />
                     </Grid>
-                    {errors.name && <p style={{ color: '#ED6663' }}>Please check the address</p>}
+                    {errors.address && <p style={{ color: '#ED6663' }}>Please check the address name</p>}
                     <Grid item xs={12} sm={12}>
                         <Autocomplete
                             disablePortal
@@ -341,7 +343,7 @@ export default function AddAdventure() {
                             {...register("costPerPerson", { required: true, min: 1, max: 100000 })}
                         />
                     </Grid>
-                    {errors.costPerPerson && <p style={{ color: '#ED6663' }}>Please check cost per night</p>}
+                    {errors.costPerPerson && <p style={{ color: '#ED6663' }}>Please check cost per person</p>}
                     <Grid item xs={12} sm={12}>
                         <TextField
                             type="number"

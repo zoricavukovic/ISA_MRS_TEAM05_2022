@@ -79,7 +79,7 @@ function ShowCottagesCottageOwner() {
     if (isLoading) { return <div><CircularProgress /></div> }
     return (
         <div>
-            <div style={{ display: "flex", flexDirection: "row", margin: "2%", width:"100%", alignItems: "stretch", backgroundColor: "aliceblue", borderRadius: "5px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", flexDirection: "row", margin: "2%", width:"100%", alignItems: "stretch", backgroundColor: "aliceblue", borderRadius: "5px" }}>
                 
                 <TextField
                 
@@ -164,7 +164,8 @@ function ShowCottagesCottageOwner() {
                     onChange = {makeChange}
                     size="small"
                     name="cost"
-                    placeholder="Min Cost Per Night"
+                    placeholder="M
+                    in Cost Per Night"
                     InputLabelProps={{
                         shrink: true,
                     }}

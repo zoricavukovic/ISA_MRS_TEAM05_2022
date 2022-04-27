@@ -278,9 +278,38 @@ VALUES
 
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled)
 VALUES
-    ('2019-03-12 5:00 am',1,17,1,8,'False','False'),
-    ('2022-05-01 7:00 pm',26,3,1,7,'False','True'),
-    ('2022-04-20 7:00 pm',4,3,1,7,'False','False');
+    ('2019-03-12 5:00 am',1,17,1,8,'False','False'),   -- 1
+    ('2022-05-01 7:00 pm',26,3,1,7,'False','True'),    -- 2
+    ('2022-04-19 7:00 pm',4,3,1,7,'False','False');    -- 3
+
+
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled)
+VALUES
+    ('2022-01-10 5:00 am',2,2,11,8,'False','False'),   --4
+    ('2022-03-03 7:00 pm',2,3,11,7,'False','True'),    --5
+    ('2022-04-19 7:00 pm',2,3,11,9,'False','False'),   --6
+
+    ('2022-01-15 7:00 pm',1,3,12,8,'False','False'),   --7
+    ('2022-01-20 7:00 pm',4,3,12,7,'False','False'),   --8
+
+    ('2022-01-20 7:00 pm',2,1,13,8,'False','False'),   --9
+    ('2022-01-25 7:00 pm',4,3,13,7,'False','False'),   --10
+
+    ('2022-01-25 7:00 pm',1,3,14,8,'False','False'),   --11
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False');   --12
+
+
+INSERT INTO ratings (comment, value, reservation_id)
+VALUES
+    ('commen1', 3.0, 4),
+    ('commen2', 2.5, 5),
+    ('commen3', 4.0, 6),
+    ('commen4', 4.5, 7),
+    ('commen5', 1.0, 8),
+    ('commen6', 0.5, 9),
+    ('commen7', 5.0, 10);
+    --('commen8', 4.5, 11),
+    --('commen9', 4.5, 12);
 
 INSERT INTO reservation_additional_service(reservation_id, additional_service_id)
 VALUES
@@ -289,9 +318,15 @@ VALUES
        (2,3);
 
 --- dodavanje slika za avanturu
-INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1.jpg', 11);
-INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure2.jpg', 11);
-INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure3.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1_1.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1_2.jpg', 11);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1_3.jpg', 11);
+
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure2_1.jpg', 12);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure2_2.jpg', 12);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure3_1.jpg', 13);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure4_1.jpg', 14);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure5_1.jpg', 15);
 
 --- dodavanje slika za vikendicu
 INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1a.jpg', 1);

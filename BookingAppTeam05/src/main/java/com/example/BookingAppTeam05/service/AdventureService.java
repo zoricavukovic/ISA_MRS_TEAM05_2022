@@ -5,11 +5,9 @@ import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.repository.AdventureRepository;
-import org.apache.tomcat.util.digester.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
@@ -39,6 +37,14 @@ public class AdventureService {
         return this.adventureRepository.getAdventureById(id);
     }
 
+
+    public List<Adventure> findAll() {
+        return this.adventureRepository.findAll();
+    }
+
+    public List<Adventure> getAdventuresByOwnerId(Long id) {
+        return this.adventureRepository.getAdventuresForOwnerId(id);
+    }
 
     public Adventure createNewAdventure(NewAdventureDTO newAdventureDTO, Place place, Instructor instructor) {
         Adventure adventure = new Adventure(newAdventureDTO.getPromoDescription(), newAdventureDTO.getAddress(), newAdventureDTO.getName(), newAdventureDTO.getEntityCancelationRate(), newAdventureDTO.getShortBio(), newAdventureDTO.getMaxNumOfPersons());

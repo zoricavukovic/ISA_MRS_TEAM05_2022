@@ -19,7 +19,7 @@
 .rightArrow {
     position: absolute;
     top: 50%;
-    right: 32px;
+    right: 9%;
     font-size: 3rem;
     color: #000;
     z-index: 10;
@@ -30,7 +30,7 @@
 .leftArrow {
     position: absolute;
     top: 50%;
-    left: 32px;
+    left: 9%;
     font-size: 3rem;
     color: #000;
     z-index: 10;
@@ -48,3 +48,16 @@
     transition-duration: 1s;
     transform: scale(1.08);
 }
+
+/* .imageScaled {
+    float: left;
+    width: 150px;
+    height: 150px;
+    background-image: url(../img/admin-profileP.png);
+    background-size: cover;
+    display: block;
+    border-radius: 100px;
+    border: 2px solid rgba(36, 40, 58, 0.7);
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+} */

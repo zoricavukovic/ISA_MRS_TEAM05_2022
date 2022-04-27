@@ -23,7 +23,7 @@ export default function EditAdventure(props) {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [currentAdventure, setCurrentAdventure] = useState({});
-    const { adventureId} = useParams();
+    const adventureId =  props.history.location.state.bookingEntityId;
     const [pricelist, setPricelist] = useState({});
     const [base64Images, setBase64Images] = useState([]);
 
@@ -306,7 +306,7 @@ export default function EditAdventure(props) {
                 alert("Adventure  successfully updated. Redirecting to updated adventure...");
                 history.push({
                     pathname: "/showAdventureProfile",
-                    state: { adventureId: parseInt(adventureId) }
+                    state: { bookingEntityId: parseInt(adventureId) }
                   });
             })
             .catch(res => {
@@ -360,7 +360,7 @@ export default function EditAdventure(props) {
         return <div className="App">Loading...</div>
     }
     return (
-        <div style={{ backgroundColor: 'aliceblue', margin: '5%', padding: '1%', borderRadius: '10px', height: '100%' }} >
+        <div style={{ backgroundColor: 'aliceblue', margin: '1% 9% 1% 9%', padding: '1%', borderRadius: '10px', height: '100%' }} >
 
             {getAllPlacesForTheList()}
 

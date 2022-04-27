@@ -16,9 +16,15 @@ const labels = {
   5: 'Excellent+',
 };
 
+function getLabelText(value) {
+  return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
+}
+
+
 export default function RatingEntity(prop) {
 
   return (
+
     <Box
       sx={{
         width: 200,
@@ -35,5 +41,27 @@ export default function RatingEntity(prop) {
       />
       <Box sx={{ ml: 2 }}><h3>{labels[prop.value]}</h3></Box>
     </Box>
+  );
+}
+
+export function ControlledRating(prop) {
+  return (
+    <span>
+      <Rating
+        name="hover-feedback"
+        value={prop.value}
+        precision={0.5}
+        getLabelText={getLabelText}
+        onChange={prop.onChange}
+        onChangeActive={prop.onChangeActive}
+        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+      />
+      {
+        prop.value !== null && (
+          <Box sx={{ ml: 2 }}>{labels[prop.hover !== -1 ? prop.hover : prop.value]}</Box>
+        )
+      }
+
+    </span>
   );
 }

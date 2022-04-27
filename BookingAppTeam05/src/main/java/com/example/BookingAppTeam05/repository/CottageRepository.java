@@ -20,7 +20,7 @@ public interface CottageRepository extends JpaRepository<Cottage, Long> {
     @Query(value="select c from Cottage c left join fetch c.rooms r left join fetch c.pictures s where c.id=?2 and r.roomNum=?1")
     Cottage getCottageRoomByNum(int roomNum, Long id);
 
-    @Query(value="select c from Cottage c left join fetch c.rulesOfConduct r left join fetch c.place p left join fetch c.rooms room left join fetch c.pictures s where c.deleted = false")
+    @Query(value="select distinct c from Cottage c left join fetch c.rulesOfConduct r left join fetch c.place p left join fetch c.rooms room left join fetch c.pictures s where c.deleted = false")
     List<Cottage> findAll();
 
     @Query(value="select distinct c from Cottage c left join fetch c.place p left join fetch c.pictures s left join fetch c.rooms room left join fetch c.rulesOfConduct d " +
