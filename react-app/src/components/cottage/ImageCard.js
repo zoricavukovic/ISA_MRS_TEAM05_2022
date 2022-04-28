@@ -26,10 +26,8 @@ import Checkbox from '@mui/material/Checkbox';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RatingEntity from '../Rating';
 import Snackbar from '@mui/material/Snackbar';
-import axios from "axios";
 import { editCottageById, getCottageById } from '../../service/CottageService';
 import { getPricelistByEntityId } from '../../service/Pricelists';
-import cottageImg from "../cottage.jpg";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -88,8 +86,70 @@ export default function CardIm(props) {
                 return;
             })
     };
+    function AdventureAdditionalInfo(props) {
+        return (
+            <CardContent>
+                <Box sx={{ width: '100%', maxWidth: 350, bgcolor: 'background.paper' }}>
+                    <Box sx={{ my: 2, mx: 3 }}>
+                        <Grid container alignItems="center">
+                            <Grid item xs>
+                                <Typography gutterBottom variant="h5" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
+                                    {props.header}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                    <Divider variant="middle" />
+                    <Box sx={{ m: 2, ml: 2.5 }}>
+                        <Stack sx={{
+                            mb: 2,
+                            pb: 1,
+                            display: 'grid',
+                            gap: 1,
+                            gridTemplateRows: 'repeat(2, 1fr)',
+                        }} direction="column" spacing={1}>
+                            {props.additionalData}
+                        </Stack>
+                    </Box>
+                </Box>
+            </CardContent>
+        )
+    }
+    
+    
+    function RenderRulesOfConduct(props) {
+        return (
+            props.rulesOfConduct.map((page) => (
+                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
+                    <FormControlLabel disabled control={<Checkbox size="small" checked={page.allowed} />} />
+                    <Typography textAlign="center">{page.ruleName}</Typography>
+                </Button>
+            ))
+        )
+    }
+    function RenderAdditionalServices(props) {
+        return (
+            props.additionalServices.map((service) => (
+                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={service.name}>
+                    <Typography textAlign="center">{service.serviceName + "    " + service.price + " €"}</Typography>
+                </Button>
+            ))
+        )
+    }
+    function RenderRoom(props) {
+        return (
+            props.rooms.map((e) => (
+                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={e.equipmentName}>
+                    <Typography textAlign="center">{"Room Num " + e.roomNum + "/Num of beds " + e.numOfBeds}</Typography>
+                </Button>
+            ))
+        )
+    }
 
     useEffect(() => {
+        if (props.cottageId === undefined || props.cottageId === null){
+            return <div>Do not allowed to go to this page. Try again!</div>
+        }
         getCottageById(props.cottageId).then(res => {
             setCottageBasicData(res.data);
             setLoadingCottage(false);
@@ -103,7 +163,7 @@ export default function CardIm(props) {
 }, []);
 if (isLoadingCottage || isLoadingPricelist) { return <div className="App">Loading...</div> }
 return (
-    <Card sx={{}}>
+    <Card style={{ margin: "1% 9% 1% 9%"}} sx={{}}>
         {cottageBasicData.pictures.length === 0 ? (
           <CardMedia
           component="img"
@@ -157,134 +217,26 @@ return (
         </div >
         <Collapse in={expanded} timeout="auto" unmountOnExit>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
-                {/* <CardContent>
-                <MapContainer></MapContainer>
-                    
-                </CardContent> */}
+                
+            <Grid item xs={12} sm={4}>
+                        <AdventureAdditionalInfo
+                            header="Rules of conduct"
+                            additionalData={<RenderRulesOfConduct rulesOfConduct={cottageBasicData.rulesOfConduct} />}
+                        />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <AdventureAdditionalInfo
+                                header="Additional services"
+                                additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <AdventureAdditionalInfo
+                                header="Rooms"
+                                additionalData={<RenderRoom rooms={cottageBasicData.rooms} />}
+                            />
+                        </Grid>
                 <CardContent>
-
-                    <Box sx={{ width: '100%', maxWidth: 350, minWidth:300, bgcolor: 'background.paper' }}>
-                        <Box sx={{ my: 2, mx: 3 }}>
-                            <Grid container alignItems="center">
-                                <Grid item xs>
-                                    <Typography gutterBottom variant="h6" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2%' }}>
-                                        Rules Of Conduct
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-
-                        </Box>
-                        <Divider variant="middle" />
-                        <Box sx={{ m: 2, ml: 2.5 }}>
-
-                            <Stack sx={{
-                                mb: 2,
-                                pb: 1,
-                                display: 'grid',
-                                gap: 1,
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                            }} direction="row" spacing={1}>
-
-
-                                {cottageBasicData.rulesOfConduct.map((page) => (
-                                    <Card>
-                                        <Typography textAlign="center" style={{display: "inline-block", whiteSpace: "wrap", margin:"5%"}}>{page.ruleName}
-
-                                        <Checkbox size="small" checked={page.allowed} />
-                                        </Typography>
-                                    </Card>
-                                       
-                                ))}
-
-                            </Stack>
-                        </Box>
-
-                    </Box>
-                </CardContent>
-                <CardContent>
-
-                    <Box sx={{ width: '100%', maxWidth: 350, minWidth:300, bgcolor: 'background.paper', display: "inline-block", whiteSpace: "nowrap" }}>
-                        <Box sx={{ my: 2, mx: 3 }}>
-                            <Grid container alignItems="center">
-                                <Grid item xs>
-                                    <Typography gutterBottom variant="h6" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
-                                        Additional Services
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-
-                        </Box>
-                        <Divider variant="middle" />
-                        <Box sx={{ m: 2, ml: 2.5 }}>
-
-                            <Stack sx={{
-                                mb: 2,
-                                pb: 1,
-                                display: 'grid',
-                                gap: 1,
-                                gridTemplateColumns: 'repeat(1, 1fr)',
-                            }} direction="row" spacing={1}>
-
-
-                                {pricelistData.additionalServices.map((service) => (
-
-                                    <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={service.name}>
-                                        <Typography textAlign="center">{"Service: " + service.serviceName + ", Amount: " + service.price + "€"}</Typography>
-                                    </Button>
-                                ))}
-                            </Stack>
-                        </Box>
-                    </Box>
-                </CardContent>
-                <CardContent >
-
-                    <Box sx={{ width: '100%', maxWidth: 350,minWidth:300, bgcolor: 'background.paper',  display: "inline-block", whiteSpace: "nowrap"}}>
-                        <Box sx={{ my: 2, mx: 3 }}>
-                            <Grid container alignItems="center">
-                                <Grid item xs>
-                                    <Typography gutterBottom variant="h6" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
-                                        Rooms
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-
-                        </Box>
-                        <Divider variant="middle" />
-                        <Box sx={{ m: 2, ml: 2.5 }}>
-
-                            <Stack sx={{
-                                mb: 2,
-                                pb: 1,
-                                display: 'grid',
-                                gap: 1,
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                            }} direction="row" spacing={1}>
-                                <table >
-                                    <tr>
-                                        <th>
-                                            Room Name
-                                        </th>
-                                        <th>
-                                            Num Of Beds
-                                        </th>
-                                    </tr>
-
-                                    {cottageBasicData.rooms.map((room) => (
-
-                                        <tr style={{ textAlign: 'center' }}>
-                                            <td> {room.roomNum} </td>
-
-                                            <td> {room.numOfBeds} </td>
-                                        </tr>
-
-                                    ))}
-                                </table>
-
-
-                            </Stack>
-                        </Box>
-
-                    </Box>
 
                 </CardContent>
             </div>

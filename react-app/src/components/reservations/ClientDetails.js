@@ -41,6 +41,9 @@ export default function ClientDetails(props) {
     
     
     useEffect(() => {
+      if (props === null || props === undefined){
+        history.push('/login');
+      }
         getUserById(props.reservation.client.id).then(res => {
             setUserData(res.data);
             console.log(res.data);

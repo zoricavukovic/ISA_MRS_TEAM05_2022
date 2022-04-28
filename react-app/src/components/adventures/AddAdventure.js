@@ -3,25 +3,25 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import axios from "axios";
 import Autocomplete from '@mui/material/Autocomplete';
 
 import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
 import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
 import AddingEquipmentAdventure from "../AddingEquipment.js";
-
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
 import {useHistory} from "react-router-dom";
 import { getAllPlaces } from "../../service/PlaceService.js";
 import { addNewAdventure } from "../../service/AdventureService.js";
+import { getCurrentUser } from '../../service/AuthService.js';
 
 export default function AddAdventure() {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [isLoading, setLoading] = useState(true);
     const history = useHistory();
+    let ownerId = null;
 
 
     ////////////////IMAGES//////////////////////////////////
@@ -196,6 +196,7 @@ export default function AddAdventure() {
     /////////////////////// PlACE /////////////////////////////////////////////////
     const [places, setPlaces] = React.useState([]);
     const [selectedPlaceId, setSelectedPlaceId] = useState('');
+    const [hiddenError, setHiddenError] = useState("none");
     let allPlacesList;
 
     const placeOnChange = (event, newValue) => {
@@ -211,12 +212,20 @@ export default function AddAdventure() {
 
 
     const onFormSubmit = data => {
-        if (selectedPlaceId === '') {
-            alert("Please select place");
+        console.log("USAO OVDEE============")
+        if (selectedPlaceId != null &&  selectedPlaceId!= undefined && selectedPlaceId != '') {
+            setHiddenError("none");
+        } else {
+            setHiddenError("block");
             return;
         }
+        if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER") {
+            history.push('/login');
+          } else {
+              ownerId = getCurrentUser().id;
+          }
         const newAdventure = {
-            instructorId: 13, // ovde promeniti posle u zavisnosti od ulogovanog korisnika
+            instructorId: ownerId,
             name : data.name,
             address: data.address,
             placeId: selectedPlaceId,
@@ -248,6 +257,11 @@ export default function AddAdventure() {
         
     }
     useEffect(() => {
+        if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_INSTRUCTOR") {
+            history.push('/login');
+          } else {
+              ownerId = getCurrentUser().id;
+          }
         getAllPlaces()
             .then(res => {
                 setPlaces(res.data);
@@ -332,6 +346,7 @@ export default function AddAdventure() {
                             renderInput={(params) => <TextField {...params} label="Place" />}
                         />
                     </Grid>
+                    <p style={{ color: '#ED6663', fontSize:"10px" , display:hiddenError}}>Please check place.</p>
                     <Grid item xs={12} sm={12}>
                         <TextField
                             name="costPerPerson"

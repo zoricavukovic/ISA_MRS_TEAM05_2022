@@ -54,7 +54,9 @@ function UserProfile(props) {
     />
 
     useEffect(() => {
-        console.log(props.history.location.state);
+        if (props.history.location.state === undefined || props.history.location.state === null){
+            return <div>Do not allowed to go to this page. Try again!</div>
+        }
         getUserById(props.history.location.state.userId).then(res => {
             setUserData(res.data);
             setLoading(false);

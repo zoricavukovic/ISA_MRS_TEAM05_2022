@@ -25,6 +25,9 @@ import { getAllPlaces } from '../../service/PlaceService.js';
 import { editCottageByIdReal, getCottageById } from '../../service/CottageService.js';
 import AddingRooms from '../AddingRooms.js';
 import { getAllPictureBase64ForEntityId } from "../../service/PictureService.js";
+import { getCurrentUser } from '../../service/AuthService.js';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -42,9 +45,22 @@ export default function EditCottage(props) {
   const [cottageBasicData, setCottageBasicData] = useState({});
   const [pricelistData, setPricelistData] = useState({});
   const [places, setPlaces] = useState([]);
+  const [message, setMessage] = useState("");
+  
   const history = useHistory();
 
+  /////////////////////error message////////////////////
+  const [open, setOpen] = React.useState(false);
+  const handleClose = (_event, reason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+    setOpen(false);
+  };
 
+  const handleClick = () => {
+    setOpen(true);
+  };
     ////////////////IMAGES//////////////////////////////////
     const [images, setImages] = React.useState([]);
     const [base64Images, setBase64Images] = useState([]);
@@ -311,19 +327,29 @@ export default function EditCottage(props) {
       addNewPriceListForEntityId(cottageBasicData.id, pricelistData).then(result => {
         history.push({
           pathname: "/showCottageProfile",
-          state: { cottageId: cottageBasicData.id } 
+          state: { bookingEntityId: cottageBasicData.id } 
         })
-    }).catch(res=>{
-        console.log("Greska!!");
-        return;
-    })    
-  })
-      
+    }).catch(resError=>{
+      console.log("Greska!!");
+      setMessage(resError.response.data);
+      handleClick();
+      return;
+    })   
+  }).catch(resError=>{
+    console.log("Greska!!");
+    setMessage(resError.response.data);
+    handleClick();
+    return;
+  })      
   }
   useEffect(() => {
-    if (props.history.location.state === undefined){
-      return;
+    console.log(props.history.location.state);
+    if (props.history.location.state === undefined || props.history.location.state === null){
+      return <div>Do not allowed to go to this page. Try again!</div>
     }
+    if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER") {
+        history.push('/login');
+    } 
     getCottageById(props.history.location.state.cottageId).then(res => {
       setCottageBasicData(res.data);
       setRoom(res.data.rooms);
@@ -345,7 +371,7 @@ export default function EditCottage(props) {
       setPlaces(results.data);
         setLoadingPlaces(false);
       
-    })
+    }) 
   }, []);
 
   useEffect(() => {
@@ -377,7 +403,11 @@ export default function EditCottage(props) {
       <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '15%', padding: '1%', borderRadius: '10px', width: '15%' }} >
         Edit Cottage
       </div>
-      
+      <br />
+      <Divider />
+      <br />
+      <ImageUploader images={images} maxNumber={maxNumber} onChange={onChange} />
+      <br/>
       <h4 style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', marginLeft:"15%" }}>Basic Information About Cottage</h4>
          
       <Box sx={{ marginTop: '1%', marginLeft: '11%', marginRight: '5%', width: '90%' }}
@@ -545,13 +575,6 @@ export default function EditCottage(props) {
                         />
                 </td>
               </tr>
-              <tr>
-                <td><br />
-                <Divider />
-            <br />
-            <ImageUploader images={images} maxNumber={maxNumber} onChange={onChange} />
-            <br /></td>
-              </tr>
             </table>
 
           </div>
@@ -568,9 +591,30 @@ export default function EditCottage(props) {
       <Button type="submit" onClick={handleSubmit(onFormSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
           Save
       </Button>
-        <Button variant="contained" onClick={refreshPage} style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+        <Button variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
+          onClick={() => {
+            reset(
+                {
+                    name: cottageBasicData.name,
+                    address: cottageBasicData.address,
+                    costPerNight: pricelistData.entityPricePerPerson,
+                    entityCancelationRate: cottageBasicData.entityCancelationRate,
+                    promoDescription: cottageBasicData.promoDescription,
+                }, {
+                keepDefaultValues: false,
+                keepErrors: true,
+            }
+            );
+            
+            fillImageListFromBase64Images();
+        }}>
           Reset
         </Button>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                {message}
+            </Alert>
+        </Snackbar>
       </Box>
 
     </div>

@@ -156,9 +156,9 @@ export default function AdventureProfile(props) {
     const [adventureData, setAdventureData] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
-
+    let adventureId;
     const history = useHistory();
-    const adventureId = props.history.location.state.bookingEntityId;
+    
 
 
     const handleExpandClick = () => {
@@ -166,6 +166,7 @@ export default function AdventureProfile(props) {
     };
 
     useEffect(() => {
+        adventureId = props.history.location.state.bookingEntityId;
         getAdventureById(adventureId).then(res => {
             setAdventureData(res.data);
             setLoading(false);

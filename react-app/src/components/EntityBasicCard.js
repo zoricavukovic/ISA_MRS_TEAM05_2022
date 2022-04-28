@@ -170,6 +170,7 @@ export default function EntityBasicCard(props) {
                                 <Button size="small" onClick={reserveBookingEntity}><ReadMoreIcon fontSize="large" style={{ margin: "5px" }} /> Reserve</Button>
                             ) :
                             (
+                                
                                 <span>
                                     <Button size="small" onClick={handleClickOpen}><DeleteIcon />Delete</Button>
                                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

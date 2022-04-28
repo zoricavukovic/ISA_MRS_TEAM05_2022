@@ -6,7 +6,6 @@ import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.users.CottageOwner;
 import com.example.BookingAppTeam05.service.*;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,21 +27,19 @@ public class CottageController {
     private CottageService cottageService;
     private PlaceService placeService;
     private UserService userService;
-    private RoomService roomService;
-    private RuleOfConductService ruleOfConductService;
     private PricelistService pricelistService;
     private BookingEntityService bookingEntityService;
+    private PictureService pictureService;
 
     @Autowired
-    public CottageController(CottageService cottageService, PlaceService placeService, UserService userService,
-                             RoomService roomService, RuleOfConductService ruleOfConductService, PricelistService pricelistService, BookingEntityService bookingEntityService) {
+    public CottageController(CottageService cottageService, PlaceService placeService, UserService userService, PricelistService pricelistService,
+                             BookingEntityService bookingEntityService, PictureService pictureService) {
         this.cottageService = cottageService;
         this.placeService = placeService;
         this.userService = userService;
-        this.roomService = roomService;
-        this.ruleOfConductService = ruleOfConductService;
         this.pricelistService = pricelistService;
         this.bookingEntityService = bookingEntityService;
+        this.pictureService = pictureService;
     }
 
     @GetMapping(value="/{id}")
@@ -63,6 +60,7 @@ public class CottageController {
         return new ResponseEntity<>(cottageDTO, HttpStatus.OK);
     }
     @GetMapping(value="/editQue/{cottageId}")
+    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<String> checkIfCanEdit(@PathVariable Long cottageId) {
         Cottage cottage = cottageService.findCottageByCottageIdWithOwner(cottageId);
         if (cottage == null) return new ResponseEntity<String>("Cottage for editing is not found.", HttpStatus.BAD_REQUEST);
@@ -129,18 +127,20 @@ public class CottageController {
         cottage.setEntityCancelationRate(cottageDTO.getEntityCancelationRate());
 
         cottage.setEntityType(EntityType.COTTAGE);
+        if (cottageDTO.getPlace() == null) return new ResponseEntity<>("Cant find place.", HttpStatus.BAD_REQUEST);
         Place place1 = placeService.getPlaceByZipCode(cottageDTO.getPlace().getZipCode());
         if (place1 == null) return new ResponseEntity<>("Cant find place with zip code: " + cottageDTO.getPlace().getZipCode(), HttpStatus.BAD_REQUEST);
         cottage.setPlace(place1);
         CottageOwner co = (CottageOwner) userService.getUserById(idCottageOwner);
         if (co == null) return new ResponseEntity<>("Cant find cottage owner with id: " + idCottageOwner, HttpStatus.BAD_REQUEST);
         cottage.setCottageOwner(co);
+        if (cottageDTO.getRooms().isEmpty()) return new ResponseEntity<>("Cannot create new cottage without room", HttpStatus.BAD_REQUEST);
         cottage.setRooms(cottageDTO.getRooms());
         cottage.setRulesOfConduct(cottageDTO.getRulesOfConduct());
-//        if (!cottageDTO.getImages().isEmpty()) {
-//            Set<Picture> createdPictures = pictureService.createPicturesFromDTO(newAdventureDTO.getImages());
-//            adventure.setPictures(createdPictures);
-//        }
+        if (!cottageDTO.getImages().isEmpty()) {
+            Set<Picture> createdPictures = pictureService.createPicturesFromDTO(cottageDTO.getImages());
+            cottage.setPictures(createdPictures);
+        }
         cottage = cottageService.save(cottage);
 
         return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.CREATED);
@@ -148,84 +148,32 @@ public class CottageController {
 
     @PutMapping(value="/{id}", consumes = "application/json")
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<CottageDTO> updateCottage(@RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
+    public ResponseEntity<String> updateCottage(@RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
         Cottage cottage = cottageService.getCottageById(id);
-        if (cottage == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (cottage == null) return new ResponseEntity<>("Cant find cottage with id " + id + ".", HttpStatus.BAD_REQUEST);
         cottage.setName(cottageDTO.getName());
         cottage.setAddress(cottageDTO.getAddress());
         cottage.setPromoDescription(cottageDTO.getPromoDescription());
         cottage.setEntityCancelationRate(cottageDTO.getEntityCancelationRate());
         cottage.setEntityType(EntityType.COTTAGE);
-        Place place = placeService.getPlaceByZipCode(cottageDTO.getPlace().getZipCode());
+
+        Place p = cottageDTO.getPlace();
+        if (p == null) return new ResponseEntity<>("Cant find chosen place.", HttpStatus.BAD_REQUEST);
+        Place place = placeService.getPlaceByZipCode(p.getZipCode());
         cottage.setPlace(place);
+
+        if (cottageDTO.getRooms().isEmpty()) return new ResponseEntity<>("Cannot change cottage to be without room.", HttpStatus.BAD_REQUEST);
         Cottage oldCottage = cottageService.getCottageById(id);
-        Set<Room> rooms = new HashSet<Room>();
-
-        for (Room oldRoom: oldCottage.getRooms()) {
-            boolean found = false;
-            for (Room room: cottageDTO.getRooms()){
-                if (room.getRoomNum() == oldRoom.getRoomNum()){
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) { roomService.deleteById(oldRoom.getId()); }
-            else{
-                rooms.add(oldRoom);
-            }
-        }
-        System.out.println("Veli " + cottageDTO.getRooms().size());
-        for (Room room: cottageDTO.getRooms()){
-            boolean found = false;
-            for (Room addedRoom: rooms){
-
-                if (room.getRoomNum() == addedRoom.getRoomNum()){
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) { rooms.add(room); }
-        }
-        System.out.println("Stigao dovde 44");
+        Set<Room> rooms = cottageService.tryToEditCottageRooms(cottageDTO, oldCottage);
         cottage.setRooms(rooms);
 
         Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();
 
-        for (RuleOfConduct oldRule: oldCottage.getRulesOfConduct()) {
-            boolean found = false;
-            for (RuleOfConduct rule: cottageDTO.getRulesOfConduct()){
-                if (rule.getRuleName().equals(oldRule.getRuleName())){
-
-                    if (rule.isAllowed() != oldRule.isAllowed()) {
-                        ruleOfConductService.updateAllowedRuleById(oldRule.getId(), !oldRule.isAllowed());
-                        oldRule.setAllowed(rule.isAllowed());
-                        rules.add(oldRule);
-                    }
-                    else{
-                        rules.add(oldRule);
-                    }
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                ruleOfConductService.deleteRuleById(oldRule.getId()); }
-
-        }
-        for (RuleOfConduct rule: cottageDTO.getRulesOfConduct()){
-            boolean found = false;
-            for (RuleOfConduct addedRule: rules){
-                if (rule.getRuleName().equals(addedRule.getRuleName())){
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) { rules.add(rule); }
-        }
+        cottageService.tryToEditCottageRulesOfConduct(cottageDTO, oldCottage, rules);
         cottage.setRulesOfConduct(rules);
-        cottageService.setNewImages(cottage, cottage.getPictures());
+        cottageService.setNewImages(cottage, cottageDTO.getImages());
         cottage = cottageService.save(cottage);
-        return new ResponseEntity<>(new CottageDTO(cottage), HttpStatus.OK);
+        return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.OK);
     }
 
     @DeleteMapping(value="/{cottageId}/{confirmPass}")

@@ -55,8 +55,7 @@ export default function ImgReservation(props) {
     };
     
     useEffect(() => {
-      console.log("Jedan ");
-      console.log(props.reservation);
+      
         let end = new Date(props.reservation.startDate[0], props.reservation.startDate[1]-1, props.reservation.startDate[2],props.reservation.startDate[3],props.reservation.startDate[4]);
         end.setDate(end.getDate() + props.reservation.numOfDays);
         setDates({

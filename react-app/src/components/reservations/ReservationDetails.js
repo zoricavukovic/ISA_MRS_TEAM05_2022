@@ -4,10 +4,12 @@ import { CircularProgress } from "@mui/material";
 import ImgReservation from "./ReservationBasicCard.js";
 import ReservedBookingEntityDetail from './ReservedBookingEntityDetail';
 import ClientDetails from './ClientDetails';
+import { getCurrentUser } from '../../service/AuthService.js';
+import { useHistory } from 'react-router-dom';
 
 const options = ['AND', 'OR'];
 function ShowReservationsDetails(props) {
-
+    const history = useHistory();
     const [reservation, setReservation] = useState({});
     const [pricelist, setPricelist] = useState({});
     const [additionalServices, setAdditionalServices] = useState([]);
@@ -24,8 +26,18 @@ function ShowReservationsDetails(props) {
         rate:0,
         cost:0
     });
-    let ownerId = 1; //IZMENNEEEEEEEEE!!!!!!!!!!!!!!!
+    let ownerId = null;
     useEffect(() => {
+        if (props.history.location.state === null || props.history.location.state === undefined){
+            history.push('/login');
+        }
+        let owner = getCurrentUser();
+        if (owner === null || owner === undefined){
+            history.push('/login');
+        }
+        else{
+            ownerId = owner.id;
+        }
         console.log(props.history.location.state);
         setReservation(props.history.location.state.reservation);
         setPricelist(props.history.location.state.pricelist);
@@ -33,32 +45,9 @@ function ShowReservationsDetails(props) {
         setLoading(false);
        
     }, []);
-    const search = ()=>{
-        
-    }
-    const makeChange = (event)=>{
-        if (event.target.name==="rate" || event.target.name === "cost"){
-            let num = parseFloat(event.target.value);
-            if (num === NaN) {
-                alert("Samo broj sme.");
-                return;
-            }
-            setSearchElem(prevState => ({
-                ...prevState,
-                [event.target.name]: num
-            }));
-
-        }else{
-            setSearchElem(prevState => ({
-                ...prevState,
-                [event.target.name]: event.target.value
-            }));
-        }
-        
-    }
     if (isLoading) { return <div><CircularProgress /></div> }
     return (
-        <div>
+        <div style={{marginLeft:"5%", marginRight:"5%"}}>
             <div style={{ display: "flex", flexWrap: 'no-wrap', flexDirection: "row", justifyContent: "left", marginTop:"5%" }} className="App">
                 <ImgReservation reservation={reservation} reservationId={reservation.id} details="false"></ImgReservation>
                 <div style={{ display: "flex", flexWrap: 'no-wrap', flexDirection: "column", justifyContent: "left" }} className="App">
@@ -68,8 +57,6 @@ function ShowReservationsDetails(props) {
             </div>
            
         </div>
-
-
     );
 }
 

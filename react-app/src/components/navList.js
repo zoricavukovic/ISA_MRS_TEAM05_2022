@@ -101,7 +101,7 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/showReservationsOwner'
   }
 ]
 

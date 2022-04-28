@@ -22,7 +22,6 @@ export default function ShowAllEntitiesForOwner() {
     const [isLoadingEntites, setLoadingEntities] = useState(true);
     const [selectedPlaceId, setSelectedPlaceId] = useState(null);
     const history = useHistory();
-    //const ownerId = getCurrentUser().id; // promeni od ulogovanog korisnika
     let ownerId = null;
     const [entities, setEntities] = useState(null);
 
@@ -79,7 +78,7 @@ export default function ShowAllEntitiesForOwner() {
 
     const onSearch = data => {
         let searchCriteria = {
-            "ownerId": ownerId,
+            "ownerId": getCurrentUser().id,
             "name": data.name,
             "address": data.address,
             "placeId": selectedPlaceId,

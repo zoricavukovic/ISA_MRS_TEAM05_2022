@@ -158,8 +158,8 @@ VALUES
 (nextval('entities_id_gen'), 'Ap #977-2514 Sed Street',19,'COTTAGE','Ultrices Limited','est, mollis non, cursus non, egestas a,',27,1, false),
 (nextval('entities_id_gen'), '4369 Mauris St.',45,'COTTAGE','Sollicitudin Commodo Ipsum Limited','lacus. Mauris non dui',16,1, true),
 (nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',89,1, false),
-(nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',89,1, false),
-(nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',89,2, false);
+(nextval('entities_id_gen'), 'Ap #119-6987 Sed St.',33,'COTTAGE','Nunc Pulvinar Corporation','congue, elit sed consequat auctor, nunc',10,1, false),
+(nextval('entities_id_gen'), '411-1777 Nunc Av.',45,'COTTAGE','Parturient Montes Nascetur LLP','mauris. Suspendisse aliquet molestie tellus.',61,2, false);
 
 
 INSERT INTO ships (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,engine_num,engine_power,length,max_num_of_persons,max_speed,ship_type,ship_owner_id, deleted)
@@ -333,6 +333,17 @@ INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1a.jpg', 1);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1b.jpg', 1);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1c.jpg', 1);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage1d.jpg', 1);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage2a.jpg', 2);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage2b.jpg', 2);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage2c.jpg', 2);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage3a.jpg', 3);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage3b.jpg', 3);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage3c.jpg', 3);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage3d.jpg', 3);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4a.jpg', 4);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4b.jpg', 4);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4c.jpg', 4);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4d.jpg', 4);
 --aditional services for adventures
 
 
