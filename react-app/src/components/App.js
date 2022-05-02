@@ -13,8 +13,12 @@ import AddAdventure from './adventures/AddAdventure';
 import EditAdventure from './adventures/EditAdventure';
 import Sidebar from "./Sidebar";
 import Login from './Login';
+
 import ShowReservationsOwner from "./reservations/ShowReservationsOwner.js";
 import ShowReservationsDetails from "./reservations/ReservationDetails";
+import ShowFastReservations from "./reservations/ShowFastReservations";
+import AddFastReservation from './reservations/AddFastReservation';
+
 import ShowAllEntitiesForOwner from './ShowAllEntitiesForOwner';
 
 import ShowBoats from "./entities_view/ShowBoats";
@@ -45,6 +49,10 @@ function App() {
                     <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route>
                     <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
                     <Route path="/showReservationDetails" component={ShowReservationsDetails} />
+
+                    <Route path="/showFastReservations" component={ShowFastReservations} />
+                    <Route path="/addFastReservation" component={AddFastReservation} />
+                    
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />
                     <Route path="/editAdventure" component={EditAdventure} />

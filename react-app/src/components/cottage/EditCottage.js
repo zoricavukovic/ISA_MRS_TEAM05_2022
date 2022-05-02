@@ -20,7 +20,7 @@ import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
 import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
 import Autocomplete from '@mui/material/Autocomplete';
 import { dataURLtoFile} from "../../service/PictureService.js";
-import { addNewPriceListForEntityId, getPricelistByEntityId } from '../../service/Pricelists.js';
+import { addNewPriceListForEntityId, getPricelistByEntityId } from '../../service/PricelistService.js';
 import { getAllPlaces } from '../../service/PlaceService.js';
 import { editCottageByIdReal, getCottageById } from '../../service/CottageService.js';
 import AddingRooms from '../AddingRooms.js';
@@ -28,6 +28,7 @@ import { getAllPictureBase64ForEntityId } from "../../service/PictureService.js"
 import { getCurrentUser } from '../../service/AuthService.js';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import Home from "../map/GoogleMap";
 
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -206,8 +207,6 @@ export default function EditCottage(props) {
       return retVal;
     }
     /////////////////////////////////////////////////////////////////////
-
-
 
     ////////////////////////RULES OF CONDUCT///////////////////////////////////////
     const [checked, setChecked] = React.useState(false);
@@ -481,6 +480,7 @@ export default function EditCottage(props) {
                         renderInput={(params) => <TextField {...params} label="Place" />}
                     />
                     </Grid>
+                    
                 </td>
                 </tr>
             </table>

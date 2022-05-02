@@ -2,7 +2,6 @@ import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
@@ -12,7 +11,7 @@ import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Divider from '@mui/material/Divider';
 import { CircularProgress} from "@mui/material";
-import { getPricelistByEntityId } from '../../service/Pricelists';
+import { getPricelistByEntityId } from '../../service/PricelistService';
 import { getAdditionalServicesByReservationId } from '../../service/AdditionalService';
 
 export default function ImgReservation(props) {
@@ -83,12 +82,6 @@ export default function ImgReservation(props) {
     if (isLoading || isLoadingAddServices) { return <div className="App"><CircularProgress /></div> }
   return (
     <Card button onClick={showReservation} style={{margin:"2%"}} sx={{ maxWidth: 400, minWidth:250}}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="10"
-        image="/static/images/cards/contemplative-reptile.jpg"
-      />
       <CardContent>
          
         <Typography style={{textAlign:"left", color: 'rgb(5, 30, 52)'}} gutterBottom variant="h6" component="div">

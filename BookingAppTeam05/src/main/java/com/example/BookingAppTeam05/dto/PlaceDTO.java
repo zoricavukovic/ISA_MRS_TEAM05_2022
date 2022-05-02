@@ -8,6 +8,8 @@ public class PlaceDTO {
     private String zipCode;
     private String cityName;
     private String stateName;
+    private double longitude;
+    private double lat;
 
     public PlaceDTO(){
 
@@ -18,6 +20,8 @@ public class PlaceDTO {
         this.stateName = place.getStateName();
         this.cityName = place.getCityName();
         this.id = place.getId();
+        this.longitude = place.getLongitude();
+        this.lat = place.getLat();
     }
 
     public Long getId() {
@@ -48,4 +52,19 @@ public class PlaceDTO {
         this.stateName = stateName;
     }
 
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
 }

@@ -13,7 +13,7 @@ import ImageUploader from "../image_uploader/ImageUploader.js";
 import {useHistory} from "react-router-dom";
 import { getAllPlaces } from "../../service/PlaceService.js";
 import { editAdventureById, getAdventureById } from "../../service/AdventureService.js";
-import { getPricelistByEntityId } from "../../service/Pricelists.js";
+import { getPricelistByEntityId } from "../../service/PricelistService.js";
 import { getAllPictureBase64ForEntityId } from "../../service/PictureService.js";
 import { dataURLtoFile} from "../../service/PictureService.js";
 import { getCurrentUser } from '../../service/AuthService.js';

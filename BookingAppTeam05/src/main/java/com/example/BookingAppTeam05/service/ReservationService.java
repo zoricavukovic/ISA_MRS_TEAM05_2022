@@ -7,6 +7,7 @@ import com.example.BookingAppTeam05.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,4 +40,14 @@ public class ReservationService {
 
     public List<Reservation> getReservationsByCottageId(Long cottageId){return reservationRepository.getReservationsByCottageId(cottageId);}
 
+    public List<Reservation> getFastReservationsByBookingEntityId(Long bookingEntityId) {
+        List<Reservation> allFastRes = reservationRepository.getFastReservationsByBookingEntityId(bookingEntityId);
+        System.out.println("caocao" + " " + allFastRes.size());
+        List<Reservation> activeFastRes = new ArrayList<>();
+        for (Reservation r : allFastRes){
+            System.out.println(allFastRes.size());
+            if ((r.getStartDate()).isAfter(LocalDateTime.now())) activeFastRes.add(r);
+        }
+        return activeFastRes;
+    }
 }

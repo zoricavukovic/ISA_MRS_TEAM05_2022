@@ -5,16 +5,25 @@ import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.users.Client;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 public class BookingEntityDTO {
     private Long id;
     private String promoDescription;
+    @NotBlank
     private String address;
+    @NotBlank
     private String name;
+    @NotNull
+    @Min(0)
+    @Max(100)
     private float entityCancelationRate;
     public EntityType entityType;
-
+    @NotNull
     public Place place;
     private Set<Reservation> reservations;
     public Set<RuleOfConduct> rulesOfConduct;

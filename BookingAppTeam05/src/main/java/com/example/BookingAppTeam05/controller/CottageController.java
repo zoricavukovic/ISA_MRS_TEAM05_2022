@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -118,7 +119,7 @@ public class CottageController {
     @PostMapping(value = "{idCottageOwner}", consumes = "application/json")
     @Transactional
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<String> saveCottage(@PathVariable Long idCottageOwner, @RequestBody CottageDTO cottageDTO) {
+    public ResponseEntity<String> saveCottage(@PathVariable Long idCottageOwner,@Valid @RequestBody CottageDTO cottageDTO) {
 
         Cottage cottage = new Cottage();
         cottage.setName(cottageDTO.getName());
@@ -148,7 +149,7 @@ public class CottageController {
 
     @PutMapping(value="/{id}", consumes = "application/json")
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<String> updateCottage(@RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
+    public ResponseEntity<String> updateCottage(@Valid @RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
         Cottage cottage = cottageService.getCottageById(id);
         if (cottage == null) return new ResponseEntity<>("Cant find cottage with id " + id + ".", HttpStatus.BAD_REQUEST);
         cottage.setName(cottageDTO.getName());

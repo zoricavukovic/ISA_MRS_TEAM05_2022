@@ -6,6 +6,7 @@ import com.example.BookingAppTeam05.model.entities.EntityType;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +15,7 @@ public class CottageDTO extends BookingEntityDTO{
     private Set<Room> rooms = new HashSet<>();
     @Valid
     @NotNull
-    private List<NewImageDTO> images;
+    private List<NewImageDTO> images = new ArrayList<>();
 
     public CottageDTO() {
     }

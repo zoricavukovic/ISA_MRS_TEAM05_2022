@@ -4,11 +4,15 @@ import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.Pricelist;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.Set;
 
 public class PricelistDTO {
     private Long id;
+    @Min(1)
+    @Max(100000)
     private double entityPricePerPerson;
     private LocalDateTime startDate;
     private Set<AdditionalService> additionalServices;
