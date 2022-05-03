@@ -14,6 +14,6 @@ export function getReservationsByOwnerIdAndFilter(ownerId, filter) {
 }
 
 export function addNewFastReservation(newFastReservation){
-    return api.post('reservations/', newFastReservation);
+    return api.post('reservations', newFastReservation);
 }
 

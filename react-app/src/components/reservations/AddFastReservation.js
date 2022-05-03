@@ -62,7 +62,7 @@ export default function AddFastReservation(props) {
     };
 
     //////////////////DATE TIME PICKER /////////////////////////
-    const [value, setValue] = React.useState(Date.now());
+    const [value, setValue] = React.useState(new Date());
 
     const handleChange = (newValue) => {
       setValue(newValue);
@@ -124,7 +124,7 @@ export default function AddFastReservation(props) {
       } else {
           ownerId = getCurrentUser().id;
       }
-      let newDate = new Date(data.dateTimeStart);
+      let newDate = new Date(value);
      
       let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getDay()+1, newDate.getHours(), newDate.getMinutes()];
     
@@ -133,9 +133,11 @@ export default function AddFastReservation(props) {
         fastReservation: true,
         numOfDays: data.numNights,
         numOfPersons: data.maxNumPeople,
+        cost: parseFloat(data.cost),
         startDate: date,
         additionalServices: getAddedAdditionalServicesJson(),
         bookingEntity: entityBasicData, 
+        version: 1
       }
       console.log(newFastReservation);
       addNewFastReservation(newFastReservation).then(res => {
@@ -252,21 +254,23 @@ export default function AddFastReservation(props) {
             <table>
               <tr>
                 <td>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  
                     <DateTimePicker
-                      name="dateTimeStart"
-                      label="Date&Time Picker"
-                      size="small"
-                      value={value}
-                      minDateTime = {value}
-                      onChange={handleChange}
                       renderInput={(params) => <TextField {...params} />}
-                      {...register("dateTimeStart", { required: true })}
-                    />
-                  </LocalizationProvider>
+                      label="Date&Time Picker"
+                      value={value}
+                      onChange={(newValue) => {
+                        setValue(newValue);
+                      }}
+                      minDate={new Date('2020-02-14')}
+                      minTime={new Date(0, 0, 0, 8)}
+                      maxTime={new Date(0, 0, 0, 18, 45)}
+                      
+                  ></DateTimePicker>
+                </LocalizationProvider>
                 </td>
-              </tr>
-              <tr>{errors.dateTimeStart && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check start date.</p>}</tr>
+                </tr>
               
               <tr>
               <FormControl sx={{ m: 1 }}>
@@ -330,11 +334,11 @@ export default function AddFastReservation(props) {
                       name="cost"
                       type="number"
                       onChange={e => {
-                        let data = pricelistData;
-                        let cost = parseInt(e.target.value);
-                        if (cost === NaN) alert("Greska");
+                        let data = fastResData;
+                        let cos = parseFloat(e.target.value);
+                        if (cos === NaN) alert("Greska");
                         else {
-                          data.entityPricePerPerson = cost;
+                          data.cost = cos;
                         }
                         setPricelistData(data);
                       }}

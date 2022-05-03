@@ -41,13 +41,16 @@ public class Reservation {
    @Column(name="canceled")
    private boolean canceled;
 
+   @Column(name="cost")
+   private double cost;
+
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "client_id")
    private Client client;
    
    public Reservation() {}
 
-   public Reservation(LocalDateTime startDate, int numOfDays, int numOfPersons, Set<AdditionalService> additionalServices, boolean fastReservation, BookingEntity entity, boolean canceled, Client client) {
+   public Reservation(LocalDateTime startDate, int numOfDays, double cost, int numOfPersons, Set<AdditionalService> additionalServices, boolean fastReservation, BookingEntity entity, boolean canceled, Client client) {
       this.startDate = startDate;
       this.numOfPersons = numOfPersons;
       this.additionalServices = additionalServices;
@@ -56,6 +59,7 @@ public class Reservation {
       this.canceled = canceled;
       this.client = client;
       this.numOfDays = numOfDays;
+      this.cost = cost;
    }
 
    public Long getId() {
@@ -141,5 +145,13 @@ public class Reservation {
 
    public void setVersion(int version) {
       this.version = version;
+   }
+
+   public double getCost() {
+      return cost;
+   }
+
+   public void setCost(double cost) {
+      this.cost = cost;
    }
 }

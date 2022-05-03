@@ -16,17 +16,21 @@ public class ReservationDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startDate;
     @NotNull
-    @Min(0)
+    @Min(1)
     @Max(100)
     private int numOfDays;
     @NotNull
-    @Min(0)
-    @Max(100)
+    @Min(1)
+    @Max(30)
     private int numOfPersons;
     private Set<AdditionalService> additionalServices = new HashSet<>();
     private boolean fastReservation;
     private BookingEntityDTO bookingEntity;
     private boolean canceled;
+    @NotNull
+    @Min(1)
+    @Max(100000)
+    private double cost;
     private ClientDTO client;
     private int version;
 
@@ -41,6 +45,7 @@ public class ReservationDTO {
         this.fastReservation = reservation.isFastReservation();
         this.canceled = reservation.isCanceled();
         this.version = reservation.getVersion();
+        this.cost = reservation.getCost();
     }
 
     public Long getId() {
@@ -117,5 +122,13 @@ public class ReservationDTO {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 }
