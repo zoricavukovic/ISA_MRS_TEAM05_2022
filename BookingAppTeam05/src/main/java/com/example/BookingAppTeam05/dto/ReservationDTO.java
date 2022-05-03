@@ -2,21 +2,37 @@ package com.example.BookingAppTeam05.dto;
 
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ReservationDTO {
     private Long id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startDate;
+    @NotNull
+    @Min(1)
+    @Max(100)
     private int numOfDays;
+    @NotNull
+    @Min(1)
+    @Max(30)
     private int numOfPersons;
     private Set<AdditionalService> additionalServices = new HashSet<>();
     private boolean fastReservation;
     private BookingEntityDTO bookingEntity;
     private boolean canceled;
+    @NotNull
+    @Min(1)
+    @Max(100000)
+    private double cost;
     private ClientDTO client;
+    private int version;
 
     public ReservationDTO() {
     }
@@ -28,6 +44,8 @@ public class ReservationDTO {
         this.numOfPersons = reservation.getNumOfPersons();
         this.fastReservation = reservation.isFastReservation();
         this.canceled = reservation.isCanceled();
+        this.version = reservation.getVersion();
+        this.cost = reservation.getCost();
     }
 
     public Long getId() {
@@ -96,5 +114,21 @@ public class ReservationDTO {
 
     public void setClient(ClientDTO client) {
         this.client = client;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 }

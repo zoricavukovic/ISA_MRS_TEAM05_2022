@@ -44,7 +44,7 @@ function UserProfile(props) {
     const [isLoading, setLoading] = useState(true);
     const history = useHistory();
     const userId = props.history.location.state.userId;
-   // const urlPath = "http://localhost:8092/bookingApp/users/" + userId;
+    const [dateOfBirth, setDateOfBirth] = useState();
     const avatar = <Avatar
         alt="Zorica Vukovic"
         src="./slika.jpeg"
@@ -59,6 +59,8 @@ function UserProfile(props) {
         }
         getUserById(props.history.location.state.userId).then(res => {
             setUserData(res.data);
+            let dateOfB = new Date(res.data.dateOfBirth[0], res.data.dateOfBirth[1]-1, res.data.dateOfBirth[2]);
+            setDateOfBirth(dateOfB);
             setLoading(false);
         })
     }, []);
@@ -67,7 +69,6 @@ function UserProfile(props) {
     return (
         
         <div className="App">
-            {console.log(userData)}
             <div style={{ backgroundColor: 'aliceblue', margin: '8%', padding: '2%', borderRadius: '10px', minHeight: '55px' }} >
 
                 <div>
@@ -230,7 +231,11 @@ function UserProfile(props) {
                     <TextField
                         id="outlined-read-only-input"
                         label="Date Of Birth"
-                        defaultValue={userData.dateOfBirth}
+                        defaultValue={new Intl.DateTimeFormat("en-GB", {
+                            year: "numeric",
+                            month: "long",
+                            day: "2-digit"
+                          }).format(dateOfBirth)}
                         InputProps={{
                             readOnly: true,
                         }}

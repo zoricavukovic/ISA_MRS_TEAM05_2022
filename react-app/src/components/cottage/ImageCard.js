@@ -27,7 +27,10 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RatingEntity from '../Rating';
 import Snackbar from '@mui/material/Snackbar';
 import { editCottageById, getCottageById } from '../../service/CottageService';
-import { getPricelistByEntityId } from '../../service/Pricelists';
+import { getPricelistByEntityId } from '../../service/PricelistService';
+import Chip from '@mui/material/Chip';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import Home from "../map/GoogleMap";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -41,6 +44,7 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function CardIm(props) {
+
     const [expanded, setExpanded] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [message, setMessage] = React.useState("");
@@ -65,10 +69,6 @@ export default function CardIm(props) {
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
-    const handleMorePictures = (event) => {
-        event.preventDefault();
-        alert("LA");
-    };
 
     const editCottage = (event) => {
         event.preventDefault();
@@ -86,6 +86,16 @@ export default function CardIm(props) {
                 return;
             })
     };
+
+    const showFastReservations = (event) => {
+        event.preventDefault();
+        history.push({
+            pathname: "./showFastReservations",
+            state: { bookingEntityId: props.cottageId }
+        })
+    
+    };
+
     function AdventureAdditionalInfo(props) {
         return (
             <CardContent>
@@ -146,6 +156,8 @@ export default function CardIm(props) {
         )
     }
 
+    
+
     useEffect(() => {
         if (props.cottageId === undefined || props.cottageId === null){
             return <div>Do not allowed to go to this page. Try again!</div>
@@ -181,7 +193,7 @@ return (
 
             action={
                 <ToggleButton value="module" aria-label="module onClick={handleMorePictures}">
-                    <ViewModuleIcon onClick={handleMorePictures} />
+                    <ViewModuleIcon />
                 </ToggleButton>
 
             }
@@ -189,10 +201,14 @@ return (
 
         <CardActions disableSpacing>
             <IconButton >
-                <CalendarMonthIcon />
+                <Chip icon={<CalendarMonthIcon />} label="Calendar" />
             </IconButton>
+            
             <IconButton value="module" aria-label="module" onClick={editCottage}>
-                <EditIcon />
+                <Chip icon={<EditIcon />} label="Edit Cottage" />
+            </IconButton>
+            <IconButton value="module" aria-label="module" onClick={showFastReservations}>
+                <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
             </IconButton>
 
             <ExpandMore
@@ -210,9 +226,13 @@ return (
             <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
                 <h4>Promo Description: </h4><h3>{cottageBasicData.promoDescription} </h3>
             </Typography>
-            <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+            <Typography variant="body2" color="text.secondary" style={{ width: '20%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
                 <h4>Cost Per Night: {pricelistData.entityPricePerPerson} € </h4>
                 <RatingEntity value='3' />
+            </Typography>
+            <Typography variant="body2"  style={{ width: '30%', minWidth:"200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+             <Home long={cottageBasicData.place.longitude} lat={cottageBasicData.place.lat}></Home>
+             
             </Typography>
         </div >
         <Collapse in={expanded} timeout="auto" unmountOnExit>

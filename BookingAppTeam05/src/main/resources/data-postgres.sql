@@ -1,103 +1,38 @@
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Richmond','Nepal',36070);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Chicago','Iran',20666);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Zurich','Swaziland',47291);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Las Vegas','Austria',48010);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Phoenix','Austria',21464);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Irving','Portugal',34506);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Salem','Oman',46573);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('New Orleans','Malta',49952);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Salt Lake City','Australia',25854);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Detroit','Cabo Verde',27452);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Norfolk','Norway',28847);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Miami','Cameroon',20201);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Paris','Spain',33682);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Phoenix','Antigua and Barbuda',44332);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Scottsdale','Haiti',29981);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('St. Louis','Philippines',23356);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Anaheim','Micronesia',37894);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Hollywood','Bosnia and Herzegovina',18383);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Santa Ana','Panama',43171);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Bridgeport','Mongolia',22524);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Lakewood','Cyprus',39282);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Atlanta','Sao Tome and Principe',45182);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Chicago','Italy',19814);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Milwaukee','Spain',17874);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Lisbon','Chad',12166);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Lincoln','Monaco',31329);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Atlanta','Ireland',32519);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Wien','Morocco',11993);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Prague','Sao Tome and Principe',46252);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Memphis','France',11088);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Springfield','Rwanda',14753);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Tallahassee','Ireland',36182);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Henderson','Egypt',27847);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Anaheim','Kenya',26883);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Toledo','Luxembourg',35330);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Atlanta','Lithuania',32232);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Richmond','Nauru',36957);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Garland','Botswana',32470);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Moreno Valley','Ireland',21585);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Phoenix','Malaysia',10083);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Norfolk','Oman',32715);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Albuquerque','Uruguay',48212);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Ontario','Japan',39639);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('San Jose','Indonesia',44138);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Toledo','United Arab Emirates',49366);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Denver','Malta',35245);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Louisville','San Marino',10854);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Zurich','Bosnia and Herzegovina',47164);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Zurich','Iceland',25119);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('San Diego','Iran',10090);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Seattle','Kyrgyzstan',23413);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Berna','Cameroon',34268);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('San Bernardino','Ukraine',49338);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Phoenix','Myanmar',19084);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Hayward','Malaysia',42088);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Hayward','Saint Kitts and Nevis',20974);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Worcester','Kosovo',43356);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Sacramento','Honduras',30743);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Norfolk','Jordan',14450);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Dallas','Ethiopia',29043);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Worcester','Netherlands',18509);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Prague','Fiji',29430);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Murfreesboro','Cameroon',19302);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('London','Korea, South',14139);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Bridgeport','Finland',42639);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Santa Ana','Rwanda',24015);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Henderson','Rwanda',46828);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Salt Lake City','Somalia',46786);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Laredo','Poland',17134);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Hayward','Taiwan',10958);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Atlanta','Oman',10223);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Oklahoma City','Algeria',46061);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Lyon','Palau',38845);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Nashville','United Kingdom',32641);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Tokyo','Azerbaijan',22899);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Los Angeles','Norway',31080);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Oakland','Canada',13484);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Houston','Eritrea',23281);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('San Diego','Dominican Republic',31657);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Garland','Bangladesh',23130);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('St. Louis','Barbados',17182);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Boston','United Arab Emirates',12852);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Bakersfield','Guatemala',35520);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Berlin','Peru',28381);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Fremont','Ireland',19218);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Zurich','Malawi',41174);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Saint Paul','Haiti',37823);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Bridgeport','Singapore',21076);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Amarillo','Nauru',38140);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Phoenix','Qatar',35075);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('San Francisco','Uzbekistan',30229);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('San Jose','USA',34037);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Madrid','Uganda',22725);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Jersey City','Dominica',44821);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Honolulu','Samoa',26262);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Fremont','Iceland',38059);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Bakersfield','Azerbaijan',26475);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Houston','Equatorial Guinea',15299);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('Fremont','Lebanon',33491);
-INSERT INTO places (city_name, state_name, zip_code) VALUES('New York','Congo',15898);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Zurich','Switzerland',36070, 46.9841339480512, 7.4272311693535205);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Bern','Switzerland',36340, 46.94289620182541, 7.460190154304473);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Zlatibor','Serbia',10012, 43.71449, 19.691799);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Bologna','Italia',99240, 44.665148632742365, 11.180746573942837);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Salzbirg','Austria',10232, 47.91900764229461, 13.023376060183036);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('St.Galen','Switzerland',13421, 47.45866529469612, 9.376109793535933);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Zermatt','Switzerland',09102, 46.04663034518585, 7.737688925997243);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Innsbruck','Austria',12332, 47.270490070064476, 11.39920293382487);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Como','Italia',11111, 45.76574421923807, 9.079294180770777);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Milan','Italia',12333, 45.566502691942446, 9.20605890402746);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Genoa','Italia',11112, 44.47318473088836, 9.008918841658872);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Rome','Italia',19909, 41.908744838588945, 12.511946182659438);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Florence','Italia',78734, 43.77652281377678, 11.268447327719134);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Carpi','Italia',34563, 44.80229630330964, 10.870376156715311);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Rimini','Italia',66666, 44.064072243965974, 12.568953996273821);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Nice','France',77777, 43.732732029812965, 7.283390920425107);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Cannes','France',77757, 43.57421375040898, 7.001675555705612);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Saint-Tropez','France',54675, 43.29043984628935, 6.644260637204382);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Lyon','France',87799, 45.79313556431911, 4.842889202039135);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Limoges','France',09098, 45.892729585704764, 1.3163953394936736);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Vichy','France',78879, 46.15083974482203, 3.403698463540852);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Narbonne','France',44535, 43.161959962701275, 3.04151801279294);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Sorrento','Italia',34244, 40.6259293334678, 14.376501436859794);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Praiano','Italia',67577, 40.61237811241369, 14.535116537700722);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Malaga','Spain',54544, 36.839602679647264, -4.436482515258499);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Barcelona','Spain',34321, 41.53693389895783, 2.1992591926493827);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Madrid','Spain',12322, 40.47576391160711, -3.755330220738153);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Tarragona','Spain',16762, 41.27324422699833, 1.342325660833464);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Sheffield','United Kingdom',12345, 53.41020831278511, -1.4586726816673037);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Cambridge','United Kingdom',45321, 52.26885187180306, 0.1453311086547997);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Brighton','United Kingdom',86657, 50.90374854186306, -0.18425871127439752);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Falun','Sweden',87859, 60.61912080629553, 15.654232870064643);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Yukta','Russia',08766, 63.411201785510535, 105.67147703559688);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Montreal','Canada',79800, 46.05882221120269, -73.14737703164697);
+INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Fortaleza','Brasil',08543, -3.6291125756539007, -38.56846442755877);
 
 INSERT INTO ROLE (name) VALUES ('ROLE_ADMIN');
 INSERT INTO ROLE (name) VALUES ('ROLE_CLIENT');
@@ -121,62 +56,62 @@ INSERT INTO navigation_equipments(name) VALUES ('FISHFINDER');
 
 INSERT INTO cottage_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number, place_id, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False','Ap #225-738 At, Rd.','1979-03-13','zoka2000++virgina@gmail.com','Virginia','Calhoun',65,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','052-38-778-82',50, 'False', 3),
-(nextval('users_id_gen'), 'False','4502 Semper Ave','2001-01-22','zoka2000++dolan@gmail.com','Dolan','Grimes',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',40, 'False', 3),
-(nextval('users_id_gen'), 'False','4502 Semper Ave','2001-01-22','zoka2000++mikic@gmail.com','Mikic','Grimes',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',32, 'False', 3);
+(nextval('users_id_gen'), 'False','Ap #225-738 At, Rd.','1979-03-13','bookingapp05mzr++virgina@gmail.com','Virginia','Calhoun',65,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','052-38-778-82',1, 'False', 3),
+(nextval('users_id_gen'), 'False','4502 Semper Ave','2001-01-22','bookingapp05mzr++dolan@gmail.com','Dolan','Grimes',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',5, 'False', 3),
+(nextval('users_id_gen'), 'False','4502 Semper Ave','2001-01-22','bookingapp05mzr++mikic@gmail.com','Mikic','Grimes',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',8, 'False', 3);
 
 INSERT INTO ship_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False','Ap #392-5411 Ac, St.','2005-03-15','parturient@hotmail.couk','Kristen','Banks',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',98, 'False', 4),
-(nextval('users_id_gen'), 'False','3598 Ut, St.','1994-12-09','in.lobortis@google.com','Ann','Newton',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',6, 'False', 4),
-(nextval('users_id_gen'), 'False','Ap #181-605 Est. St.','1987-04-08','in.tempus.eu@protonmail.couk','Stuart','Knight',69,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','016-17-140-44',47, 'False', 4);
+(nextval('users_id_gen'), 'False','Ap #392-5411 Ac, St.','2005-03-15','bookingapp05mzr++kristen@gmail.com','Kristen','Banks',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',1, 'False', 4),
+(nextval('users_id_gen'), 'False','3598 Ut, St.','1994-12-09','bookingapp05mzr++annNew@gmail.com','Ann','Newton',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',2, 'False', 4),
+(nextval('users_id_gen'), 'False','Ap #181-605 Est. St.','1987-04-08','bookingapp05mzr++stuartKnight@gmail.com','Stuart','Knight',69,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','016-17-140-44',2, 'False', 4);
 
 
 INSERT INTO clients (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id,penalties, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','elit.sed@outlook.net','Jescie','Mullins',78,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',83,2, 'False', 2),
-(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','molestie.dapibus.ligula@icloud.org','Carolyn','Gutierrez',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-34-238-21',55,3, 'False', 2),
-(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','molestie.fdsfsd.ligula@icloud.org','Carolyn','Gutierrez',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',55,3, 'False', 2);
+(nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','bookingapp05mzr++jescieMullins@gmail.com','Jescie','Mullins',78,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',4,2, 'False', 2),
+(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','bookingapp05mzr++carolynGutie@gmail.com','Carolyn','Gutierrez',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-34-238-21',7,3, 'False', 2),
+(nextval('users_id_gen'), 'False','Ap #497-623 Interdum Road','2004-05-21','bookingapp05mzr++minaMinic@gmail.com','Mina','Minic',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',10,3, 'False', 2);
 
 
 INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'admin1@gmail.com', 'Admin1', 'Admin1', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 43, 'False', 1),
-(nextval('users_id_gen'), 'False', 'adresa2', '1971-12-20', 'admin2@gmail.com', 'Admin2', 'Admin2', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 43, 'False', 1),
-(nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'admin3@gmail.com', 'Admin3', 'Admin3', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 43, 'False', 1);
+(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++admin1@gmail.com', 'Admin1', 'Admin1', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 1),
+(nextval('users_id_gen'), 'False', 'adresa2', '1971-12-20', 'bookingapp05mzr++admin2@gmail.com', 'Admin2', 'Admin2', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 1),
+(nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'bookingapp05mzr++admin3@gmail.com', 'Admin3', 'Admin3', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 23, 'False', 1);
 
 
 INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'inst1@gmail.com', 'Mika', 'Mikic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 34, 'False', 5),
-(nextval('users_id_gen'), 'False', 'adresa2', '1971-12-20', 'inst2@gmail.com', 'Zika', 'Zikic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 34,'False', 5),
-(nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'inst3@gmail.com', 'Rika', 'Rikiic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 34,'False', 5);
+(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++mika@gmail.com', 'Mika', 'Mikic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'adresa2', '1971-12-20', 'bookingapp05mzr++zika@gmail.com', 'Zika', 'Zikic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5,'False', 5),
+(nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'bookingapp05mzr++rika@gmail.com', 'Rika', 'Rikic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 6,'False', 5);
 
 
 INSERT INTO cottages (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,cottage_owner_id, deleted)
 VALUES
-(nextval('entities_id_gen'), 'Ap #977-2514 Sed Street',19,'COTTAGE','Ultrices Limited','est, mollis non, cursus non, egestas a,',27,1, false),
-(nextval('entities_id_gen'), '4369 Mauris St.',45,'COTTAGE','Sollicitudin Commodo Ipsum Limited','lacus. Mauris non dui',16,1, true),
-(nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',89,1, false),
-(nextval('entities_id_gen'), 'Ap #119-6987 Sed St.',33,'COTTAGE','Nunc Pulvinar Corporation','congue, elit sed consequat auctor, nunc',10,1, false),
-(nextval('entities_id_gen'), '411-1777 Nunc Av.',45,'COTTAGE','Parturient Montes Nascetur LLP','mauris. Suspendisse aliquet molestie tellus.',61,2, false);
+(nextval('entities_id_gen'), 'Ap #977-2514 Sed Street',19,'COTTAGE','Ultrices Limited','est, mollis non, cursus non, egestas a,',1,1, false),
+(nextval('entities_id_gen'), '4369 Mauris St.',45,'COTTAGE','Sollicitudin Commodo Ipsum Limited','lacus. Mauris non dui',1,1, true),
+(nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',1,1, false),
+(nextval('entities_id_gen'), 'Ap #119-6987 Sed St.',33,'COTTAGE','Nunc Pulvinar Corporation','congue, elit sed consequat auctor, nunc',2,1, false),
+(nextval('entities_id_gen'), '411-1777 Nunc Av.',45,'COTTAGE','Parturient Montes Nascetur LLP','mauris. Suspendisse aliquet molestie tellus.',5,2, false);
 
 
 INSERT INTO ships (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,engine_num,engine_power,length,max_num_of_persons,max_speed,ship_type,ship_owner_id, deleted)
 VALUES
-(nextval('entities_id_gen'), 'Ap #379-679 Enim, St.',26,'SHIP','Gretchen','Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum',88,'N1N 1F5',2002,24,10,51,'BAY_BOAT',4, true),
-(nextval('entities_id_gen'), '368-5360 In Ave',47,'SHIP','Molly','Nulla aliquet. Proin',4,'U5F 2U3',1806,30,14,24,'BAY_BOAT',4, false),
-(nextval('entities_id_gen'), '3885 Lacus Road',44,'SHIP','Yeo','magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt',70,'U9K 1M2',1171,8,12,45,'INFLATABLE_BOAT',4, false),
-(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',48,'W4T 5A6',469,23,19,88,'FLAT_BOAT',5, false),
-(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',48,'W4T 5A6',469,23,19,88,'FLAT_BOAT',6, false);
+(nextval('entities_id_gen'), 'Ap #379-679 Enim, St.',26,'SHIP','Gretchen','Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum',7,'N1N 1F5',2002,24,10,51,'BAY_BOAT',4, true),
+(nextval('entities_id_gen'), '368-5360 In Ave',47,'SHIP','Molly','Nulla aliquet. Proin',16,'U5F 2U3',1806,30,14,24,'BAY_BOAT',4, false),
+(nextval('entities_id_gen'), '3885 Lacus Road',44,'SHIP','Yeo','magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt',18,'U9K 1M2',1171,8,12,45,'INFLATABLE_BOAT',4, false),
+(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',17,'W4T 5A6',469,23,19,88,'FLAT_BOAT',5, false),
+(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',23,'W4T 5A6',469,23,19,88,'FLAT_BOAT',6, false);
 
 INSERT INTO adventures(id, address, entity_cancelation_rate, entity_type, name, promo_description, place_id, max_num_of_persons, short_bio, instructor_id, deleted)
 VALUES
-(nextval('entities_id_gen'), 'adresa adv 1', 20, 'ADVENTURE', 'fishing adventure1', 'promo desc adv 1', 10, 3, 'short bio adv 1', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 2', 20, 'ADVENTURE', 'fishing adventure2', 'promo desc adv 2', 60, 4, 'short bio adv 2', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 3', 20, 'ADVENTURE', 'fishing adventure3', 'promo desc adv 3', 50, 2, 'short bio adv 3', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 4', 20, 'ADVENTURE', 'fishing adventure4', 'promo desc adv 4', 50, 2, 'short bio adv 4', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 50, 2, 'short bio adv 5', 14, false);
+(nextval('entities_id_gen'), 'adresa adv 1', 20, 'ADVENTURE', 'fishing adventure1', 'promo desc adv 1', 24, 3, 'short bio adv 1', 13, false),
+(nextval('entities_id_gen'), 'adresa adv 2', 20, 'ADVENTURE', 'fishing adventure2', 'promo desc adv 2', 24, 4, 'short bio adv 2', 13, false),
+(nextval('entities_id_gen'), 'adresa adv 3', 20, 'ADVENTURE', 'fishing adventure3', 'promo desc adv 3', 24, 2, 'short bio adv 3', 13, false),
+(nextval('entities_id_gen'), 'adresa adv 4', 20, 'ADVENTURE', 'fishing adventure4', 'promo desc adv 4', 25, 2, 'short bio adv 4', 13, false),
+(nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 9, 2, 'short bio adv 5', 14, false);
 
 -- rooms
 INSERT INTO rooms (num_of_beds,room_num,cottage_id, deleted)
@@ -275,30 +210,34 @@ VALUES
 
 
 
-
-INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled)
+--cotages res
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
 VALUES
-    ('2019-03-12 5:00 am',1,17,1,8,'False','False'),   -- 1
-    ('2022-05-01 7:00 pm',26,3,1,7,'False','True'),    -- 2
-    ('2022-04-19 7:00 pm',4,3,1,7,'False','False');    -- 3
+    ('2019-03-12 5:00 am',1,17,1,8,'False','False', 1, 0),   -- 1
+    ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 0),    -- 2
+    ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 0);    -- 3
 
 
-INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled)
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
 VALUES
-    ('2022-01-10 5:00 am',2,2,11,8,'False','False'),   --4
-    ('2022-03-03 7:00 pm',2,3,11,7,'False','True'),    --5
-    ('2022-04-19 7:00 pm',2,3,11,9,'False','False'),   --6
+    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 0),   --4
+    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 0),    --5
+    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 0),   --6
 
-    ('2022-01-15 7:00 pm',1,3,12,8,'False','False'),   --7
-    ('2022-01-20 7:00 pm',4,3,12,7,'False','False'),   --8
+    ('2022-01-15 7:00 pm',1,3,12,8,'False','False', 1, 0),   --7
+    ('2022-01-20 7:00 pm',4,3,12,7,'False','False', 1, 0),   --8
 
-    ('2022-01-20 7:00 pm',2,1,13,8,'False','False'),   --9
-    ('2022-01-25 7:00 pm',4,3,13,7,'False','False'),   --10
+    ('2022-01-20 7:00 pm',2,1,13,8,'False','False', 1, 0),   --9
+    ('2022-01-25 7:00 pm',4,3,13,7,'False','False', 1, 0),   --10
 
-    ('2022-01-25 7:00 pm',1,3,14,8,'False','False'),   --11
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False');   --12
-
-
+    ('2022-01-25 7:00 pm',1,3,14,8,'False','False', 1, 0),   --11
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 0);   --12
+--cotages res
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
+VALUES
+    ('2022-05-14 8:00 am',2,2,1,8,'True','False', 1, 1234),   -- 13
+    ('2022-05-04 1:00 pm',12,3,1,7,'True','False', 1, 123),    -- 14
+    ('2022-05-05 1:00 pm',4,3,3,7,'True','False', 1, 1098);    -- 15
 INSERT INTO ratings (comment, value, reservation_id)
 VALUES
     ('commen1', 3.0, 4),
@@ -315,7 +254,10 @@ INSERT INTO reservation_additional_service(reservation_id, additional_service_id
 VALUES
        (1, 2),
        (1,3),
-       (2,3);
+       (2,3),
+       (13, 2),
+       (13, 3),
+       (14, 1);
 
 --- dodavanje slika za avanturu
 INSERT INTO pictures (picture_path, entity_id) VALUES ('adventure1_1.jpg', 11);
@@ -347,3 +289,7 @@ INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4d.jpg', 4);
 --aditional services for adventures
 
 
+--subsribers for cottage
+INSERT INTO subscribers (booking_entity_id, client_id) VALUES (1, 7);
+INSERT INTO subscribers (booking_entity_id, client_id) VALUES (1, 8);
+INSERT INTO subscribers (booking_entity_id, client_id) VALUES (2, 7);

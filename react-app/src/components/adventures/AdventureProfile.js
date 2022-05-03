@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import Home from "../map/GoogleMap";
 import Box from "@mui/material/Box";
 import { useHistory } from "react-router-dom";
 import Card from "@mui/material/Card";
@@ -22,9 +22,10 @@ import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
 import ImageSlider from "../image_slider/ImageSlider";
 import { getAdventureById } from "../../service/AdventureService";
-import { getPricelistByEntityId } from "../../service/Pricelists";
+import { getPricelistByEntityId } from "../../service/PricelistService";
 import { URL_PICTURE_PATH } from "../../service/PictureService";
-
+import Chip from '@mui/material/Chip';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -40,18 +41,25 @@ const ExpandMore = styled((props) => {
 
 function AdventureBasicInfo(props) {
     return (
-        <CardContent>
-            <Typography variant="body2" color="text.secondary" style={{ backgroundColor: 'aliceblue', borderRadius: '5px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%' }}>
-                <h4>Promo Description: </h4><h3>{props.adventureData.promoDescription} </h3>
+        <div>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
+            
+                <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%'}}>
+                    <h4>Promo Description: </h4><h3>{props.adventureData.promoDescription} </h3>
+                </Typography>
+                <Typography variant="body2" color="text.secondary" style={{ width: '20%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+                    <h4>Cost Per Night: {props.pricelistData.entityPricePerPerson} € </h4>
+                    <RatingEntity value='3' />
+                </Typography>
+                <Typography variant="body2" color="text.secondary" style={{ width: '20%', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>     
+                    <Home long={props.adventureData.place.longitude} lat={props.adventureData.place.lat}></Home>
+                    
+                </Typography>
+            </div>
+            <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+            <h4>Short Bio: </h4><h3>{props.adventureData.shortBio} </h3>
             </Typography>
-            <Typography variant="body2" color="text.secondary" style={{ backgroundColor: 'aliceblue', borderRadius: '5px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%' }}>
-                <h4>Short Bio: </h4><h3>{props.adventureData.shortBio} </h3>
-            </Typography>
-            <Typography variant="body2" color="text.secondary" style={{ width: 'fit', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '5px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%' }}>
-                <h4>Cost Per Night: {props.pricelistData.entityPricePerPerson} € </h4>
-                <RatingEntity value='3' />
-            </Typography>
-        </CardContent>
+        </div>
     );
 }
 
@@ -125,13 +133,27 @@ function AdventureActions(props) {
         });
     };
 
+    const showFastReservations = (event) => {
+        event.preventDefault();
+        props.history.push({
+            pathname: "./showFastReservations",
+            state: { adventureId: props.adventureId }
+        });
+    
+    };
+
+
     return (
         <CardActions disableSpacing>
             <IconButton >
-                <CalendarMonthIcon />
+                <Chip icon={<CalendarMonthIcon />} label="Calendar" />
             </IconButton>
+            
             <IconButton value="module" aria-label="module" onClick={editAdventure}>
-                <EditIcon />
+                <Chip icon={<EditIcon />} label="Edit Adventure" />
+            </IconButton>
+            <IconButton value="module" aria-label="module" onClick={showFastReservations}>
+                <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
             </IconButton>
 
             <ExpandMore

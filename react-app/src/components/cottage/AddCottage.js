@@ -19,7 +19,7 @@ import { useHistory } from "react-router-dom";
 import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
 import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
 import Autocomplete from '@mui/material/Autocomplete';
-import { addNewPriceListForEntityId} from '../../service/Pricelists.js';
+import { addNewPriceListForEntityId} from '../../service/PricelistService.js';
 import { getAllPlaces } from '../../service/PlaceService.js';
 import {addNewCottage} from '../../service/CottageService.js';
 import AddingRooms from '../AddingRooms.js';

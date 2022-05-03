@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import ImgReservation from "./ReservationBasicCard.js";
-import BasicPagination from "../Pagination.js";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
