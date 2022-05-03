@@ -30,6 +30,10 @@ public class Reservation {
    @Column(name="fastReservation", nullable = false)
    private boolean fastReservation;
 
+   @Version
+   @Column(name="version", unique=false, nullable=false)
+   private int version;
+
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name="entity_id")
    private BookingEntity bookingEntity;
@@ -129,5 +133,13 @@ public class Reservation {
 
    public void setNumOfDays(int numOfDays) {
       this.numOfDays = numOfDays;
+   }
+
+   public int getVersion() {
+      return version;
+   }
+
+   public void setVersion(int version) {
+      this.version = version;
    }
 }

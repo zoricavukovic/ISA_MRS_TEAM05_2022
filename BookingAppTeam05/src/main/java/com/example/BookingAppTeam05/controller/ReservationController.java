@@ -8,6 +8,7 @@ import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
+import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.service.CottageService;
 import com.example.BookingAppTeam05.service.ReservationService;
@@ -89,11 +90,13 @@ public class ReservationController {
 
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
     public ResponseEntity<String> createFastReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
-
-        //return new ResponseEntity<>(newAdventure.getId().toString(), HttpStatus.OK);
-        return new ResponseEntity<>("", HttpStatus.OK);
+        Reservation reservation = reservationService.addFastReservation(reservationDTO);
+        if (reservation == null){
+            return new ResponseEntity<>("Cannot create fast reservation.", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(reservation.getId().toString(), HttpStatus.CREATED);
     }
 
 }

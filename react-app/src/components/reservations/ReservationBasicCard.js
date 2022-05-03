@@ -55,10 +55,10 @@ export default function ImgReservation(props) {
     
     useEffect(() => {
       
-        let end = new Date(props.reservation.startDate[0], props.reservation.startDate[1]-1, props.reservation.startDate[2],props.reservation.startDate[3],props.reservation.startDate[4]);
+        let end = new Date(props.reservation.startDate);
         end.setDate(end.getDate() + props.reservation.numOfDays);
         setDates({
-            startDate:new Date(props.reservation.startDate[0], props.reservation.startDate[1]-1, props.reservation.startDate[2],props.reservation.startDate[3],props.reservation.startDate[4]),
+            startDate: new Date(props.reservation.startDate),
             endDate:end
         });
         getPricelistByEntityId(props.reservation.bookingEntity.id).then(res => {

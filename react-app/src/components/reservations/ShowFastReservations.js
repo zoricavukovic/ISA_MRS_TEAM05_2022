@@ -68,17 +68,17 @@ function ShowFastReservations(props) {
                     console.log(reservationCost);
                     setLoadingAddServices(false);
                 });
-            
-                let start = new Date(r.startDate[0], r.startDate[1]-1, r.startDate[2],r.startDate[3],r.startDate[4]);
-                let end = new Date(r.startDate[0], r.startDate[1]-1, r.startDate[2],r.startDate[3],r.startDate[4]);
-                end.setDate(end.getDate() + r.numOfDays);
+                var date = new Date(r.startDate); 
+                let end = new Date(r.startDate);
+                
+                end.setDate(date.getDate() + r.numOfDays);
                 rowsData.push({
                     id: r.id, 
                     startDate: new Intl.DateTimeFormat("en-GB", {
                         year: "numeric",
                         month: "long",
                         day: "2-digit"
-                      }).format(start),
+                      }).format(date),
                     endDate: new Intl.DateTimeFormat("en-GB", {
                         year: "numeric",
                         month: "long",

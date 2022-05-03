@@ -124,16 +124,26 @@ export default function AddFastReservation(props) {
       } else {
           ownerId = getCurrentUser().id;
       }
+      let newDate = new Date(data.dateTimeStart);
+     
+      let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getDay()+1, newDate.getHours(), newDate.getMinutes()];
+    
       let newFastReservation={
         canceled:false,
         fastReservation: true,
         numOfDays: data.numNights,
         numOfPersons: data.maxNumPeople,
-        startDate: data.dateTimeStart,
-        additionalServices: getAddedAdditionalServicesJson()
+        startDate: date,
+        additionalServices: getAddedAdditionalServicesJson(),
+        bookingEntity: entityBasicData, 
       }
       console.log(newFastReservation);
-      
+      addNewFastReservation(newFastReservation).then(res => {
+        console.log(res.data);
+      }).catch(error => {
+          setMessage(error.response.data);
+          handleClick();
+      });
   }
   useEffect(() => {
     let owner = getCurrentUser();
