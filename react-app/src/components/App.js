@@ -2,15 +2,20 @@ import React, {Component, useState} from 'react';
 import '../App.css';
 import UserProfile from "./UserProfile";
 import EditUserProfile from "./EditUserProfile";
+import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
+
 import ShowCottageProfile from "./cottage/ShowCottageProfile";
 import AddCottage from "./cottage/AddCottage";
 import EditCottage from "./cottage/EditCottage";
-import ShowCottagesCottageOwner from "./cottage/showCottagesCottageOwner.js";
 
-import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
+import ShowShipProfile from "./ships/ShowShipProfile";
+import AddShip from "./ships/AddShip";
+import EditShip from "./ships/EditShip";
+
 import AdventureProfile from './adventures/AdventureProfile';
 import AddAdventure from './adventures/AddAdventure';
 import EditAdventure from './adventures/EditAdventure';
+
 import Sidebar from "./Sidebar";
 import Login from './Login';
 
@@ -44,10 +49,15 @@ function App() {
 
                     <Route path="/userProfile" component={UserProfile} />
                     <Route path="/editUserProfile" component={EditUserProfile} />
+
                     <Route path="/showCottageProfile" component={ShowCottageProfile} />
                     <Route path="/addCottage" component={AddCottage} />
                     <Route path="/editCottage" component={EditCottage} />
-                    <Route path="/showCottagesOwner" component={ShowCottagesCottageOwner} />
+
+                    <Route path="/showShipProfile" component={ShowShipProfile} />
+                    <Route path="/addShip" component={AddShip} />
+                    <Route path="/editShip" component={EditShip} />
+
                     <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route>
                     <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
                     <Route path="/showReservationDetails" component={ShowReservationsDetails} />

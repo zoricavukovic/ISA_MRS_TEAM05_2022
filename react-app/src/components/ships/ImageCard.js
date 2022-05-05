@@ -26,7 +26,7 @@ import Checkbox from '@mui/material/Checkbox';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RatingEntity from '../Rating';
 import Snackbar from '@mui/material/Snackbar';
-import { editCottageById, getCottageById } from '../../service/CottageService';
+import { editShipById, getShipById } from '../../service/ShipService';
 import { getPricelistByEntityId } from '../../service/PricelistService';
 import Chip from '@mui/material/Chip';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
@@ -48,9 +48,9 @@ export default function CardIm(props) {
     const [expanded, setExpanded] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [message, setMessage] = React.useState("");
-    const [cottageBasicData, setCottageBasicData] = useState({});
+    const [shipBasicData, setShipBasicData] = useState({});
     const [pricelistData, setPricelistData] = useState({});
-    const [isLoadingCottage, setLoadingCottage] = useState(true);
+    const [isLoadingShip, setLoadingShip] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
     const urlPicturePath = "http://localhost:8092/bookingApp/pictures/";
     const history = useHistory();
@@ -70,14 +70,14 @@ export default function CardIm(props) {
         setExpanded(!expanded);
     };
 
-    const editCottage = (event) => {
+    const editShip = (event) => {
         event.preventDefault();
 
-        editCottageById(props.cottageId)
+        editShipById(props.shipId)
             .then(res => {
                 history.push({
-                    pathname: "./editCottage",
-                    state: { cottageId: props.cottageId }
+                    pathname: "./editShip",
+                    state: { shipId: props.shipId }
                 })
             })
             .catch(res => {
@@ -91,7 +91,7 @@ export default function CardIm(props) {
         event.preventDefault();
         history.push({
             pathname: "/calendarForEntity",
-            state: { bookingEntityId: props.cottageId }
+            state: { bookingEntityId: props.shipId }
         })
     }
 
@@ -100,7 +100,7 @@ export default function CardIm(props) {
         event.preventDefault();
         history.push({
             pathname: "./showFastReservations",
-            state: { bookingEntityId: props.cottageId }
+            state: { bookingEntityId: props.shipId }
         })
     
     };
@@ -155,37 +155,14 @@ export default function CardIm(props) {
             ))
         )
     }
-    function RenderRoom(props) {
-        return (
-            props.rooms.map((e) => (
-                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={e.equipmentName}>
-                    <Typography textAlign="center">{"Room Num " + e.roomNum + "/Num of beds " + e.numOfBeds}</Typography>
-                </Button>
-            ))
-        )
-    }
-
-    
 
     useEffect(() => {
-        if (props.cottageId === undefined || props.cottageId === null){
-            return <div>Do not allowed to go to this page. Try again!</div>
-        }
-        getCottageById(props.cottageId).then(res => {
-            setCottageBasicData(res.data);
-            setLoadingCottage(false);
-        });
-        getPricelistByEntityId(props.cottageId).then(res => {
-            setPricelistData(res.data);
-            setLoadingPricelist(false);
-        });
-
-
+     
 }, []);
-if (isLoadingCottage || isLoadingPricelist) { return <div className="App">Loading...</div> }
+if (isLoadingShip || isLoadingPricelist) { return <div className="App">Loading...</div> }
 return (
     <Card style={{ margin: "1% 9% 1% 9%"}} sx={{}}>
-        {cottageBasicData.pictures.length === 0 ? (
+        {shipBasicData.pictures.length === 0 ? (
           <CardMedia
           component="img"
           height="300"
@@ -193,12 +170,12 @@ return (
       />
            
           ):(
-        <ImageSlider slides={cottageBasicData.pictures.map((im) => ({'image':  urlPicturePath + im.picturePath}))} />  
+        <ImageSlider slides={shipBasicData.pictures.map((im) => ({'image':  urlPicturePath + im.picturePath}))} />  
         )}
         <CardHeader
 
-            title={cottageBasicData.name}
-            subheader={cottageBasicData.address + ", " + cottageBasicData.place.cityName + ", " + cottageBasicData.place.zipCode + ", " + cottageBasicData.place.stateName}
+            title={shipBasicData.name}
+            subheader={shipBasicData.address + ", " + shipBasicData.place.cityName + ", " + shipBasicData.place.zipCode + ", " + shipBasicData.place.stateName}
 
             action={
                 <ToggleButton value="module" aria-label="module onClick={handleMorePictures}">
@@ -213,8 +190,8 @@ return (
                 <Chip icon={<CalendarMonthIcon />} label="Calendar"/>
             </IconButton>
             
-            <IconButton value="module" aria-label="module" onClick={editCottage}>
-                <Chip icon={<EditIcon />} label="Edit Cottage" />
+            <IconButton value="module" aria-label="module" onClick={editShip}>
+                <Chip icon={<EditIcon />} label="Edit Ship" />
             </IconButton>
             <IconButton value="module" aria-label="module" onClick={showFastReservations}>
                 <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
@@ -233,14 +210,14 @@ return (
 
         <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
             <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
-                <h4>Promo Description: </h4><h3>{cottageBasicData.promoDescription} </h3>
+                <h4>Promo Description: </h4><h3>{shipBasicData.promoDescription} </h3>
             </Typography>
             <Typography variant="body2" color="text.secondary" style={{ width: '20%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
-                <h4>Cost Per Night: {pricelistData.entityPricePerPerson} € </h4>
+                <h4>Cost Per Person: {pricelistData.entityPricePerPerson} € </h4>
                 <RatingEntity value='3' />
             </Typography>
             <Typography variant="body2"  style={{ width: '30%', minWidth:"200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
-             <Home long={cottageBasicData.place.longitude} lat={cottageBasicData.place.lat}></Home>
+             <Home long={shipBasicData.place.longitude} lat={shipBasicData.place.lat}></Home>
              
             </Typography>
         </div >
@@ -250,19 +227,13 @@ return (
             <Grid item xs={12} sm={4}>
                         <AdventureAdditionalInfo
                             header="Rules of conduct"
-                            additionalData={<RenderRulesOfConduct rulesOfConduct={cottageBasicData.rulesOfConduct} />}
+                            additionalData={<RenderRulesOfConduct rulesOfConduct={shipBasicData.rulesOfConduct} />}
                         />
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <AdventureAdditionalInfo
                                 header="Additional services"
                                 additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <AdventureAdditionalInfo
-                                header="Rooms"
-                                additionalData={<RenderRoom rooms={cottageBasicData.rooms} />}
                             />
                         </Grid>
                 <CardContent>

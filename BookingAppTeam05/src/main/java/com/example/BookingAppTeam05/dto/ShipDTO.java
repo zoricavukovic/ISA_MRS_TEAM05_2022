@@ -4,11 +4,13 @@ import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.ShipOwner;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class ShipDTO extends BookingEntityDTO{
-
-
     private String shipType;
     private float length;
     private String engineNum;
@@ -18,6 +20,8 @@ public class ShipDTO extends BookingEntityDTO{
     private Set<FishingEquipment> fishingEquipment;
     private Set<NavigationEquipment> navigationalEquipment;
     private ShipOwner shipOwner;
+    @Valid
+    private List<NewImageDTO> images = new ArrayList<>();
 
     public ShipDTO(){}
 
@@ -29,9 +33,6 @@ public class ShipDTO extends BookingEntityDTO{
         this.enginePower = ship.getEnginePower();
         this.maxSpeed = ship.getMaxSpeed();
         this.maxNumOfPersons = ship.getMaxNumOfPersons();
-        //this.fishingEquipment = ship.getFishingEquipment();
-        //this.navigationalEquipment = ship.getNavigationalEquipment();
-        //this.shipOwner = ship.getShipOwner();
     }
 
     public String getShipType() {
@@ -104,5 +105,13 @@ public class ShipDTO extends BookingEntityDTO{
 
     public void setShipOwner(ShipOwner shipOwner) {
         this.shipOwner = shipOwner;
+    }
+
+    public List<NewImageDTO> getImages() {
+        return images;
+    }
+
+    public void setImages(List<NewImageDTO> images) {
+        this.images = images;
     }
 }
