@@ -80,11 +80,16 @@ export default function EntityBasicCard(props) {
                 pathname: "/showCottageProfile",
                 state: { bookingEntityId: props.bookingEntity.id }
             })
-        } else if (props.bookingEntity.entityType === "ADVENTURE")
+        } else if (props.bookingEntity.entityType === "ADVENTURE"){
             history.push({
                 pathname: "/showAdventureProfile",
                 state: { bookingEntityId: props.bookingEntity.id }
             })
+        }  else if (props.bookingEntity.entityType === "SHIP")
+            history.push({
+                pathname: "/showShipProfile",
+                state: { bookingEntityId: props.bookingEntity.id }
+        })
     };
 
     const reserveBookingEntity = () => {

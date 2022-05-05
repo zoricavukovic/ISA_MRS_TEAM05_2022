@@ -67,6 +67,7 @@ function ShowReservationsOwner() {
     
     const displayReservations = reservations.slice(pagesVisited, pagesVisited + entitiesPerPage)
     .map(res=> {
+        console.log(res);
         return <ImgReservation reservation={res} reservationId={res.id} details="true"></ImgReservation>
     })
 

@@ -40,7 +40,7 @@ public class ReservationService {
         this.userRepository = userRepository;
     }
 
-    public List<Reservation> findAllActiveReservationsForCottage(Long cottageId){return reservationRepository.findAllActiveReservationsForCottage(cottageId);}
+    public List<Reservation> findAllActiveReservationsForEntity(Long entityId){return reservationRepository.findAllActiveReservationsForBookingEntity(entityId);}
 
     public List<Reservation> getReservationsByCottageOwnerId(Long ownerId) {
         List<Cottage> cottages = cottageRepository.getCottagesByOwnerId(ownerId);

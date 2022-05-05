@@ -47,7 +47,7 @@ public class CottageService {
         return true;
     }
     public boolean checkExistActiveReservations(Long id) {
-        List<Reservation> reservations = reservationService.findAllActiveReservationsForCottage(id);
+        List<Reservation> reservations = reservationService.findAllActiveReservationsForEntity(id);
         for (Reservation r : reservations){
            if ((r.getStartDate().plusDays(r.getNumOfDays())).isAfter(LocalDateTime.now())) return true;
         }
@@ -62,21 +62,6 @@ public class CottageService {
         return cottageRepository.save(cottage);
     }
 
-    public List<Cottage> searchCottagesOfOwner(Long ownerId, String cottageName, String firstOp, String city, String secondOp, float rate) {
-
-        if (firstOp.equals("AND") && secondOp.equals("AND")){
-            return cottageRepository.searchCottagesOfOwnerAndAnd(ownerId, cottageName, city, rate);
-        }
-        else if (firstOp.equals("AND") && secondOp.equals("OR")) {
-            return cottageRepository.searchCottagesOfOwnerAndOr(ownerId, cottageName, city, rate);
-        }
-        else if (firstOp.equals("OR") && secondOp.equals("AND")) {
-            return cottageRepository.searchCottagesOfOwnerOrAnd(ownerId, cottageName, city, rate);
-        }
-        else {
-            return cottageRepository.searchCottagesOfOwnerOrOr(ownerId, cottageName, city, rate);
-        }
-    }
     public Cottage findCottageByCottageIdWithOwner(Long cottageId) { return cottageRepository.findCottageByCottageIdWithOwner(cottageId);}
 
     public void setNewImages(Cottage existingCottage, List<NewImageDTO> images) {
