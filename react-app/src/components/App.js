@@ -25,6 +25,8 @@ import ShowBoats from "./entities_view/ShowBoats";
 import ShowCottages from './entities_view/ShowCottages';
 import ShowAdventures from './entities_view/ShowAdventures';
 
+import CalendarForEntity from './calendar/CalendarForEntity';
+
 function App() {
     const [currentUser,setCurrentUser] = useState({});
     return (
@@ -56,6 +58,10 @@ function App() {
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />
                     <Route path="/editAdventure" component={EditAdventure} />
+
+
+
+                    <Route path="/calendarForEntity" component={CalendarForEntity} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>

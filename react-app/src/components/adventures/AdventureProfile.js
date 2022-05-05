@@ -133,6 +133,13 @@ function AdventureActions(props) {
         });
     };
 
+    const showCalendarForEntity = (event) => {
+        event.preventDefault();
+        props.history.push({
+            pathname: "/calendarForEntity",
+            state: { bookingEntityId: props.adventureId }
+        })
+    }
     const showFastReservations = (event) => {
         event.preventDefault();
         props.history.push({
@@ -142,11 +149,10 @@ function AdventureActions(props) {
     
     };
 
-
     return (
         <CardActions disableSpacing>
             <IconButton >
-                <Chip icon={<CalendarMonthIcon />} label="Calendar" />
+                <Chip icon={<CalendarMonthIcon />} label="Calendar" onClick={showCalendarForEntity} />
             </IconButton>
             
             <IconButton value="module" aria-label="module" onClick={editAdventure}>

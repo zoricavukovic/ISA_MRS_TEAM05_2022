@@ -57,6 +57,13 @@ public class ReservationService {
 
     public List<Reservation> getReservationsByCottageId(Long cottageId){return reservationRepository.getReservationsByCottageId(cottageId);}
 
+    public List<Reservation> findAllActiveReservationsWithClientsForEntityId(Long id) {
+        return this.reservationRepository.findAllActiveReservationsWithClientsForEntityId(id);
+    }
+
+    public List<Reservation> findAllFastReservationsForEntityid(Long id) {
+        return this.reservationRepository.findAllFastReservationsForEntityId(id);
+    }
     public List<Reservation> getFastReservationsByBookingEntityId(Long bookingEntityId) {
         List<Reservation> allFastRes = reservationRepository.getFastReservationsByBookingEntityId(bookingEntityId);
         System.out.println("caocao" + " " + allFastRes.size());
@@ -113,5 +120,4 @@ public class ReservationService {
 
         return "success";
     }
-
 }

@@ -89,4 +89,9 @@ public class BookingEntityService {
         setPriceListAndRatingForSearchedBookingEntityDTO(retVal);
         return retVal;
     }
+
+
+    public BookingEntity getBookingEntityWithUnavailableDatesById(Long id) {
+        return this.bookingEntityRepository.getEntityWithUnavailableDatesById(id);
+    }
 }
