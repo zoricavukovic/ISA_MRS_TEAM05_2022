@@ -157,7 +157,19 @@ export default function CardIm(props) {
     }
 
     useEffect(() => {
-     
+        if (props.shipId === undefined || props.shipId === null){
+            return <div>Do not allowed to go to this page. Try again!</div>
+        }
+        getShipById(props.shipId).then(res => {
+            setShipBasicData(res.data);
+            setLoadingShip(false);
+        });
+        getPricelistByEntityId(props.shipId).then(res => {
+            setPricelistData(res.data);
+            setLoadingPricelist(false);
+        });
+
+
 }, []);
 if (isLoadingShip || isLoadingPricelist) { return <div className="App">Loading...</div> }
 return (
