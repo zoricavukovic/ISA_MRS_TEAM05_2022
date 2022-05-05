@@ -1,5 +1,11 @@
 package com.example.BookingAppTeam05.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -11,24 +17,37 @@ public class UnavailableDate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="dateTime", nullable = false)
-    private LocalDateTime dateTime;
+    @Column(name="startTime", nullable = false)
+    private LocalDateTime startTime;
+
+    @Column(name="endTime", nullable = false)
+    private LocalDateTime endTime;
 
     public UnavailableDate() {}
 
-    public UnavailableDate(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public UnavailableDate(LocalDateTime startTime, LocalDateTime endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public Long getId() {
         return id;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 }

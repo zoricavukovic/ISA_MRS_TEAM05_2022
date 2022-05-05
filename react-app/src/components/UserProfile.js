@@ -18,6 +18,7 @@ import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
+import axios from "axios";
 import { getUserById } from '../service/UserService';
 
 
@@ -54,7 +55,6 @@ function UserProfile(props) {
     />
 
     useEffect(() => {
-        console.log(props.history.location.state);
         getUserById(props.history.location.state.userId).then(res => {
             setUserData(res.data);
             setLoading(false);
@@ -65,7 +65,6 @@ function UserProfile(props) {
     return (
         
         <div className="App">
-            {console.log(userData)}
             <div style={{ backgroundColor: 'aliceblue', margin: '8%', padding: '2%', borderRadius: '10px', minHeight: '55px' }} >
 
                 <div>

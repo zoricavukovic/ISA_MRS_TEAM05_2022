@@ -289,6 +289,7 @@ VALUES
     ('2022-03-03 7:00 pm',2,3,11,7,'False','True'),    --5
     ('2022-04-19 7:00 pm',2,3,11,9,'False','False'),   --6
 
+
     ('2022-01-15 7:00 pm',1,3,12,8,'False','False'),   --7
     ('2022-01-20 7:00 pm',4,3,12,7,'False','False'),   --8
 
@@ -296,8 +297,19 @@ VALUES
     ('2022-01-25 7:00 pm',4,3,13,7,'False','False'),   --10
 
     ('2022-01-25 7:00 pm',1,3,14,8,'False','False'),   --11
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False');   --12
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False'),   --12
 
+    ('2022-05-15 7:00 pm',2,3,11,9,'False','False'),   --12
+    ('2022-05-20 7:00 pm',1,3,11,8,'False','False'),   --13
+    ('2022-05-22 7:00 pm',2,3,11,7,'False','False'),   --14
+    ('2022-05-25 8:00 pm',2,3,11,null,'True','False'),   --15
+    ('2022-05-28 9:00 pm',5,3,11,null,'True','False');   --16
+
+
+INSERT INTO unavailable_dates (start_time, end_time, entity_id)
+VALUES
+    ('2022-06-04 9:00 pm', '2022-06-06 9:00 pm', 11),
+    ('2022-06-10 9:00 pm', '2022-06-15 9:00 pm', 11);
 
 INSERT INTO ratings (comment, value, reservation_id)
 VALUES

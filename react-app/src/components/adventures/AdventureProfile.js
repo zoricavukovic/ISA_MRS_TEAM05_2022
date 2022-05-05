@@ -125,10 +125,18 @@ function AdventureActions(props) {
         });
     };
 
+    const showCalendarForEntity = (event) => {
+        event.preventDefault();
+        props.history.push({
+            pathname: "/calendarForEntity",
+            state: { bookingEntityId: props.adventureId }
+        })
+    }
+
     return (
         <CardActions disableSpacing>
             <IconButton >
-                <CalendarMonthIcon />
+                <CalendarMonthIcon onClick={showCalendarForEntity}/>
             </IconButton>
             <IconButton value="module" aria-label="module" onClick={editAdventure}>
                 <EditIcon />

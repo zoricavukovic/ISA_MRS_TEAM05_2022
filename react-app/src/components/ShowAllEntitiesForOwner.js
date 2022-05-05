@@ -79,7 +79,7 @@ export default function ShowAllEntitiesForOwner() {
 
     const onSearch = data => {
         let searchCriteria = {
-            "ownerId": ownerId,
+            "ownerId": getCurrentUser().id,
             "name": data.name,
             "address": data.address,
             "placeId": selectedPlaceId,
