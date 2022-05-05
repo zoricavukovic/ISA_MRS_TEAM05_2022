@@ -13,6 +13,7 @@ import {
     TodayButton,
     Resources,
     AppointmentTooltip,
+    CurrentTimeIndicator,
     AppointmentForm,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { getCalendarValuesByBookintEntityId } from "../../service/CalendarService";
@@ -37,7 +38,7 @@ export default class CalendarForEntity extends React.PureComponent {
 
         this.state = {
             isLoadingData: true,
-            data:[]
+            data: []
         };
         this.addNewAppointment = this.addNewAppointment.bind(this);
     }
@@ -46,20 +47,20 @@ export default class CalendarForEntity extends React.PureComponent {
         if (this.props.location.state === undefined)
             return;
         getCalendarValuesByBookintEntityId(11).then(res => {
-            this.setState({ isLoadingData: false, data: res.data});
+            this.setState({ isLoadingData: false, data: res.data });
         });
     }
 
     addNewAppointment() {
         let newApt = { startDate: '2018-11-23T18:00', type: 'fast reservation', endDate: '2018-11-25T18:00', title: 'met5', allDay: 'false' };
         this.setState((state) => ({
-            data : [...state.data, newApt ]
+            data: [...state.data, newApt]
         }));
     }
 
     render() {
         const { data } = this.state;
-        
+
         if (this.state.isLoadingData)
             return <div className="App">Loading...</div>
         return (
@@ -78,10 +79,15 @@ export default class CalendarForEntity extends React.PureComponent {
                         <Appointments
                         />
                         <AppointmentTooltip
-                            showCloseButton                            
+                            showCloseButton
                         />
                         <Resources
                             data={resources}
+                        />
+
+                        <CurrentTimeIndicator
+                            shadePreviousCells
+                            shadePreviousAppointments                            
                         />
                     </Scheduler>
                 </Paper>

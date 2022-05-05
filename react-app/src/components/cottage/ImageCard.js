@@ -87,6 +87,15 @@ export default function CardIm(props) {
             })
     };
 
+    const showCalendarForEntity = (event) => {
+        event.preventDefault();
+        history.push({
+            pathname: "/calendarForEntity",
+            state: { bookingEntityId: props.cottageId }
+        })
+    }
+
+
     const showFastReservations = (event) => {
         event.preventDefault();
         history.push({
@@ -201,7 +210,7 @@ return (
 
         <CardActions disableSpacing>
             <IconButton >
-                <Chip icon={<CalendarMonthIcon />} label="Calendar" />
+                <Chip icon={<CalendarMonthIcon />} label="Calendar" onClick={showCalendarForEntity}/>
             </IconButton>
             
             <IconButton value="module" aria-label="module" onClick={editCottage}>

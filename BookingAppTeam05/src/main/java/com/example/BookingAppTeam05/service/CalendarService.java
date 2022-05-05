@@ -8,6 +8,7 @@ import com.example.BookingAppTeam05.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +40,10 @@ public class CalendarService {
 
     private void fillResultWithFastReservations(List<CalendarEntryDTO> calendarEntryDTOS, List<Reservation> fastReservations) {
         for (Reservation r : fastReservations) {
-            calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "fast reservation", "Fast reservation"));
+            if (r.getEndDate().isBefore(LocalDateTime.now()))
+                calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "fast reservation", "Fast reservation expired"));
+            else
+                calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "fast reservation", "Fast reservation"));
         }
     }
 
