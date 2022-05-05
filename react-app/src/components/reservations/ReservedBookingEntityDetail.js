@@ -52,7 +52,9 @@ export default function ReservedBookingEntityDetail(props) {
     };
     
     useEffect(() => {
-        
+        if (props === null || props === undefined){
+            history.push('/login');
+        }
         getCottageById(props.reservation.bookingEntity.id).then(res => {
             setBookingEntity(res.data);
             let labelRules = [];

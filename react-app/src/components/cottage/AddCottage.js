@@ -19,10 +19,13 @@ import { useHistory } from "react-router-dom";
 import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
 import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
 import Autocomplete from '@mui/material/Autocomplete';
-import { addNewPriceListForEntityId} from '../../service/Pricelists.js';
+import { addNewPriceListForEntityId} from '../../service/PricelistService.js';
 import { getAllPlaces } from '../../service/PlaceService.js';
 import {addNewCottage} from '../../service/CottageService.js';
 import AddingRooms from '../AddingRooms.js';
+import { getCurrentUser } from '../../service/AuthService.js';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 const Input = styled(MuiInput)`
   width: 42px;
@@ -35,8 +38,9 @@ export default function AddCottage(props) {
   const [pricelistData, setPricelistData] = useState({});
   const [places, setPlaces] = useState([]);
   const [hiddenError, setHiddenError] = useState("none");
+  const [message, setMessage] = React.useState("");
   const history = useHistory();
-
+  let ownerId = null;
   const [newPricelist, setNewPricelist] = React.useState(
     {
       "id":0,
@@ -46,6 +50,18 @@ export default function AddCottage(props) {
       "bookingEntity": null
     }
    );
+
+   ////////////////ERROR MESSAGE/////////////////////////
+   const [open, setOpen] = React.useState(false);
+   const handleClose = (_event, reason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+    setOpen(false);
+    };
+    const handleClick = () => {
+      setOpen(true);
+    };
 
     ////////////////IMAGES//////////////////////////////////
     const [images, setImages] = React.useState([]);
@@ -244,7 +260,6 @@ export default function AddCottage(props) {
     ///////////////////////////////////////////////////
 
     const onFormSubmit = data => {
-      console.log(getImagesInJsonBase64());
       const cottageRate = cottageBasicData.entityCancelationRate;
       let zip = 0;
       if (selectedPlaceZip != null && selectedPlaceZip != undefined && selectedPlaceZip != '') {
@@ -269,30 +284,45 @@ export default function AddCottage(props) {
         additionalServices: getAdditionalServicesJson(),
         rooms: getRoomsJson(),
         rulesOfConduct: getRuleNamesJson(),
-        pictures: getImagesInJsonBase64(),
+        images: getImagesInJsonBase64(),
     } 
     newCottage.entityCancelationRate = cottageRate;
     let newPricel = newPricelist;
     newPricel.entityPricePerPerson =  parseInt(data.costPerNight);
     newPricel.additionalServices = getAdditionalServicesJson();
     setNewPricelist(newPricel);
-    console.log(newCottage);
-    console.log(newPricelist);
-    addNewCottage("1", newCottage).then(result => { //PROMENITI ID 
-      
+    if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER") {
+      history.push('/login');
+    } else {
+        ownerId = getCurrentUser().id;
+    }
+    addNewCottage(ownerId, newCottage).then(result => { 
       addNewPriceListForEntityId(result.data, newPricelist).then(res => {
         history.push({
           pathname: "/showCottageProfile",
-          state: { cottageId: result.data } 
-        })
+          state: { bookingEntityId: result.data } 
+        }) 
     }).catch(resError=>{
         console.log("Greska!!");
+        setMessage(resError.response.data);
+        handleClick();
         return;
     })    
-  })
+  }).catch(resError=>{
+    console.log("Greska!!");
+    setMessage(resError.response.data);
+    handleClick();
+    return;
+  })   
       
   }
   useEffect(() => {
+    console.log(getCurrentUser());
+    if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER") {
+      history.push('/login');
+    } else {
+        ownerId = getCurrentUser().id;
+    }
     getAllPlaces().then(results => {
       
       setPlaces(results.data);
@@ -300,6 +330,7 @@ export default function AddCottage(props) {
       
     })
   }, []);
+  
 
   //rate/////
   const [rate, setRate] = React.useState();
@@ -316,7 +347,11 @@ export default function AddCottage(props) {
       <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '15%', padding: '1%', borderRadius: '10px', width: '15%' }} >
         Add New Cottage
       </div>
-      
+      <br />
+      <Divider />
+      <br />
+      <ImageUploader images={images} maxNumber={maxNumber} onChange={onChange} />
+      <br />
       <h4 style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', marginLeft:"15%" }}>Basic Information About Cottage</h4>
          
       <Box sx={{ marginTop: '1%', marginLeft: '11%', marginRight: '5%', width: '90%' }}
@@ -478,13 +513,7 @@ export default function AddCottage(props) {
                         />
                 </td>
               </tr>
-              <tr>
-                <td><br />
-                <Divider />
-            <br />
-            <ImageUploader style={{maxWidth:"10px"}} images={images} maxNumber={maxNumber} onChange={onChange} />
-            <br /></td>
-              </tr>
+              
             </table>
 
           </div>
@@ -492,18 +521,40 @@ export default function AddCottage(props) {
         </Box>
       </Box>
       <Box style={{ display: "flex", flexDirection: "row" }}>
-                    <AddingAdditionalServiceAdventure data={additionalServices} onDeleteChip={handleDeleteAdditionalServiceChip} onSubmit={handleAddAdditionalServiceChip} float="left" />
-                    <AddingRooms data={room} onDeleteChip={handleDeleteRoomChip} onSubmit={handleAddRoomChip} float="left" />
-                    <AddingRulesOfConductAdventure data={rulesOfConduct} onDeleteChip={handleDeleteRuleChip} onSubmit={handleAddRuleChip} ruleChecked={checked} handleRuleCheckedChange={handleRuleCheckedChange} float="left" />
+          <AddingAdditionalServiceAdventure data={additionalServices} onDeleteChip={handleDeleteAdditionalServiceChip} onSubmit={handleAddAdditionalServiceChip} float="left" />
+          <AddingRooms data={room} onDeleteChip={handleDeleteRoomChip} onSubmit={handleAddRoomChip} float="left" />
+          <AddingRulesOfConductAdventure data={rulesOfConduct} onDeleteChip={handleDeleteRuleChip} onSubmit={handleAddRuleChip} ruleChecked={checked} handleRuleCheckedChange={handleRuleCheckedChange} float="left" />
       </Box>
 
       <Box style={{ display: "flex", flexDirection: "row" }}>
       <Button type="submit" onClick={handleSubmit(onFormSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
           Save
       </Button>
-        <Button variant="contained" onClick={refreshPage} style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+        <Button variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
+        onClick={() => {
+          reset(
+              {
+                  name: "",
+                  address: "",
+                  entityCancelationRate: 0,
+                  promoDescription: "",
+                  costPerNight: 0,
+                  rulesOfConduct:[],
+                  rooms:[]
+              }, {
+              keepDefaultValues: false,
+              keepErrors: true,
+          }
+          );
+      }}
+        >
           Reset
         </Button>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                {message}
+            </Alert>
+        </Snackbar>
       </Box>
 
     </div>

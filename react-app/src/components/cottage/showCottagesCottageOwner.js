@@ -7,7 +7,8 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import axios from "axios";
-
+import { getCurrentUser } from '../../service/AuthService.js';
+import {getAllBookingEntitiesByOwnerId} from "../../service/BookingEntityService.js";
 const options = ['AND', 'OR'];
 function ShowCottagesCottageOwner() {
 
@@ -28,12 +29,15 @@ function ShowCottagesCottageOwner() {
         rate:0,
         cost:0
     });
-    let ownerId = 1; //IZMENNEEEEEEEEE!!!!!!!!!!!!!!!
+    let ownerId;
     let bookingEntity = 1;
     
     
     useEffect(() => {
-        axios.get("http://localhost:8092/bookingApp/cottages/owner/" + ownerId).then(res => {
+        let owner = getCurrentUser();
+        ownerId = owner.id;
+        console.log(owner);
+        getAllBookingEntitiesByOwnerId(ownerId).then(res => {
             console.log("Barem se pokrece")
             console.log(res.data);
             setCottages(res.data);

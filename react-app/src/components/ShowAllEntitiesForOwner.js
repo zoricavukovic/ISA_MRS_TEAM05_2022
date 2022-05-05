@@ -22,7 +22,6 @@ export default function ShowAllEntitiesForOwner() {
     const [isLoadingEntites, setLoadingEntities] = useState(true);
     const [selectedPlaceId, setSelectedPlaceId] = useState(null);
     const history = useHistory();
-    //const ownerId = getCurrentUser().id; // promeni od ulogovanog korisnika
     let ownerId = null;
     const [entities, setEntities] = useState(null);
 

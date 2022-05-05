@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import axios from "axios";
 import Autocomplete from '@mui/material/Autocomplete';
 import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
 import AddingEquipmentAdventure from "../AddingEquipment.js";
@@ -13,17 +12,18 @@ import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
 import {useHistory} from "react-router-dom";
 import { getAllPlaces } from "../../service/PlaceService.js";
-import { addNewAdventure, editAdventureById, getAdventureById } from "../../service/AdventureService.js";
-import { getPricelistByEntityId } from "../../service/Pricelists.js";
+import { editAdventureById, getAdventureById } from "../../service/AdventureService.js";
+import { getPricelistByEntityId } from "../../service/PricelistService.js";
 import { getAllPictureBase64ForEntityId } from "../../service/PictureService.js";
 import { dataURLtoFile} from "../../service/PictureService.js";
-import { useParams } from "react-router-dom";
+import { getCurrentUser } from '../../service/AuthService.js';
 
 export default function EditAdventure(props) {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [currentAdventure, setCurrentAdventure] = useState({});
-    const adventureId =  props.history.location.state.bookingEntityId;
+    let adventureId =  null;
+    let ownerId = null;
     const [pricelist, setPricelist] = useState({});
     const [base64Images, setBase64Images] = useState([]);
 
@@ -286,7 +286,7 @@ export default function EditAdventure(props) {
             return;
         }
         const editedAdventure = {
-            instructorId: 13, // ovde promeniti posle u zavisnosti od ulogovanog korisnika
+            instructorId: ownerId, // ovde promeniti posle u zavisnosti od ulogovanog korisnika
             name : data.name,
             address: data.address,
             placeId: selectedPlaceId,
@@ -298,7 +298,7 @@ export default function EditAdventure(props) {
             additionalServices: getAdditionalServicesJson(),
             fishingEquipment: getFishingEquipmentNamesJson(),
             rulesOfConduct: getRuleNamesJson(),
-            //images: getImagesInJsonBase64(),
+            images: getImagesInJsonBase64(),
         }
         editAdventureById(adventureId, editedAdventure)
             .then(res => {
@@ -317,6 +317,18 @@ export default function EditAdventure(props) {
 
 
     useEffect(() => {
+        if (props.history.location.state === undefined || props.history.location.state === null){
+            return <div>Do not allowed to go to this page. Try again!</div>
+        }
+        else{
+            adventureId = props.history.location.state.bookingEntityId;
+        }
+        if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_INSTRUCTOR") {
+            history.push('/login');
+        } 
+        else{
+            ownerId = getCurrentUser().id;
+        }
         getAdventureById(adventureId).then(res => {
             setCurrentAdventure(res.data);
             setSelectedPlaceId(res.data.place.id);

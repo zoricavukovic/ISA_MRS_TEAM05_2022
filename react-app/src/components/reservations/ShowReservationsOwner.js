@@ -2,17 +2,17 @@ import * as React from 'react';
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import ImgReservation from "./ReservationBasicCard.js";
-import BasicPagination from "../Pagination.js";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import axios from "axios";
 import { getReservationsByOwnerId, getReservationsByOwnerIdAndFilter } from '../../service/ReservationService.js';
 import ReactPaginate from "react-paginate";
 import "../../App.css"
+import { useHistory } from 'react-router-dom';
+import { getCurrentUser } from '../../service/AuthService.js';
 
 function ShowReservationsOwner() {
-
+    const history = useHistory();
     const [reservations, setReservations] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(0);
@@ -20,8 +20,15 @@ function ShowReservationsOwner() {
     const pagesVisited = currentPage*entitiesPerPage;
     const [valueFirst, setValueFirst] = React.useState();
     const [options, setOptions] = React.useState([]);
-    let ownerId = 1; //IZMENNEEEEEEEEE!!!!!!!!!!!!!!!
+    let ownerId = null;
     useEffect(() => {
+        let owner = getCurrentUser();
+        if (owner === null || owner === undefined){
+            history.push('/login');
+        }
+        else{
+            ownerId = owner.id;
+        }
         getReservationsByOwnerId(ownerId).then(res => {
             setReservations(res.data);
             let newOpts = [];
@@ -43,7 +50,13 @@ function ShowReservationsOwner() {
         if (valueFirst === undefined){
             return;
         }
-        
+        let owner = getCurrentUser();
+        if (owner === null || owner === undefined){
+            history.push('/login');
+        }
+        else{
+            ownerId = owner.id;
+        }
         setLoading(true);
         getReservationsByOwnerIdAndFilter(ownerId, valueFirst).then(res => {
             setReservations(res.data);

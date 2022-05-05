@@ -55,7 +55,10 @@ function EditUserProfile(props) {
     const [city,setCity] = useState("");
 
     useEffect(() => {
-        console.log(props.history.location.state.userId);
+        if (props.history.location.state === undefined || props.history.location.state === null){
+            return <div>Do not allowed to go to this page. Try again!</div>
+        }
+        const userId = props.history.location.state.userId;
         getUserById(userId).then(res => {
             setUserData(res.data);
             setChangedUserData(res.data);

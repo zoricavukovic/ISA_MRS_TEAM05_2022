@@ -20,7 +20,7 @@ import axios from "axios";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
-import { getPricelistByEntityId } from '../../service/Pricelists.js';
+import { getPricelistByEntityId } from '../../service/PricelistService.js';
 import { deleteCottageById } from '../../service/CottageService.js';
 
 export default function ImgMediaCard(props) {
