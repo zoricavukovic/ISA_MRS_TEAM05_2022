@@ -8,7 +8,6 @@ import ShowCottageProfile from "./cottage/ShowCottageProfile";
 import AddCottage from "./cottage/AddCottage";
 import EditCottage from "./cottage/EditCottage";
 
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import ShowShipProfile from "./ships/ShowShipProfile";
 import AddShip from "./ships/AddShip";
 import EditShip from "./ships/EditShip";
@@ -69,7 +68,7 @@ function App() {
                     <Route path="/showCottageProfile" component={ShowCottageProfile} />
                     <Route path="/addCottage" component={AddCottage} />
                     <Route path="/editCottage" component={EditCottage} />
-                    <Route path="/showCottagesOwner" component={ShowCottagesCottageOwner} />
+                    
                     <Route path="/login" ><Login setCurrentUser={setNewUser} /></Route>
 
                     <Route path="/showShipProfile" component={ShowShipProfile} />
