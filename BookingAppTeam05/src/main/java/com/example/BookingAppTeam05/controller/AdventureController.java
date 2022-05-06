@@ -4,6 +4,7 @@ import com.example.BookingAppTeam05.dto.AdventureDTO;
 import com.example.BookingAppTeam05.dto.NewAdventureDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.model.entities.Adventure;
+import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.model.Place;
@@ -103,5 +104,6 @@ public class AdventureController {
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
+
 
 }

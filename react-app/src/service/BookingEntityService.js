@@ -12,3 +12,11 @@ export function getBookingEntityByIdForCardView(id) {
 export function getAllSearchedEntitiesBySimpleCriteria(searchCriteria) {
     return api.post('/bookingEntities/simpleSearch', searchCriteria);
 }
+
+export function checkIfCanEditEntityById(id) {
+    return api.get('/bookingEntities/checkIfCanEdit/' + id)
+}
+
+export function logicalDeliteBookingEntityById(id, confirmPass) {
+    return api.delete('/bookingEntities/' + id, {data : confirmPass});
+}

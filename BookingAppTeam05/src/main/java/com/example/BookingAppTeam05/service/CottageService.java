@@ -7,6 +7,7 @@ import com.example.BookingAppTeam05.model.Room;
 import com.example.BookingAppTeam05.model.RuleOfConduct;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.Reservation;
+import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.CottageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -172,5 +173,10 @@ public class CottageService {
             }
             if (!found) { rules.add(rule); }
         }
+    }
+
+
+    public User getCottageOwnerOfCottageId(Long id) {
+        return this.cottageRepository.getCottageOwnerOfCottageId(id);
     }
 }

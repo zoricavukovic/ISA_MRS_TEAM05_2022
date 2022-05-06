@@ -3,6 +3,7 @@ package com.example.BookingAppTeam05.repository;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.Cottage;
+import com.example.BookingAppTeam05.model.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,4 +19,7 @@ public interface AdventureRepository extends JpaRepository<Adventure, Long> {
 
     @Query(value="select distinct c from Adventure c left join fetch c.rulesOfConduct r left join fetch c.place p left join fetch c.pictures s where c.deleted = false")
     List<Adventure> findAll();
+
+    @Query(value="select distinct a.instructor from Adventure a where a.id=?1 and a.deleted=false")
+    User getInstructorOfAdventureId(Long id);
 }

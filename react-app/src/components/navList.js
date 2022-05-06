@@ -46,7 +46,12 @@ const navbarDefaultList = [
 
 export default function getNavbarList(){
   let curUser = getCurrentUser();
-  if(curUser === null)
+  console.log("TREEEENUTNI iz navbarlisteee");
+  console.log(curUser);
+  console.log("TREEEENUTNI iz navbarlisteee");
+
+  //return navbarDefaultList;
+  if(curUser === null || curUser === undefined || Object.keys(curUser).length === 0)
     return navbarDefaultList;
 
   switch(curUser.userType.name){

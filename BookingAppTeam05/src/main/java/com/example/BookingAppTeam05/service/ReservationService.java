@@ -9,7 +9,6 @@ import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
@@ -57,8 +56,8 @@ public class ReservationService {
 
     public List<Reservation> getReservationsByCottageId(Long cottageId){return reservationRepository.getReservationsByCottageId(cottageId);}
 
-    public List<Reservation> findAllActiveReservationsWithClientsForEntityId(Long id) {
-        return this.reservationRepository.findAllActiveReservationsWithClientsForEntityId(id);
+    public List<Reservation> findAllReservationsWithClientsForEntityId(Long id) {
+        return this.reservationRepository.findAllReservationsWithClientsForEntityId(id);
     }
 
     public List<Reservation> findAllFastReservationsForEntityid(Long id) {
@@ -119,5 +118,16 @@ public class ReservationService {
         }
 
         return "success";
+    }
+
+
+    public List<Reservation> findAllActiveReservationsForEntityid(Long id) {
+        List<Reservation> reservations = reservationRepository.findAllRegularAndFastReservationsForEntityId(id);
+        List<Reservation> retVal = new ArrayList<>();
+        for (Reservation r : reservations) {
+            if (!r.isFinished())
+                retVal.add(r);
+        }
+        return retVal;
     }
 }

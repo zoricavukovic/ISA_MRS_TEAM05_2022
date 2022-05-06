@@ -26,7 +26,6 @@ export default function Login({setCurrentUser}) {
         login(formData).then(res=>{
             console.log("Login success");
             console.log(getCurrentUser());
-            console.log(setCurrentUser);
             setCurrentUser(getCurrentUser());
             history.push("/");
 

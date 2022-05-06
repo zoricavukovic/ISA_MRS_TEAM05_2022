@@ -34,6 +34,16 @@ public class UserService implements UserServiceI{
         return userRepository.findByEmail(username);
     }
 
+    public boolean passwordIsCorrect(User user, String checkPass) {
+        return passwordEncoder.matches(checkPass, user.getPassword());
+//        String encodePass = passwordEncoder.encode(checkPass);
+//        System.out.println("----");
+//        System.out.println(encodePass);
+//        System.out.println(user.getPassword());
+//        System.out.println("----");
+//        return user.getPassword().equals(encodePass);
+    }
+
     public User save(UserRequestDTO userRequest) {
         // TODO::
 

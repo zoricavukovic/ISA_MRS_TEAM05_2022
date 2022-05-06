@@ -2,23 +2,32 @@ package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.SimpleSearchForBookingEntityDTO;
+import com.example.BookingAppTeam05.model.entities.Adventure;
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
+import com.example.BookingAppTeam05.model.entities.Cottage;
+import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/bookingEntities")
 public class BookingEntityController {
     private BookingEntityService bookingEntityService;
+    private UserService userService;
 
     @Autowired
-    public BookingEntityController(BookingEntityService bookingEntityService) {
+    public BookingEntityController(BookingEntityService bookingEntityService, UserService userService) {
         this.bookingEntityService = bookingEntityService;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/allByOwner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,6 +64,39 @@ public class BookingEntityController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping(value="/checkIfCanEdit/{entityId}")
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
+    public ResponseEntity<String> checkIfCanEdit(@PathVariable Long entityId) {
+        BookingEntity bookingEntity = bookingEntityService.getEntityById(entityId);
+        if (bookingEntity == null) return new ResponseEntity<String>("Entity for editing is not found.", HttpStatus.BAD_REQUEST);
+        if (bookingEntityService.checkExistActiveReservationForEntityId(entityId)){
+            return new ResponseEntity<String>("Cannot edit entity cause has reservations.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Entity can edit.", HttpStatus.OK);
+    }
+
+    @DeleteMapping(value="/{entityId}")
+    @Transactional
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
+    public ResponseEntity<String> logicalDeleteEntityById(@PathVariable Long entityId, @RequestBody String confirmPass){
+        BookingEntity bookingEntity = bookingEntityService.getEntityById(entityId);
+        if (bookingEntity == null)
+            return new ResponseEntity<String>("Entity for deleting is not found.", HttpStatus.BAD_REQUEST);
+
+        User user = bookingEntityService.getOwnerOfEntityId(entityId);
+        System.out.println("prava");
+        System.out.println(user.getPassword());
+        System.out.println("nova");
+        System.out.println(confirmPass);
+        if (!userService.passwordIsCorrect(user, confirmPass))
+            return new ResponseEntity<String>("Confirmation password is incorrect.", HttpStatus.BAD_REQUEST);
+
+        if (!bookingEntityService.logicalDeleteBookingEntityById(entityId)){
+            return new ResponseEntity<String>("Entity cant be deleted  cause has reservations.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Entity is deleted.", HttpStatus.CREATED);
     }
 
 }

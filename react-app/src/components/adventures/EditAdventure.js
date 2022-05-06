@@ -10,20 +10,18 @@ import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { getAllPlaces } from "../../service/PlaceService.js";
 import { editAdventureById, getAdventureById } from "../../service/AdventureService.js";
 import { getPricelistByEntityId } from "../../service/PricelistService.js";
 import { getAllPictureBase64ForEntityId } from "../../service/PictureService.js";
-import { dataURLtoFile} from "../../service/PictureService.js";
+import { dataURLtoFile } from "../../service/PictureService.js";
 import { getCurrentUser } from '../../service/AuthService.js';
 
 export default function EditAdventure(props) {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [currentAdventure, setCurrentAdventure] = useState({});
-    let adventureId =  null;
-    let ownerId = null;
     const [pricelist, setPricelist] = useState({});
     const [base64Images, setBase64Images] = useState([]);
 
@@ -32,7 +30,7 @@ export default function EditAdventure(props) {
     const [isLoadingPlaces, setLoadingPlaces] = useState(true);
     const [isLoadinBase64Images, setLoadingBase64Images] = useState(true);
     const history = useHistory();
-
+    let adventureId = null;
 
     ////////////////IMAGES//////////////////////////////////
     const [images, setImages] = React.useState([]);
@@ -46,7 +44,7 @@ export default function EditAdventure(props) {
             return [];
         }
         let retVal = [];
-        
+
         for (let img of images) {
             retVal.push({
                 imageName: img.file.name,
@@ -72,7 +70,7 @@ export default function EditAdventure(props) {
             let dataUrl = "data:image/" + mimeType + ";base64," + base64Part;
             let newFile = dataURLtoFile(dataUrl, imgName);
             let newImgObj = {
-                data_url : dataUrl,
+                data_url: dataUrl,
                 file: newFile
             };
             console.log(newImgObj);
@@ -100,7 +98,7 @@ export default function EditAdventure(props) {
                 if (chip.serviceName.toLowerCase() === sName.toLowerCase())
                     return;
             }
-            newKey = Math.max.apply(Math, additionalServices.map(chip => chip.key)) + 1;    
+            newKey = Math.max.apply(Math, additionalServices.map(chip => chip.key)) + 1;
         }
         let newAmount = data.amount;
         let newObj = {
@@ -133,8 +131,8 @@ export default function EditAdventure(props) {
         let retVal = [];
         for (let service of additionalServices) {
             retVal.push({
-                serviceName : service.serviceName,
-                price : service.amount
+                serviceName: service.serviceName,
+                price: service.amount
             });
         }
         return retVal;
@@ -160,7 +158,7 @@ export default function EditAdventure(props) {
                 if (chip.equipmentName.toLowerCase() === eName.toLowerCase())
                     return;
             }
-            newKey = Math.max.apply(Math, fishingEquipment.map(chip => chip.key)) + 1;    
+            newKey = Math.max.apply(Math, fishingEquipment.map(chip => chip.key)) + 1;
         }
         let newObj = {
             "key": newKey,
@@ -168,7 +166,7 @@ export default function EditAdventure(props) {
         };
         let newChipData = [...fishingEquipment];
         newChipData.push(newObj);
-        
+
         setFishingEquipment(newChipData);
     }
 
@@ -191,7 +189,7 @@ export default function EditAdventure(props) {
         let retVal = [];
         for (let equipment of fishingEquipment) {
             retVal.push({
-                equipmentName : equipment.equipmentName,
+                equipmentName: equipment.equipmentName,
             });
         }
         return retVal;
@@ -207,8 +205,8 @@ export default function EditAdventure(props) {
 
     const handleRuleCheckedChange = (event) => {
         setChecked(event.target.checked);
-      };
-    
+    };
+
     const handleDeleteRuleChip = (chipToDelete) => {
         setRulesOfConduct((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
     };
@@ -220,7 +218,7 @@ export default function EditAdventure(props) {
             for (let chip of rulesOfConduct) {
                 if (chip.ruleName.toLowerCase() === rName.toLowerCase())
                     return;
-            }    
+            }
             newKey = Math.max.apply(Math, rulesOfConduct.map(chip => chip.key)) + 1;
         }
         let isAllowed = checked;
@@ -255,8 +253,8 @@ export default function EditAdventure(props) {
         let retVal = [];
         for (let r of rulesOfConduct) {
             retVal.push({
-                ruleName : r.ruleName,
-                allowed : r.allowed,
+                ruleName: r.ruleName,
+                allowed: r.allowed,
             });
         }
         return retVal;
@@ -286,20 +284,22 @@ export default function EditAdventure(props) {
             return;
         }
         const editedAdventure = {
-            instructorId: ownerId, // ovde promeniti posle u zavisnosti od ulogovanog korisnika
-            name : data.name,
+            instructorId: getCurrentUser().id,
+            name: data.name,
             address: data.address,
             placeId: selectedPlaceId,
             costPerPerson: data.costPerPerson,
             maxNumOfPersons: data.maxNumOfPersons,
-            promoDescription : data.promoDescription,
+            promoDescription: data.promoDescription,
             shortBio: data.shortBio,
-            entityCancelationRate: data.entityCancelationRate, 
+            entityCancelationRate: data.entityCancelationRate,
             additionalServices: getAdditionalServicesJson(),
             fishingEquipment: getFishingEquipmentNamesJson(),
             rulesOfConduct: getRuleNamesJson(),
             images: getImagesInJsonBase64(),
         }
+        console.log("EDITEDD adventure");
+        console.log(editedAdventure);
         editAdventureById(adventureId, editedAdventure)
             .then(res => {
                 console.log(res);
@@ -307,50 +307,53 @@ export default function EditAdventure(props) {
                 history.push({
                     pathname: "/showAdventureProfile",
                     state: { bookingEntityId: parseInt(adventureId) }
-                  });
+                });
             })
             .catch(res => {
                 console.log(res);
-                alert("Error happened on server. Update not succesfull.");
+                alert("Error happened on server. Update not succesfull. " + res.response.data);
             });
     }
 
 
     useEffect(() => {
-        if (props.history.location.state === undefined || props.history.location.state === null){
-            return <div>Do not allowed to go to this page. Try again!</div>
-        }
-        else{
-            adventureId = props.history.location.state.bookingEntityId;
-        }
-        if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_INSTRUCTOR") {
+        if (getCurrentUser() == null || getCurrentUser() == undefined) {
             history.push('/login');
-        } 
-        else{
-            ownerId = getCurrentUser().id;
         }
-        getAdventureById(adventureId).then(res => {
-            setCurrentAdventure(res.data);
-            setSelectedPlaceId(res.data.place.id);
-            setInitialRulesOfConduct(res.data.rulesOfConduct);
-            setInitialFishingEquipment(res.data.fishingEquipment);
-            setLoadingAdventure(false);
-        })
-        getAllPictureBase64ForEntityId(adventureId).then(res => {
-            setBase64Images(res.data);
-            setLoadingBase64Images(false);
-        });
+        else if (props.location.state === undefined || props.location.state === null) {
+            history.push('/notFoundPage');
+        }
+        else if (getCurrentUser().userType.name !== "ROLE_INSTRUCTOR") {
+            history.push('/forbiddenPage');
+        }
+        else {
+            //adventureId = props.history.location.state.bookingEntityId;
+            //ovo ne sme ovako da se radi. Setovati adventureId tek pre rendera, jer je ovo asinhrona funkcija.
+            // Zato za vreme fetcha treba koristi direktno sve iz propsa
+            // Ne treba ni useState stavljati jer je i to asinhrona funkcija
 
-        getAllPlaces()
-            .then(res => {
+            // ne mora da pise props.history.location... moze i bez history
+            getAdventureById(props.location.state.bookingEntityId).then(res => {
+                setCurrentAdventure(res.data);
+                setSelectedPlaceId(res.data.place.id);
+                setInitialRulesOfConduct(res.data.rulesOfConduct);
+                setInitialFishingEquipment(res.data.fishingEquipment);
+                setLoadingAdventure(false);
+            });
+            getAllPictureBase64ForEntityId(props.location.state.bookingEntityId).then(res => {
+                setBase64Images(res.data);
+                setLoadingBase64Images(false);
+            });
+            getAllPlaces().then(res => {
                 setPlaces(res.data);
                 setLoadingPlaces(false);
-        })
-        getPricelistByEntityId(adventureId).then(res => {
-            setPricelist(res.data);
-            setInitialAdditionalServices(res.data.additionalServices);
-            setLoadingPriceList(false);
-        })
+            });
+            getPricelistByEntityId(props.location.state.bookingEntityId).then(res => {
+                setPricelist(res.data);
+                setInitialAdditionalServices(res.data.additionalServices);
+                setLoadingPriceList(false);
+            });
+        }
     }, [])
 
     useEffect(() => {
@@ -371,187 +374,193 @@ export default function EditAdventure(props) {
     if (isLoadingAdventure || isLoadingPlaces || isLoadingPricelist || isLoadinBase64Images) {
         return <div className="App">Loading...</div>
     }
-    return (
-        <div style={{ backgroundColor: 'aliceblue', margin: '1% 9% 1% 9%', padding: '1%', borderRadius: '10px', height: '100%' }} >
+    else {
+        // ovde dodati kod za inicijalizaciju ostalih stvari. U ovom trenutku je fetch svega zavrsen
 
-            {getAllPlacesForTheList()}
+        //  da ne mora uvek da se pise props.location.props.location.state.bookingEntityId
+        adventureId = props.location.state.bookingEntityId;
+        {getAllPlacesForTheList()}
 
-            <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '42%', padding: '1%', borderRadius: '10px', width: '15%' }} >
-                Edit adventure
-            </div>
-            <br />
-            <Divider />
-            <br />
-            <ImageUploader images={images} maxNumber={maxNumber} onChange={onChange} />
-            <br />
+        return (
+            <div style={{ backgroundColor: 'aliceblue', margin: '1% 9% 1% 9%', padding: '1%', borderRadius: '10px', height: '100%' }} >
 
-
-            <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit(onFormSubmit)}
-            >
-                <h4 style={{ color: 'rgb(5, 30, 52)', textAlign: 'center', fontWeight: 'bold' }}>Basic Information About Cottage</h4>
-
-                <Grid
-                    direction="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    container
-                    spacing={2}
-                >
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            name="name"
-                            defaultValue={currentAdventure.name}
-                            id="name"
-                            label="Name"
-                            placeholder="Name"
-                            multiline
-                            size="small"
-                            style={{ width: '300px' }}
-                            {...register("name", { required: true, maxLength: 50 })}
-                        />
-                    </Grid>
-                    {errors.name && <p style={{ color: '#ED6663' }}>Please check the adventure name</p>}
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            name="address"
-                            id="address"
-                            defaultValue={currentAdventure.address}
-                            label="Address"
-                            placeholder="Address"
-                            multiline
-                            size="small"
-                            style={{ width: '300px' }}
-                            {...register("address", { required: true, maxLength: 50 })}
-                        />
-                    </Grid>
-                    {errors.name && <p style={{ color: '#ED6663' }}>Please check the address name</p>}
-                    <Grid item xs={12} sm={12}>
-                        <Autocomplete
-                            disablePortal
-                            id="place"
-                            defaultValue={currentAdventure.place.cityName + ',' + currentAdventure.place.zipCode + ',' + currentAdventure.place.stateName}
-                            options={allPlacesList}
-                            sx={{ width: '300px' }}
-                            onChange={placeOnChange}
-                            renderInput={(params) => <TextField {...params} label="Place" />}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            name="costPerPerson"
-                            id="costPerPerson"
-                            type="number"
-                            defaultValue={pricelist.entityPricePerPerson}
-                            label="Cost Per Person €"
-                            placeholder="Cost Per Person €"
-                            style={{ width: '300px' }}
-                            {...register("costPerPerson", { required: true, min: 1, max: 100000 })}
-                        />
-                    </Grid>
-                    {errors.costPerNight && <p style={{ color: '#ED6663' }}>Please check cost per person</p>}
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            type="number"
-                            name="maxNumOfPersons"
-                            defaultValue={currentAdventure.maxNumOfPersons}
-                            label="Max Num Of Persons"
-                            placeholder="Max No. Of Persons"
-                            style={{ width: '300px' }}
-                            {...register(
-                                "maxNumOfPersons",
-                                { required: true, min: 1, max: 10000 },
-                            )}
-                        />
-                    </Grid>
-                    {errors.maxNumOfPersons && <p style={{ color: '#ED6663' }}>Enter num between 1 and 1000</p>}
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            name="promoDescription"
-                            size="small"
-                            defaultValue={currentAdventure.promoDescription}
-                            id="promoDescription"
-                            label="Promo Description"
-                            multiline
-                            rows={3}
-                            {...register("promoDescription", { maxLength: 250 })}
-                            placeholder="Promo Description"
-                            style={{ width: '300px' }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            name="shortBio"
-                            size="small"
-                            defaultValue={currentAdventure.shortBio}
-                            id="shortBio"
-                            label="Short Bio"
-                            multiline
-                            rows={3}
-                            {...register("shortBio", { maxLength: 250 })}
-                            placeholder="Short Bio"
-                            style={{ width: '300px' }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            type="number"
-                            name="entityCancelationRate"
-                            defaultValue={currentAdventure.entityCancelationRate}
-                            label="Entity Cancelation Rate %"
-                            placeholder="Entity Cancelation Rate %"
-                            style={{ width: '300px' }}
-                            {...register("entityCancelationRate", { required: true, min: 0, max: 100 })}
-                        />
-                    </Grid>
-                    {errors.entityCancelationRate && <p style={{ color: '#ED6663' }}>Enter number between 0 and 100</p>}
-
-                </Grid>
+                <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '42%', padding: '1%', borderRadius: '10px', width: '15%' }} >
+                    Edit adventure
+                </div>
+                <br />
+                <Divider />
+                <br />
+                <ImageUploader images={images} maxNumber={maxNumber} onChange={onChange} />
                 <br />
 
 
-                <Box style={{ display: "flex", flexDirection: "row" }}>
-                    <AddingAdditionalServiceAdventure data={additionalServices} onDeleteChip={handleDeleteAdditionalServiceChip} onSubmit={handleAddAdditionalServiceChip} float="left" />
-                    <AddingEquipmentAdventure data={fishingEquipment} onDeleteChip={handleDeleteFishingEquipmentChip} onSubmit={handleAddFishingEquipmentChip} float="left" />
-                    <AddingRulesOfConductAdventure data={rulesOfConduct} onDeleteChip={handleDeleteRuleChip} onSubmit={handleAddRuleChip} ruleChecked={checked} handleRuleCheckedChange={handleRuleCheckedChange} float="left" />
-                </Box>
+                <Box
+                    component="form"
+                    noValidate
+                    onSubmit={handleSubmit(onFormSubmit)}
+                >
+                    <h4 style={{ color: 'rgb(5, 30, 52)', textAlign: 'center', fontWeight: 'bold' }}>Basic Information About Cottage</h4>
 
-                <Box style={{ display: "flex", flexDirection: "row" }}>
-                    <Button type="submit" onSubmit={handleSubmit(onFormSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
-                        Save
-                    </Button>
-                    <Button
-                        variant="contained"
-                        style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
-                        onClick={() => {
-                            reset(
-                                {
-                                    name: currentAdventure.name,
-                                    address: currentAdventure.address,
-                                    costPerNight: pricelist.entityPricePerPerson,
-                                    maxNumOfPersons: currentAdventure.maxNumOfPersons,
-                                    entityCancelationRate: currentAdventure.entityCancelationRate,
-                                    shortBio: currentAdventure.shortBio,
-                                    promoDescription: currentAdventure.promoDescription,
-                                }, {
-                                keepDefaultValues: false,
-                                keepErrors: true,
-                            }
-                            );
-                            setInitialRulesOfConduct(currentAdventure.rulesOfConduct);
-                            setInitialFishingEquipment(currentAdventure.fishingEquipment);
-                            setInitialAdditionalServices(pricelist.additionalServices);
-                            fillImageListFromBase64Images();
-                        }}
+                    <Grid
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        container
+                        spacing={2}
                     >
-                        Reset
-                    </Button>
-                </Box>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                name="name"
+                                defaultValue={currentAdventure.name}
+                                id="name"
+                                label="Name"
+                                placeholder="Name"
+                                multiline
+                                size="small"
+                                style={{ width: '300px' }}
+                                {...register("name", { required: true, maxLength: 50 })}
+                            />
+                        </Grid>
+                        {errors.name && <p style={{ color: '#ED6663' }}>Please check the adventure name</p>}
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                name="address"
+                                id="address"
+                                defaultValue={currentAdventure.address}
+                                label="Address"
+                                placeholder="Address"
+                                multiline
+                                size="small"
+                                style={{ width: '300px' }}
+                                {...register("address", { required: true, maxLength: 50 })}
+                            />
+                        </Grid>
+                        {errors.name && <p style={{ color: '#ED6663' }}>Please check the address name</p>}
+                        <Grid item xs={12} sm={12}>
+                            <Autocomplete
+                                disablePortal
+                                id="place"
+                                defaultValue={currentAdventure.place.cityName + ',' + currentAdventure.place.zipCode + ',' + currentAdventure.place.stateName}
+                                options={allPlacesList}
+                                sx={{ width: '300px' }}
+                                onChange={placeOnChange}
+                                renderInput={(params) => <TextField {...params} label="Place" />}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                name="costPerPerson"
+                                id="costPerPerson"
+                                type="number"
+                                defaultValue={pricelist.entityPricePerPerson}
+                                label="Cost Per Person €"
+                                placeholder="Cost Per Person €"
+                                style={{ width: '300px' }}
+                                {...register("costPerPerson", { required: true, min: 1, max: 100000 })}
+                            />
+                        </Grid>
+                        {errors.costPerNight && <p style={{ color: '#ED6663' }}>Please check cost per person</p>}
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                type="number"
+                                name="maxNumOfPersons"
+                                defaultValue={currentAdventure.maxNumOfPersons}
+                                label="Max Num Of Persons"
+                                placeholder="Max No. Of Persons"
+                                style={{ width: '300px' }}
+                                {...register(
+                                    "maxNumOfPersons",
+                                    { required: true, min: 1, max: 10000 },
+                                )}
+                            />
+                        </Grid>
+                        {errors.maxNumOfPersons && <p style={{ color: '#ED6663' }}>Enter num between 1 and 1000</p>}
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                name="promoDescription"
+                                size="small"
+                                defaultValue={currentAdventure.promoDescription}
+                                id="promoDescription"
+                                label="Promo Description"
+                                multiline
+                                rows={3}
+                                {...register("promoDescription", { maxLength: 250 })}
+                                placeholder="Promo Description"
+                                style={{ width: '300px' }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                name="shortBio"
+                                size="small"
+                                defaultValue={currentAdventure.shortBio}
+                                id="shortBio"
+                                label="Short Bio"
+                                multiline
+                                rows={3}
+                                {...register("shortBio", { maxLength: 250 })}
+                                placeholder="Short Bio"
+                                style={{ width: '300px' }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                type="number"
+                                name="entityCancelationRate"
+                                defaultValue={currentAdventure.entityCancelationRate}
+                                label="Entity Cancelation Rate %"
+                                placeholder="Entity Cancelation Rate %"
+                                style={{ width: '300px' }}
+                                {...register("entityCancelationRate", { required: true, min: 0, max: 100 })}
+                            />
+                        </Grid>
+                        {errors.entityCancelationRate && <p style={{ color: '#ED6663' }}>Enter number between 0 and 100</p>}
+
+                    </Grid>
+                    <br />
 
 
-            </Box >
-        </div >
-    );
+                    <Box style={{ display: "flex", flexDirection: "row" }}>
+                        <AddingAdditionalServiceAdventure data={additionalServices} onDeleteChip={handleDeleteAdditionalServiceChip} onSubmit={handleAddAdditionalServiceChip} float="left" />
+                        <AddingEquipmentAdventure data={fishingEquipment} onDeleteChip={handleDeleteFishingEquipmentChip} onSubmit={handleAddFishingEquipmentChip} float="left" />
+                        <AddingRulesOfConductAdventure data={rulesOfConduct} onDeleteChip={handleDeleteRuleChip} onSubmit={handleAddRuleChip} ruleChecked={checked} handleRuleCheckedChange={handleRuleCheckedChange} float="left" />
+                    </Box>
+
+                    <Box style={{ display: "flex", flexDirection: "row" }}>
+                        <Button type="submit" onSubmit={handleSubmit(onFormSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+                            Save
+                        </Button>
+                        <Button
+                            variant="contained"
+                            style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
+                            onClick={() => {
+                                reset(
+                                    {
+                                        name: currentAdventure.name,
+                                        address: currentAdventure.address,
+                                        costPerNight: pricelist.entityPricePerPerson,
+                                        maxNumOfPersons: currentAdventure.maxNumOfPersons,
+                                        entityCancelationRate: currentAdventure.entityCancelationRate,
+                                        shortBio: currentAdventure.shortBio,
+                                        promoDescription: currentAdventure.promoDescription,
+                                    }, {
+                                    keepDefaultValues: false,
+                                    keepErrors: true,
+                                }
+                                );
+                                setInitialRulesOfConduct(currentAdventure.rulesOfConduct);
+                                setInitialFishingEquipment(currentAdventure.fishingEquipment);
+                                setInitialAdditionalServices(pricelist.additionalServices);
+                                fillImageListFromBase64Images();
+                            }}
+                        >
+                            Reset
+                        </Button>
+                    </Box>
+
+
+                </Box >
+            </div >
+        );
+    }
 }
