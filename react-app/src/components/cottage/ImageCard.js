@@ -209,8 +209,8 @@ return (
         />
 
         <CardActions disableSpacing>
-            <IconButton >
-                <Chip icon={<CalendarMonthIcon />} label="Calendar" onClick={showCalendarForEntity}/>
+            <IconButton onClick={showCalendarForEntity} >
+                <Chip icon={<CalendarMonthIcon />} label="Calendar"/>
             </IconButton>
             
             <IconButton value="module" aria-label="module" onClick={editCottage}>

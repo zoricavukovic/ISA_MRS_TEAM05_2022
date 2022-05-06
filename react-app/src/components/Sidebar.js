@@ -51,8 +51,10 @@ export default function Sidebar({curUser, setCurUser}) {
 
   useEffect(() => {
     setNavbarList(getNavbarList());
+    console.log("OVO ISPISUJEM IZ NAVBARA");
     console.log(curUser);
     console.log(setCurUser);
+    console.log("OVO ISPISUJEM IZ NAVBARA");
     const isEmpty = Object.keys(curUser).length === 0;
     console.log(isEmpty);
   }, [, curUser]);

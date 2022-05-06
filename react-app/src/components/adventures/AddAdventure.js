@@ -11,18 +11,16 @@ import AddingEquipmentAdventure from "../AddingEquipment.js";
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
 import ImageUploader from "../image_uploader/ImageUploader.js";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { getAllPlaces } from "../../service/PlaceService.js";
 import { addNewAdventure } from "../../service/AdventureService.js";
-import { getCurrentUser } from '../../service/AuthService.js';
+import { getToken, getCurrentUser } from '../../service/AuthService.js';
 
 export default function AddAdventure() {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [isLoading, setLoading] = useState(true);
     const history = useHistory();
-    let ownerId = null;
-
 
     ////////////////IMAGES//////////////////////////////////
     const [images, setImages] = React.useState([]);
@@ -36,7 +34,7 @@ export default function AddAdventure() {
             return [];
         }
         let retVal = [];
-        
+
         for (let img of images) {
             retVal.push({
                 imageName: img.file.name,
@@ -68,7 +66,7 @@ export default function AddAdventure() {
                 if (chip.serviceName.toLowerCase() === sName.toLowerCase())
                     return;
             }
-            newKey = Math.max.apply(Math, additionalServices.map(chip => chip.key)) + 1;    
+            newKey = Math.max.apply(Math, additionalServices.map(chip => chip.key)) + 1;
         }
         let newAmount = data.amount;
         let newObj = {
@@ -88,8 +86,8 @@ export default function AddAdventure() {
         let retVal = [];
         for (let service of additionalServices) {
             retVal.push({
-                serviceName : service.serviceName,
-                price : service.amount
+                serviceName: service.serviceName,
+                price: service.amount
             });
         }
         return retVal;
@@ -115,7 +113,7 @@ export default function AddAdventure() {
                 if (chip.equipmentName.toLowerCase() === eName.toLowerCase())
                     return;
             }
-            newKey = Math.max.apply(Math, fishingEquipment.map(chip => chip.key)) + 1;    
+            newKey = Math.max.apply(Math, fishingEquipment.map(chip => chip.key)) + 1;
         }
         let newObj = {
             "key": newKey,
@@ -123,7 +121,7 @@ export default function AddAdventure() {
         };
         let newChipData = [...fishingEquipment];
         newChipData.push(newObj);
-        
+
         setFishingEquipment(newChipData);
     }
     const getFishingEquipmentNamesJson = () => {
@@ -133,7 +131,7 @@ export default function AddAdventure() {
         let retVal = [];
         for (let equipment of fishingEquipment) {
             retVal.push({
-                equipmentName : equipment.equipmentName,
+                equipmentName: equipment.equipmentName,
             });
         }
         return retVal;
@@ -149,8 +147,8 @@ export default function AddAdventure() {
 
     const handleRuleCheckedChange = (event) => {
         setChecked(event.target.checked);
-      };
-    
+    };
+
     const handleDeleteRuleChip = (chipToDelete) => {
         setRulesOfConduct((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
     };
@@ -162,7 +160,7 @@ export default function AddAdventure() {
             for (let chip of rulesOfConduct) {
                 if (chip.ruleName.toLowerCase() === rName.toLowerCase())
                     return;
-            }    
+            }
             newKey = Math.max.apply(Math, rulesOfConduct.map(chip => chip.key)) + 1;
         }
         let isAllowed = checked;
@@ -183,8 +181,8 @@ export default function AddAdventure() {
         let retVal = [];
         for (let r of rulesOfConduct) {
             retVal.push({
-                ruleName : r.ruleName,
-                allowed : r.allowed,
+                ruleName: r.ruleName,
+                allowed: r.allowed,
             });
         }
         return retVal;
@@ -212,56 +210,50 @@ export default function AddAdventure() {
 
 
     const onFormSubmit = data => {
-        console.log("USAO OVDEE============")
-        if (selectedPlaceId != null &&  selectedPlaceId!= undefined && selectedPlaceId != '') {
+        if (selectedPlaceId != null && selectedPlaceId != undefined && selectedPlaceId != '') {
             setHiddenError("none");
         } else {
             setHiddenError("block");
             return;
         }
-        if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER") {
-            history.push('/login');
-          } else {
-              ownerId = getCurrentUser().id;
-          }
         const newAdventure = {
-            instructorId: ownerId,
-            name : data.name,
+            instructorId: getCurrentUser().id,
+            name: data.name,
             address: data.address,
             placeId: selectedPlaceId,
             costPerPerson: data.costPerPerson,
             maxNumOfPersons: data.maxNumOfPersons,
-            promoDescription : data.promoDescription,
+            promoDescription: data.promoDescription,
             shortBio: data.shortBio,
-            entityCancelationRate: data.entityCancelationRate, 
+            entityCancelationRate: data.entityCancelationRate,
             additionalServices: getAdditionalServicesJson(),
             fishingEquipment: getFishingEquipmentNamesJson(),
             rulesOfConduct: getRuleNamesJson(),
             images: getImagesInJsonBase64(),
         }
-        console.log(images);
-        console.log(newAdventure);
 
         addNewAdventure(newAdventure)
             .then(res => {
-                console.log(res);
-                console.log(res.data);
                 alert("Adventure  successfully creacted. Redirecting to created adventure..." + res.data);
-                history.push("/showAdventureProfile/" + res.data);
+
+                history.push({
+                    pathname: "./showAdventureProfile",
+                    state: { bookingEntityId: res.data }
+                });
             })
             .catch(res => {
-                console.log(res);
-                alert("Error happened on server. Can't create adventure.");
+                alert("Error happened on server. Can't create adventure." + res.response.data);
             });
 
-        
+
     }
     useEffect(() => {
-        if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_INSTRUCTOR") {
+        if (getCurrentUser() === null || getCurrentUser() === undefined) {
             history.push('/login');
-          } else {
-              ownerId = getCurrentUser().id;
-          }
+        }
+        else if (getCurrentUser().userType.name !== "ROLE_INSTRUCTOR") {
+            history.push('/forbiddenPage');
+        }
         getAllPlaces()
             .then(res => {
                 setPlaces(res.data);
@@ -276,7 +268,6 @@ export default function AddAdventure() {
             newArray.push({ 'label': place.cityName + ',' + place.zipCode + ',' + place.stateName, 'id': place.id });
         }
         allPlacesList = newArray;
-        console.log(allPlacesList);
     }
 
     if (isLoading) {
@@ -284,7 +275,6 @@ export default function AddAdventure() {
     }
     return (
         <div style={{ backgroundColor: 'aliceblue', margin: '1% 9% 1% 9%', padding: '1%', borderRadius: '10px', height: '100%' }} >
-            
             {getAllPlacesForTheList()}
             <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '42%', padding: '1%', borderRadius: '10px', width: '15%' }} >
                 New adventure
@@ -346,7 +336,7 @@ export default function AddAdventure() {
                             renderInput={(params) => <TextField {...params} label="Place" />}
                         />
                     </Grid>
-                    <p style={{ color: '#ED6663', fontSize:"10px" , display:hiddenError}}>Please check place.</p>
+                    <p style={{ color: '#ED6663', fontSize: "10px", display: hiddenError }}>Please check place.</p>
                     <Grid item xs={12} sm={12}>
                         <TextField
                             name="costPerPerson"

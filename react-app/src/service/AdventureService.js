@@ -20,4 +20,3 @@ export function editAdventureById(id, editedAdventure) {
 export function addNewAdventure(newAdventure) {
     return api.post('/adventures', newAdventure);
 }
-

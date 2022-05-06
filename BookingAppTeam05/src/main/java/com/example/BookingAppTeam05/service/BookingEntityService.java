@@ -30,9 +30,10 @@ public class BookingEntityService {
     private SearchService searchService;
     private RatingService ratingService;
     private PricelistService pricelistService;
+    private ReservationService reservationService;
 
     @Autowired
-    public BookingEntityService(BookingEntityRepository bookingEntityRepository, UserService userService, CottageService cottageService, AdventureService adventureService, ShipService shipService, SearchService searchService, RatingService ratingService, PricelistService pricelistService) {
+    public BookingEntityService(BookingEntityRepository bookingEntityRepository, UserService userService, CottageService cottageService, AdventureService adventureService, ShipService shipService, SearchService searchService, RatingService ratingService, PricelistService pricelistService, ReservationService reservationService) {
         this.bookingEntityRepository = bookingEntityRepository;
         this.userService = userService;
         this.adventureService = adventureService;
@@ -41,6 +42,7 @@ public class BookingEntityService {
         this.searchService = searchService;
         this.ratingService = ratingService;
         this.pricelistService = pricelistService;
+        this.reservationService = reservationService;
     }
 
     public List<SearchedBookingEntityDTO> getSearchedBookingEntitiesDTOsByOnwerId(Long id) {
@@ -93,5 +95,30 @@ public class BookingEntityService {
 
     public BookingEntity getBookingEntityWithUnavailableDatesById(Long id) {
         return this.bookingEntityRepository.getEntityWithUnavailableDatesById(id);
+    }
+
+    public boolean checkExistActiveReservationForEntityId(Long id) {
+        return reservationService.findAllActiveReservationsForEntityid(id).size() != 0;
+    }
+
+    public boolean logicalDeleteBookingEntityById(Long id) {
+        if (checkExistActiveReservationForEntityId(id))
+            return false;
+        bookingEntityRepository.logicalDeleteBookingEntityById(id);
+        return true;
+    }
+
+    public BookingEntity getEntityById(Long id) {
+        return bookingEntityRepository.getEntityById(id);
+    }
+
+    public User getOwnerOfEntityId(Long entityId) {
+        BookingEntity bookingEntity = getEntityById(entityId);
+        switch (bookingEntity.getEntityType()) {
+            case COTTAGE: return cottageService.getCottageOwnerOfCottageId(bookingEntity.getId());
+            case ADVENTURE: return adventureService.getInstructorOfAdventureId(bookingEntity.getId());
+            case SHIP: return shipService.getShipOwnerOfShipId(bookingEntity.getId());
+            default: return null;
+        }
     }
 }

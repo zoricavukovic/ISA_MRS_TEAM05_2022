@@ -4,7 +4,6 @@ import com.example.BookingAppTeam05.dto.CalendarEntryDTO;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,7 @@ public class CalendarService {
         BookingEntity bookingEntity = bookingEntityService.getBookingEntityWithUnavailableDatesById(id);
         fillResultWithUnavailableDates(retVal, bookingEntity.getUnavailableDates());
 
-        List<Reservation> reservations = reservationService.findAllActiveReservationsWithClientsForEntityId(bookingEntity.getId());
+        List<Reservation> reservations = reservationService.findAllReservationsWithClientsForEntityId(bookingEntity.getId());
         fillResultWithReservations(retVal, reservations);
 
         List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(bookingEntity.getId());

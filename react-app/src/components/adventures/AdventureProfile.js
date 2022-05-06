@@ -21,11 +21,14 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
 import ImageSlider from "../image_slider/ImageSlider";
-import { getAdventureById } from "../../service/AdventureService";
+import { getAdventureById  } from "../../service/AdventureService";
+import {checkIfCanEditEntityById} from "../../service/BookingEntityService";
 import { getPricelistByEntityId } from "../../service/PricelistService";
 import { URL_PICTURE_PATH } from "../../service/PictureService";
 import Chip from '@mui/material/Chip';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -43,21 +46,21 @@ function AdventureBasicInfo(props) {
     return (
         <div>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
-            
-                <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%'}}>
+
+                <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
                     <h4>Promo Description: </h4><h3>{props.adventureData.promoDescription} </h3>
                 </Typography>
                 <Typography variant="body2" color="text.secondary" style={{ width: '20%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
                     <h4>Cost Per Night: {props.pricelistData.entityPricePerPerson} € </h4>
                     <RatingEntity value='3' />
                 </Typography>
-                <Typography variant="body2" color="text.secondary" style={{ width: '20%', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>     
+                <Typography variant="body2" color="text.secondary" style={{ width: '20%', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
                     <Home long={props.adventureData.place.longitude} lat={props.adventureData.place.lat}></Home>
-                    
+
                 </Typography>
             </div>
             <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
-            <h4>Short Bio: </h4><h3>{props.adventureData.shortBio} </h3>
+                <h4>Short Bio: </h4><h3>{props.adventureData.shortBio} </h3>
             </Typography>
         </div>
     );
@@ -127,10 +130,18 @@ function AdventureActions(props) {
 
     const editAdventure = (event) => {
         event.preventDefault();
-        props.history.push({
-            pathname: "/editAdventure/",
-            state: { bookingEntityId: props.adventureId }
-        });
+        checkIfCanEditEntityById(props.adventureId)
+            .then(res => {
+                props.history.push({
+                    pathname: "/editAdventure",
+                    state: { bookingEntityId: props.adventureId }
+                });        
+            })
+            .catch(res => {
+                props.setMessage(res.response.data);
+                props.handleClick();
+                return;
+            });
     };
 
     const showCalendarForEntity = (event) => {
@@ -143,18 +154,18 @@ function AdventureActions(props) {
     const showFastReservations = (event) => {
         event.preventDefault();
         props.history.push({
-            pathname: "./showFastReservations",
+            pathname: "/showFastReservations",
             state: { adventureId: props.adventureId }
         });
-    
+
     };
 
     return (
         <CardActions disableSpacing>
-            <IconButton >
-                <Chip icon={<CalendarMonthIcon />} label="Calendar" onClick={showCalendarForEntity} />
+            <IconButton onClick={showCalendarForEntity}>
+                <Chip icon={<CalendarMonthIcon />} label="Calendar" />
             </IconButton>
-            
+
             <IconButton value="module" aria-label="module" onClick={editAdventure}>
                 <Chip icon={<EditIcon />} label="Edit Adventure" />
             </IconButton>
@@ -184,33 +195,46 @@ export default function AdventureProfile(props) {
     const [adventureData, setAdventureData] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
-    let adventureId;
     const history = useHistory();
-    
-
+    const [open, setOpen] = React.useState(false);
+    const [message, setMessage] = React.useState("");
+    let adventureId;
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+    const handleClick = () => {
+        setOpen(true);
+    };
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     useEffect(() => {
-        adventureId = props.history.location.state.bookingEntityId;
-        getAdventureById(adventureId).then(res => {
-            setAdventureData(res.data);
-            setLoading(false);
-        })
-        getPricelistByEntityId(adventureId).then(result => {
-            setPricelistData(result.data);
-            setLoadingPricelist(false);
-        })
+        if (props.location.state === undefined || props.location.state === null) {
+            history.push("/notFoundPage");
+        } else {
+            getAdventureById(props.location.state.bookingEntityId).then(res => {
+                setAdventureData(res.data);
+                setLoading(false);
+            })
+            getPricelistByEntityId(props.location.state.bookingEntityId).then(result => {
+                setPricelistData(result.data);
+                setLoadingPricelist(false);
+            })
+        }
     }, [])
 
     if (isLoading || isLoadingPricelist) {
         return <div className="App">Loading...</div>
     }
     else {
+        { adventureId = props.location.state.bookingEntityId }
         return (
-            <Card style={{ margin: "1% 9% 1% 9%"}} sx={{}}>
+            <Card style={{ margin: "1% 9% 1% 9%" }} sx={{}}>
                 <ImageSlider slides={adventureData.pictures.map((im) => ({ 'image': URL_PICTURE_PATH + im.picturePath }))} />
                 <br />
                 <CardHeader
@@ -221,6 +245,8 @@ export default function AdventureProfile(props) {
                     history={history}
                     expanded={expanded}
                     adventureId={adventureId}
+                    setMessage={setMessage}
+                    handleClick={handleClick}
                     handleExpandClick={() => handleExpandClick()}
                 />
 
@@ -248,6 +274,11 @@ export default function AdventureProfile(props) {
                         </Grid>
                     </Grid>
                 </Collapse>
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                        {message}
+                    </Alert>
+                </Snackbar>
             </Card>
 
         );
