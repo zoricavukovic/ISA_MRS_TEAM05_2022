@@ -163,7 +163,7 @@ function AdventureActions(props) {
     return (
         <CardActions disableSpacing>
             <IconButton onClick={showCalendarForEntity}>
-                <Chip icon={<CalendarMonthIcon />} label="Calendar" />
+                <Chip icon={<CalendarMonthIcon />} label="Calendar"/>
             </IconButton>
 
             <IconButton value="module" aria-label="module" onClick={editAdventure}>

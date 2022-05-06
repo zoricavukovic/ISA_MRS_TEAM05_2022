@@ -3,6 +3,10 @@ package com.example.BookingAppTeam05.dto;
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -13,7 +17,9 @@ import java.util.Set;
 
 public class ReservationDTO {
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
     @NotNull
     @Min(1)

@@ -54,7 +54,7 @@ export default function ImgReservation(props) {
     };
     
     useEffect(() => {
-      
+        console.log(props.reservation);
         let end = new Date(props.reservation.startDate);
         end.setDate(end.getDate() + props.reservation.numOfDays);
         setDates({

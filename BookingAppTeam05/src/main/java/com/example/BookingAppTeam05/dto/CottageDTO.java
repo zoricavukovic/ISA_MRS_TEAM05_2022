@@ -14,7 +14,6 @@ import java.util.Set;
 public class CottageDTO extends BookingEntityDTO{
     private Set<Room> rooms = new HashSet<>();
     @Valid
-    @NotNull
     private List<NewImageDTO> images = new ArrayList<>();
 
     public CottageDTO() {

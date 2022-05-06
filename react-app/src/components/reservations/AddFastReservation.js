@@ -125,8 +125,14 @@ export default function AddFastReservation(props) {
           ownerId = getCurrentUser().id;
       }
       let newDate = new Date(value);
+      console.log(newDate);
      
-      let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getDay()+1, newDate.getHours(), newDate.getMinutes()];
+      console.log(newDate.getFullYear());
+      console.log(newDate.getMonth()+1);
+      console.log(value.getDay());
+      console.log(value.getUTCDay());
+      console.log(value);
+      let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getUTCDate(), newDate.getHours(), newDate.getMinutes()];
     
       let newFastReservation={
         canceled:false,

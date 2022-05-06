@@ -70,7 +70,7 @@ function ShowFastReservations(props) {
                 });
                 var date = new Date(r.startDate); 
                 let end = new Date(r.startDate);
-                
+                console.log(date);
                 end.setDate(date.getDate() + r.numOfDays);
                 rowsData.push({
                     id: r.id, 
