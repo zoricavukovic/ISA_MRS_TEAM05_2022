@@ -130,8 +130,44 @@ public class ShipController {
     @Transactional
     public ResponseEntity<String> updateCottage(@RequestBody ShipDTO shipDTO, @PathVariable Long id) {
 
+        String editable = checkIfCanEdit(id);
+        if (!editable.equals("OK")){
+            return new ResponseEntity<>(editable, HttpStatus.BAD_REQUEST);
+        }
+        Ship ship = shipService.getShipById(id);
+        if (ship == null) return new ResponseEntity<>("Cant find ship with id " + id + ".", HttpStatus.BAD_REQUEST);
+        ship.setName(shipDTO.getName());
+        ship.setAddress(shipDTO.getAddress());
+        ship.setPromoDescription(shipDTO.getPromoDescription());
+        ship.setLength(shipDTO.getLength());
+        ship.setEngineNum(shipDTO.getEngineNum());
+        ship.setEnginePower(shipDTO.getEnginePower());
+        ship.setMaxNumOfPersons(shipDTO.getMaxNumOfPersons());
+        ship.setMaxSpeed(shipDTO.getMaxSpeed());
+        ship.setEntityCancelationRate(shipDTO.getEntityCancelationRate());
+        ship.setEntityType(EntityType.SHIP);
 
-        return new ResponseEntity<>(shipDTO.getId().toString(), HttpStatus.OK);
+        Place p = shipDTO.getPlace();
+        if (p == null) return new ResponseEntity<>("Cant find chosen place.", HttpStatus.BAD_REQUEST);
+        Place place = placeService.getPlaceByZipCode(p.getZipCode());
+        ship.setPlace(place);
+
+        Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();
+        Ship oldShip = shipService.getShipById(id);
+        shipService.tryToEditShipRulesOfConduct(shipDTO, oldShip, rules);
+        ship.setRulesOfConduct(rules);
+
+        Set<NavigationEquipment> navigationEquipments = new HashSet<>();
+        oldShip = shipService.getShipById(id);
+        shipService.tryToEditNavigationEquipment(shipDTO, oldShip, navigationEquipments);
+        ship.setNavigationalEquipment(navigationEquipments);
+        Set<FishingEquipment> fishingEquipment = fishingEquipmentService.createEquipmentFromDTO(shipDTO.getFishingEquipment());
+        ship.setFishingEquipment(fishingEquipment);
+
+        shipService.setNewImages(ship, shipDTO.getImages());
+
+        ship = shipService.save(ship);
+        return new ResponseEntity<>(ship.getId().toString(), HttpStatus.OK);
     }
 
 }
