@@ -420,7 +420,7 @@ export default function EditShip(props) {
       return <div>Do not allowed to go to this page. Try again!</div>
     }
     if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_SHIP_OWNER") {
-        history.push('/login');
+        history.push('/forbiddenPage');
     } 
     getShipById(props.history.location.state.shipId).then(res => {
       setShipBasicData(res.data);

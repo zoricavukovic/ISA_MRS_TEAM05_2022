@@ -86,7 +86,7 @@ const navbarCotOwnList = [
   ...navbarDefaultList,
   {
     icon: AddCircle,
-    desc: 'Add new Cottage',
+    desc: 'Add New Cottage',
     secondDesc: '',
     badge: 0,
     subList: [],
@@ -114,11 +114,11 @@ const navbarShipOwnList = [
   ...navbarDefaultList,
   {
     icon: AddCircle,
-    desc: 'Add new Ship',
+    desc: 'Add New Ship',
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/addShip'
   },
   {
     icon: FolderOpen,
@@ -142,7 +142,7 @@ const navbarInstList = [
   ...navbarDefaultList,
   {
     icon: AddCircle,
-    desc: 'Add new Adventure',
+    desc: 'Add New Adventure',
     secondDesc: '',
     badge: 0,
     subList: [],
