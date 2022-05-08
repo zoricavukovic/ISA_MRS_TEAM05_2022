@@ -346,8 +346,9 @@ export default function AddShip() {
         promoDescription : data.promoDescription,
         entityCancelationRate: data.entityCancelationRate, 
         engineNum : data.engineNum,
-        length: shipBasicData.length,
-        maxSpeed: shipBasicData.maxSpeed,
+        length: data.length,
+        shipType: data.shipType,
+        maxSpeed: data.maxSpeed,
         enginePower: data.enginePower,
         maxNumOfPersons: data.maxNumOfPersons,
         additionalServices: getAdditionalServicesJson(),
@@ -363,7 +364,7 @@ export default function AddShip() {
     newPricelistData.additionalServices = getAdditionalServicesJson();
     newPricelistData.bookingEntityId = shipBasicData.id;
     setPricelistData(newPricelistData);
-
+    console.log(newShip);
     addNewShip(getCurrentUser().id, newShip).then(result => { 
       addNewPriceListForEntityId(result.data, newPricelistData).then(res => {
         history.push({
@@ -377,7 +378,7 @@ export default function AddShip() {
         return;
     })    
   }).catch(resError=>{
-    console.log("Greska!!");
+    console.log("Greska u prvom!!");
     setMessage(resError.response.data);
     handleClick();
     return;
@@ -485,35 +486,30 @@ export default function AddShip() {
                 <tr>
                 <p style={{ color: '#ED6663', fontSize:"10px" , display:hiddenError}}>Please check place.</p>
                 </tr>
+              
                 <tr>
                 <td>
-                  <FormControl sx={{ m: 1 }}>
-                    <InputLabel htmlFor="outlined-adornment-amount">Cost Per Night</InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-amount"
-                      size="small"
-                      name="costPerNight"
-                      type="number"
+                    <TextField
+                      id="outlined-textarea"
+                      label="Ship Type"
+                      placeholder="Ship Type"
+                      multiline
+                      name="shipType"
                       onChange={e => {
-                        let data = pricelistData;
-                        let cost = parseInt(e.target.value);
-                        if (cost === NaN) alert("Greska");
-                        else {
-                          data.entityPricePerPerson = cost;
-                        }
-                        setPricelistData(data);
+                        let dataAdd = shipBasicData;
+                        dataAdd.shipType = e.target.value;
+                        setShipBasicData(dataAdd);
                       }}
-                      placeholder="Cost Per Night"
-                      startAdornment={<InputAdornment position="start">€</InputAdornment>}
-                      label="Cost Per Night"
-                      {...register("costPerNight", { required: true, min: 1, max: 100000 })}
+                      size="small"
+                      {...register("shipType", { required: true, maxLength: 30 })}
+                      style={{ width: '200px' }}
                     />
-                  </FormControl>
                   
                   </td>
-                </tr>
-                <tr>{errors.costPerNight && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check cost per night between 1-100000€</p>}</tr>
-               
+              </tr>
+              <tr><td> {errors.shipType && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check ship type: maxLength 30</p>}</td></tr>
+              
+
               <tr>
                 <td>
                   <TextField
@@ -696,7 +692,35 @@ export default function AddShip() {
                 </td>
               </tr>
               <tr>{errors.maxNumOfPersons && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check max num of people on ship between 1-100.</p>}</tr>
-              
+              <tr>
+                <td>
+                  <FormControl sx={{ m: 1 }}>
+                    <InputLabel htmlFor="outlined-adornment-amount">Cost Per Night</InputLabel>
+                    <OutlinedInput
+                      id="outlined-adornment-amount"
+                      size="small"
+                      name="costPerNight"
+                      type="number"
+                      onChange={e => {
+                        let data = pricelistData;
+                        let cost = parseInt(e.target.value);
+                        if (cost === NaN) alert("Greska");
+                        else {
+                          data.entityPricePerPerson = cost;
+                        }
+                        setPricelistData(data);
+                      }}
+                      placeholder="Cost Per Night"
+                      startAdornment={<InputAdornment position="start">€</InputAdornment>}
+                      label="Cost Per Night"
+                      {...register("costPerNight", { required: true, min: 1, max: 100000 })}
+                    />
+                  </FormControl>
+                  
+                  </td>
+                </tr>
+                <tr>{errors.costPerNight && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check cost per night between 1-100000€</p>}</tr>
+               
               <tr>
                 <td>
                   <Typography id="input-slider" gutterBottom sx={{ m: 1 }}> 

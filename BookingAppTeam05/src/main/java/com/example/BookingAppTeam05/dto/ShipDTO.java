@@ -22,7 +22,6 @@ public class ShipDTO extends BookingEntityDTO{
     @Max(500)
     private float length;
     @NotBlank
-    @Max(250)
     private String engineNum;
     @Valid
     @NotNull

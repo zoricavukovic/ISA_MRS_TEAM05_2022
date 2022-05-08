@@ -161,4 +161,20 @@ public class ShipService {
             }
         }
     }
+
+    public void tryToEditNavigationEquipment(ShipDTO shipDTO, Set<NavigationEquipment> navigationEquipments) {
+        for (NavigationEquipment rule: shipDTO.getNavigationalEquipment()){
+            boolean found = false;
+            for (NavigationEquipment addedNav: navigationEquipments){
+                if (rule.getName().equals(addedNav.getName())){
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                navigationEquipments.add(rule);
+                navigationEquipmentService.save(rule);
+            }
+        }
+    }
 }
