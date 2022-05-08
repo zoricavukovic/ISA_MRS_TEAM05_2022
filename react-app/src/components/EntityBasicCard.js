@@ -66,22 +66,6 @@ export default function EntityBasicCard(props) {
             handleClick();
             return;
         })
-
-        // if (props.bookingEntity.entityType === "COTTAGE") {
-        //     deleteCottageById(props.bookingEntityId, password).then(res => {
-        //     setPassword("");
-        //     handleClick();
-        //     setTypeAlert("success");
-        //     setMessage("Successfully delete entity " + props.bookingEntity.name);
-        //     window.location.reload();
-        // }).catch(res => {
-        //     setPassword("");
-        //     setTypeAlert("error");
-        //     setMessage(res.response.data);
-        //     handleClick();
-        //     return;
-        // })    
-        // }
         setOpenDialog(false);
     }
     ///////////////////////////////////////////////////////////////////////////////////

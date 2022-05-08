@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Input from '@mui/material/Input';
@@ -16,18 +16,37 @@ import { useForm } from "react-hook-form";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { getCurrentUser } from "../service/AuthService";
+import { setNewPassword } from "../service/UserService";
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 
 export default function ChangePassword() {
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const history = useHistory();
+
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
+
+    const currentPassword = useRef({});
+    currentPassword.current = watch("currentPassword", "");
+
+    const newPassword = useRef({});
+    newPassword.current = watch("newPassword", "");
 
     const [show, setShow] = React.useState({
         showCurrentPassword: false,
         showNewPassword: '',
-        showRetypedPassword: '',
     });
+
+    const handleClose = (_event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
+    };
 
     const handleClickShowCurrentPassword = () => {
         setShow({
@@ -43,17 +62,23 @@ export default function ChangePassword() {
         });
     };
 
-    const handleClickShowRetypedPassword = () => {
-        setShow({
-            ...show,
-            showRetypedPassword: !show.showRetypedPassword,
-        });
-    };
-
     const onFormSubmit = data => {
-        console.log(data.currentPassword);
-        console.log(data.newPassword);
-        console.log(data.retypedPassword);
+        let request = {
+            id: getCurrentUser().id,
+            currPassword: data.currentPassword,
+            newPassword: data.newPassword
+        }
+        setNewPassword(request)
+            .then(res => {
+                setTypeAlert("success");
+                setAlertMessage(res.data);
+                setOpenAlert(true);
+            })
+            .catch(err => {
+                setTypeAlert("error");
+                setAlertMessage(err.response.data);
+                setOpenAlert(true);
+            });
     }
 
     useEffect(() => {
@@ -87,10 +112,16 @@ export default function ChangePassword() {
                                 </IconButton>
                             </InputAdornment>
                         }
-                        {...register("currentPassword", { required: true, maxLength: 50 })}
+                        {...register("currentPassword", {
+                            required: "You must specify a password",
+                            maxLength: {
+                                value: 50,
+                                message: "Password cant be longer than 50 characters"
+                            }
+                        })}
                     />
                 </FormControl>
-                {errors.currentPassword && <p style={{ color: '#ED6663' }}>Please check current password. Max 50 chars</p>}
+                {errors.currentPassword && <p style={{ color: '#ED6663' }}>{errors.currentPassword.message}</p>}
 
                 <FormControl sx={{ m: 1, width: '250px' }} variant="standard">
                     <InputLabel>Type new password</InputLabel>
@@ -109,35 +140,41 @@ export default function ChangePassword() {
                                 </IconButton>
                             </InputAdornment>
                         }
-                        {...register("newPassword", { required: true, maxLength: 50 })}
+                        {...register("newPassword", {
+                            validate: value =>
+                                value !== currentPassword.current || "Please choose different password",
+                            required: "You must specify a password",
+                            minLength: {
+                                value: 8,
+                                message: "Password must have at least 8 characters"
+                            }
+                        })}
                     />
                 </FormControl>
-                {errors.newPassword && <p style={{ color: '#ED6663' }}>Please check new password. Max 50 chars</p>}
+                {errors.newPassword && <p style={{ color: '#ED6663' }}>{errors.newPassword.message}</p>}
 
                 <FormControl sx={{ m: 1, width: '250px' }} variant="standard">
                     <InputLabel>Retype new password</InputLabel>
                     <Input
                         id="retypedPassword"
                         name="retypedPassword"
-                        type={show.showRetypedPassword ? 'text' : 'password'}
+                        type="password"
                         placeholder="Retype password"
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowRetypedPassword}
-                                >
-                                    {show.showRetypedPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                        {...register("retypedPassword", { required: true, maxLength: 50 })}
+                        {...register("retypedPassword", {
+                            validate: value =>
+                                value === newPassword.current || "The passwords do not match"
+                        })}
                     />
                 </FormControl>
-                {errors.retypedPassword && <p style={{ color: '#ED6663' }}>Please check retyped password. Max 50 chars</p>}
+                {errors.retypedPassword && <p style={{ color: '#ED6663' }}>{errors.retypedPassword.message}</p>}
                 <Button type="submit" onSubmit={handleSubmit(onFormSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
                     Save
                 </Button>
+                <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
+                        {alertMessage}
+                    </Alert>
+                </Snackbar>
             </Box>
         </div>
     );

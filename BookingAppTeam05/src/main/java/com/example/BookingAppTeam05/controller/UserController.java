@@ -7,12 +7,13 @@ import com.example.BookingAppTeam05.service.PlaceService;
 import com.example.BookingAppTeam05.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-//@CrossOrigin
+@CrossOrigin
 @RequestMapping("/users")
 public class UserController {
 
@@ -82,6 +83,21 @@ public class UserController {
         final User updatedUser = userService.save(user);
 
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping(value = "/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE)
+    //@PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        User user = userService.getUserById(changePasswordDTO.getId());
+        if (userService.passwordIsCorrect(user, changePasswordDTO.getNewPassword()))
+            return new ResponseEntity<String>("Please choose different password", HttpStatus.BAD_REQUEST);
+        if (userService.passwordIsCorrect(user, changePasswordDTO.getCurrPassword())) {
+            userService.setNewUserPassword(user, changePasswordDTO.getNewPassword());
+            return new ResponseEntity<String>("Successfully changed password", HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<String>("Entered password is incorrect", HttpStatus.BAD_REQUEST);
+        }
     }
 }
 
