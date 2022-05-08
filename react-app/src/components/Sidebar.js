@@ -51,10 +51,6 @@ export default function Sidebar({curUser, setCurUser}) {
 
   useEffect(() => {
     setNavbarList(getNavbarList());
-    console.log("OVO ISPISUJEM IZ NAVBARA");
-    console.log(curUser);
-    console.log(setCurUser);
-    console.log("OVO ISPISUJEM IZ NAVBARA");
     const isEmpty = Object.keys(curUser).length === 0;
     console.log(isEmpty);
   }, [, curUser]);
@@ -342,6 +338,7 @@ export default function Sidebar({curUser, setCurUser}) {
               >
                 <MenuItem onClick={()=>{popupState.close(); goToPage('userProfile', true);}}>My Profile</MenuItem>
                 <MenuItem onClick={()=>{popupState.close(); goToPage('editUserProfile', true);}}>Edit profile</MenuItem>
+                <MenuItem onClick={()=>{popupState.close(); goToPage('changePassword', false);}}>Change password</MenuItem>
                 <MenuItem onClick={(event)=>{popupState.close(); logOutUser(event);}}>Log out</MenuItem>
               </Menu>
             </Box>
