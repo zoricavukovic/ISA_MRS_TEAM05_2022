@@ -31,6 +31,7 @@ import { getPricelistByEntityId } from '../../service/PricelistService';
 import Chip from '@mui/material/Chip';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import Home from "../map/GoogleMap";
+import ShipSpecificationCard from "./ShipSpecificationCard";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -72,19 +73,11 @@ export default function CardIm(props) {
 
     const editShip = (event) => {
         event.preventDefault();
-
-        editShipById(props.shipId)
-            .then(res => {
-                history.push({
-                    pathname: "./editShip",
-                    state: { shipId: props.shipId }
-                })
-            })
-            .catch(res => {
-                setMessage(res.response.data);
-                handleClick();
-                return;
-            })
+        history.push({
+            pathname: "./editShip",
+            state: { shipId: props.shipId }
+        })
+            
     };
 
     const showCalendarForEntity = (event) => {
@@ -105,7 +98,7 @@ export default function CardIm(props) {
     
     };
 
-    function AdventureAdditionalInfo(props) {
+    function ShipAdditionalInfo(props) {
         return (
             <CardContent>
                 <Box sx={{ width: '100%', maxWidth: 350, bgcolor: 'background.paper' }}>
@@ -156,6 +149,26 @@ export default function CardIm(props) {
         )
     }
 
+    function RenderFishingEquipment(props) {
+        return (
+            props.fishingEquipment.map((e) => (
+                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={e.equipmentName}>
+                    <Typography textAlign="center">{e.equipmentName}</Typography>
+                </Button>
+            ))
+        )
+    }
+
+    function RenderNavigationalEquipment(props) {
+        return (
+            props.navigationalEquipment.map((e) => (
+                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={e.equipmentName}>
+                    <Typography textAlign="center">{e.name}</Typography>
+                </Button>
+            ))
+        )
+    }
+
     useEffect(() => {
         if (props.shipId === undefined || props.shipId === null){
             return <div>Do not allowed to go to this page. Try again!</div>
@@ -163,12 +176,13 @@ export default function CardIm(props) {
         getShipById(props.shipId).then(res => {
             setShipBasicData(res.data);
             setLoadingShip(false);
+            console.log(res.data);
         });
         getPricelistByEntityId(props.shipId).then(res => {
             setPricelistData(res.data);
             setLoadingPricelist(false);
         });
-
+        
 
 }, []);
 if (isLoadingShip || isLoadingPricelist) { return <div className="App">Loading...</div> }
@@ -186,17 +200,9 @@ return (
         )}
         <CardHeader
 
-            title={shipBasicData.name}
+            title={shipBasicData.name + ": " + shipBasicData.shipType}
             subheader={shipBasicData.address + ", " + shipBasicData.place.cityName + ", " + shipBasicData.place.zipCode + ", " + shipBasicData.place.stateName}
-
-            action={
-                <ToggleButton value="module" aria-label="module onClick={handleMorePictures}">
-                    <ViewModuleIcon />
-                </ToggleButton>
-
-            }
         />
-
         <CardActions disableSpacing>
             <IconButton onClick={showCalendarForEntity}>
                 <Chip icon={<CalendarMonthIcon />} label="Calendar"/>
@@ -221,44 +227,57 @@ return (
         </CardActions>
 
         <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
-            <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
-                <h4>Promo Description: </h4><h3>{shipBasicData.promoDescription} </h3>
+            <Typography variant="body2" style={{ width: '25%', minWidth:"200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+                <Typography variant="body2" color="text.secondary" style={{ width: '100%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
+                    <h4>Promo Description: </h4><h3>{shipBasicData.promoDescription} </h3>  
+                </Typography>
+                <Typography variant="body2" color="text.secondary" style={{ width: '100%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+                    <h4>Cost Per Person: {pricelistData.entityPricePerPerson} € </h4>
+                    <RatingEntity value='3' />
+                </Typography>
             </Typography>
-            <Typography variant="body2" color="text.secondary" style={{ width: '20%', backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
-                <h4>Cost Per Person: {pricelistData.entityPricePerPerson} € </h4>
-                <RatingEntity value='3' />
+            
+            <Typography variant="body2"  style={{ width: '30%', minWidth:"200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+                <ShipSpecificationCard ship={shipBasicData} />
             </Typography>
             <Typography variant="body2"  style={{ width: '30%', minWidth:"200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
-             <Home long={shipBasicData.place.longitude} lat={shipBasicData.place.lat}></Home>
-             
+                <Home long={shipBasicData.place.longitude} lat={shipBasicData.place.lat}></Home>
             </Typography>
+
         </div >
         <Collapse in={expanded} timeout="auto" unmountOnExit>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
-                
-            <Grid item xs={12} sm={4}>
-                        <AdventureAdditionalInfo
-                            header="Rules of conduct"
-                            additionalData={<RenderRulesOfConduct rulesOfConduct={shipBasicData.rulesOfConduct} />}
-                        />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <AdventureAdditionalInfo
-                                header="Additional services"
-                                additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
-                            />
-                        </Grid>
-                <CardContent>
-
-                </CardContent>
+            
+                <Grid item xs={12} sm={4} minWidth="300px">
+                    <ShipAdditionalInfo
+                        header="Rules of conduct"
+                        additionalData={<RenderRulesOfConduct rulesOfConduct={shipBasicData.rulesOfConduct} />}
+                />
+                </Grid>
+                <Grid item xs={12} sm={4} minWidth="300px">
+                    <ShipAdditionalInfo
+                        header="Additional services"
+                        additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={4} minWidth="300px"> 
+                    <ShipAdditionalInfo
+                        header="Fishing equipment"
+                        additionalData={<RenderFishingEquipment fishingEquipment={shipBasicData.fishingEquipment} />}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={4} minWidth="350px"> 
+                    <ShipAdditionalInfo
+                        header="Navigational equipment"
+                        additionalData={<RenderNavigationalEquipment navigationalEquipment={shipBasicData.navigationalEquipment} />}
+                    />
+                </Grid>
             </div>
         </Collapse>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
             <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
                 {message}
             </Alert>
-
-
         </Snackbar>
     </Card>
 

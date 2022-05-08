@@ -19,9 +19,9 @@
 .rightArrow {
     position: absolute;
     top: 50%;
-    right: 9%;
+    right: 5%;
     font-size: 3rem;
-    color: #000;
+    color:'rgb(5, 30, 52)';
     z-index: 10;
     cursor: pointer;
     user-select: none;
@@ -30,9 +30,9 @@
 .leftArrow {
     position: absolute;
     top: 50%;
-    left: 9%;
+    left: 5%;
     font-size: 3rem;
-    color: #000;
+    color:'rgb(5, 30, 52)';
     z-index: 10;
     cursor: pointer;
     user-select: none;

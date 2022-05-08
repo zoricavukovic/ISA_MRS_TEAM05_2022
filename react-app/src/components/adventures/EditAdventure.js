@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
 import AddingAdditionalServiceAdventure from "../AddingAdditionalService.js";
-import AddingEquipmentAdventure from "../AddingEquipment.js";
+import AddingEquipment from "../AddingEquipment.js";
 import AddingRulesOfConductAdventure from "../AddingRulesOfConduct.js";
 import { useForm } from "react-hook-form";
 import { Divider } from "@mui/material";
@@ -522,7 +522,7 @@ export default function EditAdventure(props) {
 
                     <Box style={{ display: "flex", flexDirection: "row" }}>
                         <AddingAdditionalServiceAdventure data={additionalServices} onDeleteChip={handleDeleteAdditionalServiceChip} onSubmit={handleAddAdditionalServiceChip} float="left" />
-                        <AddingEquipmentAdventure data={fishingEquipment} onDeleteChip={handleDeleteFishingEquipmentChip} onSubmit={handleAddFishingEquipmentChip} float="left" />
+                        <AddingEquipment data={fishingEquipment} onDeleteChip={handleDeleteFishingEquipmentChip} onSubmit={handleAddFishingEquipmentChip} float="left" />
                         <AddingRulesOfConductAdventure data={rulesOfConduct} onDeleteChip={handleDeleteRuleChip} onSubmit={handleAddRuleChip} ruleChecked={checked} handleRuleCheckedChange={handleRuleCheckedChange} float="left" />
                     </Box>
 

@@ -27,7 +27,19 @@ export default function Login({setCurrentUser}) {
             console.log("Login success");
             console.log(getCurrentUser());
             setCurrentUser(getCurrentUser());
-            history.push("/");
+            let currentUser = getCurrentUser();
+            if (currentUser.userType.name === "ROLE_COTTAGE_OWNER"){
+                history.push("/cottages");
+            }
+            else if (currentUser.userType.name === "ROLE_SHIP_OWNER"){
+                history.push("/ships");
+            }
+            else if (currentUser.userType.name === "ROLE_INSTRUCTOR"){
+                history.push("/adventures");
+            }
+            else {
+                history.push("/");
+            }
 
         }).catch(res=>{
             console.log("Login failed");

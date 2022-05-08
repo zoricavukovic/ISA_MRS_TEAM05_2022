@@ -17,10 +17,6 @@ export function editShipById(id, editedShip) {
     return api.put('/ships/' + id, editedShip);
 }
 
-export function editShipByIdReal(id, editedShip) {
-    return api.put('/ships/' + id, editedShip);
-}
-
 export function addNewShip(newShip) {
     return api.post('/ships', newShip);
 }
