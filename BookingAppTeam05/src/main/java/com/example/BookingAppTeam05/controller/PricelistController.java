@@ -2,10 +2,7 @@ package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.model.*;
-import com.example.BookingAppTeam05.service.AdditionalServiceService;
-import com.example.BookingAppTeam05.service.CottageService;
-import com.example.BookingAppTeam05.service.PricelistService;
-import com.example.BookingAppTeam05.service.UserService;
+import com.example.BookingAppTeam05.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +22,14 @@ public class PricelistController {
     private PricelistService pricelistService;
     private CottageService cottageService;
     private AdditionalServiceService additionalServiceService;
+    private BookingEntityService bookingEntityService;
 
     @Autowired
-    public PricelistController(PricelistService pricelistService, CottageService cottageService, AdditionalServiceService additionalServiceService) {
+    public PricelistController(PricelistService pricelistService, CottageService cottageService, BookingEntityService bookingEntityService, AdditionalServiceService additionalServiceService) {
         this.pricelistService = pricelistService;
         this.cottageService = cottageService;
         this.additionalServiceService = additionalServiceService;
+        this.bookingEntityService = bookingEntityService;
     }
 
     @GetMapping(value="/{id}")
@@ -44,13 +43,13 @@ public class PricelistController {
         return new ResponseEntity<>(pricelistDTO, HttpStatus.OK);
     }
 
-    @PostMapping(value="/{idCottage}", consumes = "application/json")
-    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER','ROLE_SHIP_OWNER')")
-    public ResponseEntity<PricelistDTO> updatePricelist(@PathVariable Long idCottage, @RequestBody PricelistDTO pricelistDTO)  {
+    @PostMapping(value="/{idBookingEntity}", consumes = "application/json")
+    //@PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER','ROLE_SHIP_OWNER')")
+    public ResponseEntity<PricelistDTO> updatePricelist(@PathVariable Long idBookingEntity, @RequestBody PricelistDTO pricelistDTO)  {
         Pricelist pricelist = new Pricelist();
         pricelist.setEntityPricePerPerson(pricelistDTO.getEntityPricePerPerson());
 
-        pricelist.setBookingEntity(cottageService.getCottageById(idCottage));
+        pricelist.setBookingEntity(bookingEntityService.getBookingEntityById(idBookingEntity));
         pricelist.setStartDate(LocalDateTime.now());
         pricelist.setAdditionalServices(pricelistDTO.getAdditionalServices());
         pricelist = pricelistService.save(pricelist);

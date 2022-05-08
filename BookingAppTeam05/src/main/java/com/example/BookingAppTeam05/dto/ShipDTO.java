@@ -3,8 +3,12 @@ package com.example.BookingAppTeam05.dto;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.ShipOwner;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +16,28 @@ import java.util.Set;
 
 public class ShipDTO extends BookingEntityDTO{
     private String shipType;
+    @Valid
+    @NotNull
+    @Min(1)
+    @Max(500)
     private float length;
+    @NotBlank
+    @Max(250)
     private String engineNum;
+    @Valid
+    @NotNull
+    @Min(1)
+    @Max(10000)
     private int enginePower;
+    @Valid
+    @NotNull
+    @Min(1)
+    @Max(300)
     private int maxSpeed;
+    @Valid
+    @NotNull
+    @Min(1)
+    @Max(100)
     private int maxNumOfPersons;
     private Set<FishingEquipment> fishingEquipment;
     private Set<NavigationEquipment> navigationalEquipment;

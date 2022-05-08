@@ -1,20 +1,19 @@
 import * as React from 'react';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {useHistory} from "react-router-dom";
 import {useEffect, useState} from "react";
 import { CircularProgress} from "@mui/material";
+import { URL_PICTURE_PATH } from "../../service/PictureService";
 import Grid from '@mui/material/Grid';
-import {CardActionArea} from "@mui/material";
 import { getCottageById } from '../../service/CottageService';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
 export default function ReservedBookingEntityDetail(props) {
+    
     const history = useHistory();
     const [open, setOpen] = React.useState(false);
     const [isLoading, setLoading] = React.useState(true);
@@ -57,6 +56,8 @@ export default function ReservedBookingEntityDetail(props) {
         }
         getCottageById(props.reservation.bookingEntity.id).then(res => {
             setBookingEntity(res.data);
+            console.log("98456473482380573402375836529304257849");
+            console.log(res.data);
             let labelRules = [];
             for (let rule of res.data.rulesOfConduct){
                 let label = "";
@@ -80,12 +81,22 @@ export default function ReservedBookingEntityDetail(props) {
     <Grid button onClick={showBookingEntity} textAlign="left" style={{margin:"2%"}} sx={{ width: "100%"}}>
     <Grid item xs={12} md={6}>
             <Card sx={{display: 'flex'}}>
-            <CardMedia
+            {bookingEntity.pictures.length === 0 ? (
+                <CardMedia
                     component="img"
-                    sx={{width: 160, display: {xs: 'none', sm: 'block'}}}
-                    image="https://images.unsplash.com/photo-1605281317010-fe5ffe798166?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1144&q=80"
-                    alt="slika"
+                    height="140"
+                    alt="No Images"
                 />
+            ) : (
+                <CardMedia
+                    component="img"
+                    height="140"
+                    alt="No Images"
+                    image={URL_PICTURE_PATH + bookingEntity.pictures[0].picturePath}
+                >
+                </CardMedia>
+            )}
+            
                 <CardContent sx={{flex: 1}}>
                     <Typography component="h2" variant="h4" style={{color: 'rgb(5, 30, 52)'}}>
                         {bookingEntity.name}

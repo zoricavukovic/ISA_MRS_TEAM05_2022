@@ -253,7 +253,7 @@ return (
                             additionalData={<RenderRulesOfConduct rulesOfConduct={cottageBasicData.rulesOfConduct} />}
                         />
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid item xs={12} sm={4} minWidth="300px">
                             <AdventureAdditionalInfo
                                 header="Additional services"
                                 additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}

@@ -1,12 +1,10 @@
 package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.CottageDTO;
+import com.example.BookingAppTeam05.dto.NewFishingEquipmentDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ShipDTO;
-import com.example.BookingAppTeam05.model.Picture;
-import com.example.BookingAppTeam05.model.Place;
-import com.example.BookingAppTeam05.model.Room;
-import com.example.BookingAppTeam05.model.RuleOfConduct;
+import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.entities.Ship;
@@ -29,24 +27,30 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/ships")
+@CrossOrigin
 public class ShipController {
 
     private ShipService shipService;
     private BookingEntityService bookingEntityService;
     private PlaceService placeService;
+    private FishingEquipmentService fishingEquipmentService;
+    private NavigationEquipmentService navigationEquipmentService;
     private UserService userService;
     private PricelistService pricelistService;
     private PictureService pictureService;
 
     @Autowired
     public ShipController(ShipService shipService, BookingEntityService bookingEntityService, PlaceService placeService,
-                          UserService userService, PricelistService pricelistService, PictureService pictureService){
+                          UserService userService, PricelistService pricelistService, PictureService pictureService,
+                          FishingEquipmentService fishingEquipmentService, NavigationEquipmentService navigationEquipmentService){
         this.shipService = shipService;
         this.bookingEntityService = bookingEntityService;
         this.placeService = placeService;
         this.userService = userService;
         this.pricelistService = pricelistService;
         this.pictureService = pictureService;
+        this.fishingEquipmentService = fishingEquipmentService;
+        this.navigationEquipmentService = navigationEquipmentService;
     }
 
     @GetMapping
@@ -89,18 +93,22 @@ public class ShipController {
             shipDTO.setRulesOfConduct(ship.getRulesOfConduct());
         }
         shipDTO.setPictures(ship.getPictures());
+        if (ship.getFishingEquipment() != null){
+            shipDTO.setFishingEquipment(ship.getFishingEquipment());
+        }
+        if (ship.getNavigationalEquipment() != null){
+            shipDTO.setNavigationalEquipment(ship.getNavigationalEquipment());
+        }
         return new ResponseEntity<>(shipDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value="/editQue/{shipId}")
-    @PreAuthorize("hasRole('ROLE_SHIP_OWNER')")
-    public ResponseEntity<String> checkIfCanEdit(@PathVariable Long shipId) {
+    public String checkIfCanEdit(Long shipId) {
         Ship ship = shipService.findShipByShipIdWithOwner(shipId);
-        if (ship == null) return new ResponseEntity<String>("Ship for editing is not found.", HttpStatus.BAD_REQUEST);
+        if (ship == null) return "Ship for editing is not found.";
         if (shipService.checkExistActiveReservations(shipId)){
-            return new ResponseEntity<String>("Cannot edit ship cause has reservations.", HttpStatus.BAD_REQUEST);
+            return "Cannot edit ship cause has reservations.";
         }
-        return new ResponseEntity<>("Ship can edit.", HttpStatus.OK);
+        return "OK";
     }
 
     @GetMapping(value="/owner/{id}")
@@ -116,6 +124,14 @@ public class ShipController {
         }
 
         return ResponseEntity.ok(shipDTOs);
+    }
+
+    @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ResponseEntity<String> updateCottage(@RequestBody ShipDTO shipDTO, @PathVariable Long id) {
+
+
+        return new ResponseEntity<>(shipDTO.getId().toString(), HttpStatus.OK);
     }
 
 }
