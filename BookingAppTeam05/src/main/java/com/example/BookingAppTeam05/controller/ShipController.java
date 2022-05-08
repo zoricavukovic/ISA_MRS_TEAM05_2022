@@ -145,6 +145,7 @@ public class ShipController {
         ship.setMaxNumOfPersons(shipDTO.getMaxNumOfPersons());
         ship.setMaxSpeed(shipDTO.getMaxSpeed());
         ship.setEntityCancelationRate(shipDTO.getEntityCancelationRate());
+        ship.setShipType(shipDTO.getShipType());
         ship.setEntityType(EntityType.SHIP);
 
         Place p = shipDTO.getPlace();
@@ -168,6 +169,50 @@ public class ShipController {
 
         ship = shipService.save(ship);
         return new ResponseEntity<>(ship.getId().toString(), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "{idShipOwner}", consumes = "application/json")
+    @Transactional
+    //@PreAuthorize("hasRole('ROLE_SHIP_OWNER')")
+    public ResponseEntity<String> saveShip(@PathVariable Long idShipOwner, @Valid @RequestBody ShipDTO shipDTO) {
+        System.out.println("CAOOOO");
+        Ship ship = new Ship();
+        ship.setName(shipDTO.getName());
+        ship.setAddress(shipDTO.getAddress());
+        ship.setPromoDescription(shipDTO.getPromoDescription());
+        ship.setLength(shipDTO.getLength());
+        ship.setEngineNum(shipDTO.getEngineNum());
+        ship.setEnginePower(shipDTO.getEnginePower());
+        ship.setMaxNumOfPersons(shipDTO.getMaxNumOfPersons());
+        ship.setMaxSpeed(shipDTO.getMaxSpeed());
+        ship.setEntityCancelationRate(shipDTO.getEntityCancelationRate());
+        ship.setEntityType(EntityType.SHIP);
+        ship.setShipType(shipDTO.getShipType());
+        System.out.println("CAOOOO");
+        if (shipDTO.getPlace() == null) return new ResponseEntity<>("Cant find place.", HttpStatus.BAD_REQUEST);
+        Place place1 = placeService.getPlaceByZipCode(shipDTO.getPlace().getZipCode());
+        if (place1 == null) return new ResponseEntity<>("Cant find place with zip code: " + shipDTO.getPlace().getZipCode(), HttpStatus.BAD_REQUEST);
+        ship.setPlace(place1);
+        System.out.println("CAOOOO");
+        ShipOwner shipOwner = (ShipOwner) userService.getUserById(idShipOwner);
+        if (shipOwner == null) return new ResponseEntity<>("Cant find ship owner with id: " + idShipOwner, HttpStatus.BAD_REQUEST);
+        ship.setShipOwner(shipOwner);
+        System.out.println("CAOOOO");
+        ship.setRulesOfConduct(shipDTO.getRulesOfConduct());
+        if (!shipDTO.getImages().isEmpty()) {
+            Set<Picture> createdPictures = pictureService.createPicturesFromDTO(shipDTO.getImages());
+            ship.setPictures(createdPictures);
+        }
+        System.out.println("CAOOOO");
+        Set<NavigationEquipment> navigationEquipments = new HashSet<>();
+        shipService.tryToEditNavigationEquipment(shipDTO, navigationEquipments);
+        ship.setNavigationalEquipment(shipDTO.getNavigationalEquipment());
+        System.out.println("CAOOOO NAV");
+        ship.setFishingEquipment(shipDTO.getFishingEquipment());
+        System.out.println(" CAOOOO fishing");
+        ship = shipService.save(ship);
+
+        return new ResponseEntity<>(ship.getId().toString(), HttpStatus.CREATED);
     }
 
 }
