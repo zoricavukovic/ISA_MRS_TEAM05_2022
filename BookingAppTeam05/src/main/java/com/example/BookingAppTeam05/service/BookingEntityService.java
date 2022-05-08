@@ -92,6 +92,9 @@ public class BookingEntityService {
         return retVal;
     }
 
+    public BookingEntity getBookingEntityById(Long id) {
+        return this.bookingEntityRepository.getEntityById(id);
+    }
 
     public BookingEntity getBookingEntityWithUnavailableDatesById(Long id) {
         return this.bookingEntityRepository.getEntityWithUnavailableDatesById(id);

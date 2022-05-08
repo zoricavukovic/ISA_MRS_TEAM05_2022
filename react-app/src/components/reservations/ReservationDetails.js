@@ -7,25 +7,12 @@ import ClientDetails from './ClientDetails';
 import { getCurrentUser } from '../../service/AuthService.js';
 import { useHistory } from 'react-router-dom';
 
-const options = ['AND', 'OR'];
 function ShowReservationsDetails(props) {
     const history = useHistory();
     const [reservation, setReservation] = useState({});
     const [pricelist, setPricelist] = useState({});
     const [additionalServices, setAdditionalServices] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    const [pagination, setPagination] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [numAddedCottages, setNumAddedCottages] = useState(0);
-    const [searchElem, setSearchElem] = useState({
-        firstOp:"OR",
-        secondOp:"OR",
-        thirdOp:"OR",
-        cottageName:"",
-        cityName:"",
-        rate:0,
-        cost:0
-    });
     let ownerId = null;
     useEffect(() => {
         if (props.history.location.state === null || props.history.location.state === undefined){
