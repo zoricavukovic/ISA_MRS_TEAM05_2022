@@ -15,3 +15,7 @@ export function editUserById(id, editedUser) {
 export function sendLogInForm(form){
     return api.post('/users/login',form);
 }
+
+export function setNewPassword(changePassword) {
+    return api.post('/users/changePassword', changePassword)
+}
