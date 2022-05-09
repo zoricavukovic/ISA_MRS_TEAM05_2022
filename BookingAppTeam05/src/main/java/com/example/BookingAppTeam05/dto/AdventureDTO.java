@@ -10,7 +10,7 @@ public class AdventureDTO extends BookingEntityDTO {
     private String shortBio;
     private int maxNumOfPersons;
     private Set<FishingEquipment> fishingEquipment;
-    private Instructor instructor;
+    private InstructorDTO instructor;
 
     public AdventureDTO() {
     }
@@ -19,6 +19,12 @@ public class AdventureDTO extends BookingEntityDTO {
         super(adventure);
         this.shortBio = adventure.getShortBio();
         this.maxNumOfPersons = adventure.getMaxNumOfPersons();
+    }
+
+    public void setFetchedProperties(Adventure adventure){
+        super.setFetchedProperties(adventure);
+        this.fishingEquipment = adventure.getFishingEquipment();
+        this.instructor = new InstructorDTO(adventure.getInstructor());
     }
 
     public String getShortBio() {
@@ -45,11 +51,11 @@ public class AdventureDTO extends BookingEntityDTO {
         this.fishingEquipment = fishingEquipment;
     }
 
-    public Instructor getInstructor() {
+    public InstructorDTO getInstructor() {
         return instructor;
     }
 
-    public void setInstructor(Instructor instructor) {
+    public void setInstructor(InstructorDTO instructor) {
         this.instructor = instructor;
     }
 }

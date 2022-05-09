@@ -17,3 +17,7 @@ export function addNewFastReservation(newFastReservation){
     return api.post('reservations', newFastReservation);
 }
 
+export function addReservation(reservationDTO){
+    return api.post('reservations/addReservation', reservationDTO);
+}
+

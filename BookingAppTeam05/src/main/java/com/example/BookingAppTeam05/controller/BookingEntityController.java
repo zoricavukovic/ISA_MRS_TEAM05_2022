@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.controller;
 
+import com.example.BookingAppTeam05.dto.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.SimpleSearchForBookingEntityDTO;
 import com.example.BookingAppTeam05.model.entities.Adventure;
@@ -28,6 +29,14 @@ public class BookingEntityController {
     public BookingEntityController(BookingEntityService bookingEntityService, UserService userService) {
         this.bookingEntityService = bookingEntityService;
         this.userService = userService;
+    }
+
+    @GetMapping(value = "/byId/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookingEntityDTO> getBookingEntityById(@PathVariable Long id) {
+        BookingEntityDTO entity = bookingEntityService.findById(id);
+        if (entity == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(entity, HttpStatus.OK);
     }
 
     @GetMapping(value = "/allByOwner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,13 +1,9 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
-import com.example.BookingAppTeam05.dto.SimpleSearchForBookingEntityDTO;
+import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.model.Pricelist;
 import com.example.BookingAppTeam05.model.RatingService;
-import com.example.BookingAppTeam05.model.entities.Adventure;
-import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.entities.Cottage;
-import com.example.BookingAppTeam05.model.entities.Ship;
+import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.BookingEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -120,5 +117,52 @@ public class BookingEntityService {
             case SHIP: return shipService.getShipOwnerOfShipId(bookingEntity.getId());
             default: return null;
         }
+    }
+
+    public BookingEntityDTO findById(Long id) {
+        Optional<EntityType> entityType = bookingEntityRepository.findEntityTypeById(id);
+        if (!entityType.isPresent())
+            return null;
+
+        BookingEntityDTO entityDTO = null;
+        switch (entityType.get().name()){
+            case "COTTAGE":{
+                Cottage cottage = cottageService.findById(id);
+                CottageDTO cottageDTO = null;
+                if (cottage != null){
+                    cottageDTO = new CottageDTO(cottage);
+                    cottageDTO.setFetchedProperties(cottage);
+                    entityDTO = cottageDTO;
+                }
+                break;
+            }
+            case "SHIP":{
+                Ship ship = shipService.findById(id);
+                ShipDTO shipDTO;
+                if (ship != null){
+                    shipDTO = new ShipDTO(ship);
+                    shipDTO.setFetchedProperties(ship);
+                    entityDTO = shipDTO;
+                }
+                break;
+            }
+
+            case "ADVENTURE":
+            {
+                Adventure adventure = adventureService.findById(id);
+                AdventureDTO adventureDTO;
+                if (adventure != null) {
+                    adventureDTO = new AdventureDTO(adventure);
+                    adventureDTO.setFetchedProperties(adventure);
+                    entityDTO = adventureDTO;
+                }
+                break;
+            }
+
+            default:
+                break;
+        }
+
+        return entityDTO;
     }
 }

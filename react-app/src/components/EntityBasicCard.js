@@ -106,7 +106,11 @@ export default function EntityBasicCard(props) {
     };
 
     const reserveBookingEntity = () => {
-        // ovde se poziva stranica za rezervaciju kojoj se prosledjuje bookingEntity
+        console.log("Evo me");
+        history.push({
+            pathname:"/newReservation",
+            state:{ bookingEntityId: props.bookingEntity.id }
+        })
     }
 
 

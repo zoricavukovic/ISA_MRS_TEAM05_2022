@@ -1,11 +1,13 @@
 package com.example.BookingAppTeam05.repository;
 
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
+import com.example.BookingAppTeam05.model.entities.EntityType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.awt.print.Book;
+import java.util.Optional;
 
 public interface BookingEntityRepository extends JpaRepository<BookingEntity, Long> {
 
@@ -19,4 +21,6 @@ public interface BookingEntityRepository extends JpaRepository<BookingEntity, Lo
     @Modifying
     void logicalDeleteBookingEntityById(Long id);
 
+    @Query("select b.entityType from BookingEntity b where b.id =?1 and b.deleted = false")
+    Optional<EntityType> findEntityTypeById(Long id);
 }
