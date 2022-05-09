@@ -63,7 +63,7 @@ export default function ShowAllEntitiesForOwner() {
         } else {
             ownerId = getCurrentUser().id;
         }
-        getAllBookingEntitiesByOwnerId(ownerId)
+        getAllBookingEntitiesByOwnerId(getCurrentUser().id)
             .then(res => {
                 setEntities(res.data);
                 setLoadingEntities(false);
