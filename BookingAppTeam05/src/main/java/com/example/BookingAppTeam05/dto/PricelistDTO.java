@@ -26,6 +26,11 @@ public class PricelistDTO {
         this.startDate = pl.getStartDate();
     }
 
+    public void setFetchedProperties(Pricelist pricelist){
+        this.additionalServices = pricelist.getAdditionalServices();
+        // this.bookingEntity = pricelist.getBookingEntity();
+    }
+
     public Long getId() {
         return id;
     }

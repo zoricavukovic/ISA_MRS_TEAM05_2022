@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ShipRepository extends JpaRepository<Ship, Long> {
 
@@ -25,5 +26,14 @@ public interface ShipRepository extends JpaRepository<Ship, Long> {
 
     @Query(value="select s from Ship s left join s.shipOwner owner where s.id=?1 and s.deleted = false ")
     Ship findShipByShipIdWithOwner(Long shipId);
+
+    @Override
+    @Query("select s from Ship s left join fetch s.place p left join fetch s.pictures c " +
+            "left join fetch s.rulesOfConduct left join fetch s.reservations res left join fetch s.unavailableDates unD " +
+            "left join fetch s.pricelists priceList left join fetch priceList.additionalServices left join fetch s.subscribedClients subClients " +
+            "left join fetch s.fishingEquipment feq left join fetch s.navigationalEquipment naveq " +
+            "left join fetch s.shipOwner owner "+
+            " where s.id=?1 and s.deleted = false")
+    Optional<Ship> findById(Long id);
 
 }

@@ -19,7 +19,7 @@ public class ShipDTO extends BookingEntityDTO{
     private int maxNumOfPersons;
     private Set<FishingEquipment> fishingEquipment;
     private Set<NavigationEquipment> navigationalEquipment;
-    private ShipOwner shipOwner;
+    private ShipOwnerDTO shipOwner;
     @Valid
     private List<NewImageDTO> images = new ArrayList<>();
 
@@ -33,6 +33,13 @@ public class ShipDTO extends BookingEntityDTO{
         this.enginePower = ship.getEnginePower();
         this.maxSpeed = ship.getMaxSpeed();
         this.maxNumOfPersons = ship.getMaxNumOfPersons();
+    }
+
+    public void setFetchedProperties(Ship ship){
+        super.setFetchedProperties(ship);
+        this.fishingEquipment = ship.getFishingEquipment();
+        this.navigationalEquipment = ship.getNavigationalEquipment();
+        this.shipOwner = new ShipOwnerDTO(ship.getShipOwner());
     }
 
     public String getShipType() {
@@ -99,11 +106,11 @@ public class ShipDTO extends BookingEntityDTO{
         this.navigationalEquipment = navigationalEquipment;
     }
 
-    public ShipOwner getShipOwner() {
+    public ShipOwnerDTO getShipOwner() {
         return shipOwner;
     }
 
-    public void setShipOwner(ShipOwner shipOwner) {
+    public void setShipOwner(ShipOwnerDTO shipOwner) {
         this.shipOwner = shipOwner;
     }
 

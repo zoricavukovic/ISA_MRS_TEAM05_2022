@@ -33,6 +33,7 @@ import ShowAdventures from './entities_view/ShowAdventures';
 import CalendarForEntity from './calendar/CalendarForEntity';
 import NotFoundPage404 from './NotFoundPage404';
 import ForbiddenPage403 from './ForbiddenPage403';
+import NewReservation from './reservations/NewReservationPage';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -85,6 +86,7 @@ function App() {
                     <Route path="/showAdventureProfile" component={AdventureProfile} />
                     <Route path="/addAdventure" component={AddAdventure} />
                     <Route path="/editAdventure" component={EditAdventure} />
+                    <Route path="/newReservation" component={NewReservation} />
 
 
 

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AdventureRepository extends JpaRepository<Adventure, Long> {
 
@@ -22,4 +23,12 @@ public interface AdventureRepository extends JpaRepository<Adventure, Long> {
 
     @Query(value="select distinct a.instructor from Adventure a where a.id=?1 and a.deleted=false")
     User getInstructorOfAdventureId(Long id);
+
+    @Override
+    @Query("select a from Adventure a left join fetch a.place p left join fetch a.pictures c " +
+            "left join fetch a.rulesOfConduct left join fetch a.reservations res left join fetch a.unavailableDates unD " +
+            "left join fetch a.pricelists priceList left join fetch priceList.additionalServices left join fetch a.subscribedClients subClients left join fetch a.fishingEquipment f " +
+            "left join fetch a.instructor inst " +
+            "where a.id=?1 and a.deleted = false")
+    Optional<Adventure> findById(Long id);
 }

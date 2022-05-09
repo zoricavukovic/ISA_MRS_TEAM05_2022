@@ -15,6 +15,7 @@ public class CottageDTO extends BookingEntityDTO{
     private Set<Room> rooms = new HashSet<>();
     @Valid
     private List<NewImageDTO> images = new ArrayList<>();
+    private CottageOwnerDTO cottageOwnerDTO;
 
     public CottageDTO() {
     }
@@ -22,6 +23,12 @@ public class CottageDTO extends BookingEntityDTO{
     public CottageDTO(Cottage cottage) {
         super(cottage);
 
+    }
+
+    public void setFetchedProperties(Cottage cottage){
+        super.setFetchedProperties(cottage);
+        this.rooms = cottage.getRooms();
+        this.cottageOwnerDTO = new CottageOwnerDTO(cottage.getCottageOwner());
     }
 
     public Set<Room> getRooms() {
@@ -38,5 +45,13 @@ public class CottageDTO extends BookingEntityDTO{
 
     public void setImages(List<NewImageDTO> images) {
         this.images = images;
+    }
+
+    public CottageOwnerDTO getCottageOwnerDTO() {
+        return cottageOwnerDTO;
+    }
+
+    public void setCottageOwnerDTO(CottageOwnerDTO cottageOwnerDTO) {
+        this.cottageOwnerDTO = cottageOwnerDTO;
     }
 }

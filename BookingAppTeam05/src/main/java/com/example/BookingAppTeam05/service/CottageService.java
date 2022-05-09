@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -163,5 +164,10 @@ public class CottageService {
 
     public User getCottageOwnerOfCottageId(Long id) {
         return this.cottageRepository.getCottageOwnerOfCottageId(id);
+    }
+
+    public Cottage findById(Long id) {
+        Optional<Cottage> cottage = cottageRepository.findById(id);
+        return cottage.orElse(null);
     }
 }

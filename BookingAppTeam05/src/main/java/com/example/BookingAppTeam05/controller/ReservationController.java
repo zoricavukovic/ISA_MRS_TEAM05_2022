@@ -2,14 +2,8 @@ package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ClientDTO;
-import com.example.BookingAppTeam05.dto.NewAdventureDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
-import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.Reservation;
-import com.example.BookingAppTeam05.model.entities.Adventure;
-import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.entities.Cottage;
-import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.service.CottageService;
 import com.example.BookingAppTeam05.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +91,16 @@ public class ReservationController {
             return new ResponseEntity<>("Cannot create fast reservation.", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reservation.getId().toString(), HttpStatus.CREATED);
+    }
+
+    @Transactional
+    @PostMapping(value = "/addReservation", consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
+    public ResponseEntity<String> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
+        Reservation tempReservation = reservationService.addReservation(reservationDTO);
+        if (tempReservation == null)
+            return new ResponseEntity<>("Cannot create temporary reservation.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(tempReservation.getId().toString(), HttpStatus.CREATED);
     }
 
 }

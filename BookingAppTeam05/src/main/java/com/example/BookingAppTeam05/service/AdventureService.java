@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.List;
 @Service
@@ -184,5 +185,10 @@ public class AdventureService {
 
     public User getInstructorOfAdventureId(Long id) {
         return this.adventureRepository.getInstructorOfAdventureId(id);
+    }
+
+    public Adventure findById(Long id) {
+        Optional<Adventure> adventure = adventureRepository.findById(id);
+        return adventure.orElse(null);
     }
 }

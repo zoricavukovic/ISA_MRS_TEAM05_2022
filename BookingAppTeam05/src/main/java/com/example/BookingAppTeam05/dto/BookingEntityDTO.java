@@ -9,6 +9,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 public class BookingEntityDTO {
@@ -25,11 +26,11 @@ public class BookingEntityDTO {
     public EntityType entityType;
     @NotNull
     public Place place;
-    private Set<Reservation> reservations;
+    private Set<ReservationDTO> reservations;
     public Set<RuleOfConduct> rulesOfConduct;
-    public Set<Client> subscribedClients;
+    public Set<ClientDTO> subscribedClients;
     private Set<UnavailableDate> unavailableDates;
-    public Set<Pricelist> pricelists;
+    public Set<PricelistDTO> pricelists;
     private Set<Picture> pictures;
 
     public BookingEntityDTO() {}
@@ -40,6 +41,26 @@ public class BookingEntityDTO {
         this.name = bookingEntity.getName();
         this.entityCancelationRate = bookingEntity.getEntityCancelationRate();
         this.entityType = bookingEntity.getEntityType();
+    }
+
+    protected void setFetchedProperties(BookingEntity entity) {
+        this.place = entity.getPlace();
+        this.reservations = new HashSet<>();
+        for (Reservation reservation: entity.getReservations()){
+            this.reservations.add(new ReservationDTO(reservation));
+        }
+        this.rulesOfConduct = entity.getRulesOfConduct();
+        this.subscribedClients = new HashSet<>();
+        for(Client client: entity.getSubscribedClients())
+            this.subscribedClients.add(new ClientDTO(client));
+        this.unavailableDates = entity.getUnavailableDates();
+        this.pricelists = new HashSet<>();
+        for (Pricelist pricelist: entity.getPricelists()) {
+            PricelistDTO pricelistDTO = new PricelistDTO(pricelist);
+            pricelistDTO.setFetchedProperties(pricelist);
+            this.pricelists.add(pricelistDTO);
+        }
+        this.pictures = entity.getPictures();
     }
 
     public Long getId() {
@@ -102,11 +123,11 @@ public class BookingEntityDTO {
         this.place = place;
     }
 
-    public Set<Reservation> getReservations() {
+    public Set<ReservationDTO> getReservations() {
         return reservations;
     }
 
-    public void setReservations(Set<Reservation> reservations) {
+    public void setReservations(Set<ReservationDTO> reservations) {
         this.reservations = reservations;
     }
 
@@ -119,11 +140,11 @@ public class BookingEntityDTO {
         this.rulesOfConduct = rulesOfConduct;
     }
 
-    public Set<Client> getSubscribedClients() {
+    public Set<ClientDTO> getSubscribedClients() {
         return subscribedClients;
     }
 
-    public void setSubscribedClients(Set<Client> subscribedClients) {
+    public void setSubscribedClients(Set<ClientDTO> subscribedClients) {
         this.subscribedClients = subscribedClients;
     }
 
@@ -135,11 +156,11 @@ public class BookingEntityDTO {
         this.unavailableDates = unavailableDates;
     }
 
-    public Set<Pricelist> getPricelists() {
+    public Set<PricelistDTO> getPricelists() {
         return pricelists;
     }
 
-    public void setPricelists(Set<Pricelist> pricelists) {
+    public void setPricelists(Set<PricelistDTO> pricelists) {
         this.pricelists = pricelists;
     }
 }

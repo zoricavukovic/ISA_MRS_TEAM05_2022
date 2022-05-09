@@ -2,6 +2,7 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
+import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.Cottage;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import javax.persistence.OptimisticLockException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ReservationService {
@@ -25,11 +28,14 @@ public class ReservationService {
     private EmailService emailService;
     private SubscriberRepository subscriberRepository;
     private UserRepository userRepository;
+    private AdditionalServiceRepository additionalServiceRepository;
 
     @Autowired
     public ReservationService(ReservationRepository reservationRepository, CottageRepository cottageRepository,
                               ClientRepository clientRepository, BookingEntityRepository bookingEntityRepository,
-                              EmailService emailService, SubscriberRepository subscriberRepository, UserRepository userRepository){
+                              EmailService emailService, SubscriberRepository subscriberRepository, UserRepository userRepository,
+                              AdditionalServiceRepository additionalServiceRepository
+                              ){
         this.reservationRepository = reservationRepository;
         this.cottageRepository = cottageRepository;
         this.clientRepository = clientRepository;
@@ -37,6 +43,7 @@ public class ReservationService {
         this.emailService = emailService;
         this.subscriberRepository = subscriberRepository;
         this.userRepository = userRepository;
+        this.additionalServiceRepository = additionalServiceRepository;
     }
 
     public List<Reservation> findAllActiveReservationsForEntity(Long entityId){return reservationRepository.findAllActiveReservationsForBookingEntity(entityId);}
@@ -129,5 +136,36 @@ public class ReservationService {
                 retVal.add(r);
         }
         return retVal;
+    }
+
+    public Reservation addReservation(ReservationDTO reservationDTO) {
+        try{
+            Reservation res = new Reservation();
+
+            res.setStartDate(reservationDTO.getStartDate());
+            res.setCost(reservationDTO.getCost());
+            res.setCanceled(false);
+            res.setFastReservation(false);
+            res.setNumOfDays(reservationDTO.getNumOfDays());
+            res.setNumOfPersons(reservationDTO.getNumOfPersons());
+            Set<AdditionalService> aServices = new HashSet<>();
+            for (AdditionalService as:reservationDTO.getAdditionalServices()) {
+                aServices.add(additionalServiceRepository.findById(as.getId()).orElse(null));
+            }
+            res.setAdditionalServices(aServices);
+            BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
+            if (entityDTO == null) return null;
+            BookingEntity entity = bookingEntityRepository.getEntityById(entityDTO.getId());
+            if (entity == null) return null;
+            res.setBookingEntity(entity);
+            res.setVersion(1);
+            Client client = clientRepository.findById(reservationDTO.getClient().getId()).orElse(null);
+            res.setClient(client);
+            reservationRepository.save(res);
+            return res;
+        }catch (OptimisticLockException e){
+            System.out.println("EXCEPTION HAS HAPPENED!!!!");
+        }
+        return null;
     }
 }
