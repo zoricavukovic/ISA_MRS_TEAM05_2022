@@ -16,14 +16,14 @@ public class SearchService {
         List<SearchedBookingEntityDTO> result = entities;
         String sName = s.getName().trim().toLowerCase();
         if (!sName.equals(""))
-            result = result.stream().filter(i -> i.getName().toLowerCase().equals(sName)).collect(Collectors.toList());
+            result = result.stream().filter(i -> i.getName().toLowerCase().contains(sName)).collect(Collectors.toList());
         return result;
     }
     private List<SearchedBookingEntityDTO> searchByAddress(List<SearchedBookingEntityDTO> entities, SimpleSearchForBookingEntityDTO s) {
         List<SearchedBookingEntityDTO> result = entities;
         String sAddress = s.getAddress().trim().toLowerCase();
         if (!sAddress.equals(""))
-            result = result.stream().filter(i -> i.getAddress().toLowerCase().equals(sAddress)).collect(Collectors.toList());
+            result = result.stream().filter(i -> i.getAddress().toLowerCase().contains(sAddress)).collect(Collectors.toList());
         return result;
     }
     private List<SearchedBookingEntityDTO> searchByPlaceId(List<SearchedBookingEntityDTO> entities, SimpleSearchForBookingEntityDTO s) {
