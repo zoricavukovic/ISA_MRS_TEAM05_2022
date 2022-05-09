@@ -22,12 +22,11 @@ export default function ShowAllEntitiesForOwner() {
     const [isLoadingEntites, setLoadingEntities] = useState(true);
     const [selectedPlaceId, setSelectedPlaceId] = useState(null);
     const history = useHistory();
-    let ownerId = null;
     const [entities, setEntities] = useState(null);
 
 
     ///////////////RATING//////////////////////
-    const [value, setValue] = React.useState(2);
+    const [value, setValue] = React.useState('');
     const [hover, setHover] = React.useState(-1);
     const onChangeFn = (event, newValue) => {
         setValue(newValue);
@@ -58,23 +57,29 @@ export default function ShowAllEntitiesForOwner() {
     ////////////////////////////////////////
 
     useEffect(() => {
-        if (getCurrentUser() == null) {
+        if (getCurrentUser() === null || getCurrentUser() === undefined) {
             history.push('/login');
-        } else {
-            ownerId = getCurrentUser().id;
         }
-        getAllBookingEntitiesByOwnerId(ownerId)
-            .then(res => {
-                setEntities(res.data);
-                setLoadingEntities(false);
-            });
-
-        getAllPlaces()
-            .then(res => {
-                setPlaces(res.data);
-                setLoadingPlace(false);
-            })
+        else {
+            getAllBookingEntitiesByOwnerId(getCurrentUser().id)
+                .then(res => {
+                    setEntities(res.data);
+                    setLoadingEntities(false);
+                });
+            getAllPlaces()
+                .then(res => {
+                    setPlaces(res.data);
+                    setLoadingPlace(false);
+                })
+        }
     }, [])
+
+    const resetFn = data => {
+        getAllBookingEntitiesByOwnerId(getCurrentUser().id)
+        .then(res => {
+            setEntities(res.data);
+        });
+    }
 
     const onSearch = data => {
         let searchCriteria = {
@@ -86,6 +91,7 @@ export default function ShowAllEntitiesForOwner() {
             "maxCostPerPerson": data.maxCostPerPerson,
             "minRating": value,
         };
+        console.log("search critearia");
         console.log(searchCriteria);
         let minCost = data.minCostPerPerson;
         let maxCost = data.maxCostPerPerson;
@@ -102,7 +108,6 @@ export default function ShowAllEntitiesForOwner() {
             .then(res => {
                 setEntities(res.data);
             }).catch(res => {
-                console.log(res);
                 alert("Error happend on server while searching.");
             });
     }
@@ -114,9 +119,6 @@ export default function ShowAllEntitiesForOwner() {
         <div>
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", padding: "3", flexDirection: "row", margin: "20px auto", width: "60%", alignItems: "stretch", backgroundColor: "aliceblue", borderRadius: "5px" }}>
                 {getAllPlacesForTheList()}
-                {console.log("========================================KORINISK======")}
-                {console.log(getCurrentUser())}
-                {console.log("========================================KORINISK======")}
                 <TextField
                     name="name"
                     id="name"
@@ -168,10 +170,16 @@ export default function ShowAllEntitiesForOwner() {
                     {...register("maxCostPerPerson", { min: 1, max: 100000 })}
                 />
                 {errors.maxCostPerPerson && <p style={{ color: '#ED6663', fontSize: '11px' }}>Max cost per person is num between 1 and 100000</p>}
-                <ControlledRating value={value} hover={hover} onChange={onChangeFn} onChangeActive={onChangeActiveFn}/>
+                <ControlledRating value={value} hover={hover} onChange={onChangeFn} onChangeActive={onChangeActiveFn} />
                 <Button onClick={handleSubmit(onSearch)} label="Extra Soft" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', borderRadius: '10px', margin: '1%', backgroundColor: 'rgb(244, 177, 77)' }}>
                     Search
                 </Button>
+                <Button onClick={handleSubmit(resetFn)} label="Extra Soft" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', borderRadius: '10px', margin: '1%', backgroundColor: 'rgb(244, 177, 77)' }}>
+                    Reset
+                </Button>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+                {entities.length === 1 ?(<p>1 result found.</p>):(<p>{entities.length} results found.</p>)}
             </div>
             <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                 {entities.map((item, index) => (

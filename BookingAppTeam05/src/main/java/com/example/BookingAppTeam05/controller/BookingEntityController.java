@@ -88,7 +88,7 @@ public class BookingEntityController {
 
     @DeleteMapping(value="/{entityId}")
     @Transactional
-    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
+    //@PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
     public ResponseEntity<String> logicalDeleteEntityById(@PathVariable Long entityId, @RequestBody String confirmPass){
         BookingEntity bookingEntity = bookingEntityService.getEntityById(entityId);
         if (bookingEntity == null)

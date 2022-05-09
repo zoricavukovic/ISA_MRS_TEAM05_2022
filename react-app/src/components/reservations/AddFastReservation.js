@@ -119,19 +119,14 @@ export default function AddFastReservation(props) {
 
     const onFormSubmit = data => {
       
-      if (getCurrentUser() == null || getCurrentUser() == undefined || getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER") {
-        history.push('/login');
+      if (getCurrentUser() == null || getCurrentUser() == undefined || (getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER" && getCurrentUser().userType.name!=="ROLE_SHIP_OWNER" && getCurrentUser().userType.name!=="ROLE_INSTRUCTOR_OWNER")) {
+        history.push('/forbiddenPage');
       } else {
           ownerId = getCurrentUser().id;
       }
       let newDate = new Date(value);
       console.log(newDate);
-     
-      console.log(newDate.getFullYear());
-      console.log(newDate.getMonth()+1);
-      console.log(value.getDay());
-      console.log(value.getUTCDay());
-      console.log(value);
+    
       let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getUTCDate(), newDate.getHours(), newDate.getMinutes()];
     
       let newFastReservation={
@@ -148,18 +143,21 @@ export default function AddFastReservation(props) {
       console.log(newFastReservation);
       addNewFastReservation(newFastReservation).then(res => {
         console.log(res.data);
+        history.push({
+          pathname: "./showFastReservations",
+          state: { bookingEntityId: props.history.location.state.bookingEntityId }
+      })
       }).catch(error => {
           setMessage(error.response.data);
           handleClick();
       });
   }
   useEffect(() => {
-    let owner = getCurrentUser();
-    if (owner === null || owner === undefined){
-        history.push('/login');
+    if (getCurrentUser() === null || getCurrentUser() === undefined){
+      history.push('/forbiddenPage');
     }
     else{
-        ownerId = owner.id;
+        ownerId = getCurrentUser().id;
     }
     if (props.history.location.state === null || props.history.location.state === undefined){
         return;

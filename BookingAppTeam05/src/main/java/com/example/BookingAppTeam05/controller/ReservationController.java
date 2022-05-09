@@ -76,7 +76,8 @@ public class ReservationController {
         for (Reservation reservation: reservationsFound) {
             ReservationDTO rDTO = new ReservationDTO(reservation);
             rDTO.setBookingEntity(new BookingEntityDTO(reservation.getBookingEntity()));
-            rDTO.setClient(new ClientDTO(reservation.getClient()));
+            if (reservation.getClient() != null)
+                rDTO.setClient(new ClientDTO(reservation.getClient()));
             reservationDTOs.add(rDTO);
         }
         return reservationDTOs;

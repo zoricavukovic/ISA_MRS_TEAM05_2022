@@ -21,7 +21,8 @@ public interface ShipRepository extends JpaRepository<Ship, Long> {
 
     @Query(value="select distinct c.shipOwner from Ship c where c.id=?1 and c.deleted=false")
     User getShipOwnerOfShipId(Long id);
-    @Query(value="select s from Ship s left join fetch s.place p left join fetch s.rulesOfConduct d left join fetch s.pictures pic where s.id=?1 and s.deleted = false")
+
+    @Query(value="select s from Ship s left join fetch s.place p left join fetch s.rulesOfConduct d left join fetch s.pictures pic left join fetch s.fishingEquipment fe left join fetch s.navigationalEquipment ne where s.id=?1 and s.deleted = false")
     Ship getShipById(Long id);
 
     @Query(value="select s from Ship s left join s.shipOwner owner where s.id=?1 and s.deleted = false ")

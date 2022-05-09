@@ -18,6 +18,7 @@ import AddFastReservation from './AddFastReservation';
 function ShowFastReservations(props) {
     const history = useHistory();
     const [reservations, setReservations] = useState([]);
+    const [bookingEntityName, setBookingEntityName] = useState("");
     const [isLoading, setLoading] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
     const [isLoadingAddServices, setLoadingAddServices] = useState(true);
@@ -51,7 +52,9 @@ function ShowFastReservations(props) {
         });
         getFastReservationsByBookingEntityId(props.history.location.state.bookingEntityId).then(res => {
             setReservations(res.data);
-        
+            if (res.data.length != 0){
+                setBookingEntityName(res.data[0].bookingEntity.name);
+            }
             let rowsData = [];
             
             for (let r of res.data){
@@ -92,6 +95,10 @@ function ShowFastReservations(props) {
             
             setRows(rowsData);
             setLoading(false);
+            if (res.data.length === 0){
+                setLoadingAddServices(false);
+                setLoadingPricelist(false);
+            }
         })
     }, []);
 
@@ -108,7 +115,17 @@ function ShowFastReservations(props) {
         <div>
             <div style={{marginLeft:"20%",marginRight:"20%",marginTop:"5%", marginBottom:"5%", borderRadius:"10px", backgroundColor:"aliceblue"}}>
                 <Typography style={{marginRight:"5%", marginLeft:"5%", textAlign:"left", color: 'rgb(5, 30, 52)'}} gutterBottom variant="h6" component="div">
-                    <LocalFireDepartmentIcon style={{color:"#F29F05"}}/>Active Fast Reservation For {reservations[0].bookingEntity.name}
+                {reservations.length === 0 ? (
+                            <text>Active Fast Reservation</text>
+       
+                        ) : (
+                            <text>
+                                <LocalFireDepartmentIcon style={{color:"#F29F05"}}/>
+                                Active Fast Reservations For {bookingEntityName}
+                            </text>
+                            
+                    
+                    )}
                     <Tooltip style={{marginLeft:"20%"}} title="Add Fast Reservation">
                         <IconButton onClick={createFastReservation}>
                             <AddCircleIcon style={{color:"#F29F05", textAlign:"right"}} fontSize="large"/>
@@ -117,12 +134,19 @@ function ShowFastReservations(props) {
                 </Typography>
                 
                 <div style={{marginRight:"5%", marginLeft:"5%", height: 350, width: '90%' }}>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                    />
+                 
+                    {reservations.length === true ? (
+                            <h5 style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', marginLeft:"15%" }}>There are no fast reservations.</h5>
+       
+                        ) : (
+                            <DataGrid
+                                rows={rows}
+                                columns={columns}
+                                pageSize={5}
+                                rowsPerPageOptions={[5]}
+                            />
+                    )}
+                    
                     
                 </div>
                 

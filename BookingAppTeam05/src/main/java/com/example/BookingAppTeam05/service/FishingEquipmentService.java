@@ -35,6 +35,20 @@ public class FishingEquipmentService {
         return retVal;
     }
 
+    public Set<FishingEquipment> createEquipmentFromDTO(Set<FishingEquipment> fishingEquipment) {
+        Set<FishingEquipment> retVal = new HashSet<>();
+        for (FishingEquipment f : fishingEquipment) {
+
+            FishingEquipment fResult = fishingEquipmentRepository.findFishingEquipmentByEquipmentName(f.getEquipmentName());
+            if (fResult != null) {
+                retVal.add(fResult);
+            } else {
+                retVal.add(new FishingEquipment(f.getEquipmentName()));
+            }
+        }
+        return retVal;
+    }
+
     public void deleteAdventureFishingEquipment(Long adventureId, Long fishingEquipmentId) {
         fishingEquipmentRepository.deleteFishingEqupmentIdForAdventureId(adventureId, fishingEquipmentId);
     }

@@ -14,7 +14,7 @@ const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
 
-export default function AddingEquipment(props) {
+export default function AddingNavigationalEquipment(props) {
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -29,14 +29,14 @@ export default function AddingEquipment(props) {
         <Grid container alignItems="left" display="flex" flexDirection="column" justifyContent="left">
           <Grid item xs>
             <Typography gutterBottom variant="h5" component="div" style={{ color: 'rgb(5, 30, 52)', marginLeft: '2.5%' }}>
-              Fishing Equipment
+              Navigational Equipment
             </Typography>
           </Grid>
           <Grid item>
             <TextField
               size="small"
               name="equipmentName"
-              style={{ width: '70%', marginLeft: '2.5%' }}
+              style={{ width: '80%', marginLeft: '2.5%' }}
               id="equipmentName"
               label="Equipment name"
               placeholder="Equipment name"
@@ -69,7 +69,7 @@ export default function AddingEquipment(props) {
 
       <Box sx={{ m: 2, ml: 2.5 }}>
         <Typography gutterBottom variant="body1">
-          Added Equipment Names
+          Added Navigational Equipment
         </Typography>
         <Paper
           sx={{
@@ -87,7 +87,7 @@ export default function AddingEquipment(props) {
             return (
               <ListItem key={data.key}>
                 <Chip
-                  label={data.equipmentName}
+                  label={data.name}
                   onDelete={() => props.onDeleteChip(data)}
                 />
               </ListItem>

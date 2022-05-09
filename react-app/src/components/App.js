@@ -34,6 +34,7 @@ import CalendarForEntity from './calendar/CalendarForEntity';
 import NotFoundPage404 from './NotFoundPage404';
 import ForbiddenPage403 from './ForbiddenPage403';
 import NewReservation from './reservations/NewReservationPage';
+import ChangePassword from './ChangePassword';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -93,6 +94,8 @@ function App() {
                     <Route path="/calendarForEntity" component={CalendarForEntity} />
                     <Route path="/notFoundPage" component={NotFoundPage404} />
                     <Route path="/forbiddenPage" component={ForbiddenPage403} />
+
+                    <Route path="/changePassword" component={ChangePassword} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>

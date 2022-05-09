@@ -10,7 +10,7 @@ import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { useHistory } from "react-router-dom";
 import RatingEntity from "./Rating";
 import { getCurrentUser } from "../service/AuthService";
-import {logicalDeliteBookingEntityById} from "../service/BookingEntityService";
+import {logicalDeleteBookingEntityById} from "../service/BookingEntityService";
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
@@ -53,7 +53,7 @@ export default function EntityBasicCard(props) {
     };
 
     const logicDeleteBookingEntity = (event) => {
-        logicalDeliteBookingEntityById(props.bookingEntity.id, password).then(res => {
+        logicalDeleteBookingEntityById(props.bookingEntity.id, password).then(res => {
             setPassword("");
             handleClick();
             setTypeAlert("success");
@@ -62,26 +62,11 @@ export default function EntityBasicCard(props) {
         }).catch(res => {
             setPassword("");
             setTypeAlert("error");
+            console.log(res.response.data);
             setMessage(res.response.data);
             handleClick();
             return;
         })
-
-        // if (props.bookingEntity.entityType === "COTTAGE") {
-        //     deleteCottageById(props.bookingEntityId, password).then(res => {
-        //     setPassword("");
-        //     handleClick();
-        //     setTypeAlert("success");
-        //     setMessage("Successfully delete entity " + props.bookingEntity.name);
-        //     window.location.reload();
-        // }).catch(res => {
-        //     setPassword("");
-        //     setTypeAlert("error");
-        //     setMessage(res.response.data);
-        //     handleClick();
-        //     return;
-        // })    
-        // }
         setOpenDialog(false);
     }
     ///////////////////////////////////////////////////////////////////////////////////

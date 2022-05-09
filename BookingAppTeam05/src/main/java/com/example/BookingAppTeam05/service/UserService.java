@@ -67,4 +67,9 @@ public class UserService implements UserServiceI{
 //        return this.userRepository.save(u);
         return null;
     }
+
+    public void setNewUserPassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

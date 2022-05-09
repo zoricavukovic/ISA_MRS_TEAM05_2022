@@ -47,13 +47,6 @@ INSERT INTO fishing_equipments(equipment_name) VALUES ('First aid kit');
 INSERT INTO fishing_equipments(equipment_name) VALUES ('Bucket');
 INSERT INTO fishing_equipments(equipment_name) VALUES ('Rope');
 
-
-INSERT INTO navigation_equipments(name) VALUES ('GPS');
-INSERT INTO navigation_equipments(name) VALUES ('RADAR');
-INSERT INTO navigation_equipments(name) VALUES ('VHF_RADIO');
-INSERT INTO navigation_equipments(name) VALUES ('FISHFINDER');
-
-
 INSERT INTO cottage_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number, place_id, deleted, role_id)
 VALUES
 (nextval('users_id_gen'), 'False','Ap #225-738 At, Rd.','1979-03-13','bookingapp05mzr++virgina@gmail.com','Virginia','Calhoun',65,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','052-38-778-82',1, 'False', 3),
@@ -153,6 +146,10 @@ VALUES
 ('False','Pets',1),
 ('True','Parties',2),
 ('False','Calling owner',2),
+('True','Alcohol',6),
+('False','Pets',6),
+('False','Parties',6),
+('True','Calling owner',7),
 ('True','Weed',3),
 ('True','Children policies',3),
 ('False','Weed',3),
@@ -167,6 +164,11 @@ VALUES
 INSERT INTO adventure_fishing_equipment(adventure_entity_id, fishing_equipment_id) VALUES (11, 1);
 INSERT INTO adventure_fishing_equipment(adventure_entity_id, fishing_equipment_id) VALUES (11, 2);
 
+
+INSERT INTO ship_fishing_equipment(ship_entity_id, fishing_equipment_id) VALUES (6, 1);
+INSERT INTO ship_fishing_equipment(ship_entity_id, fishing_equipment_id) VALUES (6, 2);
+INSERT INTO ship_fishing_equipment(ship_entity_id, fishing_equipment_id) VALUES (6, 3);
+INSERT INTO ship_fishing_equipment(ship_entity_id, fishing_equipment_id) VALUES (7, 3);
 
 -- pricelists for adventures  8 - 14
 INSERT INTO pricelists (entity_price_per_person,start_date,booking_entity_id)
@@ -334,3 +336,14 @@ INSERT INTO pictures (picture_path, entity_id) VALUES ('ship2d.jpg', 7);
 INSERT INTO subscribers (booking_entity_id, client_id) VALUES (1, 7);
 INSERT INTO subscribers (booking_entity_id, client_id) VALUES (1, 8);
 INSERT INTO subscribers (booking_entity_id, client_id) VALUES (2, 7);
+
+
+
+INSERT INTO navigation_equipments(name, ship_id) VALUES ('GPS', 6);
+INSERT INTO navigation_equipments(name, ship_id) VALUES ('RADAR', 6);
+INSERT INTO navigation_equipments(name, ship_id) VALUES ('VHF_RADIO', 6);
+INSERT INTO navigation_equipments(name, ship_id) VALUES ('FISHFINDER', 7);
+INSERT INTO navigation_equipments(name, ship_id) VALUES ('RADAR', 7);
+INSERT INTO navigation_equipments(name, ship_id) VALUES ('VHF_RADIO', 8);
+INSERT INTO navigation_equipments(name, ship_id) VALUES ('VHF_RADIO', 9);
+INSERT INTO navigation_equipments(name, ship_id) VALUES ('RADAR', 8);
