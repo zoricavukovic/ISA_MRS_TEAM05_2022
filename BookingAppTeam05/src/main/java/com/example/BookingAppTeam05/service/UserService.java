@@ -23,7 +23,7 @@ public class UserService implements UserServiceI{
     @Autowired
     private ShipOwnerRepository shipOwnerRepository;
     @Autowired
-    private CottageOwnerService cottageOwnerService;
+    private CottageOwnerRepository cottageOwnerRepository;
     @Autowired
     private InstructorRepository instructorRepository;
 
@@ -39,13 +39,13 @@ public class UserService implements UserServiceI{
         if(user.getRole().getName().equals("ROLE_CLIENT"))
             user = clientRepository.findById(id).orElse(null);
         if(user.getRole().getName().equals("ROLE_ADMIN"))
-            user = clientRepository.findById(id).orElse(null);
+            user = adminRepository.findById(id).orElse(null);
         if(user.getRole().getName().equals("ROLE_COTTAGE_OWNER"))
-            user = clientRepository.findById(id).orElse(null);
+            user = cottageOwnerRepository.findById(id).orElse(null);
         if(user.getRole().getName().equals("ROLE_SHIP_OWNER"))
-            user = clientRepository.findById(id).orElse(null);
+            user = shipOwnerRepository.findById(id).orElse(null);
         if(user.getRole().getName().equals("ROLE_INSTRUCTOR"))
-            user = clientRepository.findById(id).orElse(null);
+            user = instructorRepository.findById(id).orElse(null);
         return user;
     }
 
