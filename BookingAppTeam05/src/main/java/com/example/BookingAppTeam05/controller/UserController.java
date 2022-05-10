@@ -68,10 +68,11 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateUser/{id}")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
     public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO)  {
         User user = userService.getUserById(userId);
+
         user.setAddress(userDTO.getAddress());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
@@ -79,9 +80,14 @@ public class UserController {
         user.setPhoneNumber(userDTO.getPhoneNumber());
         Place place = placeService.getPlaceByZipCode(userDTO.getPlace().getZipCode());
         user.setPlace(place);
-
-        final User updatedUser = userService.save(user);
-
+        final User updatedUser;
+        try {
+            updatedUser = userService.save(user);
+        }
+        catch(Exception e)
+        {
+            return (ResponseEntity<User>) ResponseEntity.badRequest();
+        }
         return ResponseEntity.ok(updatedUser);
     }
 

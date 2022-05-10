@@ -26,6 +26,7 @@ public class Client extends User {
    private Set<BookingEntity>watchedEntities = new HashSet<>();
 
    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @JsonIgnore
    private Set<Reservation> reservations = new HashSet<>();
 
    public Client(){

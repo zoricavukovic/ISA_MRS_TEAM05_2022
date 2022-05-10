@@ -4,7 +4,7 @@ import com.example.BookingAppTeam05.dto.UserRequestDTO;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.model.users.Role;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.repository.UserRepository;
+import com.example.BookingAppTeam05.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +16,16 @@ import java.util.List;
 public class UserService implements UserServiceI{
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
+    private AdminRepository adminRepository;
+    @Autowired
+    private ShipOwnerRepository shipOwnerRepository;
+    @Autowired
+    private CottageOwnerService cottageOwnerService;
+    @Autowired
+    private InstructorRepository instructorRepository;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -25,7 +35,18 @@ public class UserService implements UserServiceI{
     public UserService() {}
 
     public User getUserById(Long id) {
-        return userRepository.getUserById(id);
+        User user = userRepository.getUserById(id);
+        if(user.getRole().getName().equals("ROLE_CLIENT"))
+            user = clientRepository.findById(id).orElse(null);
+        if(user.getRole().getName().equals("ROLE_ADMIN"))
+            user = clientRepository.findById(id).orElse(null);
+        if(user.getRole().getName().equals("ROLE_COTTAGE_OWNER"))
+            user = clientRepository.findById(id).orElse(null);
+        if(user.getRole().getName().equals("ROLE_SHIP_OWNER"))
+            user = clientRepository.findById(id).orElse(null);
+        if(user.getRole().getName().equals("ROLE_INSTRUCTOR"))
+            user = clientRepository.findById(id).orElse(null);
+        return user;
     }
 
     public User save(User user){return userRepository.save(user);}

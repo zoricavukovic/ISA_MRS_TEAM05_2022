@@ -38,6 +38,7 @@ function EditUserProfile(props) {
     const [userData, setUserData] = useState({});
     const [changedUserData, setChangedUserData] = useState({});
     const [places, setPlaces] = useState([]);
+    const [allCountries, setAllCountries] = useState([])
     const [selectedPlace, setSelectedPlace] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [isLoading2, setLoading2] = useState(true);
@@ -68,12 +69,21 @@ function EditUserProfile(props) {
 
         getAllPlaces().then(results =>{
             setPlaces(results.data);
+            console.log(results.data);
+            var countries = []
+            for(var place of results.data)
+                    if(!countries.some(e=>place.stateName === e))
+                        countries.push(place.stateName);
+            
+            console.log(countries);
+            setAllCountries(countries);
             setLoading2(false);
         })
     }, []);
 
 
     const saveChanges = (event) => {
+        
         console.log("CHanged user data:",changedUserData);
         editUserById(userId, changedUserData).then(res=>{
             console.log("Uspesno!!");
@@ -89,9 +99,16 @@ function EditUserProfile(props) {
     }
 
     const makeChange = (event)=>{
+        var value = event.target.value;
+        if(event.target.name === "dateOfBirth"){
+            let year = parseInt(value.split(',')[0]);
+            let month = parseInt(value.split(',')[1]);
+            let day = parseInt(value.split(',')[2]);
+            value = [year,month,day];
+        }
         setChangedUserData(prevState => ({
             ...prevState,
-            [event.target.name]: event.target.value
+            [event.target.name]: value
         }));
     }
 
@@ -338,7 +355,7 @@ function EditUserProfile(props) {
                     </tr>
                     <tr>
                         <td>
-                            <FormControl>
+                            <FormControl style={{margin:'10px 10px'}}>
                                 <InputLabel variant="standard" htmlFor="uncontrolled-native">
                                     Country
                                 </InputLabel>
@@ -350,8 +367,8 @@ function EditUserProfile(props) {
                                         id: 'uncontrolled-native',
                                     }}
                                 >
-                                    {places.map((place)=>(
-                                        <option value={place.stateName}>{place.stateName}</option>
+                                    {allCountries.map((state)=>(
+                                        <option value={state}>{state}</option>
                                     ))}
                                 </NativeSelect>
                             </FormControl>
@@ -389,6 +406,7 @@ function EditUserProfile(props) {
                                 defaultValue={userData.address}
                                 name="address"
                                 onChange={makeChange}
+                                style={{width:'100%'}}
                             />
                         </td>
                     </tr>

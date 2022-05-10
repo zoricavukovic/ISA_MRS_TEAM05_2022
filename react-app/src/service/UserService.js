@@ -1,5 +1,8 @@
 import api from "./baseApi";
 
+let currentUser = null;
+
+
 export function getAllUsers() {
     return api.get('/users');
 }
@@ -9,7 +12,7 @@ export function getUserById(id) {
 }
 
 export function editUserById(id, editedUser) {
-    return api.put('/users/' + id, editedUser);
+    return api.put('/users/updateUser/' + id, editedUser);
 }
 
 export function sendLogInForm(form){
