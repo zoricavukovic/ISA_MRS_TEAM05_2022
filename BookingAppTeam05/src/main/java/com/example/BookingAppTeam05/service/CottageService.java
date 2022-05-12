@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.dto.CottageDTO;
+import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.dto.NewImageDTO;
 import com.example.BookingAppTeam05.model.Picture;
 import com.example.BookingAppTeam05.model.Room;

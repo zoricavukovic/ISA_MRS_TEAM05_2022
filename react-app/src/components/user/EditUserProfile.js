@@ -12,10 +12,10 @@ import ListItem from "@mui/material/ListItem";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {useHistory} from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import axios from "axios";
-import { editUserById, getAllUsers, getUserById } from '../service/UserService';
-import { getAllPlaces, getPlaceById } from '../service/PlaceService';
-
+import { editUserById, getAllUsers, getUserById } from '../../service/UserService';
+import { getAllPlaces, getPlaceById } from '../../service/PlaceService';
+import { userLoggedIn } from '../../service/UserService';
+import { getCurrentUser } from '../../service/AuthService';
 
 function EditUserProfile(props) {
 
@@ -42,8 +42,10 @@ function EditUserProfile(props) {
     const [selectedPlace, setSelectedPlace] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [isLoading2, setLoading2] = useState(true);
+    const [country,setCountry] = useState("");
+    const [city,setCity] = useState("");
     const history = useHistory();
-    const userId = props.history.location.state.userId;
+    
     const avatar = <Avatar
         alt="Zorica Vukovic"
         src="./slika.jpeg"
@@ -52,40 +54,34 @@ function EditUserProfile(props) {
         maxRows={4}
     />
 
-    const [country,setCountry] = useState("");
-    const [city,setCity] = useState("");
-
     useEffect(() => {
-        if (props.history.location.state === undefined || props.history.location.state === null){
-            return <div>Do not allowed to go to this page. Try again!</div>
+        if (userLoggedIn(history)) {
+            getUserById(getCurrentUser().id).then(res => {
+                setUserData(res.data);
+                setChangedUserData(res.data);
+                setLoading(false);
+                setCountry(res.data.place.stateName);
+            })
+    
+            getAllPlaces().then(results =>{
+                setPlaces(results.data);
+                var countries = []
+                for(var place of results.data)
+                        if(!countries.some(e=>place.stateName === e))
+                            countries.push(place.stateName);
+                
+                console.log(countries);
+                setAllCountries(countries);
+                setLoading2(false);
+            })
         }
-        const userId = props.history.location.state.userId;
-        getUserById(userId).then(res => {
-            setUserData(res.data);
-            setChangedUserData(res.data);
-            setLoading(false);
-            setCountry(res.data.place.stateName);
-        })
-
-        getAllPlaces().then(results =>{
-            setPlaces(results.data);
-            console.log(results.data);
-            var countries = []
-            for(var place of results.data)
-                    if(!countries.some(e=>place.stateName === e))
-                        countries.push(place.stateName);
-            
-            console.log(countries);
-            setAllCountries(countries);
-            setLoading2(false);
-        })
     }, []);
 
 
     const saveChanges = (event) => {
         
         console.log("CHanged user data:",changedUserData);
-        editUserById(userId, changedUserData).then(res=>{
+        editUserById(getCurrentUser().id, changedUserData).then(res=>{
             console.log("Uspesno!!");
             console.log(res.data);
             alert("Changes saved");

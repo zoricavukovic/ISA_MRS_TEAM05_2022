@@ -1,5 +1,5 @@
 import React from "react";
-import Forbidden403Img from "./img/Forbidden403.jpg";
+import Forbidden403Img from "../../icons/Forbidden403.jpg";
 
 export default function ForbiddenPage403() {
     return (

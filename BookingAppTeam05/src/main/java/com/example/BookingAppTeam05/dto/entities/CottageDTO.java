@@ -1,5 +1,7 @@
-package com.example.BookingAppTeam05.dto;
+package com.example.BookingAppTeam05.dto.entities;
 
+import com.example.BookingAppTeam05.dto.NewImageDTO;
+import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.users.CottageOwnerDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Cottage;
@@ -10,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CottageDTO extends BookingEntityDTO{
+public class CottageDTO extends BookingEntityDTO {
     private Set<Room> rooms = new HashSet<>();
     @Valid
     private List<NewImageDTO> images = new ArrayList<>();

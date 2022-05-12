@@ -1,5 +1,6 @@
-package com.example.BookingAppTeam05.dto;
+package com.example.BookingAppTeam05.dto.entities;
 
+import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.users.InstructorDTO;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.FishingEquipment;

@@ -1,5 +1,7 @@
-package com.example.BookingAppTeam05.dto;
+package com.example.BookingAppTeam05.dto.entities;
 
+import com.example.BookingAppTeam05.dto.NewImageDTO;
+import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.users.ShipOwnerDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Ship;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ShipDTO extends BookingEntityDTO{
+public class ShipDTO extends BookingEntityDTO {
     private String shipType;
     @Valid
     @NotNull

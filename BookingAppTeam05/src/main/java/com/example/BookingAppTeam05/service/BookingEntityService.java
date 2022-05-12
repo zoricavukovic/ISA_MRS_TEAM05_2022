@@ -1,6 +1,10 @@
 package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.*;
+import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
+import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
+import com.example.BookingAppTeam05.dto.entities.CottageDTO;
+import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.Pricelist;
 import com.example.BookingAppTeam05.model.RatingService;
 import com.example.BookingAppTeam05.model.entities.*;

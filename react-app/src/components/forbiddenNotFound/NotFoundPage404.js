@@ -1,5 +1,5 @@
 import React from "react";
-import NotFoundPage404Img from "./img/NotFoundPage404.jpg";
+import NotFoundPage404Img from "../../icons/NotFoundPage404.jpg";
 
 export default function NotFoundPage404() {
     return (

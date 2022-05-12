@@ -29,6 +29,7 @@ import Chip from '@mui/material/Chip';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { propsLocationStateFound } from "../forbiddenNotFound/notFoundChecker";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -214,9 +215,7 @@ export default function AdventureProfile(props) {
     };
 
     useEffect(() => {
-        if (props.location.state === undefined || props.location.state === null) {
-            history.push("/notFoundPage");
-        } else {
+        if (propsLocationStateFound(props, history)) {
             getAdventureById(props.location.state.bookingEntityId).then(res => {
                 setAdventureData(res.data);
                 setLoading(false);

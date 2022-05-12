@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import '../App.css';
-import UserProfile from "./UserProfile";
-import EditUserProfile from "./EditUserProfile";
+import UserProfile from "./user/UserProfile";
+import EditUserProfile from "./user/EditUserProfile";
 import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 
 import ShowCottageProfile from "./cottage/ShowCottageProfile";
@@ -31,8 +31,8 @@ import ShowCottages from './entities_view/ShowCottages';
 import ShowAdventures from './entities_view/ShowAdventures';
 
 import CalendarForEntity from './calendar/CalendarForEntity';
-import NotFoundPage404 from './NotFoundPage404';
-import ForbiddenPage403 from './ForbiddenPage403';
+import NotFoundPage404 from './forbiddenNotFound/NotFoundPage404';
+import ForbiddenPage403 from './forbiddenNotFound/ForbiddenPage403';
 import NewReservation from './reservations/NewReservationPage';
 import ChangePassword from './ChangePassword';
 

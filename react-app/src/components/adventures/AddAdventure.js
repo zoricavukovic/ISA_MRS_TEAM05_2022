@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import { getAllPlaces } from "../../service/PlaceService.js";
 import { addNewAdventure } from "../../service/AdventureService.js";
 import { getToken, getCurrentUser } from '../../service/AuthService.js';
+import { userLoggedInAsInstructor } from "../../service/UserService.js";
 
 export default function AddAdventure() {
 
@@ -248,17 +249,13 @@ export default function AddAdventure() {
 
     }
     useEffect(() => {
-        if (getCurrentUser() === null || getCurrentUser() === undefined) {
-            history.push('/login');
-        }
-        else if (getCurrentUser().userType.name !== "ROLE_INSTRUCTOR") {
-            history.push('/forbiddenPage');
-        }
-        getAllPlaces()
+        if (userLoggedInAsInstructor(history)) {
+            getAllPlaces()
             .then(res => {
                 setPlaces(res.data);
                 setLoading(false);
-            })
+            })    
+        }
     }, [])
 
 

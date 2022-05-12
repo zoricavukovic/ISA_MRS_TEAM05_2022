@@ -1,7 +1,7 @@
 package com.example.BookingAppTeam05.controller.bookingEntities;
 
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
-import com.example.BookingAppTeam05.dto.ShipDTO;
+import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.entities.Ship;
