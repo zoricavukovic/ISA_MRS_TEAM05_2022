@@ -2,11 +2,11 @@ package com.example.BookingAppTeam05.controller;
 
 import javax.servlet.http.HttpServletResponse;
 import com.example.BookingAppTeam05.dto.JwtAuthenticationRequestDTO;
-import com.example.BookingAppTeam05.dto.UserDTO;
-import com.example.BookingAppTeam05.dto.UserRequestDTO;
-import com.example.BookingAppTeam05.dto.UserTokenStateDTO;
+import com.example.BookingAppTeam05.dto.users.UserDTO;
+import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
+import com.example.BookingAppTeam05.dto.users.UserTokenStateDTO;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.service.UserService;
+import com.example.BookingAppTeam05.service.users.UserService;
 import com.example.BookingAppTeam05.springSecurity.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,7 +62,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<User> addUser(@RequestBody UserRequestDTO userRequest) {
 
-        User existUser = this.userService.findByUsername(userRequest.getUsername());
+        User existUser = this.userService.findUserByUsername(userRequest.getUsername());
 
         if (existUser != null) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);

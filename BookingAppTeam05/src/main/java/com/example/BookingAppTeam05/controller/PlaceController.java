@@ -1,15 +1,11 @@
 package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.PlaceDTO;
-import com.example.BookingAppTeam05.dto.UserDTO;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.service.PlaceService;
-import com.example.BookingAppTeam05.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,9 +1,8 @@
 package com.example.BookingAppTeam05.dto;
 
+import com.example.BookingAppTeam05.dto.users.ShipOwnerDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Ship;
-import com.example.BookingAppTeam05.model.users.ShipOwner;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;

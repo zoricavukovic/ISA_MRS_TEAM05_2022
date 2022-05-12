@@ -1,11 +1,10 @@
 package com.example.BookingAppTeam05.dto;
 
+import com.example.BookingAppTeam05.dto.users.CottageOwnerDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Cottage;
-import com.example.BookingAppTeam05.model.entities.EntityType;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

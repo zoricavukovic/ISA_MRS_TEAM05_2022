@@ -6,16 +6,13 @@ import com.example.BookingAppTeam05.model.RatingService;
 import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.BookingEntityRepository;
+import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BookingEntityService {
@@ -43,7 +40,7 @@ public class BookingEntityService {
     }
 
     public List<SearchedBookingEntityDTO> getSearchedBookingEntitiesDTOsByOnwerId(Long id) {
-        User owner = userService.getUserById(id);
+        User owner = userService.findUserById(id);
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         switch (owner.getRole().getName()) {
             case "ROLE_COTTAGE_OWNER": {

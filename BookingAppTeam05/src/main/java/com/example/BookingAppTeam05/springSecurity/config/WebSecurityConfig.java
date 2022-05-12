@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.springSecurity.config;
 
-import com.example.BookingAppTeam05.service.CustomUserDetailsService;
+import com.example.BookingAppTeam05.service.users.CustomUserDetailsService;
 
 
 import com.example.BookingAppTeam05.springSecurity.auth.RestAuthenticationEntryPoint;
