@@ -8,6 +8,8 @@ import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.repository.*;
+import com.example.BookingAppTeam05.repository.entities.BookingEntityRepository;
+import com.example.BookingAppTeam05.repository.entities.CottageRepository;
 import com.example.BookingAppTeam05.repository.users.ClientRepository;
 import com.example.BookingAppTeam05.repository.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

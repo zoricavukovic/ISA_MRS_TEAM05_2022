@@ -7,6 +7,8 @@ import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.users.CottageOwner;
 import com.example.BookingAppTeam05.service.*;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
+import com.example.BookingAppTeam05.service.entities.CottageService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,16 +63,6 @@ public class CottageController {
         }
         cottageDTO.setPictures(cottage.getPictures());
         return new ResponseEntity<>(cottageDTO, HttpStatus.OK);
-    }
-    @GetMapping(value="/editQue/{cottageId}")
-    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<String> checkIfCanEdit(@PathVariable Long cottageId) {
-        Cottage cottage = cottageService.findCottageByCottageIdWithOwner(cottageId);
-        if (cottage == null) return new ResponseEntity<String>("Cottage for editing is not found.", HttpStatus.BAD_REQUEST);
-        if (cottageService.checkExistActiveReservations(cottageId)){
-            return new ResponseEntity<String>("Cannot edit cottage cause has reservations.", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Cottage can edit.", HttpStatus.OK);
     }
 
     @GetMapping(value="/owner/{id}")
@@ -152,6 +144,9 @@ public class CottageController {
     @PutMapping(value="/{id}", consumes = "application/json")
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<String> updateCottage(@Valid @RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
+        if (bookingEntityService.checkExistActiveReservationForEntityId(id))
+            return new ResponseEntity<>("Cant update cottage because there exist active reservations", HttpStatus.BAD_REQUEST);
+
         Cottage cottage = cottageService.getCottageById(id);
         if (cottage == null) return new ResponseEntity<>("Cant find cottage with id " + id + ".", HttpStatus.BAD_REQUEST);
         cottage.setName(cottageDTO.getName());
@@ -174,21 +169,8 @@ public class CottageController {
 
         cottageService.tryToEditCottageRulesOfConduct(cottageDTO, oldCottage, rules);
         cottage.setRulesOfConduct(rules);
-        cottageService.setNewImages(cottage, cottageDTO.getImages());
+        bookingEntityService.setNewImagesForBookingEntity(cottage, cottageDTO.getImages());
         cottage = cottageService.save(cottage);
         return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.OK);
-    }
-
-    @DeleteMapping(value="/{cottageId}/{confirmPass}")
-    @Transactional
-    @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<String> logicalDeleteCottageById(@PathVariable Long cottageId, @PathVariable String confirmPass){
-        Cottage cottage = cottageService.findCottageByCottageIdWithOwner(cottageId);
-        if (cottage == null) return new ResponseEntity<String>("Cottage for deleting is not found.", HttpStatus.BAD_REQUEST);
-        if (!cottage.getCottageOwner().getPassword().equals(confirmPass)) return new ResponseEntity<String>("Confirmation password is incorrect.", HttpStatus.BAD_REQUEST);
-        if (!cottageService.logicalDeleteCottageById(cottageId)){
-            return new ResponseEntity<String>("Cottage is not delete cause has reservations.", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Cottage is deleted.", HttpStatus.CREATED);
     }
 }

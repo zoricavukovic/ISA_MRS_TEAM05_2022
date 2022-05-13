@@ -5,7 +5,7 @@ import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.SimpleSearchForBookingEntityDTO;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.service.*;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,10 +58,6 @@ public class BookingEntityController {
     @PostMapping(value="/simpleSearch", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedBookingEntities(@RequestBody SimpleSearchForBookingEntityDTO s) {
         try {
-            System.out.println("usao");
-            System.out.println("--------------------------------");
-            System.out.println(s.getMinCostPerPerson());
-            System.out.println(s.getMaxCostPerPerson());
             List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOnwerId(s.getOwnerId());
             if (entities == null)
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -92,12 +88,7 @@ public class BookingEntityController {
         BookingEntity bookingEntity = bookingEntityService.getEntityById(entityId);
         if (bookingEntity == null)
             return new ResponseEntity<String>("Entity for deleting is not found.", HttpStatus.BAD_REQUEST);
-
         User user = bookingEntityService.getOwnerOfEntityId(entityId);
-        System.out.println("prava");
-        System.out.println(user.getPassword());
-        System.out.println("nova");
-        System.out.println(confirmPass);
         if (!userService.passwordIsCorrect(user, confirmPass))
             return new ResponseEntity<String>("Confirmation password is incorrect.", HttpStatus.BAD_REQUEST);
 

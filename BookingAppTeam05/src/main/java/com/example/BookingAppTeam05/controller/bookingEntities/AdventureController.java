@@ -1,15 +1,16 @@
 package com.example.BookingAppTeam05.controller.bookingEntities;
 
 import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
-import com.example.BookingAppTeam05.dto.NewAdventureDTO;
+import com.example.BookingAppTeam05.dto.entities.NewAdventureDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.model.Place;
-import com.example.BookingAppTeam05.service.AdventureService;
-import com.example.BookingAppTeam05.service.BookingEntityService;
+import com.example.BookingAppTeam05.service.entities.AdventureService;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.InstructorService;
 import com.example.BookingAppTeam05.service.PlaceService;
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -76,6 +77,9 @@ public class AdventureController {
     @Transactional
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> editAdventure(@RequestBody NewAdventureDTO newAdventureDTO, @PathVariable Long id) {
+        if (bookingEntityService.checkExistActiveReservationForEntityId(id))
+            return new ResponseEntity<>("Cant update adventure because there exist active reservations", HttpStatus.BAD_REQUEST);
+
         Place place = placeService.getPlaceById(newAdventureDTO.getPlaceId());
         if (place == null) {
             return new ResponseEntity<>("Cant find place with id: " + newAdventureDTO.getPlaceId(), HttpStatus.BAD_REQUEST);
@@ -93,7 +97,7 @@ public class AdventureController {
     }
 
     @GetMapping(value="/view", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SearchedBookingEntityDTO>> getShipsForView() {
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getAdventuresForView() {
         List<Adventure> adventures = adventureService.findAll();
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         for (Adventure adventure : adventures) {

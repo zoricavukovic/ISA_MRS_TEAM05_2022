@@ -4,17 +4,17 @@ import UserProfile from "./user/UserProfile";
 import EditUserProfile from "./user/EditUserProfile";
 import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 
-import ShowCottageProfile from "./cottage/ShowCottageProfile";
-import AddCottage from "./cottage/AddCottage";
-import EditCottage from "./cottage/EditCottage";
+import ShowCottageProfile from "./booking_entities/cottages/ShowCottageProfile";
+import AddCottage from "./booking_entities/cottages/AddCottage";
+import EditCottage from "./booking_entities/cottages/EditCottage";
 
-import ShowShipProfile from "./ships/ShowShipProfile";
-import AddShip from "./ships/AddShip";
-import EditShip from "./ships/EditShip";
+import ShowShipProfile from "./booking_entities/ships/ShowShipProfile";
+import AddShip from "./booking_entities/ships/AddShip";
+import EditShip from "./booking_entities/ships/EditShip";
 
-import AdventureProfile from './adventures/AdventureProfile';
-import AddAdventure from './adventures/AddAdventure';
-import EditAdventure from './adventures/EditAdventure';
+import AdventureProfile from './booking_entities/adventures/AdventureProfile';
+import AddAdventure from './booking_entities/adventures/AddAdventure';
+import EditAdventure from './booking_entities/adventures/EditAdventure';
 
 import Sidebar from "./Sidebar";
 import Login from './Login';

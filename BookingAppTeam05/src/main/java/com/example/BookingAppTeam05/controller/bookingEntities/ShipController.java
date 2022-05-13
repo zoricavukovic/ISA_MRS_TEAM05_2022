@@ -7,6 +7,8 @@ import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.ShipOwner;
 import com.example.BookingAppTeam05.service.*;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
+import com.example.BookingAppTeam05.service.entities.ShipService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -98,15 +100,6 @@ public class ShipController {
         return new ResponseEntity<>(shipDTO, HttpStatus.OK);
     }
 
-    public String checkIfCanEdit(Long shipId) {
-        Ship ship = shipService.findShipByShipIdWithOwner(shipId);
-        if (ship == null) return "Ship for editing is not found.";
-        if (shipService.checkExistActiveReservations(shipId)){
-            return "Cannot edit ship cause has reservations.";
-        }
-        return "OK";
-    }
-
     @GetMapping(value="/owner/{id}")
     public ResponseEntity<List<ShipDTO>> getShipByOwnerId(@PathVariable Long id) {
         List<Ship> shipFound = shipService.getShipsByOwnerId(id);
@@ -125,11 +118,9 @@ public class ShipController {
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ResponseEntity<String> updateCottage(@RequestBody ShipDTO shipDTO, @PathVariable Long id) {
+        if (bookingEntityService.checkExistActiveReservationForEntityId(id))
+            return new ResponseEntity<>("Cant update ship because there exist active reservations", HttpStatus.BAD_REQUEST);
 
-        String editable = checkIfCanEdit(id);
-        if (!editable.equals("OK")){
-            return new ResponseEntity<>(editable, HttpStatus.BAD_REQUEST);
-        }
         Ship ship = shipService.getShipById(id);
         if (ship == null) return new ResponseEntity<>("Cant find ship with id " + id + ".", HttpStatus.BAD_REQUEST);
         ship.setName(shipDTO.getName());
@@ -160,9 +151,7 @@ public class ShipController {
         ship.setNavigationalEquipment(navigationEquipments);
         Set<FishingEquipment> fishingEquipment = fishingEquipmentService.createEquipmentFromDTO(shipDTO.getFishingEquipment());
         ship.setFishingEquipment(fishingEquipment);
-
-        shipService.setNewImages(ship, shipDTO.getImages());
-
+        bookingEntityService.setNewImagesForBookingEntity(ship, shipDTO.getImages());
         ship = shipService.save(ship);
         return new ResponseEntity<>(ship.getId().toString(), HttpStatus.OK);
     }

@@ -4,6 +4,7 @@ import com.example.BookingAppTeam05.dto.CalendarEntryDTO;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
