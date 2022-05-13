@@ -104,7 +104,7 @@ VALUES
 (nextval('entities_id_gen'), 'adresa adv 2', 20, 'ADVENTURE', 'fishing adventure2', 'promo desc adv 2', 24, 4, 'short bio adv 2', 13, false),
 (nextval('entities_id_gen'), 'adresa adv 3', 20, 'ADVENTURE', 'fishing adventure3', 'promo desc adv 3', 24, 2, 'short bio adv 3', 13, false),
 (nextval('entities_id_gen'), 'adresa adv 4', 20, 'ADVENTURE', 'fishing adventure4', 'promo desc adv 4', 25, 2, 'short bio adv 4', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 9, 2, 'short bio adv 5', 14, false);
+(nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 9, 2, 'short bio adv 5', 13, false);
 
 -- rooms
 INSERT INTO rooms (num_of_beds,room_num,cottage_id, deleted)

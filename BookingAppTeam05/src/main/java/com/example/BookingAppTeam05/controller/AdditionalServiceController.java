@@ -1,11 +1,7 @@
 package com.example.BookingAppTeam05.controller;
 
-import com.example.BookingAppTeam05.dto.BookingEntityDTO;
-import com.example.BookingAppTeam05.dto.ClientDTO;
 import com.example.BookingAppTeam05.dto.NewAdditionalServiceDTO;
-import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.model.AdditionalService;
-import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.service.AdditionalServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

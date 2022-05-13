@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.dto.BookingEntityDTO;
+import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
@@ -8,6 +8,10 @@ import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.repository.*;
+import com.example.BookingAppTeam05.repository.entities.BookingEntityRepository;
+import com.example.BookingAppTeam05.repository.entities.CottageRepository;
+import com.example.BookingAppTeam05.repository.users.ClientRepository;
+import com.example.BookingAppTeam05.repository.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +106,7 @@ public class ReservationService {
             List<Long> subscribersIds = subscriberRepository.findAllSubscribersForEntityId(res.getBookingEntity().getId());
             List<Client> subscribers = new ArrayList<>();
             for (Long s: subscribersIds){
-                Client client = (Client) userRepository.getUserById(s);
+                Client client = (Client) userRepository.findUserById(s);
                 subscribers.add(client);
             }
             if (sendMail(res, subscribers).equals("error")) return null;
