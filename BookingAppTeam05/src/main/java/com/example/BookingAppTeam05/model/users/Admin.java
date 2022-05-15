@@ -28,4 +28,12 @@ public class Admin extends User {
 
     public Admin() {
     }
+
+    public Admin(String email, String firstName, String lastName, String address, String phoneNumber, String password, boolean notYetActivated, Place place, Role role) {
+        super(email, firstName, lastName, address, phoneNumber, password, notYetActivated, place, role);
+        this.passwordChanged = false;
+        this.setDeleted(false);
+        this.setLoyaltyPoints(0);
+        this.setPlace(place);
+    }
 }

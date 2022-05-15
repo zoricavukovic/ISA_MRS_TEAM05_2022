@@ -24,7 +24,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { ContentPasteOffSharp } from "@mui/icons-material";
+import addNewAdmin from "../../service/AdminService";
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 
 export default function AddAdmin() {
@@ -32,13 +34,19 @@ export default function AddAdmin() {
     const history = useHistory();
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
 
+
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
+
+
     const [hiddenEmailAlreadyExistError, setHiddenEmailAlreadyExistError] = useState("none");
 
     //----------------password-----------------------/
     const newPassword = useRef({});
     newPassword.current = watch("newPassword", "");
 
-    const [showNewPassword, setShowNewPassword] = useState(false); 
+    const [showNewPassword, setShowNewPassword] = useState(false);
 
     const handleClickShowNewPassword = () => {
         setShowNewPassword(!showNewPassword);
@@ -120,10 +128,27 @@ export default function AddAdmin() {
         if (!checkPlaceSelected() || !checkPhoneSelected() || emailAddressAlreadyExist(data.email))
             return;
 
-        console.log(data);
-        console.log(phoneValue);
-        console.log(newPassword);
-        console.log(selectedPlaceId);
+        let newAdmin = {
+            email: data.email,
+            name: data.name,
+            surname: data.surname,
+            phoneNumber: phoneValue,
+            address: data.address,
+            placeId: selectedPlaceId,
+            password: data.newPassword,
+            passwordChanged: false
+        }
+        addNewAdmin(newAdmin)
+            .then(res => {
+                setTypeAlert("success");
+                setAlertMessage(res.data);
+                setOpenAlert(true);
+            })
+            .catch(err => {
+                setTypeAlert("error");
+                setAlertMessage(err.response.data);
+                setOpenAlert(true);
+            });
     }
 
 
@@ -329,6 +354,11 @@ export default function AddAdmin() {
                             </Button>
 
                         </Box>
+                        <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleClose}>
+                            <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
+                                {alertMessage}
+                            </Alert>
+                        </Snackbar>
                     </Box>
                 </DialogContent>
 

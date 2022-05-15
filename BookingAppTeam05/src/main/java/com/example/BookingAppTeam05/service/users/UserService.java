@@ -45,4 +45,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+
+    public String getHashedNewUserPassword(String password) {
+        return passwordEncoder.encode(password);
+    }
 }

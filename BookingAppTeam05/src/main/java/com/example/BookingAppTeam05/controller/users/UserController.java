@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping(value="/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
         User u = userService.findUserById(id);
         if (u == null)
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PutMapping("/updateUser/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO)  {
         User user = userService.findUserById(userId);
 
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE)
-    //@PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
         User user = userService.findUserById(changePasswordDTO.getId());
         if (userService.passwordIsCorrect(user, changePasswordDTO.getNewPassword()))

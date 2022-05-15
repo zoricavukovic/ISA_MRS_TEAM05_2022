@@ -36,6 +36,7 @@ import ForbiddenPage403 from './forbiddenNotFound/ForbiddenPage403';
 import NewReservation from './reservations/NewReservationPage';
 import ChangePassword from './ChangePassword';
 import AddAdmin from './admin/AddAdmin';
+import AdminHomePage from './admin/AdminHomePage';
 
 
 
@@ -100,6 +101,7 @@ function App() {
 
                     <Route path="/changePassword" component={ChangePassword} />
                     <Route path="/addAdmin" component={AddAdmin} />
+                    <Route path="/adminHomePage" component={AdminHomePage} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>
