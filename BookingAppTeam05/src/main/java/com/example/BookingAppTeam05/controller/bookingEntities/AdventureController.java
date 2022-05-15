@@ -10,7 +10,6 @@ import com.example.BookingAppTeam05.service.entities.AdventureService;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.InstructorService;
 import com.example.BookingAppTeam05.service.PlaceService;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

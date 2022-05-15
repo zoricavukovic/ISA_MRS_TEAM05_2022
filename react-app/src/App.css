@@ -1,4 +1,4 @@
-/* .paginationBttns{
+.paginationBttns{
   width: 80%;
   height: 30px;
   list-style: none;
@@ -24,6 +24,6 @@
 .paginationActive a {
   color:aliceblue;
   background-color:  rgb(5, 30, 52);
-} */
+} 
 
 

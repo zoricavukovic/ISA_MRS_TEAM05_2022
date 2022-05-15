@@ -15,7 +15,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findAllActiveReservationsForBookingEntity(Long entityOwner);
 
     @Query(value="select distinct r from Reservation r left join fetch r.bookingEntity b left join fetch r.client c where r.bookingEntity.id=?1 and r.fastReservation=false")
-    List<Reservation> getReservationsByCottageId(Long cottageId);
+    List<Reservation> getReservationsByEntityId(Long cottageId);
+
+    @Query(value="select distinct r from Reservation r left join fetch r.bookingEntity b left join fetch r.client c where r.id=?1")
+    Reservation getReservationById(Long id);
 
     @Query(value="select distinct r from Reservation  r left join fetch r.client c where r.bookingEntity.id=?1 and r.canceled=false and r.fastReservation=false")
     List<Reservation> findAllReservationsWithClientsForEntityId(Long id);

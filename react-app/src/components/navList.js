@@ -129,7 +129,7 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/showReservationsOwner'
   }
 ]
 
@@ -157,7 +157,7 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/showReservationsOwner'
   }
 ]
 

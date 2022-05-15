@@ -56,7 +56,6 @@ export default function ReservedBookingEntityDetail(props) {
         }
         getCottageById(props.reservation.bookingEntity.id).then(res => {
             setBookingEntity(res.data);
-            console.log("98456473482380573402375836529304257849");
             console.log(res.data);
             let labelRules = [];
             for (let rule of res.data.rulesOfConduct){
@@ -78,7 +77,7 @@ export default function ReservedBookingEntityDetail(props) {
     if (isLoading) { return <div className="App"><CircularProgress /></div> }
   return (
 
-    <Grid button onClick={showBookingEntity} textAlign="left" style={{margin:"2%"}} sx={{ width: "100%"}}>
+    <Grid button onClick={showBookingEntity} textAlign="left" sx={{ width: "100%"}}>
     <Grid item xs={12} md={6}>
             <Card sx={{display: 'flex'}}>
             {bookingEntity.pictures.length === 0 ? (
