@@ -1,7 +1,7 @@
 import api from "./baseApi";
 
-export function isReportedResByReservationId(reservationId) {
-    return api.get('/reports/reported/' + reservationId)
+export function getReportByReservationId(reservationId) {
+    return api.get('/reports/' + reservationId)
 }
 
 export function addReport(report) {

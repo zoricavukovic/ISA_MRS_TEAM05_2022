@@ -1,5 +1,7 @@
 package com.example.BookingAppTeam05.dto;
 
+import com.example.BookingAppTeam05.model.Report;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -13,14 +15,32 @@ public class ReportDTO {
     @NotNull
     private Long reservationId;
 
+    private boolean processed;
+
     public ReportDTO() {
     }
 
+    public ReportDTO(boolean clientCome, String comment, boolean reward, Long reservationId, boolean processed) {
+        this.clientCome = clientCome;
+        this.comment = comment;
+        this.reward = reward;
+        this.reservationId = reservationId;
+        this.processed = processed;
+    }
     public ReportDTO(boolean clientCome, String comment, boolean reward, Long reservationId) {
         this.clientCome = clientCome;
         this.comment = comment;
         this.reward = reward;
         this.reservationId = reservationId;
+        this.processed = false;
+    }
+
+    public ReportDTO(Report report) {
+        this.clientCome = report.isComeClient();
+        this.comment = report.getComment();
+        this.reward = report.isPenalizeClient();
+        this.reservationId = report.getReservation().getId();
+        this.processed = report.isProcessed();
     }
 
     public boolean isClientCome() {
@@ -53,5 +73,13 @@ public class ReportDTO {
 
     public void setReservationId(Long reservationId) {
         this.reservationId = reservationId;
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 }
