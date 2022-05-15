@@ -39,6 +39,7 @@ INSERT INTO ROLE (name) VALUES ('ROLE_CLIENT');
 INSERT INTO ROLE (name) VALUES ('ROLE_COTTAGE_OWNER');
 INSERT INTO ROLE (name) VALUES ('ROLE_SHIP_OWNER');
 INSERT INTO ROLE (name) VALUES ('ROLE_INSTRUCTOR');
+INSERT INTO ROLE (name) VALUES ('ROLE_SUPER_ADMIN');
 
 INSERT INTO fishing_equipments(equipment_name) VALUES ('Fishing rod');
 INSERT INTO fishing_equipments(equipment_name) VALUES ('Bait');
@@ -67,11 +68,11 @@ VALUES
 (nextval('users_id_gen'), 'False','Ap #497-623 Interdum Road','2004-05-21','bookingapp05mzr++minaMinic@gmail.com','Mina','Minic',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',10,3, 'False', 2);
 
 
-INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
+INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, password_changed)
 VALUES
-(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++admin1@gmail.com', 'Admin1', 'Admin1', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 1),
-(nextval('users_id_gen'), 'False', 'adresa2', '1971-12-20', 'bookingapp05mzr++admin2@gmail.com', 'Admin2', 'Admin2', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 1),
-(nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'bookingapp05mzr++admin3@gmail.com', 'Admin3', 'Admin3', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 23, 'False', 1);
+(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++admin1@gmail.com', 'Admin1', 'Admin1', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 1, true),
+(nextval('users_id_gen'), 'False', 'adresa2', '1971-12-20', 'bookingapp05mzr++admin2@gmail.com', 'Admin2', 'Admin2', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 1, true),
+(nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'bookingapp05mzr++admin3@gmail.com', 'Admin3', 'Admin3', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 23, 'False', 1, true);
 
 
 INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
@@ -105,6 +106,10 @@ VALUES
 (nextval('entities_id_gen'), 'adresa adv 3', 20, 'ADVENTURE', 'fishing adventure3', 'promo desc adv 3', 24, 2, 'short bio adv 3', 13, false),
 (nextval('entities_id_gen'), 'adresa adv 4', 20, 'ADVENTURE', 'fishing adventure4', 'promo desc adv 4', 25, 2, 'short bio adv 4', 13, false),
 (nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 9, 2, 'short bio adv 5', 13, false);
+
+INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, password_changed)
+VALUES
+(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++superadmin@gmail.com', 'SuperA', 'SuperA', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 6, true);
 
 -- rooms
 INSERT INTO rooms (num_of_beds,room_num,cottage_id, deleted)

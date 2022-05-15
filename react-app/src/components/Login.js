@@ -37,6 +37,15 @@ export default function Login({setCurrentUser}) {
             else if (currentUser.userType.name === "ROLE_INSTRUCTOR"){
                 history.push("/adventures");
             }
+            else if (currentUser.userType.name === "ROLE_SUPER_ADMIN"){
+                history.push("/adminHomePage");
+            }
+            else if (currentUser.userType.name === "ROLE_ADMIN") {
+                if (currentUser.passwordChanged === false)
+                    history.push("/changePassword");
+                else
+                    history.push("/adminHomePage");
+            }
             else {
                 history.push("/");
             }

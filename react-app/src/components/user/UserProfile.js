@@ -51,7 +51,8 @@ export default function UserProfile(props) {
         if (userLoggedIn(history)) {
             getUserById(getCurrentUser().id).then(res => {
                 setUserData(res.data);
-                setDateOfBirth(new Date(res.data.dateOfBirth[0], res.data.dateOfBirth[1] - 1, res.data.dateOfBirth[2]));
+                if (res.data.dateOfBirth !== undefined && res.data.dateOfBirth !== null && res.data.dateOfBirth !== '')
+                    setDateOfBirth(new Date(res.data.dateOfBirth[0], res.data.dateOfBirth[1] - 1, res.data.dateOfBirth[2]));
                 setLoading(false);
             })
         }
@@ -221,18 +222,34 @@ export default function UserProfile(props) {
                                 readOnly: true,
                             }}
                         />
-                        <TextField
-                            id="outlined-read-only-input"
-                            label="Date Of Birth"
-                            defaultValue={new Intl.DateTimeFormat("en-GB", {
-                                year: "numeric",
-                                month: "long",
-                                day: "2-digit"
-                            }).format(dateOfBirth)}
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />
+                        {
+                            dateOfBirth === undefined || dateOfBirth === null || dateOfBirth === '' ?
+                                (
+                                    <TextField
+                                        id="outlined-read-only-input"
+                                        label="Date Of Birth"
+                                        defaultValue={""}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                    />
+                                ) :
+                                (
+                                    <TextField
+                                        id="outlined-read-only-input"
+                                        label="Date Of Birth"
+
+                                        defaultValue={new Intl.DateTimeFormat("en-GB", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "2-digit"
+                                        }).format(dateOfBirth)}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                    />
+                                )
+                        }
                         <TextField
                             id="outlined-read-only-input"
                             label="Location"
