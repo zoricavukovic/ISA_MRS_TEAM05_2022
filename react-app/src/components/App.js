@@ -35,6 +35,9 @@ import NotFoundPage404 from './forbiddenNotFound/NotFoundPage404';
 import ForbiddenPage403 from './forbiddenNotFound/ForbiddenPage403';
 import NewReservation from './reservations/NewReservationPage';
 import ChangePassword from './ChangePassword';
+import AddAdmin from './admin/AddAdmin';
+
+
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -96,6 +99,7 @@ function App() {
                     <Route path="/forbiddenPage" component={ForbiddenPage403} />
 
                     <Route path="/changePassword" component={ChangePassword} />
+                    <Route path="/addAdmin" component={AddAdmin} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>

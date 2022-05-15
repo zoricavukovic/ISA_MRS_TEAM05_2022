@@ -31,6 +31,11 @@ export function userLoggedIn(history) {
     return true;
 }
 
+export function checkIfEmailAlreadyExist(email) {
+    return api.get('/users/checkIfEmailAlreadyExist/' + email);
+}
+
+
 function userLoggedInWithRole(history, role) {
     if (userLoggedIn(history)) {
         if (getCurrentUser().userType.name !== role) {
@@ -55,4 +60,7 @@ export function userLoggedInAsAdmin(history) {
 }
 export function userLoggedInAsClient(history) {
     return userLoggedInWithRole(history, "ROLE_CLIENT");
+}
+export function userLoggedInAsSuperAdmin(history) {
+    return userLoggedInWithRole(history, "ROLE_SUPER_ADMIN");
 }

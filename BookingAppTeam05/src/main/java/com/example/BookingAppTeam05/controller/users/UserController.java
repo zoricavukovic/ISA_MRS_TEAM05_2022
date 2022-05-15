@@ -3,6 +3,7 @@ package com.example.BookingAppTeam05.controller.users;
 import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.dto.users.*;
 import com.example.BookingAppTeam05.model.*;
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.PlaceService;
 import com.example.BookingAppTeam05.service.users.UserService;
@@ -79,6 +80,15 @@ public class UserController {
         else {
             return new ResponseEntity<String>("Entered password is incorrect", HttpStatus.BAD_REQUEST);
         }
+    }
+
+
+    @GetMapping(value="/checkIfEmailAlreadyExist/{email}")
+    public ResponseEntity<String> checkIfCanEdit(@PathVariable String email) {
+        User user = userService.findUserByUsername(email);
+        if (user != null)
+            return new ResponseEntity<String>("This email is already taken.", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Email is unique.", HttpStatus.OK);
     }
 }
 
