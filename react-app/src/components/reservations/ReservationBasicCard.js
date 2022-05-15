@@ -13,29 +13,38 @@ import Divider from '@mui/material/Divider';
 import { CircularProgress} from "@mui/material";
 import { getPricelistByEntityId } from '../../service/PricelistService';
 import { getAdditionalServicesByReservationId } from '../../service/AdditionalService';
-import { addReport, isReportedResByReservationId } from '../../service/ReportService';
+import { addReport, getReportByReservationId } from '../../service/ReportService';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import Checkbox from '@mui/material/Checkbox';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import InfoIcon from '@mui/icons-material/Info';
+import RecommendIcon from '@mui/icons-material/Recommend';
 
 export default function ImgReservation(props) {
     const history = useHistory();
     const [open, setOpen] = React.useState(false);
+    const [openShowReport, setOpenShowReport] = React.useState(false);
     const [isLoading, setLoading] = React.useState(true);
     const [isLoadingAddServices, setLoadingAddServices] = React.useState(true);
     const [isLoadingReport, setLoadingReport] = React.useState(true);
     const [reservationCost, setReservationCost] = React.useState(0);
     const [additionalServices, setAdditionalServices] = React.useState({});
     const [pricelist, setPricelist] = useState([]);
+
+    ///////////////////////////////////////////////////
     const [reported, setReported] = useState();
+    const [report, setReport] = useState();
+    ////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////
     const [checkedCome, setCheckedCome] = React.useState(false);
     const [checkedReward, setCheckedReward] = React.useState(false);
     const [reason, setReason] = React.useState("");
+    const [processed, setProcessed] = React.useState("");
     ///////////////////////////////////////////////////////////////////
 
     const [dates, setDates] = React.useState({
@@ -55,6 +64,13 @@ export default function ImgReservation(props) {
       }
   
       setOpen(false);
+    };
+    const handleCloseShowReport = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setOpenShowReport(false);
     };
 
     const handleChangeCome = (event) => {
@@ -77,7 +93,10 @@ export default function ImgReservation(props) {
     };
     function createReport(){
       setOpen(true);
-  };
+    };
+    function showReport(){
+      setOpenShowReport(true);
+    };
 
     function handleCreateReport(){
         let report = {
@@ -122,14 +141,23 @@ export default function ImgReservation(props) {
                 }
               }
               setReservationCost(updatedResCost);
-              isReportedResByReservationId(props.reservation.id).then(reported => {
-                setReported(reported.data);
+              getReportByReservationId(props.reservation.id).then(reported => {
+                setReported(true);
+                setReport(reported.data);
+                setLoadingAddServices(false);
+                setCheckedCome(reported.data.clientCome);
+                setCheckedReward(reported.data.reward);
+                setReason(reported.data.comment);
+                setProcessed(reported.data.processed);
+                setLoadingReport(false);
+                setLoading(false);
+              }).catch(error => {
+                setReported(false);
                 setLoadingAddServices(false);
                 setLoadingReport(false);
                 setLoading(false);
               });
-             
-              
+               
         });
             
         });
@@ -139,6 +167,9 @@ export default function ImgReservation(props) {
   return (
     <Card  style={{marginRight:"2%", marginLeft:"2%", marginBottom:"2%"}} sx={{ maxWidth: 400, minWidth:250}}>
       <CardContent>
+
+        
+        
       <Dialog open={open} onClose={handleClose} sx={{minWidth:500}}>
       <DialogTitle>Create Report</DialogTitle>
       <DialogContent>
@@ -197,6 +228,7 @@ export default function ImgReservation(props) {
             <h4 style={{color:'rgb(5, 30, 52)'}}>Did the clients come?
             <Checkbox
               checked={checkedCome}
+              defaultChecked={checkedCome}
               onChange={handleChangeCome}
               inputProps={{ 'aria-label': 'controlled' }}
             />
@@ -231,6 +263,101 @@ export default function ImgReservation(props) {
         <Button onClick={handleCreateReport}>Save</Button>
       </DialogActions>
     </Dialog>
+
+
+    <Dialog open={openShowReport} onClose={handleClose} sx={{minWidth:500}}>
+      <DialogTitle>Show Report Details</DialogTitle>
+      <DialogContent>
+      <Card style={{color: 'rgb(5, 30, 52)', backgroundColor:"aliceblue", margin:"2%"}}>
+            <table style={{whiteSpace: "nowrap"}}>
+                <tr>
+                    <th><h4>{props.reservation.bookingEntity.name}</h4></th>
+                    <th style={{paddingLeft:"3%"}}>€ {reservationCost} / {props.reservation.numOfDays} nights</th>
+                </tr>
+                
+            </table>
+      </Card>
+      <table style={{textAlign:"left"}} style={{marginLeft:"18%"}}>
+
+            <tr>
+                <th style={{color: 'rgb(5, 30, 52)', backgroundColor:"aliceblue", padding:"3%", fontWeight:"normal"}}>Check-in</th>
+                <th style={{color: 'rgb(5, 30, 52)', backgroundColor:"aliceblue", padding:"3%", fontWeight:"normal"}}>Check-out</th>
+            </tr>
+            <tr>
+                <td variant="h6" style={{color: 'rgb(5, 30, 52)', borderRight: "solid 2px aliceblue", paddingBottom:"2%", fontWeight:"bold"}}>{
+                new Intl.DateTimeFormat("en-GB", {
+                    year: "numeric",
+                    month: "long",
+                    day: "2-digit"
+                  }).format(dates.startDate)
+                  }
+                </td>
+                <td variant="h6" style={{color: 'rgb(5, 30, 52)', paddingBottom:"2%", fontWeight:"bold"}}>{
+                new Intl.DateTimeFormat("en-GB", {
+                    year: "numeric",
+                    month: "long",
+                    day: "2-digit"
+                  }).format(dates.endDate)
+                  }
+                </td>
+            </tr>
+            <tr>
+                <td style={{color: 'rgb(5, 30, 52)', borderRight: "solid 2px aliceblue", fontWeight:"lighter"}}>{
+                    new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit'}).format(dates.startDate)
+                
+                  }
+                </td>
+                <td style={{color: 'rgb(5, 30, 52)', padding:"0%", fontWeight:"lighter"}}>{
+                new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit'}).format(dates.endDate)
+                
+                  }
+                </td>
+            </tr>
+        </table>
+        
+       <Divider style={{margin:"2%"}}></Divider>
+    
+        
+        <Typography variant="body2" style={{backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.1%', paddingTop: '0.1%', margin: '1%', minWidth:'350px'}}>
+            <h3 style={{color:'rgb(5, 30, 52)'}}>Please create reservation report</h3>
+            <h4 style={{color:'rgb(5, 30, 52)'}}>Did the clients come?
+            <Checkbox
+              defaultChecked={checkedCome}
+              disabled
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            </h4>
+            <h4 style={{color:'rgb(5, 30, 52)'}}>Notes for administrator to see
+            </h4>
+            <TextareaAutosize
+              aria-label="minimum height"
+              minRows={3}
+              disabled
+              defaultValue={reason}
+              name="reason"
+              style={{ width: 200 }}
+            />
+            <h4 style={{color:'rgb(5, 30, 52)'}}>Reward for clients
+            <Checkbox
+              defaultChecked = {checkedReward}
+              disabled
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            </h4>
+            {processed === "true" ? (
+               <h4 style={{color:'rgb(5, 30, 52)', marginBottom:'1%'}}> <RecommendIcon />Report approved by admin 
+               </h4>
+            ):(<h4 style={{color:'rgb(5, 30, 52)', marginBottom:'1%'}}>Report not approved by admin
+            </h4>)}
+           
+        </Typography>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={handleCloseShowReport}>Close</Button>
+      </DialogActions>
+    </Dialog>
+
         <Typography style={{textAlign:"left", color: 'rgb(5, 30, 52)'}} gutterBottom variant="h6" component="div">
           Reservation Details
         </Typography>
@@ -311,15 +438,21 @@ export default function ImgReservation(props) {
       </CardContent>
       <CardActions>
       {props.details === "true" ? (
-          <div>
+          <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row" }}>
               <Button size="small" onClick={showReservation}><ReadMoreIcon fontSize="large" style={{margin:"5px"}}/> Details</Button>
-              {console.log((new Date(Date.now())).getFullYear())}
-              {reported === true || dates.endDate.getFullYear() > new Date(Date.now()).getFullYear() || (dates.endDate.getFullYear() == new Date(Date.now()).getFullYear() && (dates.endDate.getMonth()+1) > (new Date(Date.now()).getMonth()+1) || (dates.endDate.getFullYear() == new Date(Date.now()).getFullYear() && (dates.endDate.getMonth()+1) == (new Date(Date.now()).getMonth()+1) && dates.endDate.getUTCDate() > new Date(Date.now()).getUTCDate())) ? (<div>
-
+              
+              {reported === true ? (<div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row" }}> 
+                <Button size="small" onClick={showReport}><InfoIcon fontSize="medium" style={{margin:"5px"}}/> Report</Button>
+              
               </div>):(
-                <Button size="small" onClick={createReport}><ReadMoreIcon fontSize="large" style={{margin:"5px"}}/> Report</Button>
+                <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row" }}>
+                  {dates.endDate.getFullYear() > new Date(Date.now()).getFullYear() || (dates.endDate.getFullYear() == new Date(Date.now()).getFullYear() && (dates.endDate.getMonth()+1) > (new Date(Date.now()).getMonth()+1) || (dates.endDate.getFullYear() == new Date(Date.now()).getFullYear() && (dates.endDate.getMonth()+1) == (new Date(Date.now()).getMonth()+1) && dates.endDate.getUTCDate() > new Date(Date.now()).getUTCDate())) ? (
+                  <div></div>):(
+                      <Button size="small" onClick={createReport}><AddTaskIcon fontSize="medium" style={{margin:"5px"}}/> Report</Button>
+              
+                  )} </div>
               )}
-          </div>
+   </div>
            
           ):(<div>
             {additionalServices.length === 0 ? (

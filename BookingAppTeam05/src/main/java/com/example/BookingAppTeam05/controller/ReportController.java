@@ -26,12 +26,13 @@ public class ReportController {
     public ReportController(ReportService reportService){
         this.reportService = reportService;
     }
-//    @GetMapping(value="/{reservationId}")
-//    public ResponseEntity<ReportDTO> getReportByReservationId(@PathVariable Long reservationId) {
-//        Report report = reportService.getReportByReservationId(reservationId);
-//
-//        return ResponseEntity.ok(new ReportDTO());
-//    }
+    @GetMapping(value="/{reservationId}")
+    public ResponseEntity<ReportDTO> getReportByReservationId(@PathVariable Long reservationId) {
+        ReportDTO reportDTO = reportService.getReportByReservationId(reservationId);
+        if (reportDTO == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(reportDTO);
+    }
 
     @GetMapping(value="/reported/{reservationId}")
     public ResponseEntity<Boolean> isReportedResByReservationId(@PathVariable Long reservationId) {
