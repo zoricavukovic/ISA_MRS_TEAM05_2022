@@ -15,16 +15,20 @@ public class Report {
    @Column(name="penalizeClient", nullable = false)
    private boolean penalizeClient;
 
+   @Column(name="comeClient", nullable = false)
+   private boolean comeClient;
+
    @Column(name="processed", nullable = false)
    private boolean processed;
 
    @OneToOne(fetch = FetchType.LAZY)
    public Reservation reservation;
 
-   public Report(String comment, boolean penalizeClient, boolean processed, Reservation reservation) {
+   public Report(String comment, boolean penalizeClient, boolean processed, boolean comeClient, Reservation reservation) {
       this.comment = comment;
       this.penalizeClient = penalizeClient;
       this.processed = processed;
+      this.comeClient = comeClient;
       this.reservation = reservation;
    }
 
@@ -44,6 +48,14 @@ public class Report {
 
    public boolean isProcessed() {
       return processed;
+   }
+
+   public boolean isComeClient() {
+      return comeClient;
+   }
+
+   public void setComeClient(boolean comeClient) {
+      this.comeClient = comeClient;
    }
 
    public Reservation getReservation() {

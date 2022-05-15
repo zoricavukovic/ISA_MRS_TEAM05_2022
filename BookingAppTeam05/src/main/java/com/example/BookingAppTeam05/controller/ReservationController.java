@@ -32,9 +32,9 @@ public class ReservationController {
         this.cottageService = cottageService;
     }
 
-    @GetMapping(value="/owner/{ownerId}")
-    public ResponseEntity<List<ReservationDTO>> getReservationsByCottageOwnerId(@PathVariable Long ownerId) {
-        List<ReservationDTO> reservationDTOs = getReservationDTOS(ownerId);
+    @GetMapping(value="/owner/{ownerId}/{type}")
+    public ResponseEntity<List<ReservationDTO>> getReservationsByOwnerId(@PathVariable Long ownerId,@PathVariable String type) {
+        List<ReservationDTO> reservationDTOs = getReservationDTOS(ownerId, type);
         return ResponseEntity.ok(reservationDTOs);
     }
 
@@ -44,24 +44,17 @@ public class ReservationController {
         return ResponseEntity.ok(reservationDTOs);
     }
 
-    @GetMapping(value="/owner/{ownerId}/filter/{filter}")
-    public ResponseEntity<List<ReservationDTO>> getReservationsByCottageOwnerId(@PathVariable Long ownerId, @PathVariable String filter) {
+    @GetMapping(value="/owner/{ownerId}/{type}/filter/name/{name}/time/{time}")
+    public ResponseEntity<List<ReservationDTO>> filterReservationsByOwnerId(@PathVariable Long ownerId, @PathVariable String type, @PathVariable String name, @PathVariable String time) {
 
-        List<ReservationDTO> reservationDTOs = getReservationDTOS(ownerId);
-        List<ReservationDTO> filteredReservationDTOs = new ArrayList<>();
-        for (ReservationDTO reservationDTO: reservationDTOs){
-            BookingEntityDTO bookingEntity = reservationDTO.getBookingEntity();
-            if (bookingEntity!= null){
-                if (bookingEntity.getName().equals(filter)){
-                    filteredReservationDTOs.add(reservationDTO);
-                }
-            }
-        }
+        List<ReservationDTO> reservationDTOs = getReservationDTOS(ownerId, type);
+        List<ReservationDTO> filteredReservationDTOs = reservationService.filterReservation(reservationDTOs, name, time);
+
         return ResponseEntity.ok(filteredReservationDTOs);
     }
 
-    private List<ReservationDTO> getReservationDTOS(Long ownerId) {
-        List<Reservation> reservationsFound = reservationService.getReservationsByCottageOwnerId(ownerId);
+    private List<ReservationDTO> getReservationDTOS(Long ownerId, String type) {
+        List<Reservation> reservationsFound = reservationService.getReservationsByOwnerId(ownerId, type);
         return getReservationDTOS(reservationsFound);
     }
 

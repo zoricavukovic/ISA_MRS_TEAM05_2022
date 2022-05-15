@@ -4,12 +4,16 @@ import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
+import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.Cottage;
+import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.repository.*;
+import com.example.BookingAppTeam05.repository.entities.AdventureRepository;
 import com.example.BookingAppTeam05.repository.entities.BookingEntityRepository;
 import com.example.BookingAppTeam05.repository.entities.CottageRepository;
+import com.example.BookingAppTeam05.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.repository.users.ClientRepository;
 import com.example.BookingAppTeam05.repository.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +31,8 @@ public class ReservationService {
 
     private ReservationRepository reservationRepository;
     private CottageRepository cottageRepository;
+    private ShipRepository shipRepository;
+    private AdventureRepository adventureRepository;
     private ClientRepository clientRepository;
     private BookingEntityRepository bookingEntityRepository;
     private EmailService emailService;
@@ -34,14 +40,18 @@ public class ReservationService {
     private UserRepository userRepository;
     private AdditionalServiceRepository additionalServiceRepository;
 
+
     @Autowired
     public ReservationService(ReservationRepository reservationRepository, CottageRepository cottageRepository,
+                              ShipRepository shipRepository, AdventureRepository adventureRepository,
                               ClientRepository clientRepository, BookingEntityRepository bookingEntityRepository,
                               EmailService emailService, SubscriberRepository subscriberRepository, UserRepository userRepository,
                               AdditionalServiceRepository additionalServiceRepository
                               ){
         this.reservationRepository = reservationRepository;
         this.cottageRepository = cottageRepository;
+        this.shipRepository = shipRepository;
+        this.adventureRepository = adventureRepository;
         this.clientRepository = clientRepository;
         this.bookingEntityRepository = bookingEntityRepository;
         this.emailService = emailService;
@@ -52,20 +62,99 @@ public class ReservationService {
 
     public List<Reservation> findAllActiveReservationsForEntity(Long entityId){return reservationRepository.findAllActiveReservationsForBookingEntity(entityId);}
 
-    public List<Reservation> getReservationsByCottageOwnerId(Long ownerId) {
-        List<Cottage> cottages = cottageRepository.getCottagesByOwnerId(ownerId);
+    public List<Reservation> getReservationsByOwnerId(Long ownerId, String type) {
         List<Reservation> reservations = new ArrayList<>();
-        for (Cottage cottage: cottages){
-            List<Reservation> reservationsByCottageId = getReservationsByCottageId(cottage.getId());
-            for (Reservation reservation: reservationsByCottageId){
-                reservation.setBookingEntity(cottage);
-                reservations.add(reservation);
+
+        switch (type) {
+            case "COTTAGE": {
+                List<Cottage> entities = cottageRepository.getCottagesByOwnerId(ownerId);
+                for (BookingEntity entity : entities)
+                    addingReservations(reservations, entity);
+                break;
+            }
+            case "SHIP": {
+                List<Ship> entities = shipRepository.getShipsByOwnerId(ownerId);
+                for (BookingEntity entity : entities)
+                    addingReservations(reservations, entity);
+                break;
+            }
+            case "ADVENTURE": {
+                List<Adventure> entities = adventureRepository.getAdventuresForOwnerId(ownerId);
+                for (BookingEntity entity : entities)
+                    addingReservations(reservations, entity);
+                break;
             }
         }
         return reservations;
     }
 
-    public List<Reservation> getReservationsByCottageId(Long cottageId){return reservationRepository.getReservationsByCottageId(cottageId);}
+    public List<ReservationDTO> filterReservation(List<ReservationDTO> reservationDTOs, String name, String time){
+        List<ReservationDTO> filteredReservationDTOs = new ArrayList<>();
+        for (ReservationDTO reservationDTO: reservationDTOs){
+            BookingEntityDTO bookingEntity = reservationDTO.getBookingEntity();
+            if (bookingEntity!= null){
+                if (name.equals("ALL") && time.equals("ALL")){
+                    filteredReservationDTOs.add(reservationDTO);
+                }
+                else if (!name.equals("ALL") && time.equals("ALL")){
+                    if (bookingEntity.getName().equals(name)){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+                else if (name.equals("ALL") && time.equals("CANCELED")){
+                    if (reservationDTO.isCanceled()){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+                else if (name.equals("ALL") && time.equals("FINISHED")){
+                    if (!reservationDTO.isCanceled() && !(reservationDTO.getStartDate().plusDays(reservationDTO.getNumOfDays())).isAfter(LocalDateTime.now())){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+                else if (name.equals("ALL") && time.equals("NOT_STARTED")){
+                    if (!reservationDTO.isCanceled() && (reservationDTO.getStartDate()).isAfter(LocalDateTime.now())){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+                else if (name.equals("ALL") && time.equals("STARTED")){
+                    if (!reservationDTO.isCanceled() && (reservationDTO.getStartDate()).isBefore(LocalDateTime.now()) && (reservationDTO.getStartDate().plusDays(reservationDTO.getNumOfDays())).isAfter(LocalDateTime.now())){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+                else if (!name.equals("ALL") && time.equals("CANCELED")){
+                    if (bookingEntity.getName().equals(name) && reservationDTO.isCanceled()){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+                else if (!name.equals("ALL") && time.equals("FINISHED")){
+                    if (bookingEntity.getName().equals(name) && !reservationDTO.isCanceled() && !(reservationDTO.getStartDate().plusDays(reservationDTO.getNumOfDays())).isAfter(LocalDateTime.now())){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+                else if (!name.equals("ALL") && time.equals("NOT_STARTED")){
+                    if (bookingEntity.getName().equals(name) && !reservationDTO.isCanceled() && (reservationDTO.getStartDate()).isAfter(LocalDateTime.now())){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+                else if (!name.equals("ALL") && time.equals("STARTED")){
+                    if (bookingEntity.getName().equals(name) && !reservationDTO.isCanceled() && (reservationDTO.getStartDate()).isBefore(LocalDateTime.now()) && (reservationDTO.getStartDate().plusDays(reservationDTO.getNumOfDays())).isAfter(LocalDateTime.now())){
+                        filteredReservationDTOs.add(reservationDTO);
+                    }
+                }
+            }
+        }
+        return filteredReservationDTOs;
+    }
+
+    private void addingReservations(List<Reservation> reservations, BookingEntity entity) {
+        List<Reservation> reservationsByCottageId = getReservationsByEntityId(entity.getId());
+        for (Reservation reservation : reservationsByCottageId) {
+            reservation.setBookingEntity(entity);
+            reservations.add(reservation);
+        }
+    }
+
+    public List<Reservation> getReservationsByEntityId(Long cottageId){return reservationRepository.getReservationsByEntityId(cottageId);}
 
     public List<Reservation> findAllReservationsWithClientsForEntityId(Long id) {
         return this.reservationRepository.findAllReservationsWithClientsForEntityId(id);
