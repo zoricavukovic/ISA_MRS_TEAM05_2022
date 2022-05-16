@@ -46,7 +46,7 @@ public class BookingEntityDTO {
         this.entityType = bookingEntity.getEntityType();
     }
 
-    protected void setFetchedProperties(BookingEntity entity) {
+    public void setFetchedProperties(BookingEntity entity) {
         this.place = entity.getPlace();
         this.reservations = new HashSet<>();
         for (Reservation reservation: entity.getReservations()){

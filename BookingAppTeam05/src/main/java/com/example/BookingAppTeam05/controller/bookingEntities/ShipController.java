@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.controller.bookingEntities;
 
+import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.*;
@@ -200,4 +201,13 @@ public class ShipController {
         return new ResponseEntity<>(ship.getId().toString(), HttpStatus.CREATED);
     }
 
+    @PostMapping(value="/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedShips(@RequestBody SearchParamsForEntity searchParams) {
+        try {
+            List<SearchedBookingEntityDTO> shipDTOS = bookingEntityService.getSearchedBookingEntities(searchParams, "ship");
+            return new ResponseEntity<>(shipDTOS, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

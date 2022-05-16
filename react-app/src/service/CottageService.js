@@ -24,3 +24,7 @@ export function deleteCottageById(id, password) {
 export function editCottageById(id, editedCottage) {
     return api.put('/cottages/' + id, editedCottage);
 }
+
+export function getSearchedCottages(searchParams) {
+    return api.post('/cottages/search', searchParams);
+}

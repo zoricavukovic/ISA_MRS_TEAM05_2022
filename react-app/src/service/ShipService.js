@@ -21,3 +21,7 @@ export function addNewShip(id, newShip) {
     return api.post('/ships/' + id, newShip);
 }
 
+export function getSearchedShips(searchParams) {
+    return api.post('/ships/search', searchParams);
+}
+

@@ -1,6 +1,7 @@
 package com.example.BookingAppTeam05.controller.bookingEntities;
 
 import com.example.BookingAppTeam05.dto.*;
+import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Cottage;
@@ -35,16 +36,18 @@ public class CottageController {
     private PricelistService pricelistService;
     private BookingEntityService bookingEntityService;
     private PictureService pictureService;
+    private SearchService searchService;
 
     @Autowired
     public CottageController(CottageService cottageService, PlaceService placeService, UserService userService, PricelistService pricelistService,
-                             BookingEntityService bookingEntityService, PictureService pictureService) {
+                             BookingEntityService bookingEntityService, PictureService pictureService, SearchService searchService) {
         this.cottageService = cottageService;
         this.placeService = placeService;
         this.userService = userService;
         this.pricelistService = pricelistService;
         this.bookingEntityService = bookingEntityService;
         this.pictureService = pictureService;
+        this.searchService = searchService;
     }
 
     @GetMapping(value="/{id}")
@@ -172,5 +175,15 @@ public class CottageController {
         bookingEntityService.setNewImagesForBookingEntity(cottage, cottageDTO.getImages());
         cottage = cottageService.save(cottage);
         return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.OK);
+    }
+
+    @PostMapping(value="/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedCottage(@RequestBody SearchParamsForEntity searchParams) {
+        try {
+            List<SearchedBookingEntityDTO> cottageDTOS = bookingEntityService.getSearchedBookingEntities(searchParams, "cottage");
+            return new ResponseEntity<>(cottageDTOS, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.BookingAppTeam05.repository.entities;
 
+import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
+import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.awt.print.Book;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface BookingEntityRepository extends JpaRepository<BookingEntity, Long> {
@@ -23,4 +27,5 @@ public interface BookingEntityRepository extends JpaRepository<BookingEntity, Lo
 
     @Query("select b.entityType from BookingEntity b where b.id =?1 and b.deleted = false")
     Optional<EntityType> findEntityTypeById(Long id);
+
 }

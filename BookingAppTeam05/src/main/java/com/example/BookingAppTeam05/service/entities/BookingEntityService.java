@@ -10,7 +10,10 @@ import com.example.BookingAppTeam05.model.Pricelist;
 import com.example.BookingAppTeam05.model.RatingService;
 import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;
+import com.example.BookingAppTeam05.repository.entities.AdventureRepository;
 import com.example.BookingAppTeam05.repository.entities.BookingEntityRepository;
+import com.example.BookingAppTeam05.repository.entities.CottageRepository;
+import com.example.BookingAppTeam05.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import java.util.*;
 @Service
 public class BookingEntityService {
     private BookingEntityRepository bookingEntityRepository;
+    private CottageRepository cottageRepository;
     private UserService userService;
     private AdventureService adventureService;
     private CottageService cottageService;
@@ -30,9 +34,15 @@ public class BookingEntityService {
     private PricelistService pricelistService;
     private ReservationService reservationService;
     private PictureService pictureService;
+    private ShipRepository shipRepository;
+    private AdventureRepository adventureRepository;
 
     @Autowired
-    public BookingEntityService(BookingEntityRepository bookingEntityRepository, UserService userService, CottageService cottageService, AdventureService adventureService, ShipService shipService, SearchService searchService, RatingService ratingService, PricelistService pricelistService, ReservationService reservationService, PictureService pictureService) {
+    public BookingEntityService(BookingEntityRepository bookingEntityRepository, UserService userService,
+                                CottageService cottageService, AdventureService adventureService, ShipService shipService,
+                                SearchService searchService, RatingService ratingService, PricelistService pricelistService,
+                                ReservationService reservationService, PictureService pictureService,
+                                CottageRepository cottageRepository, ShipRepository shipRepository,AdventureRepository adventureRepository ) {
         this.bookingEntityRepository = bookingEntityRepository;
         this.userService = userService;
         this.adventureService = adventureService;
@@ -43,6 +53,9 @@ public class BookingEntityService {
         this.pricelistService = pricelistService;
         this.reservationService = reservationService;
         this.pictureService = pictureService;
+        this.cottageRepository = cottageRepository;
+        this.shipRepository = shipRepository;
+        this.adventureRepository = adventureRepository;
     }
 
     public List<SearchedBookingEntityDTO> getSearchedBookingEntitiesDTOsByOnwerId(Long id) {
@@ -79,7 +92,7 @@ public class BookingEntityService {
         s.setEntityPricePerPerson(pricelist.getEntityPricePerPerson());
     }
 
-    public List<SearchedBookingEntityDTO> simpleFilterSearchForBookingEntities(List<SearchedBookingEntityDTO> entities, SimpleSearchForBookingEntityDTO s) {
+    public List<SearchedBookingEntityDTO> simpleFilterSearchForBookingEntities(List<SearchedBookingEntityDTO> entities, SimpleSearchForBookingEntityOwnerDTO s) {
         return searchService.simpleFilterSearchForBookingEntities(entities, s);
     }
 
@@ -203,4 +216,27 @@ public class BookingEntityService {
         bookingEntity.setPictures(pictures);
     }
 
+    public List<SearchedBookingEntityDTO> getSearchedBookingEntities(SearchParamsForEntity searchParams, String type) {
+        try {
+            List<BookingEntity> entity = null;
+            if(type.equals("cottage"))
+                entity = (List<BookingEntity>)(List<?>) cottageRepository.findAll();
+            else if(type.equals("ship"))
+                entity = (List<BookingEntity>)(List<?>) shipRepository.findAll();
+            else if(type.equals("instructor"))
+                entity = (List<BookingEntity>)(List<?>) adventureRepository.findAll();
+            if (entity == null)
+                return null;
+
+            List<BookingEntity> searchedEntities = searchService.searchBookingEntities(entity, searchParams);
+            List<SearchedBookingEntityDTO> resultDTO = new ArrayList<>();
+            for (BookingEntity ent: searchedEntities){
+                SearchedBookingEntityDTO searchedBookingEntityDTO = getSearchedBookingEntityDTOByEntityId(ent.getId());
+                resultDTO.add(searchedBookingEntityDTO);
+            }
+            return resultDTO;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

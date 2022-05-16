@@ -92,9 +92,11 @@ export default function EntityBasicCard(props) {
 
     const reserveBookingEntity = () => {
         console.log("Evo me");
+        console.log(props.searchParams);
         history.push({
             pathname:"/newReservation",
-            state:{ bookingEntityId: props.bookingEntity.id }
+            state:{ bookingEntityId: props.bookingEntity.id,
+                    searchParams: props.searchParams }
         })
     }
 

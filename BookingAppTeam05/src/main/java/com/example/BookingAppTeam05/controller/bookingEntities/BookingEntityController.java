@@ -1,8 +1,9 @@
 package com.example.BookingAppTeam05.controller.bookingEntities;
 
+import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
-import com.example.BookingAppTeam05.dto.SimpleSearchForBookingEntityDTO;
+import com.example.BookingAppTeam05.dto.SimpleSearchForBookingEntityOwnerDTO;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
@@ -56,7 +57,7 @@ public class BookingEntityController {
 
 
     @PostMapping(value="/simpleSearch", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedBookingEntities(@RequestBody SimpleSearchForBookingEntityDTO s) {
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedBookingEntitiesForOwner(@RequestBody SimpleSearchForBookingEntityOwnerDTO s) {
         try {
             List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOnwerId(s.getOwnerId());
             if (entities == null)
