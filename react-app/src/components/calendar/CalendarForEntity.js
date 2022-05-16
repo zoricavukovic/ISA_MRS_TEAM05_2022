@@ -2,8 +2,28 @@ import React, { useEffect, useState } from "react";
 import Paper from '@mui/material/Paper';
 import { indigo, teal, red } from '@mui/material/colors';
 import Box from "@mui/material/Box";
+import Button from '@mui/material/Button';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import { Grid, Typography } from "@mui/material";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"
+import { getCalendarValuesByBookintEntityId } from "../../service/CalendarService";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import { DialogContent, DialogTitle, Divider } from "@mui/material";
+import { Dialog } from "@mui/material";
+import { DialogContentText } from "@mui/material";
+import { DialogActions } from "@mui/material";
+import { useForm } from "react-hook-form";
+import styles from './datePickerStyle.module.css';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
-import { ViewState } from '@devexpress/dx-react-scheduler';
+
+import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import {
     Scheduler,
     MonthView,
@@ -14,10 +34,8 @@ import {
     Resources,
     AppointmentTooltip,
     CurrentTimeIndicator,
-    AppointmentForm,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import { getCalendarValuesByBookintEntityId } from "../../service/CalendarService";
-import { DateTimePicker } from "@mui/x-date-pickers";
+import { addNewUnavailableDate, checkOverlapForUnavailableDate } from "../../service/UnavailablePeriodService";
 
 
 const resources = [{
@@ -31,40 +49,353 @@ const resources = [{
 }];
 
 
-export default class CalendarForEntity extends React.PureComponent {
+function ConfirmDialog(props) {
+    return (
+        <Dialog
+            open={props.confirmDialog}
+            onClose={props.handleCloseConfirmDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+                {"Confirm adding unavailable dates"}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {console.log("IZ DIALOGAAAA")}
+                    {console.log(props.data)}
+                    {
+                        (props.data !== undefined && props.data !== '' && props.data !== null) ?
+                            (<div>
+                                It looks like there are some unavailable dates that overlap with this dates.
+                                Your entity now won't be available from {props.data.startDate} to {props.data.endDate}.
+                                Do you want to proceed?
+                            </div>) :
+                            (<div></div>)
+                    }
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={props.handleOpenConfirmDialog} autoFocus>
+                    Yes
+                </Button>
+                <Button onClick={props.handleCloseConfirmDialog}>No</Button>
+            </DialogActions>
+        </Dialog>
+    );
+}
 
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            isLoadingData: true,
-            data: []
+
+export default function CalendarForEntity() {
+
+
+    const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
+
+    const [data, setData] = useState();
+    const [isLoadingData, setIsLoadingData] = useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [confirmDialog, setConfirmDialog] = useState(false);
+    const [startDatePicker, setStartDatePicker] = useState(new Date());
+    const [endDatePicker, setEndDatePicker] = useState(new Date());
+    const [radioBtnTimeValue, setRadioBtnTimeValue] = React.useState('09:00');
+
+    const [hiddenStartDateError, setHiddenStartDateError] = useState("none");
+    const [hiddenEndDateError, setHiddenEndDateError] = useState("none");
+    const [hiddenErrorDateBefore, setHiddenErrorDateBefore] = useState("none");
+    const [overlapPeriod, setoverlapPeriod] = useState(null);
+
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
+
+
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    }
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    }
+
+    const handleOpenConfirmDialog = () => {
+        setConfirmDialog(true);
+    }
+    const handleCloseConfirmDialog = () => {
+        setConfirmDialog(false);
+    }
+    const handleCloseAlert = () => {
+        setOpenAlert(false);
+    }
+
+    const sendUnavailableDateToServer = () => {
+        let newPeriod = {
+            "entityId": 11,
+            "startDate": createFormatedDateFromString(startDatePicker.toLocaleDateString()),
+            "endDate": createFormatedDateFromString(endDatePicker.toLocaleDateString())
         };
-        this.addNewAppointment = this.addNewAppointment.bind(this);
+        addNewUnavailableDate(newPeriod)
+            .then(res => {
+                setTypeAlert("success");
+                setAlertMessage("Successfuly set new unavailable dates");
+                setOpenAlert(true);
+                handleCloseAfterAddingAndRefreshCalendar();
+            })
+            .catch(err => {
+                setTypeAlert("error");
+                setAlertMessage("Error happend on server. Check if there exist reservations on this period");
+                setOpenAlert(true);
+            }
+            );
+
     }
 
-    componentDidMount() {
-        if (this.props.location.state === undefined)
-            return;
-        getCalendarValuesByBookintEntityId(11).then(res => {
-            this.setState({ isLoadingData: false, data: res.data });
+    const handleCloseAfterAddingAndRefreshCalendar = () => {
+        getCalendarValuesByBookintEntityId(11)
+        .then(res => {
+            setData(res.data);
+            setIsLoadingData(false);
         });
+        setConfirmDialog(false);
+        setOpenDialog(false);
     }
 
-    addNewAppointment() {
-        let newApt = { startDate: '2018-11-23T18:00', type: 'fast reservation', endDate: '2018-11-25T18:00', title: 'met5', allDay: 'false' };
-        this.setState((state) => ({
-            data: [...state.data, newApt]
-        }));
+    const checkStartDateSelected = () => {
+        if (startDatePicker !== null && startDatePicker !== undefined && startDatePicker !== '') {
+            setHiddenStartDateError("none");
+            return true;
+        } else {
+            setHiddenStartDateError("block");
+            return false;
+        }
+    }
+    const checkEndDateSelected = () => {
+        if (endDatePicker !== null && endDatePicker !== undefined && endDatePicker !== '') {
+            setHiddenEndDateError("none");
+            return true;
+        } else {
+            setHiddenEndDateError("block");
+            return false;
+        }
     }
 
-    render() {
-        const { data } = this.state;
+    const createFormatedDateFromString = (string) => {
+        let tokens = string.split("/");
+        let month = tokens[0];
+        let day = tokens[1];
+        let year = tokens[2];
+        if (month.length == 1)
+            month = '0' + month;
+        if (day.length == 1)
+            day = '0' + day;
+        return year + "-" + month + "-" + day + " " + radioBtnTimeValue;
+    }
 
-        if (this.state.isLoadingData)
-            return <div className="App">Loading...</div>
+
+    const checkDateBefore = () => {
+        let date1 = new Date(startDatePicker);
+        let date2 = new Date(endDatePicker);
+        if (date2 > date1) {
+            setHiddenErrorDateBefore("none");
+            return true;
+        } else {
+            setHiddenErrorDateBefore("block");
+            return false;
+        }
+
+    }
+
+    const onAddUnavailablePeriodSubmit = (data) => {
+        if (!checkStartDateSelected() || !checkEndDateSelected())
+            return;
+
+        if (!checkDateBefore())
+            return;
+
+
+        let newPeriod = {
+            "entityId": 11,
+            "startDate": createFormatedDateFromString(startDatePicker.toLocaleDateString()),
+            "endDate": createFormatedDateFromString(endDatePicker.toLocaleDateString())
+        };
+
+        checkOverlapForUnavailableDate(newPeriod)
+            .then(res => {
+                if (res.data !== null && res.data !== undefined && res.data !== '') {
+                    if (JSON.stringify(res.data) === JSON.stringify(overlapPeriod)) {
+                        handleOpenConfirmDialog();
+                    } else {
+                        setoverlapPeriod(res.data);
+                    }
+                } else {
+                    sendUnavailableDateToServer();
+                }
+            })
+
+    }
+
+    useEffect(() => {
+        if (overlapPeriod != null && overlapPeriod != undefined && overlapPeriod != '') {
+            handleOpenConfirmDialog();
+        }
+    }, overlapPeriod);
+
+
+    const onStartDateChangeDatePicker = (date) => {
+        setStartDatePicker(date);
+    }
+    const onEndDateChangeDatePicker = (date) => {
+        setEndDatePicker(date);
+    }
+
+    useEffect(() => {
+       getCalendarValuesByBookintEntityId(11)
+       .then(res => {
+           setData(res.data);
+           setIsLoadingData(false);
+       });
+    }, []);
+
+
+    if (isLoadingData) {
+        return <div className="App">Loading...</div>
+    }
+    else {
         return (
+
             <Box style={{ margin: "1% 9% 1% 15%" }}>
+                <Button variant="contained" onClick={handleOpenDialog} style={{ color: 'rgb(5, 30, 52)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+                    Add unavailable period
+                </Button>
+                <Dialog
+                    open={openDialog}
+                    onClose={handleCloseDialog}
+                    style={{ margin: '1% auto 1% auto', padding: '1%', width: '100%', borderRadius: '10px' }}
+                    fullWidth
+                    maxWidth="xs"
+                >
+                    <DialogTitle>Add unavailable period</DialogTitle>
+                    <Divider />
+                    <br />
+                    <DialogContent
+                        style={{ height: '400px' }}
+                    >
+                        <Box
+                            component="form"
+                            noValidate
+                            onSubmit={handleSubmit(onAddUnavailablePeriodSubmit)}
+                            style={{ width: '100%' }}
+
+                        >
+
+                            <Grid
+                                direction="column"
+                                alignItems="center"
+                                justifyContent="center"
+                                container
+                                spacing={2}
+                            >
+                                <label className={styles.labelNames} for="startDatePicker" >Select start date:</label>
+                                <Grid item xs={12} sm={12}>
+                                    <DatePicker
+                                        wrapperClassName={styles.datePicker}
+                                        id="startDatePicker"
+                                        selected={startDatePicker}
+                                        onChange={onStartDateChangeDatePicker}
+                                        minDate={new Date()}
+                                        dateFormat='yyyy-MM-dd'
+                                    />
+                                </Grid>
+                                <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenStartDateError }}>Please select start date.</p>
+                                <Grid item xs={12} sm={12}>
+                                    <FormControl>
+                                        <FormLabel id="demo-controlled-radio-buttons-group"
+
+                                        >
+                                            <Typography variant="caption">Select the time from which the entity will not be available</Typography>
+                                        </FormLabel>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="demo-controlled-radio-buttons-group"
+                                            name="controlled-radio-buttons-group"
+                                            value={radioBtnTimeValue}
+                                            onChange={(event) => (setRadioBtnTimeValue(event.target.value))}
+                                        >
+                                            <FormControlLabel value="09:00" control={<Radio />} label="9 AM" />
+                                            <FormControlLabel value="13:00" control={<Radio />} label="1 PM" />
+                                            <FormControlLabel value="17:00" control={<Radio />} label="5 PM" />
+                                            <FormControlLabel value="21:00" control={<Radio />} label="9 PM" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+
+                                <br />
+                                <br />
+                                <label className={styles.labelNames} for="endDatePicker">Select end date:</label>
+                                <Grid item xs={12} sm={12}>
+                                    <DatePicker
+                                        wrapperClassName={styles.datePicker}
+                                        id="endDatePicker"
+                                        selected={endDatePicker}
+                                        minDate={(startDatePicker) ? (new Date().setDate(new Date(startDatePicker).getDate() + 1)) : (new Date())}
+                                        onChange={onEndDateChangeDatePicker}
+                                        dateFormat='yyyy-MM-dd'
+                                    />
+
+                                </Grid>
+                                <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenEndDateError }}>Please select end date.</p>
+                                <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenErrorDateBefore }}>End date should be greater than start date.</p>
+                            </Grid>
+                            <br />
+                            <Divider />
+                            <br />
+                            <Box style={{ display: "flex", flexDirection: "row" }}>
+                                <Button type="submit" onSubmit={handleSubmit(onAddUnavailablePeriodSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+                                    Save
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
+                                    onClick={handleCloseDialog}
+                                >
+                                    Close
+                                </Button>
+                            </Box>
+                        </Box>
+                    </DialogContent>
+                </Dialog>
+
+
+                <Dialog
+                    open={confirmDialog}
+                    onClose={handleCloseConfirmDialog}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Confirm adding unavailable dates"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            {
+                                (overlapPeriod !== undefined && overlapPeriod !== '' && overlapPeriod !== null) ?
+                                    (<div>
+                                        It looks like there are some unavailable dates that overlap with this dates.
+                                        Your entity now won't be available from {overlapPeriod.startDate} to {overlapPeriod.endDate}.
+                                        Do you want to proceed?
+                                    </div>) :
+                                    (<div></div>)
+                            }
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={sendUnavailableDateToServer} autoFocus>
+                            Yes
+                        </Button>
+                        <Button onClick={handleCloseConfirmDialog}>No</Button>
+                    </DialogActions>
+                </Dialog>
+
+
                 <Paper>
                     <Scheduler
                         data={data}
@@ -84,13 +415,18 @@ export default class CalendarForEntity extends React.PureComponent {
                         <Resources
                             data={resources}
                         />
-
                         <CurrentTimeIndicator
                             shadePreviousCells
-                            shadePreviousAppointments                            
+                            shadePreviousAppointments
                         />
                     </Scheduler>
                 </Paper>
+
+                <Snackbar open={openAlert} autoHideDuration={5000} onClose={handleCloseAlert}>
+                    <Alert onClose={handleCloseAlert} severity={typeAlert} sx={{ width: '100%' }}>
+                        {alertMessage}
+                    </Alert>
+                </Snackbar>
             </Box>
         );
     }

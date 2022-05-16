@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.model;
 
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -23,6 +24,10 @@ public class UnavailableDate {
     @Column(name="endTime", nullable = false)
     private LocalDateTime endTime;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="entity_id", nullable = false)
+    private BookingEntity bookingEntity;
+
     public UnavailableDate() {}
 
     public UnavailableDate(LocalDateTime startTime, LocalDateTime endTime) {
@@ -34,6 +39,17 @@ public class UnavailableDate {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public BookingEntity getBookingEntity() {
+        return bookingEntity;
+    }
+
+    public void setBookingEntity(BookingEntity bookingEntity) {
+        this.bookingEntity = bookingEntity;
+    }
 
     public LocalDateTime getStartTime() {
         return startTime;
