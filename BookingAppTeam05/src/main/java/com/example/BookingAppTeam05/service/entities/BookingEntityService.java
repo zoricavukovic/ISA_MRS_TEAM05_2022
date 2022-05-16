@@ -8,6 +8,7 @@ import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.Picture;
 import com.example.BookingAppTeam05.model.Pricelist;
 import com.example.BookingAppTeam05.model.RatingService;
+import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.entities.BookingEntityRepository;
@@ -16,6 +17,7 @@ import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -102,6 +104,19 @@ public class BookingEntityService {
 
     public boolean checkExistActiveReservationForEntityId(Long id) {
         return reservationService.findAllActiveReservationsForEntityid(id).size() != 0;
+    }
+
+    public boolean checkExistReservationInPeriodForEntityId(Long id, LocalDateTime start, LocalDateTime end) {
+        List<Reservation> reservations = reservationService.findAllActiveReservationsForEntityid(id);
+        for (LocalDateTime date = start; date.isBefore(end.plusDays(1)); date = date.plusDays(1)) {
+            for (Reservation r : reservations) {
+                if (date.isAfter(r.getStartDate()) && date.isBefore(r.getEndDate()))
+                    return true;
+                if (date.equals(r.getStartDate()) || date.equals(r.getEndDate()))
+                    return true;
+            }
+        }
+        return false;
     }
 
     public boolean logicalDeleteBookingEntityById(Long id) {

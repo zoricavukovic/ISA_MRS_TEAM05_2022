@@ -15,8 +15,13 @@ import { getCalendarValuesByBookintEntityId } from "../../service/CalendarServic
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { DialogContent, DialogTitle, Divider } from "@mui/material";
 import { Dialog } from "@mui/material";
+import { DialogContentText } from "@mui/material";
+import { DialogActions } from "@mui/material";
 import { useForm } from "react-hook-form";
 import styles from './datePickerStyle.module.css';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+
 
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import {
@@ -30,6 +35,8 @@ import {
     AppointmentTooltip,
     CurrentTimeIndicator,
 } from '@devexpress/dx-react-scheduler-material-ui';
+import { addNewUnavailableDate, checkOverlapForUnavailableDate } from "../../service/UnavailablePeriodService";
+
 
 const resources = [{
     fieldName: 'type',
@@ -42,6 +49,44 @@ const resources = [{
 }];
 
 
+function ConfirmDialog(props) {
+    return (
+        <Dialog
+            open={props.confirmDialog}
+            onClose={props.handleCloseConfirmDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+                {"Confirm adding unavailable dates"}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {console.log("IZ DIALOGAAAA")}
+                    {console.log(props.data)}
+                    {
+                        (props.data !== undefined && props.data !== '' && props.data !== null) ?
+                            (<div>
+                                It looks like there are some unavailable dates that overlap with this dates.
+                                Your entity now won't be available from {props.data.startDate} to {props.data.endDate}.
+                                Do you want to proceed?
+                            </div>) :
+                            (<div></div>)
+                    }
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={props.handleOpenConfirmDialog} autoFocus>
+                    Yes
+                </Button>
+                <Button onClick={props.handleCloseConfirmDialog}>No</Button>
+            </DialogActions>
+        </Dialog>
+    );
+}
+
+
+
 export default function CalendarForEntity() {
 
 
@@ -50,12 +95,20 @@ export default function CalendarForEntity() {
     const [data, setData] = useState();
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
+    const [confirmDialog, setConfirmDialog] = useState(false);
     const [startDatePicker, setStartDatePicker] = useState(new Date());
     const [endDatePicker, setEndDatePicker] = useState(new Date());
-    const [radioBtnTimeValue, setRadioBtnTimeValue] = React.useState('9:00:00');
+    const [radioBtnTimeValue, setRadioBtnTimeValue] = React.useState('09:00');
 
     const [hiddenStartDateError, setHiddenStartDateError] = useState("none");
     const [hiddenEndDateError, setHiddenEndDateError] = useState("none");
+    const [hiddenErrorDateBefore, setHiddenErrorDateBefore] = useState("none");
+    const [overlapPeriod, setoverlapPeriod] = useState(null);
+
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
+
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -64,9 +117,50 @@ export default function CalendarForEntity() {
         setOpenDialog(false);
     }
 
+    const handleOpenConfirmDialog = () => {
+        setConfirmDialog(true);
+    }
+    const handleCloseConfirmDialog = () => {
+        setConfirmDialog(false);
+    }
+    const handleCloseAlert = () => {
+        setOpenAlert(false);
+    }
+
+    const sendUnavailableDateToServer = () => {
+        let newPeriod = {
+            "entityId": 11,
+            "startDate": createFormatedDateFromString(startDatePicker.toLocaleDateString()),
+            "endDate": createFormatedDateFromString(endDatePicker.toLocaleDateString())
+        };
+        addNewUnavailableDate(newPeriod)
+            .then(res => {
+                setTypeAlert("success");
+                setAlertMessage("Successfuly set new unavailable dates");
+                setOpenAlert(true);
+                handleCloseAfterAddingAndRefreshCalendar();
+            })
+            .catch(err => {
+                setTypeAlert("error");
+                setAlertMessage("Error happend on server. Check if there exist reservations on this period");
+                setOpenAlert(true);
+            }
+            );
+
+    }
+
+    const handleCloseAfterAddingAndRefreshCalendar = () => {
+        getCalendarValuesByBookintEntityId(11)
+        .then(res => {
+            setData(res.data);
+            setIsLoadingData(false);
+        });
+        setConfirmDialog(false);
+        setOpenDialog(false);
+    }
 
     const checkStartDateSelected = () => {
-        if (startDatePicker !== null &&  startDatePicker !== undefined && startDatePicker !== '') {
+        if (startDatePicker !== null && startDatePicker !== undefined && startDatePicker !== '') {
             setHiddenStartDateError("none");
             return true;
         } else {
@@ -75,7 +169,7 @@ export default function CalendarForEntity() {
         }
     }
     const checkEndDateSelected = () => {
-        if (endDatePicker !== null &&  endDatePicker !== undefined && endDatePicker !== '') {
+        if (endDatePicker !== null && endDatePicker !== undefined && endDatePicker !== '') {
             setHiddenEndDateError("none");
             return true;
         } else {
@@ -84,14 +178,67 @@ export default function CalendarForEntity() {
         }
     }
 
+    const createFormatedDateFromString = (string) => {
+        let tokens = string.split("/");
+        let month = tokens[0];
+        let day = tokens[1];
+        let year = tokens[2];
+        if (month.length == 1)
+            month = '0' + month;
+        if (day.length == 1)
+            day = '0' + day;
+        return year + "-" + month + "-" + day + " " + radioBtnTimeValue;
+    }
+
+
+    const checkDateBefore = () => {
+        let date1 = new Date(startDatePicker);
+        let date2 = new Date(endDatePicker);
+        if (date2 > date1) {
+            setHiddenErrorDateBefore("none");
+            return true;
+        } else {
+            setHiddenErrorDateBefore("block");
+            return false;
+        }
+
+    }
+
     const onAddUnavailablePeriodSubmit = (data) => {
         if (!checkStartDateSelected() || !checkEndDateSelected())
             return;
-        
-        console.log(startDatePicker.toLocaleDateString());
-        console.log(endDatePicker.toLocaleDateString());
-        
+
+        if (!checkDateBefore())
+            return;
+
+
+        let newPeriod = {
+            "entityId": 11,
+            "startDate": createFormatedDateFromString(startDatePicker.toLocaleDateString()),
+            "endDate": createFormatedDateFromString(endDatePicker.toLocaleDateString())
+        };
+
+        checkOverlapForUnavailableDate(newPeriod)
+            .then(res => {
+                if (res.data !== null && res.data !== undefined && res.data !== '') {
+                    if (JSON.stringify(res.data) === JSON.stringify(overlapPeriod)) {
+                        handleOpenConfirmDialog();
+                    } else {
+                        setoverlapPeriod(res.data);
+                    }
+                } else {
+                    sendUnavailableDateToServer();
+                }
+            })
+
     }
+
+    useEffect(() => {
+        if (overlapPeriod != null && overlapPeriod != undefined && overlapPeriod != '') {
+            handleOpenConfirmDialog();
+        }
+    }, overlapPeriod);
+
 
     const onStartDateChangeDatePicker = (date) => {
         setStartDatePicker(date);
@@ -101,14 +248,12 @@ export default function CalendarForEntity() {
     }
 
     useEffect(() => {
-        getCalendarValuesByBookintEntityId(11)
-            .then(res => {
-                setData(res.data);
-                setIsLoadingData(false);
-            });
+       getCalendarValuesByBookintEntityId(11)
+       .then(res => {
+           setData(res.data);
+           setIsLoadingData(false);
+       });
     }, []);
-
-
 
 
     if (isLoadingData) {
@@ -151,8 +296,8 @@ export default function CalendarForEntity() {
                             >
                                 <label className={styles.labelNames} for="startDatePicker" >Select start date:</label>
                                 <Grid item xs={12} sm={12}>
-                                    <DatePicker 
-                                        wrapperClassName={styles.datePicker} 
+                                    <DatePicker
+                                        wrapperClassName={styles.datePicker}
                                         id="startDatePicker"
                                         selected={startDatePicker}
                                         onChange={onStartDateChangeDatePicker}
@@ -161,7 +306,6 @@ export default function CalendarForEntity() {
                                     />
                                 </Grid>
                                 <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenStartDateError }}>Please select start date.</p>
-                                <br />
                                 <Grid item xs={12} sm={12}>
                                     <FormControl>
                                         <FormLabel id="demo-controlled-radio-buttons-group"
@@ -176,10 +320,10 @@ export default function CalendarForEntity() {
                                             value={radioBtnTimeValue}
                                             onChange={(event) => (setRadioBtnTimeValue(event.target.value))}
                                         >
-                                            <FormControlLabel value="9:00:00" control={<Radio />} label="9 AM" />
-                                            <FormControlLabel value="13:00:00" control={<Radio />} label="1 PM" />
-                                            <FormControlLabel value="17:00:00" control={<Radio />} label="5 PM" />
-                                            <FormControlLabel value="21:00:00" control={<Radio />} label="9 PM" />
+                                            <FormControlLabel value="09:00" control={<Radio />} label="9 AM" />
+                                            <FormControlLabel value="13:00" control={<Radio />} label="1 PM" />
+                                            <FormControlLabel value="17:00" control={<Radio />} label="5 PM" />
+                                            <FormControlLabel value="21:00" control={<Radio />} label="9 PM" />
                                         </RadioGroup>
                                     </FormControl>
                                 </Grid>
@@ -188,21 +332,22 @@ export default function CalendarForEntity() {
                                 <br />
                                 <label className={styles.labelNames} for="endDatePicker">Select end date:</label>
                                 <Grid item xs={12} sm={12}>
-                                    <DatePicker 
+                                    <DatePicker
                                         wrapperClassName={styles.datePicker}
                                         id="endDatePicker"
                                         selected={endDatePicker}
-                                        minDate={(startDatePicker) ? (new Date().setDate(new Date(startDatePicker).getDate()+1)) : (new Date())}
+                                        minDate={(startDatePicker) ? (new Date().setDate(new Date(startDatePicker).getDate() + 1)) : (new Date())}
                                         onChange={onEndDateChangeDatePicker}
                                         dateFormat='yyyy-MM-dd'
                                     />
-                                        
+
                                 </Grid>
                                 <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenEndDateError }}>Please select end date.</p>
+                                <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenErrorDateBefore }}>End date should be greater than start date.</p>
                             </Grid>
-                            <br/>
+                            <br />
                             <Divider />
-                            <br/>
+                            <br />
                             <Box style={{ display: "flex", flexDirection: "row" }}>
                                 <Button type="submit" onSubmit={handleSubmit(onAddUnavailablePeriodSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
                                     Save
@@ -218,6 +363,39 @@ export default function CalendarForEntity() {
                         </Box>
                     </DialogContent>
                 </Dialog>
+
+
+                <Dialog
+                    open={confirmDialog}
+                    onClose={handleCloseConfirmDialog}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Confirm adding unavailable dates"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            {
+                                (overlapPeriod !== undefined && overlapPeriod !== '' && overlapPeriod !== null) ?
+                                    (<div>
+                                        It looks like there are some unavailable dates that overlap with this dates.
+                                        Your entity now won't be available from {overlapPeriod.startDate} to {overlapPeriod.endDate}.
+                                        Do you want to proceed?
+                                    </div>) :
+                                    (<div></div>)
+                            }
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={sendUnavailableDateToServer} autoFocus>
+                            Yes
+                        </Button>
+                        <Button onClick={handleCloseConfirmDialog}>No</Button>
+                    </DialogActions>
+                </Dialog>
+
+
                 <Paper>
                     <Scheduler
                         data={data}
@@ -243,6 +421,12 @@ export default function CalendarForEntity() {
                         />
                     </Scheduler>
                 </Paper>
+
+                <Snackbar open={openAlert} autoHideDuration={5000} onClose={handleCloseAlert}>
+                    <Alert onClose={handleCloseAlert} severity={typeAlert} sx={{ width: '100%' }}>
+                        {alertMessage}
+                    </Alert>
+                </Snackbar>
             </Box>
         );
     }

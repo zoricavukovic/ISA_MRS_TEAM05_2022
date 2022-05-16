@@ -9,10 +9,6 @@ import java.util.List;
 
 public interface UnavailableDateRepository extends JpaRepository<UnavailableDate, Long> {
 
-
-//    @Query("select distinct p from Pricelist p left join fetch p.additionalServices ad where p.bookingEntity.id=?1 order by p.startDate desc")
-//    List<Pricelist> getCurrentPricelistByBookingEntityId(Long id);
-
-    @Query("select distinct u from UnavailableDate u order by u.startTime desc ")
-    List<UnavailableDate> findAll();
+    @Query(value="select * from unavailable_dates where entity_id=?1 order by start_time", nativeQuery = true)
+    List<UnavailableDate> findAllSortedUnavailableDatesForEntityId(Long id);
 }
