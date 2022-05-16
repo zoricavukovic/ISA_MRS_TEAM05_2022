@@ -1,6 +1,7 @@
 package com.example.BookingAppTeam05.service.users;
 
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
+import com.example.BookingAppTeam05.model.users.Admin;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.*;
 import com.example.BookingAppTeam05.repository.users.*;
@@ -43,5 +44,9 @@ public class UserService {
     public void setNewPasswordForUser(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    public String getHashedNewUserPassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }

@@ -3,6 +3,9 @@ export const _handleAddRuleChip = (data, rulesOfConduct, setRulesOfConduct, chec
     let newKey = 1;
     if (rulesOfConduct.length != 0) {
         for (let chip of rulesOfConduct) {
+            console.log("baaaaaaaaaaa");
+            console.log(chip);
+            console.log(rName);
             if (chip.ruleName.toLowerCase() === rName.toLowerCase())
                 return;
         }

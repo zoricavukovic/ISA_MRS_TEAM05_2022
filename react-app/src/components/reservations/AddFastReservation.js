@@ -7,17 +7,17 @@ import MuiInput from '@mui/material/Input';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
 import { CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { FormControlLabel,FormControl, FormLabel } from '@mui/material'
 import AddingAdditionalServiceWithoutAmount from "../AddingAdditionServicesWithoutAmount";
 import {getBookingEntityByIdForCardView} from '../../service/BookingEntityService.js';
 import { getCurrentUser } from '../../service/AuthService.js';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Chip from '@mui/material/Chip';
@@ -25,6 +25,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import IconButton from '@mui/material/IconButton';
 import { getPricelistByEntityId } from '../../service/PricelistService';
 import { addNewFastReservation } from '../../service/ReservationService';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 const Input = styled(MuiInput)`
   width: 42px;
@@ -38,7 +40,7 @@ export default function AddFastReservation(props) {
   const [pricelistData, setPricelistData] = useState({});
   const [message, setMessage] = React.useState("");
   const history = useHistory();
-  let ownerId = null;
+
   const [fastResData, setFastResData] = React.useState(
     {
       "id":0,
@@ -48,6 +50,37 @@ export default function AddFastReservation(props) {
       "bookingEntity": null
     }
    );
+
+   /////////////////TIME/////////////////////////////////
+   const [times, setTimes] = useState([]);
+   const [checkedTime, setCheckedTime] = useState({});
+
+   var availableTimes = [{
+    text:"9 AM",
+    value:"09:00:00",
+    available:true
+    },
+    {
+        text:"1 PM",
+        value:"13:00:00",
+        available:true
+    },
+    {
+        text:"5 PM",
+        value:"17:00:00",
+        available:true
+    },
+    {
+        text:"9 PM",
+        value:"21:00:00",
+        available:true
+    }];
+
+    const radioButtonChanged=(event)=>{
+      event.preventDefault();
+      setCheckedTime(availableTimes.find(time => time.value === event.target.value));
+
+  };
 
    ////////////////ERROR MESSAGE/////////////////////////
    const [open, setOpen] = React.useState(false);
@@ -121,14 +154,12 @@ export default function AddFastReservation(props) {
       
       if (getCurrentUser() == null || getCurrentUser() == undefined || (getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER" && getCurrentUser().userType.name!=="ROLE_SHIP_OWNER" && getCurrentUser().userType.name!=="ROLE_INSTRUCTOR_OWNER")) {
         history.push('/forbiddenPage');
-      } else {
-          ownerId = getCurrentUser().id;
       }
       let newDate = new Date(value);
+      
+      let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getUTCDate(), parseInt(checkedTime.value.split(':')[0]), 0];
+      console.log("bla");
       console.log(newDate);
-    
-      let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getUTCDate(), newDate.getHours(), newDate.getMinutes()];
-    
       let newFastReservation={
         canceled:false,
         fastReservation: true,
@@ -156,15 +187,18 @@ export default function AddFastReservation(props) {
     if (getCurrentUser() === null || getCurrentUser() === undefined){
       history.push('/forbiddenPage');
     }
-    else{
-        ownerId = getCurrentUser().id;
-    }
     if (props.history.location.state === null || props.history.location.state === undefined){
         return;
     }
     getBookingEntityByIdForCardView(props.history.location.state.bookingEntityId).then(res => {
       console.log(res.data);
       setEntityBasicData(res.data);
+      for(var time of availableTimes){
+        if(time.available == true){
+            setCheckedTime(time);
+            break;
+        }
+    }
       setLoading(false);
     }).catch(error => {
         setMessage(error.response.data);
@@ -188,7 +222,6 @@ export default function AddFastReservation(props) {
 
   return (
     <div style={{ backgroundColor: 'aliceblue', margin: '5%', padding: '1%', borderRadius: '10px', height: '100%' }} >
-      {console.log(entityBasicData)}
       <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '15%', padding: '1%', borderRadius: '10px', width: '15%' }} >
         Add Fast Reservation
       </div>
@@ -258,24 +291,44 @@ export default function AddFastReservation(props) {
             <table>
               <tr>
                 <td>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  
-                    <DateTimePicker
-                      renderInput={(params) => <TextField {...params} />}
-                      label="Date&Time Picker"
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
+                      label="Date Picker"
                       value={value}
                       onChange={(newValue) => {
                         setValue(newValue);
                       }}
-                      minDate={new Date('2020-02-14')}
-                      minTime={new Date(0, 0, 0, 8)}
-                      maxTime={new Date(0, 0, 0, 18, 45)}
-                      
-                  ></DateTimePicker>
-                </LocalizationProvider>
+                      minDate={Date.now()}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
                 </td>
-                </tr>
-              
+              </tr>
+              <tr>
+                <td>
+                <FormControl>
+                <FormLabel id="demo-row-radio-buttons-group-label" style={{margin:"10px 10px"}}>Select time:</FormLabel>
+                    {
+                        <RadioGroup
+                        style={{margin:"10px 20px"}}
+                        defaultValue={checkedTime.value}
+                        row
+                        onChange={radioButtonChanged}
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="row-radio-buttons-group"
+                    >
+                        {availableTimes.map((time,index)=>{
+                            return <FormControlLabel value={time.value} control={<Radio />} label={time.text} disabled={!time.available}/>
+                        })
+                        }
+                        
+                    </RadioGroup>
+
+                    }
+                    
+                </FormControl>
+                </td>
+              </tr>
               <tr>
               <FormControl sx={{ m: 1 }}>
                   <InputLabel htmlFor="outlined-adornment-amount">Total Num Of Nights</InputLabel>

@@ -59,7 +59,9 @@ export default function getNavbarList(){
       case 'ROLE_SHIP_OWNER':
         return navbarShipOwnList;
       case 'ROLE_INSTRUCTOR':
-        return navbarInstList
+        return navbarInstList;
+      case 'ROLE_SUPER_ADMIN':
+        return navbarSuperAdminList;
       default:
         return navbarDefaultList;
   }
@@ -129,7 +131,7 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/showReservationsOwner'
   }
 ]
 
@@ -157,7 +159,18 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/showReservationsOwner'
   }
 ]
 
+const navbarSuperAdminList = [
+  ...navbarDefaultList,
+  {
+    icon: AddCircle,
+    desc: 'Add New Admin',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url:'/addAdmin'
+  },
+]

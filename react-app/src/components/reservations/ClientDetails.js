@@ -55,7 +55,7 @@ export default function ClientDetails(props) {
     if (isLoading) { return <div className="App"><CircularProgress /></div> }
   return (
 
-    <Grid button onClick={showUserProfile} textAlign="left" sx={{ width: "100%"}}>
+    <Grid button onClick={showUserProfile} textAlign="left" sx={{ width: "100%"}} style={{marginTop:"3%"}}>
     <Grid item xs={12} md={6}>
             <Card sx={{display: 'flex'}}>
            

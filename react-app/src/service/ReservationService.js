@@ -1,7 +1,7 @@
 import api from "./baseApi";
 
-export function getReservationsByOwnerId(ownerId) {
-    return api.get('reservations/owner/' + ownerId);
+export function getReservationsByOwnerId(ownerId, type) {
+    return api.get('reservations/owner/' + ownerId + "/" + type);
 }
 
 export function getFastReservationsByBookingEntityId(bookingEntityId) {
@@ -9,8 +9,8 @@ export function getFastReservationsByBookingEntityId(bookingEntityId) {
 }
 
 
-export function getReservationsByOwnerIdAndFilter(ownerId, filter) {
-    return api.get('reservations/owner/' + ownerId + "/filter/" + filter);
+export function getReservationsByOwnerIdAndFilter(ownerId, name, time, type) {
+    return api.get('reservations/owner/' + ownerId + "/" + type + "/filter/name/" + name + "/time/" + time);
 }
 
 export function addNewFastReservation(newFastReservation){

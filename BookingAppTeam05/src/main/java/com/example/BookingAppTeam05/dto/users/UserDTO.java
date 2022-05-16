@@ -2,6 +2,8 @@ package com.example.BookingAppTeam05.dto.users;
 
 import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.Place;
+import com.example.BookingAppTeam05.model.users.Admin;
+import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.model.users.Role;
 import com.example.BookingAppTeam05.model.users.User;
 
@@ -21,6 +23,7 @@ public class UserDTO {
     private Place place;
     private Role userType;
     private int penalties; // only for clients
+    private boolean passwordChanged; // only for admins
     private LoyaltyProgram loyaltyProgram;
 
     public UserDTO() {}
@@ -38,6 +41,25 @@ public class UserDTO {
         this.accountAllowed = user.isNotYetActivated();
         this.userType = user.getRole();
         this.loyaltyProgram = user.getLoyaltyProgram();
+
+        setAdditionalFieldIfNeeded(user);
+    }
+
+
+    private void setAdditionalFieldIfNeeded(User user) {
+        if (user.getRole().getName().equals("ROLE_CLIENT")) {
+            setPenalties(((Client)user).getPenalties());
+        } else if (user.getRole().getName().equals("ROLE_ADMIN")) {
+            setPasswordChanged(((Admin)user).isPasswordChanged());
+        }
+    }
+
+    public boolean isPasswordChanged() {
+        return passwordChanged;
+    }
+
+    public void setPasswordChanged(boolean passwordChanged) {
+        this.passwordChanged = passwordChanged;
     }
 
     public int getPenalties() {

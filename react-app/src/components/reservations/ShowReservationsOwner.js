@@ -5,31 +5,94 @@ import ImgReservation from "./ReservationBasicCard.js";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import { styled, useTheme } from "@mui/material/styles";
 import { getReservationsByOwnerId, getReservationsByOwnerIdAndFilter } from '../../service/ReservationService.js';
 import ReactPaginate from "react-paginate";
+import CssBaseline from '@mui/material/CssBaseline';
+import CottageIcon from '@mui/icons-material/Cottage';
 import "../../App.css"
 import { useHistory } from 'react-router-dom';
 import { getCurrentUser } from '../../service/AuthService.js';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+
+const drawerWidth = 240;
+  
+const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-start',
+}));
 
 function ShowReservationsOwner() {
     const history = useHistory();
+    const theme = useTheme();
     const [reservations, setReservations] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(0);
-    const entitiesPerPage = 6;
-    const pagesVisited = currentPage*entitiesPerPage;
-    const [valueFirst, setValueFirst] = React.useState();
+    const [nameChoosen, setNameChoosen] = React.useState("ALL");
+    const [timeChoosen, setTimeChoosen] = React.useState("ALL");
     const [options, setOptions] = React.useState([]);
-    let ownerId = null;
+
+    const [displayFilterName, setFilterName] = React.useState("none");
+
+    function openAutocomplete(){
+        if (displayFilterName === "none"){
+            setFilterName("block");
+        }else{
+            setFilterName("none");
+        }
+        
+    }
+    function onChangeValueName(event) {
+       setNameChoosen(event.target.value);
+    };
+    
+    function onChangeValueTime(event) {
+        setTimeChoosen(event.target.value);
+    }
+
+    const [displayFilterTime, setFilterTime] = React.useState("none");
+
+    function openTime(){
+        if (displayFilterTime === "none"){
+            setFilterTime("block");
+        }else{
+            setFilterTime("none");
+        }
+        
+    }
     useEffect(() => {
-        let owner = getCurrentUser();
-        if (owner === null || owner === undefined){
+        
+        if (getCurrentUser() === null || getCurrentUser() === undefined){
             history.push('/login');
         }
-        else{
-            ownerId = owner.id;
+        
+        let type = "";
+        if (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER"){
+            type = "COTTAGE";
         }
-        getReservationsByOwnerId(ownerId).then(res => {
+        else if (getCurrentUser().userType.name === "ROLE_SHIP_OWNER"){
+            type = "SHIP";
+        }
+        else if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR"){
+            type = "ADVENTURE";
+        }
+        getReservationsByOwnerId(getCurrentUser().id, type).then(res => {
             setReservations(res.data);
             let newOpts = [];
             for (let res of res.data){
@@ -42,68 +105,133 @@ function ShowReservationsOwner() {
                 }
                 if (found === false) {newOpts.push(res.bookingEntity.name);}
             }
-            setOptions(newOpts);
             setLoading(false);
+            setOptions(newOpts);
         })
     }, []);
-    const filter = ()=>{
-        if (valueFirst === undefined){
-            return;
-        }
-        let owner = getCurrentUser();
-        if (owner === null || owner === undefined){
-            history.push('/login');
-        }
-        else{
-            ownerId = owner.id;
+    const filter = () =>{ 
+        if (getCurrentUser() === null || getCurrentUser() === undefined){
+            history.push('/forbiddenPage');
         }
         setLoading(true);
-        getReservationsByOwnerIdAndFilter(ownerId, valueFirst).then(res => {
+        let type = "";
+        if (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER"){
+            type = "COTTAGE";
+        }
+        else if (getCurrentUser().userType.name === "ROLE_SHIP_OWNER"){
+            type = "SHIP";
+        }
+        else if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR"){
+            type = "ADVENTURE";
+        }
+        getReservationsByOwnerIdAndFilter(getCurrentUser().id, nameChoosen, timeChoosen, type).then(res => {
             setReservations(res.data);
+            setNameChoosen("ALL");
+            setTimeChoosen("ALL");
             setLoading(false);
         })
     }
 
     
-    const displayReservations = reservations.slice(pagesVisited, pagesVisited + entitiesPerPage)
+    const displayReservations = reservations
     .map(res=> {
         console.log(res);
         return <ImgReservation reservation={res} reservationId={res.id} details="true"></ImgReservation>
     })
 
-    const pageCount = Math.ceil(reservations.length / entitiesPerPage);
-    const changePage=({selected})=>{
-        setCurrentPage(selected);
-    }
+    const [open, setOpen] = React.useState(false);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
 
     if (isLoading) { return <div><CircularProgress /></div> }
     return (
         <div>
-            <div style={{ display: "flex", flexDirection: "row", margin: "2%", width:"100%", alignItems: "stretch", backgroundColor: "aliceblue", borderRadius: "5px" }}>
+            <div style={{ marginRight: '0px', display: "flex", justifyContent:'right' , margin: "2%", width:"100%",  backgroundColor: "aliceblue", borderRadius: "5px", minWidth:'200px' }}>
                 
-                <Autocomplete
-                    value={valueFirst}
-                    onChange={(event, newValue) => {
-                    setValueFirst(newValue);
-                    }}
-                    size="small"
-                    name="firstOp"
-                    id="controllable-states-demo"
-                    options={options}
-                    style={{ marginLeft: "60%", marginTop:"1%", minWidth:'200px', color: 'rgb(5, 30, 52)'}}
-                    renderInput={(params) => <TextField {...params} label="Cottage name" />}
-                />
-            
-                <Button onClick={filter} label="Extra Soft" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', borderRadius: '10px', margin: '1%', backgroundColor: 'rgb(244, 177, 77)' }}>
-                    Filter
+                
+                <CssBaseline />
+                <Button onClick={handleDrawerOpen}  edge="end" sx={{ ...(open && { display: 'none' }) }} label="Extra Soft" style={{color: 'rgb(5, 30, 52)', fontWeight: 'bold', borderRadius: '10px', margin: '1%',backgroundColor: 'rgb(244, 177, 77)' }}>
+                    Filters
                 </Button>
-    
-
+                <Drawer
+                    sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                    },
+                    }}
+                    variant="persistent"
+                    anchor="right"
+                    open={open}
+                >
+                    <DrawerHeader>
+                    <IconButton onClick={handleDrawerClose}>
+                        {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                    </IconButton>
+                    </DrawerHeader>
+                    <Divider />
+                    <List>
+                    <ListItem key={"EntityName"} disablePadding>
+                        <ListItemButton onClick={openAutocomplete}>
+                            <ListItemIcon>
+                                <CottageIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Entity name"} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"combo"} disablePadding>
+                        <table onChange={onChangeValueName}
+                            style={{display:displayFilterName, marginLeft:"7%", marginTop:"1%", minWidth:'200px', color: 'rgb(5, 30, 52)'}}>
+                            {options.map((item) => (
+                                <tr>
+                                    <td><input type="radio" value={item} name="name" /> {item}</td>
+                                </tr>
+                            ))}
+                        </table>
+                    
+                    </ListItem>
+                    <ListItem key={"time"} disablePadding onClick={openTime}>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <AccessTimeIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Timeline"} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem key={"combo"} disablePadding>
+                        <table onChange={onChangeValueTime}
+                            style={{display:displayFilterTime, marginLeft:"7%", marginTop:"1%", minWidth:'200px', color: 'rgb(5, 30, 52)'}}>
+                            <tr>
+                                <td><input type="radio" value="FINISHED" name="time" />Finished</td>
+                            </tr>
+                            <tr>
+                                <td><input type="radio" value="STARTED" name="time" />Started</td>
+                            </tr>
+                            <tr>
+                                <td><input type="radio" value="NOT_STARTED" name="time" />Not started</td>
+                            </tr>
+                            <tr>
+                                <td><input type="radio" value="CANCELED" name="time" />Canceled</td>
+                            </tr>
+                        </table>
+                        
+                    </ListItem>
+                    <Divider />
+                    <Button onClick={filter}>FILTER</Button>
+                    </List>
+                </Drawer>
 
             </div>
-            <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }} className="App">
+            <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center", flex:"3" }} className="App">
                 {displayReservations}
-                <ReactPaginate
+                {/* <ReactPaginate
                 previousLabel="Previous"
                 nextLabel="Next"
                 pageCount={pageCount}
@@ -113,10 +241,8 @@ function ShowReservationsOwner() {
                 nextLinkClassName={"nextBttn"}
                 disabledClassName={"paginationDisabled"}
                 activeClassName={"paginationActive"}
-            />
+            /> */}
             </div>
-            
-            
         </div>
     );
 }
