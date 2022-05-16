@@ -1,5 +1,8 @@
 package com.example.BookingAppTeam05.service.entities;
 
+import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
+import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
+import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.model.Room;
 import com.example.BookingAppTeam05.model.RuleOfConduct;
@@ -7,12 +10,14 @@ import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.entities.CottageRepository;
-import com.example.BookingAppTeam05.service.PictureService;
-import com.example.BookingAppTeam05.service.ReservationService;
-import com.example.BookingAppTeam05.service.RoomService;
-import com.example.BookingAppTeam05.service.RuleOfConductService;
+import com.example.BookingAppTeam05.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -27,15 +32,18 @@ public class CottageService {
     private PictureService pictureService;
     private RoomService roomService;
     private RuleOfConductService ruleOfConductService;
+    private SearchService searchService;
 
     @Autowired
     public CottageService(CottageRepository cottageRepository, ReservationService reservationService,
-                          PictureService pictureService, RoomService roomService, RuleOfConductService ruleOfConductService) {
+                          PictureService pictureService, RoomService roomService, RuleOfConductService ruleOfConductService
+                            , SearchService searchService) {
         this.cottageRepository = cottageRepository;
         this.reservationService = reservationService;
         this.pictureService = pictureService;
         this.roomService = roomService;
         this.ruleOfConductService = ruleOfConductService;
+        this.searchService = searchService;
     }
 
     public Cottage getCottageById(Long id) {
@@ -125,4 +133,6 @@ public class CottageService {
         Optional<Cottage> cottage = cottageRepository.findById(id);
         return cottage.orElse(null);
     }
+
+
 }

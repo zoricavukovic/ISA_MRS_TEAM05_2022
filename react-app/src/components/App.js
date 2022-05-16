@@ -35,6 +35,7 @@ import NotFoundPage404 from './forbiddenNotFound/NotFoundPage404';
 import ForbiddenPage403 from './forbiddenNotFound/ForbiddenPage403';
 import NewReservation from './reservations/NewReservationPage';
 import ChangePassword from './ChangePassword';
+import searchForReservation from './SearchForReservation';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -88,6 +89,7 @@ function App() {
                     <Route path="/addAdventure" component={AddAdventure} />
                     <Route path="/editAdventure" component={EditAdventure} />
                     <Route path="/newReservation" component={NewReservation} />
+                    <Route path="/search" component={searchForReservation} />
 
 
 

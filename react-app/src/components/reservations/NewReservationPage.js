@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { format } from "date-fns";
-import { DateRange  } from 'react-date-range';
+import { DateRange,Calendar } from 'react-date-range';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { Add, AddCircleOutlined, DateRangeOutlined, Label, Person, RemoveCircleOutlined } from '@mui/icons-material';
@@ -17,6 +17,7 @@ import { getCurrentUser } from '../../service/AuthService';
 export default function NewReservationPage(props) {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [badInput, setBadInput] = useState(false);
+    const [type, setType] = useState("");
     const [openDate,setOpenDate] = useState(false);
     const [personNumber,setPersonNumber] = useState(1);
     const [bookingEntity, setBookingEntity] = useState({});
@@ -96,6 +97,7 @@ export default function NewReservationPage(props) {
             findUnavailableDates(res.data);
             setLoaded(true);
             setPrice(res.data.pricelists[0].entityPricePerPerson);
+            setType(res.data.entityType);
         });
     }, []);
 
@@ -122,7 +124,22 @@ export default function NewReservationPage(props) {
                 uDates.push(new Date(new Date(reservation.startDate).getTime()+reservation.numOfDays*oneDay));
         }
         setUnavailableDates(uDates);
-        findNextAvailableDateRange(uDates);
+        console.log("PRETRAZENO");
+        let searchParams = props.history.location.state.searchParams;
+        console.log(searchParams);
+        if(Object.keys(searchParams).length === 0)
+            findNextAvailableDateRange(uDates);
+        else{
+            
+            setSelectionRange({
+                startDate: searchParams.startDate,
+                endDate: searchParams.endDate,
+                key: 'selection'
+            });
+            if(!isNaN(searchParams.numOfPersons) && searchParams.numOfPersons != null)
+            setPersonNumber(searchParams.numOfPersons);
+            
+        }
 
     };
 
@@ -292,6 +309,36 @@ export default function NewReservationPage(props) {
     let btnstyle = { margin: '10px 30px', backgroundColor:'rgb(244, 177, 77)' }
     let btn2style = { margin: '10px 30px', backgroundColor:'rgb(5, 30, 52)' }
 
+    const [startDate, setStartDate] = useState(new Date());
+
+    const datePicker = <><TextField style={{margin:'10px 10px' }} onClick={()=>setOpenDate(!openDate)} label='Date picker' placeholder={`${format(startDate, "dd.MM.yyyy.")}`} 
+                            value={`${format(startDate, "dd.MM.yyyy.")}`}
+                            InputProps={{
+                                startAdornment: (
+                                <InputAdornment position="start">
+                                    <DateRangeOutlined />
+                                </InputAdornment>
+                                )
+                            }}
+                                />
+                                {openDate && <div style={{
+                                        position:"absolute",
+                                        zIndex:99999,
+                                        backgroundColor:"white",
+                                        border:"1px solid rgb(5, 30, 52)"
+                                    }}
+                                    onBlur={()=>setOpenDate(!openDate)}
+                                    >
+                                    <Calendar
+                                    date={startDate}
+                                    onChange={(date)=>{setStartDate(date); setOpenDate(false);}}
+                                    minDate={new Date()}
+                                    editableDateInputs={true}
+                                    />
+                                </div>
+                                }
+                        </>
+
 
     return (
         <div className='App'>
@@ -325,31 +372,34 @@ export default function NewReservationPage(props) {
                         </DialogActions>
                     </Dialog>
                     <form onSubmit={reserve}>
-                        <TextField style={{margin:'10px 10px'}} onClick={()=>setOpenDate(!openDate)} label='Date range' placeholder={`${format(selectionRange.startDate, "dd.MM.yyyy.")} to ${format(selectionRange.endDate, "dd.MM.yyyy.")}`} 
-                            value={`${format(selectionRange.startDate, "dd.MM.yyyy.")} to ${format(selectionRange.endDate, "dd.MM.yyyy.")}`}
-                            InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <DateRangeOutlined />
-                                  </InputAdornment>
-                                ),
-                              }}
-                               />
-                        {openDate && <DateRange
-                            style={{
-                                position:"absolute",
-                                zIndex:99999,
-                                backgroundColor:"white",
-                                border:"1px solid rgb(5, 30, 52)"
-                            }}
-                            disabledDates={unavailableDates}
-                            onBlur={()=>setOpenDate(!openDate)}
-                            editableDateInputs={true}
-                            ranges={[selectionRange]}
-                            onChange={handleSelect}
-                            className="date"
-                            minDate={new Date()}
-                        />}
+                        {   type === "ADVENTURE"?datePicker: 
+                        <><TextField style={{margin:'10px 10px'}} onClick={()=>setOpenDate(!openDate)} label='Date range' placeholder={`${format(selectionRange.startDate, "dd.MM.yyyy.")} to ${format(selectionRange.endDate, "dd.MM.yyyy.")}`} 
+                                value={`${format(selectionRange.startDate, "dd.MM.yyyy.")} to ${format(selectionRange.endDate, "dd.MM.yyyy.")}`}
+                                InputProps={{
+                                    startAdornment: (
+                                    <InputAdornment position="start">
+                                        <DateRangeOutlined />
+                                    </InputAdornment>
+                                    ),
+                                }}
+                                />
+                            {openDate && <DateRange
+                                style={{
+                                    position:"absolute",
+                                    zIndex:99999,
+                                    backgroundColor:"white",
+                                    border:"1px solid rgb(5, 30, 52)"
+                                }}
+                                disabledDates={unavailableDates}
+                                onBlur={()=>setOpenDate(!openDate)}
+                                editableDateInputs={true}
+                                ranges={[selectionRange]}
+                                onChange={handleSelect}
+                                className="date"
+                                minDate={new Date()}
+                            />}
+                        </>
+                        }
                         <div style={{zIndex:1}}>
                             <Grid>
                                 <RemoveCircleOutlined style={{marginTop:'30px', width:32, height:32}} onClick={()=>personNumber > 1 && setPersonNumber(personNumber-1)}/>

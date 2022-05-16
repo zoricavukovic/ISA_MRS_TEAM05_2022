@@ -20,3 +20,7 @@ export function editAdventureById(id, editedAdventure) {
 export function addNewAdventure(newAdventure) {
     return api.post('/adventures', newAdventure);
 }
+
+export function getSearchedAdventures(searchParams) {
+    return api.post('/adventures/search', searchParams);
+}

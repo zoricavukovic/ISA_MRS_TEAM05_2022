@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.dto;
 
-public class SimpleSearchForBookingEntityDTO {
+public class SimpleSearchForBookingEntityOwnerDTO {
     private Long ownerId;
     private String name;
     private String address;
@@ -9,9 +9,9 @@ public class SimpleSearchForBookingEntityDTO {
     private Double maxCostPerPerson;
     private Float minRating;
 
-    public SimpleSearchForBookingEntityDTO() {}
+    public SimpleSearchForBookingEntityOwnerDTO() {}
 
-    public SimpleSearchForBookingEntityDTO(String name, String address, Long placeId, Double minCostPerPerson, Double maxCostPerPerson, Float minRating) {
+    public SimpleSearchForBookingEntityOwnerDTO(String name, String address, Long placeId, Double minCostPerPerson, Double maxCostPerPerson, Float minRating) {
         this.name = name;
         this.address = address;
         this.placeId = placeId;

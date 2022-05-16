@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.controller.bookingEntities;
 
+import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
 import com.example.BookingAppTeam05.dto.entities.NewAdventureDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
@@ -10,7 +11,6 @@ import com.example.BookingAppTeam05.service.entities.AdventureService;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.InstructorService;
 import com.example.BookingAppTeam05.service.PlaceService;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -105,6 +105,17 @@ public class AdventureController {
             retVal.add(s);
         }
         return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+
+    @PostMapping(value="/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedAdventures(@RequestBody SearchParamsForEntity searchParams) {
+        try {
+            List<SearchedBookingEntityDTO> adventureDTOS = bookingEntityService.getSearchedBookingEntities(searchParams, "instructor");
+            return new ResponseEntity<>(adventureDTOS, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
 

@@ -12,13 +12,17 @@ import java.util.Optional;
 
 public interface AdventureRepository extends JpaRepository<Adventure, Long> {
 
-    @Query("select a from Adventure a left join fetch a.place p left join fetch a.fishingEquipment f left join fetch a.rulesOfConduct r left join fetch a.pictures s where a.id=?1 and a.deleted = false")
+    @Query("select a from Adventure a left join fetch a.place p left join fetch a.fishingEquipment f " +
+            "left join fetch a.rulesOfConduct r left join fetch a.pictures s left join fetch a.reservations res " +
+            "where a.id=?1 and a.deleted = false")
     Adventure getAdventureById(Long id);
 
     @Query("select distinct a from Adventure a left join fetch a.place p left join fetch a.pictures s where a.instructor.id=?1 and a.deleted = false")
     List<Adventure> getAdventuresForOwnerId(Long id);
 
-    @Query(value="select distinct c from Adventure c left join fetch c.rulesOfConduct r left join fetch c.place p left join fetch c.pictures s where c.deleted = false")
+    @Query(value="select distinct c from Adventure c left join fetch c.rulesOfConduct r left join fetch c.place p " +
+            "left join fetch c.pictures s left join fetch c.reservations res left join fetch c.unavailableDates una " +
+            "where c.deleted = false")
     List<Adventure> findAll();
 
     @Query(value="select distinct a.instructor from Adventure a where a.id=?1 and a.deleted=false")
