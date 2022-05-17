@@ -26,18 +26,26 @@ public class UnavailableDateController {
         this.unavailableDateService = unavailableDateService;
     }
 
-    @PostMapping(value="/checkForOverlapUnavailableDate", consumes = MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/checkForOverlapUnavailableDate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UnavailableDateDTO> checkIfThereExistOverlapBetweenUnavailablePeriods(@Valid @RequestBody UnavailableDateDTO unavailableDateDTO) {
         UnavailableDateDTO retVal = unavailableDateService.checkIfThereExistOverlapBetweenUnavailablePeriodsForEntity(unavailableDateDTO, unavailableDateDTO.getEntityId());
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
-    @PostMapping(value="/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UnavailableDateDTO> addNewUnavaiableDate(@Valid @RequestBody UnavailableDateDTO unavailableDateDTO) {
         UnavailableDateDTO retVal = unavailableDateService.addNewUnavailableDateForEntityId(unavailableDateDTO);
         if (retVal == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
 
+    @PostMapping(value = "/setAvailable/", consumes = MediaType.APPLICATION_JSON_VALUE)
+
+    public ResponseEntity<Integer> deleteUnavailablePeriodForEntityId(@Valid @RequestBody UnavailableDateDTO unavailableDateDTO) {
+        Integer res = unavailableDateService.setUnavailableDateAsAvaialbeForEntityId(unavailableDateDTO);
+        if (res != null && res != 0)
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 }

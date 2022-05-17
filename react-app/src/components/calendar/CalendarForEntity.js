@@ -8,7 +8,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import { Grid, Typography } from "@mui/material";
+import { Grid, TextField, Typography } from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
 import { getCalendarValuesByBookintEntityId } from "../../service/CalendarService";
@@ -35,7 +35,7 @@ import {
     AppointmentTooltip,
     CurrentTimeIndicator,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import { addNewUnavailableDate, checkOverlapForUnavailableDate } from "../../service/UnavailablePeriodService";
+import { addNewUnavailableDate, checkOverlapForUnavailableDate, setUnavailablePeriodAsAvailable } from "../../service/UnavailablePeriodService";
 
 
 const resources = [{
@@ -150,11 +150,7 @@ export default function CalendarForEntity() {
     }
 
     const handleCloseAfterAddingAndRefreshCalendar = () => {
-        getCalendarValuesByBookintEntityId(11)
-        .then(res => {
-            setData(res.data);
-            setIsLoadingData(false);
-        });
+        refreshPage();
         setConfirmDialog(false);
         setOpenDialog(false);
     }
@@ -233,6 +229,17 @@ export default function CalendarForEntity() {
 
     }
 
+    // ===================================================== for adding =============================
+    const [openModifyDialog, setOpenModifyDialog] = useState(false);
+    const handleOnCloseModifyDialog = () => {
+        setOpenModifyDialog(false);
+    }
+    const handleOnOpenModifyDialog = () => {
+        setOpenModifyDialog(true);
+    }
+
+
+
     useEffect(() => {
         if (overlapPeriod != null && overlapPeriod != undefined && overlapPeriod != '') {
             handleOpenConfirmDialog();
@@ -248,12 +255,38 @@ export default function CalendarForEntity() {
     }
 
     useEffect(() => {
-       getCalendarValuesByBookintEntityId(11)
-       .then(res => {
-           setData(res.data);
-           setIsLoadingData(false);
-       });
+        refreshPage();
     }, []);
+
+    const refreshPage = () => {
+        getCalendarValuesByBookintEntityId(11)
+            .then(res => {
+                setData(res.data);
+                setIsLoadingData(false);
+            });
+    }
+
+    const handleSetAvailableDate = (item) => {
+        let obj = {
+            "entityId": 11,
+            "startDate": item.startDate,
+            "endDate": item.endDate
+        };
+        console.log("ovo slajeeeeemmmm")
+        console.log(obj);
+        setUnavailablePeriodAsAvailable(obj)
+            .then(res => {
+                setTypeAlert("success");
+                setAlertMessage("Successfuly set period as available");
+                setOpenAlert(true);
+                refreshPage();
+            })
+            .catch(err => {
+                setTypeAlert("error");
+                setAlertMessage("Error happend on server. Can't set period as available");
+                setOpenAlert(true);
+            });
+    }
 
 
     if (isLoadingData) {
@@ -262,10 +295,20 @@ export default function CalendarForEntity() {
     else {
         return (
 
-            <Box style={{ margin: "1% 9% 1% 15%" }}>
-                <Button variant="contained" onClick={handleOpenDialog} style={{ color: 'rgb(5, 30, 52)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
-                    Add unavailable period
-                </Button>
+            <Box
+                style={{ margin: "1% 9% 1% 15%" }}
+                alignItems="center"
+                justifyContent="center"
+            >
+                <Box style={{ display: "flex", flexDirection: "row", margin: "1% auto 1% auto" }}>
+                    <Button variant="contained" onClick={handleOpenDialog} style={{ color: 'rgb(5, 30, 52)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+                        Add unavailable period
+                    </Button>
+                    <Button variant="contained" onClick={handleOnOpenModifyDialog} style={{ color: 'rgb(5, 30, 52)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+                        Modify unavailable periods
+                    </Button>
+                </Box>
+
                 <Dialog
                     open={openDialog}
                     onClose={handleCloseDialog}
@@ -365,6 +408,81 @@ export default function CalendarForEntity() {
                 </Dialog>
 
 
+
+
+                <Dialog
+                    open={openModifyDialog}
+                    onClose={handleOnCloseModifyDialog}
+                    style={{ margin: '1% auto 1% auto', padding: '1%', width: '100%', borderRadius: '10px' }}
+                    fullWidth
+                    maxWidth="sm"
+                >
+                    <DialogTitle>Modify unavailable periods</DialogTitle>
+                    <Divider />
+                    <DialogContent
+                        style={{ height: '400px' }}
+                    >
+                        <Grid
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            container
+                            spacing={2}
+                        >
+                            <Grid item xs={12} sm={12}>
+                                {data.map((item, index) => (
+
+                                    (item.type === "unavailable") ?
+                                        (
+                                            <div>
+                                                <Box style={{ display: "flex", flexDirection: "row" }}>
+                                                    <TextField
+                                                        id="outlined-read-only-input"
+                                                        label="Start date"
+                                                        defaultValue={item.startDate}
+                                                        InputProps={{
+                                                            readOnly: true,
+                                                        }}
+                                                    />
+                                                    -
+                                                    <TextField
+                                                        id="outlined-read-only-input"
+                                                        label="End date"
+                                                        defaultValue={item.endDate}
+                                                        InputProps={{
+                                                            readOnly: true,
+                                                        }}
+                                                    />
+                                                    <Button
+                                                        variant="contained"
+                                                        style={{ color: 'white', fontSize:'9px', textAlign: 'center', backgroundColor: 'rgb(68, 255, 162)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
+                                                        onClick={() => { handleSetAvailableDate(item)}}
+                                                    >
+                                                        Set as available
+                                                    </Button>
+                                                </Box>
+                                                <br />
+                                            </div>
+                                        ) : (<div></div>)
+                                ))}
+                            </Grid>
+                            <br />
+                            <Divider />
+                            <br />
+                            <Grid item xs={12} sm={12}>
+                                <Button
+                                    variant="contained"
+                                    style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
+                                    onClick={handleOnCloseModifyDialog}
+                                >
+                                    Close
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                </Dialog>
+
+
                 <Dialog
                     open={confirmDialog}
                     onClose={handleCloseConfirmDialog}
@@ -397,6 +515,7 @@ export default function CalendarForEntity() {
 
 
                 <Paper>
+                    {console.log(data)}
                     <Scheduler
                         data={data}
                     >

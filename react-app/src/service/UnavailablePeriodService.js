@@ -9,3 +9,7 @@ export function checkOverlapForUnavailableDate(date) {
 export function addNewUnavailableDate(data) {
     return api.post('/unavailableDates/', data);
 }
+
+export function setUnavailablePeriodAsAvailable(data) {
+    return api.post('/unavailableDates/setAvailable/', data);
+}
