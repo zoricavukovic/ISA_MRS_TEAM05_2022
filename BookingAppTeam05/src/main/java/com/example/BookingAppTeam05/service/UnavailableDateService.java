@@ -8,6 +8,7 @@ import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,11 @@ public class UnavailableDateService {
     private boolean unavailableDateIsBetween(UnavailableDateDTO cmp, LocalDateTime date) {
         return (date.isAfter(cmp.getStartDate()) || date.equals(cmp.getStartDate())) &&
                 (date.isBefore(cmp.getEndDate()) || date.equals(cmp.getEndDate()));
+    }
+
+    @Transactional
+    public Integer setUnavailableDateAsAvaialbeForEntityId(UnavailableDateDTO u) {
+        return this.unavailableDateRepository.deleteUnavailableDateByEntityIdAndDateRange(u.getEntityId(), u.getStartDate(), u.getEndDate());
     }
 
 
