@@ -263,6 +263,28 @@ VALUES
     ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 0);
 
 
+INSERT INTO public.reports(
+    admin_response, come_client, comment, penalize_client, processed, reservation_id, admin_penalize_client)
+VALUES
+    (null, true, 'commen1 fds fds fdsfdf d fdsfds fds fsd f ds fdfdf d', true, false, 1, false),
+    ('response1', true, 'commen2 fdfdfdfd fd d', true, true, 4, false),
+    ('response2', true, 'commen3 fd fd fdfddfgfjgflkdgjfdlkjg lg fd ', true, true, 20, true),
+    (null, true, 'commen5 flkdj flkds jflkd', true, false, 23, false),
+    (null, true, 'commen5', false, false, 7, false),
+    (null, true, 'commen6', false, false, 25, false),
+
+    (null, true, 'commen7fdslkfjds', false, false, 24, false),
+    (null, true, 'commen8', true, false, 8, false),
+    (null, true, 'commen9', true, false, 9, false),
+    (null, true, 'commen10', true, false, 10, false),
+    (null, true, 'commen11', true, false, 11, false),
+    (null, true, 'commen12', true, false, 27, false),
+    (null, true, 'commen13', true, false, 26, false),
+    (null, true, 'commen15', true, false, 16, false),
+    (null, true, 'commen15', true, false, 3, false),
+    (null, true, 'commen15', true, false, 22, false);
+
+
 INSERT INTO unavailable_dates (start_time, end_time, entity_id)
 VALUES
     ('2022-06-04 9:00 pm', '2022-06-06 9:00 pm', 11),

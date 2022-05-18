@@ -38,7 +38,7 @@ import ChangePassword from './ChangePassword';
 import searchForReservation from './SearchForReservation';
 import AddAdmin from './admin/AddAdmin';
 import AdminHomePage from './admin/AdminHomePage';
-
+import ReviewReservationReport from './admin/ReviewReservationReports';
 
 
 function App() {
@@ -104,6 +104,7 @@ function App() {
                     <Route path="/changePassword" component={ChangePassword} />
                     <Route path="/addAdmin" component={AddAdmin} />
                     <Route path="/adminHomePage" component={AdminHomePage} />
+                    <Route path="/reviewReservationReportsAdmin" component={ReviewReservationReport} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>

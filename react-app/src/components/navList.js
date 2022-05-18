@@ -7,6 +7,7 @@ import BorderColor from '@mui/icons-material/BorderColor';
 import Search from '@mui/icons-material/Search';
 import { AddCircle, Cottage, Handshake, Phishing, Sailing } from '@mui/icons-material';
 import { getCurrentUser } from '../service/AuthService';
+import ReviewsIcon from '@mui/icons-material/Reviews';
 
 const navbarDefaultList = [
   {
@@ -15,7 +16,7 @@ const navbarDefaultList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url: '/'
   },
   {
     icon: Cottage,
@@ -23,7 +24,7 @@ const navbarDefaultList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showCottages'
+    url: '/showCottages'
   },
   {
     icon: Sailing,
@@ -31,7 +32,7 @@ const navbarDefaultList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showBoats'
+    url: '/showBoats'
   },
   {
     icon: Phishing,
@@ -39,31 +40,31 @@ const navbarDefaultList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showAdventures'
+    url: '/showAdventures'
   },
-  
+
 ];
 
-export default function getNavbarList(){
+export default function getNavbarList() {
   let curUser = getCurrentUser();
-  if(curUser === null || curUser === undefined || Object.keys(curUser).length === 0)
+  if (curUser === null || curUser === undefined || Object.keys(curUser).length === 0)
     return navbarDefaultList;
 
-  switch(curUser.userType.name){
-      case 'ROLE_ADMIN':
-        return navbarDefaultList;
-      case 'ROLE_CLIENT':
-        return navbarClientList;
-      case 'ROLE_COTTAGE_OWNER':
-        return navbarCotOwnList;
-      case 'ROLE_SHIP_OWNER':
-        return navbarShipOwnList;
-      case 'ROLE_INSTRUCTOR':
-        return navbarInstList;
-      case 'ROLE_SUPER_ADMIN':
-        return navbarSuperAdminList;
-      default:
-        return navbarDefaultList;
+  switch (curUser.userType.name) {
+    case 'ROLE_ADMIN':
+      return navbarAdminList;
+    case 'ROLE_CLIENT':
+      return navbarClientList;
+    case 'ROLE_COTTAGE_OWNER':
+      return navbarCotOwnList;
+    case 'ROLE_SHIP_OWNER':
+      return navbarShipOwnList;
+    case 'ROLE_INSTRUCTOR':
+      return navbarInstList;
+    case 'ROLE_SUPER_ADMIN':
+      return navbarSuperAdminList;
+    default:
+      return navbarDefaultList;
   }
 }
 
@@ -75,7 +76,7 @@ const navbarClientList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url: '/'
   }
 ]
 
@@ -87,7 +88,7 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/addCottage'
+    url: '/addCottage'
   },
   {
     icon: FolderOpen,
@@ -95,7 +96,7 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/cottages'
+    url: '/cottages'
   },
   {
     icon: Handshake,
@@ -103,7 +104,7 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   }
 ]
 
@@ -115,7 +116,7 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/addShip'
+    url: '/addShip'
   },
   {
     icon: FolderOpen,
@@ -123,7 +124,7 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/ships'
+    url: '/ships'
   },
   {
     icon: Handshake,
@@ -131,7 +132,7 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   }
 ]
 
@@ -143,7 +144,7 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/addAdventure'
+    url: '/addAdventure'
   },
   {
     icon: FolderOpen,
@@ -151,7 +152,7 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/adventures'
+    url: '/adventures'
   },
   {
     icon: Handshake,
@@ -159,9 +160,22 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   }
 ]
+
+
+
+
+const reviewReservationReports = {
+  icon: ReviewsIcon,
+  desc: 'Review reservation reports',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/reviewReservationReportsAdmin'
+}
+
 
 const navbarSuperAdminList = [
   ...navbarDefaultList,
@@ -171,6 +185,12 @@ const navbarSuperAdminList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/addAdmin'
+    url: '/addAdmin'
   },
+  reviewReservationReports
+]
+
+const navbarAdminList = [
+  ...navbarDefaultList,
+  reviewReservationReports
 ]
