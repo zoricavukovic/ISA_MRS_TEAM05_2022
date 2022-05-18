@@ -39,6 +39,7 @@ import searchForReservation from './SearchForReservation';
 import AddAdmin from './admin/AddAdmin';
 import AdminHomePage from './admin/AdminHomePage';
 
+import Reports from './analytics/Reports';
 
 
 function App() {
@@ -94,7 +95,7 @@ function App() {
                     <Route path="/editAdventure" component={EditAdventure} />
                     <Route path="/newReservation" component={NewReservation} />
                     <Route path="/search" component={searchForReservation} />
-
+                    <Route path="/analytics" component={Reports} />
 
 
                     <Route path="/calendarForEntity" component={CalendarForEntity} />

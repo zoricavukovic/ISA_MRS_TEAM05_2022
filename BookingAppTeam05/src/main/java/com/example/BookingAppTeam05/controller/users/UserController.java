@@ -38,8 +38,10 @@ public class UserController {
         UserDTO userDTO = new UserDTO(u);
         userDTO.setPlace(u.getPlace());
         if (u.getRole().getName().equals("ROLE_CLIENT")) {
-            Client client = (Client) u;
-            userDTO.setPenalties(client.getPenalties());
+            userDTO.setPenalties(((Client) u).getPenalties());
+        }
+        if (u.getRole().getName().equals("ROLE_SHIP_OWNER")) {
+            userDTO.setCaptain(((ShipOwner) u).isCaptain());
         }
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
@@ -57,6 +59,9 @@ public class UserController {
         Place place = placeService.getPlaceByZipCode(userDTO.getPlace().getZipCode());
         user.setPlace(place);
         final User updatedUser;
+        if (userDTO.getUserType().toString().equals("ROLE_SHIP_OWNER")){
+            ((ShipOwner) user).setCaptain(userDTO.isCaptain());
+        }
         try {
             updatedUser = userService.save(user);
         }

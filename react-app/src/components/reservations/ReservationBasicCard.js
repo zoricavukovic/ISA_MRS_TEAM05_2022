@@ -134,7 +134,7 @@ export default function ImgReservation(props) {
             setPricelist(res.data);
             getAdditionalServicesByReservationId(props.reservation.id).then(addServices => {
               setAdditionalServices(addServices.data);
-              let updatedResCost = res.data.entityPricePerPerson*props.reservation.numOfDays*props.reservation.numOfPersons;
+              let updatedResCost = res.data.entityPricePerPerson*props.reservation.cost;
               if (addServices.data.length>0){
                 for (let addService of addServices.data){
                   updatedResCost += addService.price;

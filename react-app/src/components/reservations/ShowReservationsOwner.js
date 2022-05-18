@@ -243,6 +243,12 @@ function ShowReservationsOwner() {
                 activeClassName={"paginationActive"}
             /> */}
             </div>
+            <div style={{ margin: '1% 9% 1% 9%' }} className="App">
+                <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
+                    {reservations.length === 0 && <h3>Reservation history is empty.</h3>}
+                    
+                </div>
+            </div>
         </div>
     );
 }

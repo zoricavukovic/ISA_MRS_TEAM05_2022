@@ -50,6 +50,10 @@ public class ShipService {
         return shipRepository.getShipById(id);
     }
 
+    public Ship getShipByIdCanBeDeleted(Long id) {
+        return shipRepository.getShipByIdCanBeDeleted(id);
+    }
+
     public Ship save(Ship ship) {
         return shipRepository.save(ship);
     }

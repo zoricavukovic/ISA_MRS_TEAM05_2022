@@ -48,6 +48,9 @@ public class AdventureService {
         return this.adventureRepository.getAdventureById(id);
     }
 
+    public Adventure getAdventureByIdCanBeDeleted(Long id) {
+        return this.adventureRepository.getAdventureByIdCanBeDeleted(id);
+    }
 
     public List<Adventure> findAll() {
         return this.adventureRepository.findAll();

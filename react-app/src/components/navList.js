@@ -1,12 +1,8 @@
-import DashboardOutlined from '@mui/icons-material/DashboardOutlined';
-import Person from '@mui/icons-material/Person';
-import Forum from '@mui/icons-material/Forum';
-import Analytics from '@mui/icons-material/Analytics';
 import FolderOpen from '@mui/icons-material/FolderOpen';
-import BorderColor from '@mui/icons-material/BorderColor';
 import Search from '@mui/icons-material/Search';
 import { AddCircle, Cottage, Handshake, Phishing, Sailing } from '@mui/icons-material';
 import { getCurrentUser } from '../service/AuthService';
+import InsightsIcon from '@mui/icons-material/Insights';
 
 const navbarDefaultList = [
   {
@@ -104,6 +100,14 @@ const navbarCotOwnList = [
     badge: 0,
     subList: [],
     url:'/showReservationsOwner'
+  },
+  {
+    icon: InsightsIcon,
+    desc: 'Analytics',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url:'/analytics'
   }
 ]
 
@@ -132,6 +136,14 @@ const navbarShipOwnList = [
     badge: 0,
     subList: [],
     url:'/showReservationsOwner'
+  },
+  {
+    icon: InsightsIcon,
+    desc: 'Analytics',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url:'/analytics'
   }
 ]
 
@@ -160,6 +172,14 @@ const navbarInstList = [
     badge: 0,
     subList: [],
     url:'/showReservationsOwner'
+  },
+  {
+    icon: InsightsIcon,
+    desc: 'Analytics',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url:'/analytics'
   }
 ]
 

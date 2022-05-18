@@ -13,6 +13,10 @@ export function getAdventureById(id) {
     return api.get('/adventures/' + id);
 }
 
+export function getAdventureByIdCanBeDeleted(id) {
+    return api.get('/adventures/deleted/' + id);
+}
+
 export function editAdventureById(id, editedAdventure) {
     return api.put('/adventures/' + id, editedAdventure);
 }

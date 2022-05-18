@@ -13,6 +13,10 @@ export function getShipById(id) {
     return api.get('/ships/' + id);
 }
 
+export function getShipByIdCanBeDeleted(id) {
+    return api.get('/ships/deleted/' + id);
+}
+
 export function editShipById(id, editedShip) {
     return api.put('/ships/' + id, editedShip);
 }

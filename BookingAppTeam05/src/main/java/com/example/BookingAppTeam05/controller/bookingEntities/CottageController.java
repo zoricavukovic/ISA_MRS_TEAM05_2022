@@ -53,6 +53,16 @@ public class CottageController {
     @GetMapping(value="/{id}")
     public ResponseEntity<CottageDTO> getCottageById(@PathVariable Long id) {
         Cottage cottage = cottageService.getCottageById(id);
+        return getCottageDTOResponseEntity(cottage);
+    }
+
+    @GetMapping(value="/deleted/{id}")
+    public ResponseEntity<CottageDTO> getCottageByIdCanBeDeleted(@PathVariable Long id) {
+        Cottage cottage = cottageService.getCottageByIdCanBeDeleted(id);
+        return getCottageDTOResponseEntity(cottage);
+    }
+
+    private ResponseEntity<CottageDTO> getCottageDTOResponseEntity(Cottage cottage) {
         if (cottage == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         CottageDTO cottageDTO = new CottageDTO(cottage);

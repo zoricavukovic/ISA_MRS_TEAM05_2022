@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createTheme, styled, ThemeProvider} from "@mui/material/styles";
 import {CircularProgress, FormControl, InputLabel, List, NativeSelect, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -16,6 +16,8 @@ import { editUserById, getAllUsers, getUserById } from '../../service/UserServic
 import { getAllPlaces, getPlaceById } from '../../service/PlaceService';
 import { userLoggedIn } from '../../service/UserService';
 import { getCurrentUser } from '../../service/AuthService';
+import CaptainIcon from '../../icons/captainOrange.png';
+import Checkbox from '@mui/material/Checkbox';
 
 function EditUserProfile(props) {
 
@@ -45,6 +47,10 @@ function EditUserProfile(props) {
     const [country,setCountry] = useState("");
     const [city,setCity] = useState("");
     const history = useHistory();
+    const [checked, setChecked] = React.useState();
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    };
     
     const avatar = <Avatar
         alt="Zorica Vukovic"
@@ -60,6 +66,10 @@ function EditUserProfile(props) {
                 setUserData(res.data);
                 setChangedUserData(res.data);
                 setLoading(false);
+                if (res.data.userType.name === "ROLE_SHIP_OWNER"){
+                    console.log(res.data.captain);
+                    setChecked(res.data.captain);
+                }
                 setCountry(res.data.place.stateName);
             })
     
@@ -149,7 +159,7 @@ function EditUserProfile(props) {
     const SubmitButton = <ListItemButton component="a" onClick={saveChanges} style={{backgroundColor:"rgb(244,177,77)",color:"white",textAlign:"center", borderRadius: 7}}>
         <ListItemText
             sx={{ my: 0 }}
-            primary="Save Changes" //STAVITI LOYALTY TIP
+            primary="Save Changes"
             primaryTypographyProps={{
                 fontSize: 20,
                 fontWeight: 'medium',
@@ -274,7 +284,34 @@ function EditUserProfile(props) {
                                             </ListItemButton>
 
                                         </ListItem>
-                                    ):(<div></div>)}
+                                    ):(
+                                        <>
+                                        {(userData.userType.name === "ROLE_SHIP_OWNER")? (
+                                            <ListItem component="div" disablePadding>
+                                               <img style={{marginLeft:'8%'}} src={CaptainIcon}></img>
+                                                 
+                                                <ListItemText
+                                                    primary={" Captain"}
+                                                    primaryTypographyProps={{
+                                                        color: 'primary',
+                                                        fontSize: 20,
+                                                        fontWeight: 'medium',
+                                                        variant: 'body2',
+                                                    }}
+                                                />
+                                                 <Checkbox
+                                                    checked={checked}
+                                                    onChange={handleChange}
+                                                    inputProps={{ 'aria-label': 'controlled' }}
+                                                    
+                                                />
+
+                                        </ListItem>
+                                       ):(
+                                           <div></div>
+                                       )}
+                                       </>
+                                    )}
                                 </FireNav>
                             </Paper>
                         </ThemeProvider>

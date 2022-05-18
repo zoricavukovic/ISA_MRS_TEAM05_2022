@@ -44,6 +44,16 @@ public class AdventureController {
     @GetMapping(value="/{id}")
     public ResponseEntity<AdventureDTO> getAdventureById(@PathVariable Long id) {
         Adventure adventure = adventureService.getAdventureById(id);
+        return getAdventureDTOResponseEntity(adventure);
+    }
+
+    @GetMapping(value="/deleted/{id}")
+    public ResponseEntity<AdventureDTO> getAdventureByIdCanBeDeleted(@PathVariable Long id) {
+        Adventure adventure = adventureService.getAdventureByIdCanBeDeleted(id);
+        return getAdventureDTOResponseEntity(adventure);
+    }
+
+    private ResponseEntity<AdventureDTO> getAdventureDTOResponseEntity(Adventure adventure) {
         if (adventure == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -54,6 +64,7 @@ public class AdventureController {
         adventureDTO.setPictures(adventure.getPictures());
         return new ResponseEntity<>(adventureDTO, HttpStatus.OK);
     }
+
 
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

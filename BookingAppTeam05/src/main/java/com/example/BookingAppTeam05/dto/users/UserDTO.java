@@ -2,10 +2,7 @@ package com.example.BookingAppTeam05.dto.users;
 
 import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.Place;
-import com.example.BookingAppTeam05.model.users.Admin;
-import com.example.BookingAppTeam05.model.users.Client;
-import com.example.BookingAppTeam05.model.users.Role;
-import com.example.BookingAppTeam05.model.users.User;
+import com.example.BookingAppTeam05.model.users.*;
 
 import java.time.LocalDate;
 
@@ -23,6 +20,7 @@ public class UserDTO {
     private Place place;
     private Role userType;
     private int penalties; // only for clients
+    private boolean captain; // only for shipOwners
     private boolean passwordChanged; // only for admins
     private LoyaltyProgram loyaltyProgram;
 
@@ -47,10 +45,16 @@ public class UserDTO {
 
 
     private void setAdditionalFieldIfNeeded(User user) {
-        if (user.getRole().getName().equals("ROLE_CLIENT")) {
-            setPenalties(((Client)user).getPenalties());
-        } else if (user.getRole().getName().equals("ROLE_ADMIN")) {
-            setPasswordChanged(((Admin)user).isPasswordChanged());
+        switch (user.getRole().getName()) {
+            case "ROLE_CLIENT":
+                setPenalties(((Client) user).getPenalties());
+                break;
+            case "ROLE_ADMIN":
+                setPasswordChanged(((Admin) user).isPasswordChanged());
+                break;
+            case "ROLE_SHIP_OWNER":
+                setCaptain(((ShipOwner) user).isCaptain());
+                break;
         }
     }
 
@@ -164,6 +168,14 @@ public class UserDTO {
 
     public void setUserType(Role userType) {
         this.userType = userType;
+    }
+
+    public boolean isCaptain() {
+        return captain;
+    }
+
+    public void setCaptain(boolean captain) {
+        this.captain = captain;
     }
 
     public LoyaltyProgram getLoyaltyProgram() {

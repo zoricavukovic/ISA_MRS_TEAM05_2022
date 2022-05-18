@@ -8,9 +8,12 @@ import {useEffect, useState} from "react";
 import { CircularProgress} from "@mui/material";
 import { URL_PICTURE_PATH } from "../../service/PictureService";
 import Grid from '@mui/material/Grid';
-import { getCottageById } from '../../service/CottageService';
+import { getCottageByIdCanBeDeleted } from '../../service/CottageService';
+import { getShipByIdCanBeDeleted } from '../../service/ShipService';
+import { getAdventureByIdCanBeDeleted } from '../../service/AdventureService';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import { getCurrentUser } from '../../service/AuthService.js';
 
 export default function ReservedBookingEntityDetail(props) {
     
@@ -44,33 +47,90 @@ export default function ReservedBookingEntityDetail(props) {
 
 
     function showBookingEntity(){
-          history.push({
-              pathname: "/showCottageProfile",
-              state: { bookingEntityId: bookingEntity.id }
-          })
+          if (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER"){
+            history.push({
+                pathname: "/showCottageProfile",
+                state: { bookingEntityId: bookingEntity.id }
+            })
+          }
+          else if (getCurrentUser().userType.name === "ROLE_SHIP_OWNER"){
+            history.push({
+                pathname: "/showShipProfile",
+                state: { bookingEntityId: bookingEntity.id }
+            })
+          }
+          else if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR"){
+            history.push({
+                pathname: "/showAdventureProfile",
+                state: { bookingEntityId: bookingEntity.id }
+            })
+          }
+         
     };
     
     useEffect(() => {
         if (props === null || props === undefined){
-            history.push('/login');
+            history.push('/forbiddenPage');
         }
-        getCottageById(props.reservation.bookingEntity.id).then(res => {
-            setBookingEntity(res.data);
-            console.log(res.data);
-            let labelRules = [];
-            for (let rule of res.data.rulesOfConduct){
-                let label = "";
-                if (rule.allowed === true){
-                    label += "Allowed " + rule.ruleName;
+        if (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER"){
+            getCottageByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
+                setBookingEntity(res.data);
+                console.log(res.data);
+                let labelRules = [];
+                for (let rule of res.data.rulesOfConduct){
+                    let label = "";
+                    if (rule.allowed === true){
+                        label += "Allowed " + rule.ruleName;
+                    }
+                    else{
+                        label += "Unallowed " + rule.ruleName;
+                    }
+                    labelRules.push(label);
                 }
-                else{
-                    label += "Unallowed " + rule.ruleName;
+                setRulesLabel(labelRules);
+                setLoading(false);
+            });
+          }
+          else if (getCurrentUser().userType.name === "ROLE_SHIP_OWNER"){
+            getShipByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
+                setBookingEntity(res.data);
+                console.log(res.data);
+                let labelRules = [];
+                for (let rule of res.data.rulesOfConduct){
+                    let label = "";
+                    if (rule.allowed === true){
+                        label += "Allowed " + rule.ruleName;
+                    }
+                    else{
+                        label += "Unallowed " + rule.ruleName;
+                    }
+                    labelRules.push(label);
                 }
-                labelRules.push(label);
-            }
-            setRulesLabel(labelRules);
-            setLoading(false);
-        });
+                setRulesLabel(labelRules);
+                setLoading(false);
+            });
+          }
+          else if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR"){
+            getAdventureByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
+                setBookingEntity(res.data);
+                console.log(res.data);
+                let labelRules = [];
+                for (let rule of res.data.rulesOfConduct){
+                    let label = "";
+                    if (rule.allowed === true){
+                        label += "Allowed " + rule.ruleName;
+                    }
+                    else{
+                        label += "Unallowed " + rule.ruleName;
+                    }
+                    labelRules.push(label);
+                }
+                setRulesLabel(labelRules);
+                setLoading(false);
+            });
+          }
+         
+        
         
         
     }, [])
