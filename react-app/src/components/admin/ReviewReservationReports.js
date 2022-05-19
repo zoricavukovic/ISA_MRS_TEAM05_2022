@@ -1,13 +1,6 @@
-
-
 import React, { useEffect, useState } from "react";
-import Paper from '@mui/material/Paper';
-import { indigo, teal, red } from '@mui/material/colors';
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { Grid, TextField, Typography } from "@mui/material";
@@ -17,13 +10,14 @@ import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import { useForm } from "react-hook-form";
 import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
 import { userLoggedInAsAdminWithResetedPassword, userLoggedInAsSuperAdmin } from "../../service/UserService";
-import { getAllReportsForViewByType, PROCESSED, UNPROCESSED } from "../../service/ReportService";
+import { getAllReportsForViewByType, giveResponseForReport, PROCESSED, UNPROCESSED } from "../../service/ReportService";
 import { DataGrid } from "@mui/x-data-grid";
 import { fontWeight, height } from "@mui/system";
 import { Card, Checkbox, TextareaAutosize } from "@mui/material";
 import { SecurityUpdateSharp } from "@mui/icons-material";
+import { Snackbar } from "@mui/material";
+
 
 function ReviewDialog(props) {
 
@@ -32,10 +26,49 @@ function ReviewDialog(props) {
 
     const [adminResponse, setAdminResponse] = useState('');
     const [checkedPenalize, setCheckedPenalize] = useState(false);
+    const [hiddenErrorResponse, setHiddenErrorResponse] = useState("none");
+
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
+
+    const [requestSent, setRequestSent] = useState(false);
+
+    const handleCloseAlert = () => {
+        setOpenAlert(false);
+    }
+
+    const checkAdminResponseLength = () => {
+        if (adminResponse.length < 255) {
+            setHiddenErrorResponse("none");
+            return true;
+        } else {
+            setHiddenErrorResponse("block");
+            return false;
+        }
+    }
 
     const handleAdminResponseToReport = () => {
-        console.log(adminResponse);
-        console.log(checkedPenalize);
+        if (!checkAdminResponseLength())
+            return;
+
+        let obj = props.report;
+        obj.adminResponse = adminResponse;
+        obj.adminPenalizeClient = checkedPenalize;
+
+        giveResponseForReport(obj)
+            .then(res => {
+                setTypeAlert("success");
+                setAlertMessage("Successfuly sent response to client and owner");
+                setOpenAlert(true);
+                setRequestSent(true);
+            })
+            .catch(err => {
+                setTypeAlert("error");
+                setAlertMessage("Error massage: " + err.response.data);
+                setOpenAlert(true);
+                setRequestSent(true);
+            });
     }
 
     const setDates = () => {
@@ -43,144 +76,149 @@ function ReviewDialog(props) {
     }
 
     return (
+        <div>
+            <Dialog open={props.openReportDialog} onClose={props.handleCloseReportDialog} sm>
+                {setDates()}
+                <DialogTitle>Process Report</DialogTitle>
+                <DialogContent>
+                    <Card style={{ color: 'rgb(5, 30, 52)', backgroundColor: "aliceblue", margin: "2%" }}>
+                        <table style={{ whiteSpace: "nowrap" }}>
+                            <tr>
+                                <th><h4>{props.report.reservation.bookingEntity.name}</h4></th>
+                                <th style={{ paddingLeft: "3%" }}>€ {props.report.reservation.cost} / {props.report.reservation.numOfDays} day(s)</th>
+                            </tr>
 
-        <Dialog open={props.openReportDialog} onClose={props.handleCloseReportDialog} sm>
-            {setDates()}
-            <DialogTitle>Process Report</DialogTitle>
-            <DialogContent>
-                <Card style={{ color: 'rgb(5, 30, 52)', backgroundColor: "aliceblue", margin: "2%" }}>
-                    <table style={{ whiteSpace: "nowrap" }}>
+                        </table>
+                    </Card>
+                    <table style={{ textAlign: "left" }}>
+
                         <tr>
-                            <th><h4>{props.report.reservation.bookingEntity.name}</h4></th>
-                            <th style={{ paddingLeft: "3%" }}>€ {props.report.reservation.cost} / {props.report.reservation.numOfDays} day(s)</th>
+                            <th style={{ color: 'rgb(5, 30, 52)', backgroundColor: "aliceblue", padding: "3%", fontWeight: "normal" }}>Check-in</th>
+                            <th style={{ color: 'rgb(5, 30, 52)', backgroundColor: "aliceblue", padding: "3%", fontWeight: "normal" }}>Check-out</th>
                         </tr>
-
+                        <tr>
+                            <td variant="h6" style={{ color: 'rgb(5, 30, 52)', borderRight: "solid 2px aliceblue", paddingBottom: "2%", fontWeight: "bold" }}>
+                                {new Intl.DateTimeFormat("en-GB", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "2-digit"
+                                }).format(startDate)
+                                }
+                            </td>
+                            <td variant="h6" style={{ color: 'rgb(5, 30, 52)', paddingBottom: "2%", fontWeight: "bold" }}>
+                                {new Intl.DateTimeFormat("en-GB", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "2-digit"
+                                }).format(endDate)
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style={{ color: 'rgb(5, 30, 52)', borderRight: "solid 2px aliceblue", fontWeight: "lighter" }}>
+                                {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' }).format(startDate)}
+                            </td>
+                            <td style={{ color: 'rgb(5, 30, 52)', padding: "0%", fontWeight: "lighter" }}>
+                                {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' }).format(endDate)}
+                            </td>
+                        </tr>
                     </table>
-                </Card>
-                <table style={{ textAlign: "left" }}>
 
-                    <tr>
-                        <th style={{ color: 'rgb(5, 30, 52)', backgroundColor: "aliceblue", padding: "3%", fontWeight: "normal" }}>Check-in</th>
-                        <th style={{ color: 'rgb(5, 30, 52)', backgroundColor: "aliceblue", padding: "3%", fontWeight: "normal" }}>Check-out</th>
-                    </tr>
-                    <tr>
-                        <td variant="h6" style={{ color: 'rgb(5, 30, 52)', borderRight: "solid 2px aliceblue", paddingBottom: "2%", fontWeight: "bold" }}>
-                            {new Intl.DateTimeFormat("en-GB", {
-                                year: "numeric",
-                                month: "long",
-                                day: "2-digit"
-                            }).format(startDate)
-                            }
-                        </td>
-                        <td variant="h6" style={{ color: 'rgb(5, 30, 52)', paddingBottom: "2%", fontWeight: "bold" }}>
-                            {new Intl.DateTimeFormat("en-GB", {
-                                year: "numeric",
-                                month: "long",
-                                day: "2-digit"
-                            }).format(endDate)
-                            }
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style={{ color: 'rgb(5, 30, 52)', borderRight: "solid 2px aliceblue", fontWeight: "lighter" }}>
-                            {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' }).format(startDate)}
-                        </td>
-                        <td style={{ color: 'rgb(5, 30, 52)', padding: "0%", fontWeight: "lighter" }}>
-                            {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit' }).format(endDate)}
-                        </td>
-                    </tr>
-                </table>
-
-                <Divider style={{ margin: "2%" }}></Divider>
+                    <Divider style={{ margin: "2%" }}></Divider>
 
 
-                <Typography variant="body2" style={{ backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.1%', paddingTop: '0.1%', margin: '1%', minWidth: '350px' }}>
-                    <h3 style={{ color: 'rgb(5, 30, 52)' }}>Reservation report</h3>
-                    <h4 style={{ color: 'rgb(5, 30, 52)' }}>Did the clients come?
-                        <Checkbox
-                            defaultChecked={props.report.clientCome}
-                            readOnly
-                            disabled
-                        />
-                    </h4>
-                    <h4 style={{ color: 'rgb(5, 30, 52)' }}>Notes for administrator to see
-                    </h4>
-                    <TextareaAutosize
-                        aria-label="minimum height"
-                        minRows={3}
-                        value={props.report.ownerComment}
-                        name="reason"
-                        style={{ width: 200 }}
-                        disabled
-                        readOnly
-                    />
-                    <h4 style={{ color: 'rgb(5, 30, 52)' }}>PenalizeClient
-                        <Checkbox
-                            checked={props.report.penalizeClient}
-                            readOnly
-                            disabled
-                        />
-                    </h4>
-                </Typography>
-                <br />
-                <br />
-                <br/>
-                <br/>
-                <Divider sx={{ borderBottomWidth: 5 }} />
-                <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>Enter response here:<br /></Typography>
-                <Typography style={{ fontSize: '10px' }} variant="caption">Note: This response will be send to owner: {props.report.owner.email} and client: {props.report.reservation.client.email}</Typography>
-                <br />
-                {props.report.processed ?
-                    (
-                        <div>
-                            <TextareaAutosize
-                                aria-label="minimum height"
-                                minRows={4}
-                                value={props.report.adminResponse}
-                                style={{ width: 300 }}
-                                disabled
-                                readOnly
-                            />
-                            <Divider/>
-                            Do you want to penalize this client?
+                    <Typography variant="body2" style={{ backgroundColor: 'rgb(252, 234, 207)', borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.1%', paddingTop: '0.1%', margin: '1%', minWidth: '350px' }}>
+                        <h3 style={{ color: 'rgb(5, 30, 52)' }}>Reservation report</h3>
+                        <h4 style={{ color: 'rgb(5, 30, 52)' }}>Did the clients come?
                             <Checkbox
-                                defaultChecked={props.report.adminPenalizeClient}
+                                defaultChecked={props.report.clientCome}
                                 readOnly
                                 disabled
                             />
-                        </div>
-                    )
-                    :
-                    (
-                        <div>
-                            <TextareaAutosize
-                                aria-label="minimum height"
-                                minRows={4}
-                                value={adminResponse}
-                                placeholder="Enter response..."
-                                onChange={e => { setAdminResponse(e.target.value) }}
-                                autoFocus
-                                style={{ width: 300 }}
-                            />
-                            <Divider/>
-                            <b>Do you want to penalize this client?</b>
+                        </h4>
+                        <h4 style={{ color: 'rgb(5, 30, 52)' }}>Notes for administrator to see
+                        </h4>
+                        <TextareaAutosize
+                            aria-label="minimum height"
+                            minRows={3}
+                            value={props.report.ownerComment}
+                            name="reason"
+                            style={{ width: 200 }}
+                            disabled
+                            readOnly
+                        />
+                        <h4 style={{ color: 'rgb(5, 30, 52)' }}>PenalizeClient
                             <Checkbox
-                                checked={checkedPenalize}
-                                defaultChecked={checkedPenalize}
-                                onChange={e => {setCheckedPenalize(e.target.checked)}}
-                                inputProps={{ 'aria-label': 'controlled' }}
+                                checked={props.report.penalizeClient}
+                                readOnly
+                                disabled
                             />
-                        </div>
-                    )}
-            </DialogContent>
+                        </h4>
+                    </Typography>
+                    <br />
+                    <Divider sx={{ borderBottomWidth: 5 }} />
+                    <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>Enter response here:<br /></Typography>
+                    <Typography style={{ fontSize: '10px' }} variant="caption">Note: This response will be send to owner: {props.report.owner.email} and client: {props.report.reservation.client.email}</Typography>
+                    <br />
+                    {props.report.processed ?
+                        (
+                            <div>
+                                <TextareaAutosize
+                                    aria-label="minimum height"
+                                    minRows={4}
+                                    value={props.report.adminResponse}
+                                    style={{ width: 300 }}
+                                    disabled
+                                    readOnly
+                                />
+                                <Divider />
+                                Do you want to penalize this client?
+                                <Checkbox
+                                    defaultChecked={props.report.adminPenalizeClient}
+                                    readOnly
+                                    disabled
+                                />
+                            </div>
+                        )
+                        :
+                        (
+                            <div>
+                                <TextareaAutosize
+                                    aria-label="minimum height"
+                                    minRows={4}
+                                    value={adminResponse}
+                                    placeholder="Enter response..."
+                                    onChange={e => { setAdminResponse(e.target.value) }}
+                                    autoFocus
+                                    style={{ width: 300 }}
+                                />
+                                <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenErrorResponse }}>Response can have max 255 chars</p>
+                                <Divider />
+                                <b>Do you want to penalize this client?</b>
+                                <Checkbox
+                                    checked={checkedPenalize}
+                                    defaultChecked={checkedPenalize}
+                                    onChange={e => { setCheckedPenalize(e.target.checked) }}
+                                    inputProps={{ 'aria-label': 'controlled' }}
+                                />
+                            </div>
+                        )}
+                </DialogContent>
 
-            <DialogActions>
-                {!props.report.processed ?
-                 (<Button onClick={handleAdminResponseToReport}>Send response</Button>) : (<div></div>)
-                } 
-                <Button onClick={props.handleCloseReportDialog}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
+                <DialogActions>
+                    {!props.report.processed && !requestSent?
+                        (<Button onClick={handleAdminResponseToReport}>Send response</Button>) : (<div></div>)
+                    }
+                    <Button onClick={props.handleCloseReportDialog}>Cancel</Button>
+                </DialogActions>
+
+            </Dialog>
+            <Snackbar open={openAlert} autoHideDuration={5000} onClose={handleCloseAlert}>
+                <Alert onClose={handleCloseAlert} severity={typeAlert} sx={{ width: '100%' }}>
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
+        </div>
     );
 }
 
@@ -205,6 +243,7 @@ export default function ReviewReservationReport() {
     const handleCloseReportDialog = () => {
         setOpenReportDialog(false);
         setSelectedReport(null);
+        loadUnprocessed();
     }
     const handleOpenReportDialog = () => {
         setOpenReportDialog(true);

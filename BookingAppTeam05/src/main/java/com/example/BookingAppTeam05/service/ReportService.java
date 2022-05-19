@@ -11,9 +11,12 @@ import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.repository.ReportRepository;
 import com.example.BookingAppTeam05.repository.ReservationRepository;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
+import com.example.BookingAppTeam05.service.users.ClientService;
+import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,19 +26,35 @@ public class ReportService {
     private ReportRepository reportRepository;
     private ReservationRepository reservationRepository;
     private BookingEntityService bookingEntityService;
+    private ClientService clientService;
+    private EmailService emailService;
 
     @Autowired
-    public ReportService(ReportRepository reportRepository, ReservationRepository reservationRepository, BookingEntityService bookingEntityService){
+    public ReportService(ReportRepository reportRepository, ReservationRepository reservationRepository, BookingEntityService bookingEntityService, UserService userService, ClientService clientService, EmailService emailService){
         this.reportRepository = reportRepository;
         this.reservationRepository = reservationRepository;
         this.bookingEntityService = bookingEntityService;
+        this.clientService = clientService;
+        this.emailService = emailService;
     }
 
-    public Report addReport(ReportDTO reportDTO) {
+    @Transactional
+    public Report addReportAndNotifyClientIfHeDidNotCome(ReportDTO reportDTO) {
         Reservation reservation = reservationRepository.getReservationById(reportDTO.getReservationId());
         if (reservation == null) return null;
-        Report report = new Report(reportDTO.getComment(), reportDTO.isReward(),false , reportDTO.isClientCome(), reservation);
+        Report report = new Report(reportDTO.getComment(), reportDTO.isPenalizeClient(),!reportDTO.isClientCome() , reportDTO.isClientCome(), reservation);
         reportRepository.save(report);
+
+        if (!report.isComeClient()) {
+            String errMessage = clientService.penalizeClientFromReportAndReturnErrorMessage(report);
+            try {
+                emailService.notifyClientThatHeDidNotCome(report);
+            } catch (Exception e) {
+                return null;
+            }
+            if (errMessage != null) return null;
+        }
+
         return report;
     }
 
@@ -73,5 +92,27 @@ public class ReportService {
             retVal.add(c);
         }
         return retVal;
+    }
+
+    @Transactional
+    public String giveResponse(CreatedReportReviewDTO c) {
+        Report report = reportRepository.findById(c.getId()).orElse(null);
+        if (report == null)
+            return "Cant' find report with id: " + c.getId();
+        report.setAdminResponse(c.getAdminResponse());
+        report.setProcessed(true);
+        report.setAdminPenalizeClient(c.isAdminPenalizeClient());
+        report = reportRepository.save(report);
+
+        if (c.isAdminPenalizeClient()) {
+            String err = clientService.penalizeClientFromReportAndReturnErrorMessage(report);
+            if (err != null) return err;
+        }
+        try {
+            emailService.sendEmailAsAdminResponseFromReport(c);
+        } catch (Exception e) {
+            return "Error happened while sending email to owner and client";
+        }
+        return null;
     }
 }

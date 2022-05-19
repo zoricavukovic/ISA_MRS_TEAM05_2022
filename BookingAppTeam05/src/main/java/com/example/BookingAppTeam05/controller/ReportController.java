@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -42,7 +41,7 @@ public class ReportController {
     @PostMapping( consumes = "application/json")
     @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
     public ResponseEntity<String> createReportForFinishedReservation(@Valid @RequestBody ReportDTO reportDTO) {
-        Report createdReport = reportService.addReport(reportDTO);
+        Report createdReport = reportService.addReportAndNotifyClientIfHeDidNotCome(reportDTO);
         if (createdReport == null)
             return new ResponseEntity<>("Cannot create report.", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(createdReport.getId().toString(), HttpStatus.CREATED);
@@ -59,6 +58,14 @@ public class ReportController {
         if (retVal == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+    @PutMapping(value="/giveResponse", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> giveResponse(@RequestBody CreatedReportReviewDTO c) {
+        String errorCode = reportService.giveResponse(c);
+        if (errorCode != null)
+            return new ResponseEntity<>(errorCode, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("sve ok", HttpStatus.OK);
     }
 
 }

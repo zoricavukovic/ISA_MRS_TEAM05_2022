@@ -15,3 +15,7 @@ export const UNPROCESSED = 'unprocessed';
 export function getAllReportsForViewByType(type) {
     return api.get('/reports/all/' + type);
 }
+
+export function giveResponseForReport(response) {
+    return api.put('/reports/giveResponse', response);
+}
