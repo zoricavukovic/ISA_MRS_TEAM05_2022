@@ -42,7 +42,7 @@ export default function ImgReservation(props) {
 
     ///////////////////////////////////////////////////////////////////
     const [checkedCome, setCheckedCome] = React.useState(false);
-    const [checkedReward, setCheckedReward] = React.useState(false);
+    const [checkedPenalizeClient, setCheckedPenalizeClient] = React.useState(false);
     const [reason, setReason] = React.useState("");
     const [processed, setProcessed] = React.useState("");
     ///////////////////////////////////////////////////////////////////
@@ -76,8 +76,8 @@ export default function ImgReservation(props) {
     const handleChangeCome = (event) => {
       setCheckedCome(event.target.checked);
     };
-    const handleChangeReward = (event) => {
-      setCheckedReward(event.target.checked);
+    const handleChangePenalizeClient = (event) => {
+      setCheckedPenalizeClient(event.target.checked);
     };
 
     function showReservation(){
@@ -102,7 +102,7 @@ export default function ImgReservation(props) {
         let report = {
           "clientCome": checkedCome,
           "comment": reason,
-          "reward": checkedReward,
+          "penalizeClient": checkedPenalizeClient,
           "reservationId": props.reservation.id
         }
         addReport(report).then(result => {
@@ -146,7 +146,7 @@ export default function ImgReservation(props) {
                 setReport(reported.data);
                 setLoadingAddServices(false);
                 setCheckedCome(reported.data.clientCome);
-                setCheckedReward(reported.data.reward);
+                setCheckedPenalizeClient(reported.data.penalizeClient);
                 setReason(reported.data.comment);
                 setProcessed(reported.data.processed);
                 setLoadingReport(false);
@@ -245,10 +245,10 @@ export default function ImgReservation(props) {
               }}
               style={{ width: 200 }}
             />
-            <h4 style={{color:'rgb(5, 30, 52)'}}>Reward for clients
+            <h4 style={{color:'rgb(5, 30, 52)'}}>Penalize client
             <Checkbox
-              checked={checkedReward}
-              onChange={handleChangeReward}
+              checked={checkedPenalizeClient}
+              onChange={handleChangePenalizeClient}
               inputProps={{ 'aria-label': 'controlled' }}
             />
             </h4>
@@ -337,14 +337,14 @@ export default function ImgReservation(props) {
               name="reason"
               style={{ width: 200 }}
             />
-            <h4 style={{color:'rgb(5, 30, 52)'}}>Reward for clients
+            <h4 style={{color:'rgb(5, 30, 52)'}}>Penalize client
             <Checkbox
-              defaultChecked = {checkedReward}
+              defaultChecked = {checkedPenalizeClient}
               disabled
               inputProps={{ 'aria-label': 'controlled' }}
             />
             </h4>
-            {processed === "true" ? (
+            {processed ? (
                <h4 style={{color:'rgb(5, 30, 52)', marginBottom:'1%'}}> <RecommendIcon />Report approved by admin 
                </h4>
             ):(<h4 style={{color:'rgb(5, 30, 52)', marginBottom:'1%'}}>Report not approved by admin

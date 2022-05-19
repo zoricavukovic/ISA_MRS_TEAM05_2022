@@ -63,9 +63,9 @@ VALUES
 
 INSERT INTO clients (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id,penalties, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','bookingapp05mzr++jescieMullins@gmail.com','Jescie','Mullins',78,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',4,2, 'False', 2),
-(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','bookingapp05mzr++carolynGutie@gmail.com','Carolyn','Gutierrez',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-34-238-21',7,3, 'False', 2),
-(nextval('users_id_gen'), 'False','Ap #497-623 Interdum Road','2004-05-21','bookingapp05mzr++minaMinic@gmail.com','Mina','Minic',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',10,3, 'False', 2);
+(nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','bookingapp05mzr++jescieMullins@gmail.com','Jescie','Mullins',78,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',4,0, 'False', 2),
+(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','bookingapp05mzr++carolynGutie@gmail.com','Carolyn','Gutierrez',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-34-238-21',7,0, 'False', 2),
+(nextval('users_id_gen'), 'False','Ap #497-623 Interdum Road','2004-05-21','bookingapp05mzr++minaMinic@gmail.com','Mina','Minic',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',10,0, 'False', 2);
 
 
 INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, password_changed)
@@ -261,6 +261,28 @@ VALUES
 
     ('2022-01-25 7:00 pm',1,3,14,8,'False','False', 1, 3),
     ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 4);
+
+
+INSERT INTO public.reports(
+    admin_response, come_client, comment, penalize_client, processed, reservation_id, admin_penalize_client)
+VALUES
+    (null, true, 'commen1 fds fds fdsfdf d fdsfds fds fsd f ds fdfdf d', true, false, 1, false),
+    ('response1', true, 'commen2 fdfdfdfd fd d', true, true, 4, false),
+    ('response2', true, 'commen3 fd fd fdfddfgfjgflkdgjfdlkjg lg fd ', true, true, 20, true),
+    (null, true, 'commen5 flkdj flkds jflkd', true, false, 23, false),
+    (null, true, 'commen5', false, false, 7, false),
+    (null, true, 'commen6', false, false, 25, false),
+
+    (null, true, 'commen7fdslkfjds', false, false, 24, false),
+    (null, true, 'commen8', true, false, 8, false),
+    (null, true, 'commen9', true, false, 9, false),
+    (null, true, 'commen10', true, false, 10, false),
+    (null, true, 'commen11', true, false, 11, false),
+    (null, true, 'commen12', true, false, 27, false),
+    (null, true, 'commen13', true, false, 26, false),
+    (null, true, 'commen15', true, false, 16, false),
+    (null, true, 'commen15', true, false, 3, false),
+    (null, true, 'commen15', true, false, 22, false);
 
 
 INSERT INTO unavailable_dates (start_time, end_time, entity_id)
