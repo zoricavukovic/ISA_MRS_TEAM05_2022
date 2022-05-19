@@ -4,6 +4,7 @@ import { AddCircle, Cottage, Handshake, Phishing, Sailing } from '@mui/icons-mat
 import { getCurrentUser } from '../service/AuthService';
 import InsightsIcon from '@mui/icons-material/Insights';
 import ReviewsIcon from '@mui/icons-material/Reviews';
+import StarHalfIcon from '@mui/icons-material/StarHalf';
 
 const navbarDefaultList = [
   {
@@ -189,13 +190,22 @@ const navbarInstList = [
 
 const reviewReservationReports = {
   icon: ReviewsIcon,
-  desc: 'Review reservation reports',
+  desc: 'Review reservation' + '\n' + 'reports',
   secondDesc: '',
   badge: 0,
   subList: [],
   url: '/reviewReservationReportsAdmin'
 }
 
+
+const reviewRatingsFromClients = {
+  icon: StarHalfIcon,
+  desc: 'Review ratings',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/reviewRatingsAdmin'
+}
 
 const navbarSuperAdminList = [
   ...navbarDefaultList,
@@ -207,10 +217,12 @@ const navbarSuperAdminList = [
     subList: [],
     url: '/addAdmin'
   },
-  reviewReservationReports
+  reviewReservationReports,
+  reviewRatingsFromClients
 ]
 
 const navbarAdminList = [
   ...navbarDefaultList,
-  reviewReservationReports
+  reviewReservationReports,
+  reviewRatingsFromClients
 ]

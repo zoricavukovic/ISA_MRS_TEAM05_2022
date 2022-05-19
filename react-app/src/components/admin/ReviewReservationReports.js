@@ -299,7 +299,7 @@ export default function ReviewReservationReport() {
     }
 
     useEffect(() => {
-        if (userLoggedInAsSuperAdmin || userLoggedInAsAdminWithResetedPassword) {
+        if (userLoggedInAsSuperAdmin && userLoggedInAsAdminWithResetedPassword) {
             loadUnprocessed();
         }
     }, [])
