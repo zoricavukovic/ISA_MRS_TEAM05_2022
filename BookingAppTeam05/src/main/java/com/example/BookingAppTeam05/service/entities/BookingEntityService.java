@@ -7,7 +7,7 @@ import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.Picture;
 import com.example.BookingAppTeam05.model.Pricelist;
-import com.example.BookingAppTeam05.model.RatingService;
+import com.example.BookingAppTeam05.service.RatingService;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;

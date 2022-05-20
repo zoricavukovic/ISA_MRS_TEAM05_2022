@@ -11,13 +11,168 @@ import { PROCESSED, UNPROCESSED } from "../../service/ReportService";
 import { DataGrid } from "@mui/x-data-grid";
 import { Card, Checkbox, TextareaAutosize } from "@mui/material";
 import { Snackbar } from "@mui/material";
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import { deepOrange, deepPurple } from '@mui/material/colors';
 
-import {getAllRatingsForViewByType} from "../../service/RatingService"
+import { deleteReviewById, getAllRatingsForViewByType, putReviewForPublication } from "../../service/RatingService"
+import { useHistory } from "react-router-dom";
+import RatingEntity from "../Rating";
 
 
 function ReviewDialog(props) {
+
+    const history = useHistory();
+
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
+
+    const [requestSent, setRequestSent] = useState(false);
+    const [checkedForPublic, setCheckedForPublic] = useState(false);
+
+    const handleCloseAlert = () => {
+        setOpenAlert(false);
+    }
+
+    const handleAdminProccesedReview = () => {
+
+        if (checkedForPublic) {
+            putReviewForPublication(props.review)
+                .then(res => {
+                    setTypeAlert("success");
+                    setAlertMessage("Review approved. Successfuly sent email to owner");
+                    setOpenAlert(true);
+                    setRequestSent(true);
+                })
+                .catch(err => {
+                    setTypeAlert("error");
+                    setAlertMessage("Error massage: " + err.response.data);
+                    setOpenAlert(true);
+                    setRequestSent(true);
+                });
+        } else {
+            deleteReviewById(props.review.id)
+                .then(res => {
+                    setTypeAlert("success");
+                    setAlertMessage("This review is successfully deleted.");
+                    setOpenAlert(true);
+                    setRequestSent(true);
+                })
+                .catch(err => {
+                    setTypeAlert("error");
+                    setAlertMessage("Error massage: " + err.response.data);
+                    setOpenAlert(true);
+                    setRequestSent(true);
+                });
+        }
+    }
+
+
+    const showUserProfile = (event, userId) => {
+        console.log("???");
+        console.log(userId);
+        console.log("???");
+        event.preventDefault();
+        history.push({
+            pathname: "/userProfile",
+            state: { userId: userId }
+        })
+    };
+    const showBookingEntity = (event) => {
+        event.preventDefault();
+        let entityType = props.review.reservation.bookingEntity.entityType;
+        let urlPath = ''
+        if (entityType === "ADVENTURE")
+            urlPath = '/showAdventureProfile';
+        else if (entityType === 'COTTAGE')
+            urlPath = '/showCottageProfile';
+        else
+            urlPath = '/showShipProfile';
+        history.push({
+            pathname: urlPath,
+            state: { bookingEntityId: props.review.reservation.bookingEntity.id }
+        });
+    }
+
+
     return (
-        <div></div>
+        <div>
+            <Box>
+                <Dialog open={props.openReviewDialog} onClose={props.handleCloseReviewDialog} sm>
+                    <DialogTitle>Review rating</DialogTitle>
+                    <DialogContent>
+                        <Divider />
+                        <Typography button onClick={showBookingEntity} variant="subtitle1" style={{ color: 'rgb(5, 30, 52)' }}>
+                            BookingEntity: {props.review.reservation.bookingEntity.name}
+                        </Typography>
+                        <Typography button onClick={(event) => showUserProfile(event, props.review.owner.id)} variant="subtitle1" style={{ color: 'rgb(5, 30, 52)' }}>
+                            Owner: {props.review.owner.firstName + " " + props.review.owner.lastName}
+                        </Typography>
+                        <Divider />
+                        <br />
+                        <div style={{ borderStyle: 'solid 3px', borderColor: 'rgba(17,16,29,255)' }}>
+                            <Box style={{ color: 'white', backgroundColor: 'rgba(17,16,29,255)', borderRadius: '10px' }}>
+                                <Box style={{ width: '100%', display: "flex", gap: '4px', flexDirection: "row" }}>
+                                    <Avatar sx={{ color: 'white', bgcolor: deepOrange[500] }}>{props.review.reservation.client.firstName[0]}</Avatar>
+                                    <Typography button onClick={(event) => showUserProfile(event, props.review.reservation.client.id)} variant="subtitle1">
+                                        {props.review.reservation.client.firstName + ' ' + props.review.reservation.client.lastName}
+                                    </Typography>
+                                </Box>
+                            </Box>
+
+                            <RatingEntity value={props.review.value} />
+                            <TextareaAutosize
+                                aria-label="minimum height"
+                                minRows={4}
+                                value={props.review.comment}
+                                style={{ width: 400 }}
+                                disabled
+                                readOnly
+                            />
+                            <Typography sx={{ fontSize: '10px' }}>{props.review.reviewDate}</Typography>
+
+                            <br />
+                            <br />
+                            <Divider sx={{ borderBottomWidth: 5 }} />
+                            <br />
+                            <Box style={{ width: '100%', display: "flex", gap: '4px', flexDirection: "row" }}>
+                                <Typography style={{ color: 'rgba(17,16,29,255)', fontSize: '16px', fontWeight: 'bold' }}>Do you want to make this review public?</Typography>
+                                {
+                                    props.review.processed ?
+                                        (<Checkbox
+                                            defaultChecked={true}
+                                            readOnly
+                                            disabled
+                                        />) : (
+                                            <Checkbox
+                                                checked={checkedForPublic}
+                                                defaultChecked={checkedForPublic}
+                                                onChange={e => { setCheckedForPublic(e.target.checked) }}
+                                                inputProps={{ 'aria-label': 'controlled' }}
+                                            />
+                                        )
+                                }
+                            </Box>
+                            <br />
+                        </div>
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Divider />
+                        {!props.review.processed && !requestSent ?
+                            (<Button onClick={handleAdminProccesedReview}>Save</Button>) : (<div></div>)
+                        }
+                        <Button onClick={props.handleCloseReviewDialog}>Cancel</Button>
+                    </DialogActions>
+                </Dialog>
+                <Snackbar open={openAlert} autoHideDuration={5000} onClose={handleCloseAlert}>
+                    <Alert onClose={handleCloseAlert} severity={typeAlert} sx={{ width: '100%' }}>
+                        {alertMessage}
+                    </Alert>
+                </Snackbar>
+            </Box>
+        </div>
     )
 }
 
@@ -36,7 +191,7 @@ export default function ReviewRatingsAdmin() {
         { field: 'Owner', headerName: 'Owner', width: 180 },
         { field: 'BookingEntity', headerName: 'BookingEntity', width: 180 },
         { field: 'ReviewDate', headerName: 'ReviewDate', width: 180 },
-        { field: 'Rating', headerName: 'Rating', type:'number', width: 150 },
+        { field: 'Rating', headerName: 'Rating', type: 'number', width: 150 },
         { field: 'Processed', headerName: 'Processed', type: 'boolean', width: 150 }
     ];
 
@@ -126,9 +281,9 @@ export default function ReviewRatingsAdmin() {
                 </Box>
                 {(selectedReview !== null) ?
                     (<ReviewDialog
-                        openReportDialog={openReviewDialog}
-                        handleCloseReportDialog={handleCloseReviewDialog}
-                        report={selectedReview}
+                        openReviewDialog={openReviewDialog}
+                        handleCloseReviewDialog={handleCloseReviewDialog}
+                        review={selectedReview}
                     />
                     ) : (<div></div>)
                 }

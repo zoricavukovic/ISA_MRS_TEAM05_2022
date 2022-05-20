@@ -1,6 +1,7 @@
 package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.CreatedReportReviewDTO;
+import com.example.BookingAppTeam05.dto.RatingReviewDTO;
 import com.example.BookingAppTeam05.model.Report;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.users.Client;
@@ -147,6 +148,27 @@ public class EmailService {
                 .append("\n\n\nYour bookingApp.com");
 
         sendToEmail(report.getReservation().getClient().getEmail(), subject, content.toString());
+    }
+
+    @Async
+    public void notifyOwnerAboutApprovedReviewOnHisEntity(RatingReviewDTO review) throws InterruptedException {
+        String subject = "You have one more review on your entity. Please check message.";
+
+        String clientName = review.getReservation().getClient().getFirstName();
+        String clientSurname = review.getReservation().getClient().getLastName();
+
+        StringBuilder content = new StringBuilder();
+
+        content.append("Dear ")
+                .append(review.getOwner().getFirstName())
+                .append(" ")
+                .append(review.getOwner().getLastName())
+                .append(",\n\n\t").append("Client ").append(clientName).append(" ").append(clientSurname).append(" posted review on your ").append(review.getReservation().getBookingEntity().getName())
+                .append("\n\t -------------------------").append("\n\t Date: ").append(review.getReviewDate()).append("\n\t Rating: ").append(review.getValue()).append("\n\t Comment: ").append(review.getComment())
+                .append("\n\t -------------------------")
+                .append("\n\n\nYour bookingApp.com");
+
+        sendToEmail(review.getOwner().getEmail(), subject, content.toString());
     }
 
 }
