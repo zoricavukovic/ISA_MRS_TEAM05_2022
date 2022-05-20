@@ -40,7 +40,7 @@ import AddAdmin from './admin/AddAdmin';
 import AdminHomePage from './admin/AdminHomePage';
 import Reports from './analytics/Reports';
 import ReviewReservationReport from './admin/ReviewReservationReports';
-
+import ReviewRatingsAdmin from './admin/ReviewRatingsAdmin';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -106,6 +106,7 @@ function App() {
                     <Route path="/addAdmin" component={AddAdmin} />
                     <Route path="/adminHomePage" component={AdminHomePage} />
                     <Route path="/reviewReservationReportsAdmin" component={ReviewReservationReport} />
+                    <Route path="/reviewRatingsAdmin" component={ReviewRatingsAdmin} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>
