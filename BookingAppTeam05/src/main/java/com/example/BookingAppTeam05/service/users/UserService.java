@@ -46,6 +46,10 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void logicalDeleteUserById(Long id) {
+        userRepository.logicalDeleteUserById(id);
+    }
+
     public String getHashedNewUserPassword(String password) {
         return passwordEncoder.encode(password);
     }

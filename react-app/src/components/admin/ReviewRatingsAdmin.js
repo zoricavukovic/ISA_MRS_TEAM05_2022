@@ -186,7 +186,7 @@ export default function ReviewRatingsAdmin() {
 
     let rows = [];
     let columns = [
-        { field: 'id', headerName: 'ID', width: 80 },
+        { field: 'id', headerName: 'Review ID', width: 80 },
         { field: 'Client', headerName: 'Client', width: 180 },
         { field: 'Owner', headerName: 'Owner', width: 180 },
         { field: 'BookingEntity', headerName: 'BookingEntity', width: 180 },
@@ -270,8 +270,10 @@ export default function ReviewRatingsAdmin() {
                 justifyContent="center"
                 style={{ margin: '1% 11% 1% 20%' }}
             >
-
-                <Box style={{ display: "flex", flexDirection: "row", margin: "1% auto 1% auto" }}>
+                <h3 color="rgba(17,16,29,255)">Review client ratings</h3>
+                <Divider sx={{ borderBottomWidth: 5, color: "rgba(17,16,29,255)" }} />
+                <br/>
+                <Box style={{ display: "flex", flexDirection: "row", margin: "1% auto 1% 40%" }}>
                     <Button variant="contained" onClick={loadProcessed} style={{ color: 'white', backgroundColor: 'rgb(68, 255, 162)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
                         Processed
                     </Button>

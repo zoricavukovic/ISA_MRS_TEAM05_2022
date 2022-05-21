@@ -8,11 +8,11 @@ import javax.validation.constraints.Size;
 public class CreatedReportReviewDTO {
     private Long id;
     private boolean clientCome;
-    @Size(max = 250, message = "{validation.name.size.too_long}")
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String ownerComment;
     private boolean penalizeClient;
     private boolean processed;
-    @Size(max = 250, message = "{validation.name.size.too_long}")
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String adminResponse;
     private boolean adminPenalizeClient;
     private ReservationDTO reservation;
