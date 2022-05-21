@@ -10,7 +10,7 @@ public class Complaint {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @Column(name="description", nullable = false)
+   @Column(name="description", nullable = false, length = 1024)
    private String description;
 
    @OneToOne(fetch = FetchType.LAZY)
@@ -19,7 +19,7 @@ public class Complaint {
    @Column(name="processed")
    private boolean processed;
 
-   @Column(name="adminResponse")
+   @Column(name="adminResponse", length = 1024)
    private String adminResponse;
 
    public Complaint() {}

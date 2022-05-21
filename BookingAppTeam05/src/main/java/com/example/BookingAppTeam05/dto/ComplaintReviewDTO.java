@@ -7,17 +7,17 @@ import javax.validation.constraints.Size;
 
 public class ComplaintReviewDTO {
     private Long id;
-    @Size(max = 250, message = "{validation.name.size.too_long}")
+    @Size(max = 500, message = "{validation.name.size.too_long}")
     private String clientComment;
     private boolean processed;
-    @Size(max = 250, message = "{validation.name.size.too_long}")
+    @Size(max = 500, message = "{validation.name.size.too_long}")
     private String adminResponse;
     private ReservationDTO reservation;
     private UserDTO owner;
 
     public ComplaintReviewDTO() {}
 
-    public ComplaintReviewDTO(Long id, @Size(max = 250, message = "{validation.name.size.too_long}") String clientComment, boolean processed, @Size(max = 250, message = "{validation.name.size.too_long}") String adminResponse, ReservationDTO reservation, UserDTO owner) {
+    public ComplaintReviewDTO(Long id, @Size(max = 500, message = "{validation.name.size.too_long}") String clientComment, boolean processed, @Size(max = 250, message = "{validation.name.size.too_long}") String adminResponse, ReservationDTO reservation, UserDTO owner) {
         this.id = id;
         this.clientComment = clientComment;
         this.processed = processed;
@@ -30,6 +30,7 @@ public class ComplaintReviewDTO {
         this.id = complaint.getId();
         this.clientComment = complaint.getDescription();
         this.processed = complaint.isProcessed();
+        this.adminResponse = complaint.getAdminResponse();
         this.owner = owner;
         this.reservation = reservation;
     }

@@ -13,7 +13,7 @@ public class Rating {
     @Column(name="value", nullable = false)
     private float value;
 
-    @Column(name="comment")
+    @Column(name="comment", length = 1024)
     private String comment;
 
     @OneToOne(fetch = FetchType.LAZY)

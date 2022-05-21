@@ -9,7 +9,7 @@ public class Report {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @Column(name="comment", nullable = false)
+   @Column(name="comment", nullable = false, length = 1024)
    private String comment;
 
    @Column(name="penalizeClient", nullable = false)
@@ -21,7 +21,7 @@ public class Report {
    @Column(name="processed", nullable = false)
    private boolean processed;
 
-   @Column(name="adminResponse")
+   @Column(name="adminResponse", length = 1024)
    private String adminResponse;
 
    @Column(name="adminPenalizeClient")
