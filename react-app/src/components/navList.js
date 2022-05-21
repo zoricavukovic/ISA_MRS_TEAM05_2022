@@ -5,6 +5,7 @@ import { getCurrentUser } from '../service/AuthService';
 import InsightsIcon from '@mui/icons-material/Insights';
 import ReviewsIcon from '@mui/icons-material/Reviews';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 
 const navbarDefaultList = [
   {
@@ -207,6 +208,15 @@ const reviewRatingsFromClients = {
   url: '/reviewRatingsAdmin'
 }
 
+const reviewComplaints = {
+  icon: SentimentVeryDissatisfiedIcon,
+  desc: 'Review complaints',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/reviewComplaintsAdmin'
+}
+
 const navbarSuperAdminList = [
   ...navbarDefaultList,
   {
@@ -218,11 +228,13 @@ const navbarSuperAdminList = [
     url: '/addAdmin'
   },
   reviewReservationReports,
-  reviewRatingsFromClients
+  reviewRatingsFromClients,
+  reviewComplaints
 ]
 
 const navbarAdminList = [
   ...navbarDefaultList,
   reviewReservationReports,
-  reviewRatingsFromClients
+  reviewRatingsFromClients,
+  reviewComplaints
 ]

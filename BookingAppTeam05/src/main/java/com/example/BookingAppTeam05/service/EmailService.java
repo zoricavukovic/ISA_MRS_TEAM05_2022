@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service;
 
+import com.example.BookingAppTeam05.dto.ComplaintReviewDTO;
 import com.example.BookingAppTeam05.dto.CreatedReportReviewDTO;
 import com.example.BookingAppTeam05.dto.RatingReviewDTO;
 import com.example.BookingAppTeam05.model.Report;
@@ -171,4 +172,53 @@ public class EmailService {
         sendToEmail(review.getOwner().getEmail(), subject, content.toString());
     }
 
+    @Async
+    public void sendEmailAsAdminResponseFromComplaintToOwnerOrClient(ComplaintReviewDTO complaint, boolean sendToClient) throws InterruptedException {
+        String subject = "Admin has reviewed complaint with id: " +  complaint.getId() + " . Check the response";
+        StringBuilder content = new StringBuilder();
+        String firstName = "";
+        String lastName = "";
+        String email = "";
+
+        if (sendToClient) {
+            firstName = complaint.getReservation().getClient().getFirstName();
+            lastName = complaint.getReservation().getClient().getLastName();
+            email = complaint.getReservation().getClient().getEmail();
+        } else {
+            firstName = complaint.getOwner().getFirstName();
+            lastName = complaint.getOwner().getLastName();
+            email = complaint.getOwner().getEmail();
+        }
+
+        content.append("Dear ")
+                .append(firstName)
+                .append(" ")
+                .append(lastName)
+                .append(",\n\n\t")
+                .append("Complaint with id: ")
+                .append(complaint.getId())
+                .append(" has been reviewed by admin.")
+                .append("\n\t Booking entity: ")
+                .append(complaint.getReservation().getBookingEntity().getName())
+                .append("\n\t Owner: " + complaint.getOwner().getFirstName() + " " + complaint.getOwner().getLastName())
+                .append("\n\t Reserevation period: ")
+                .append(complaint.getReservation().getStartDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")))
+                .append(" - ")
+                .append((complaint.getReservation().getStartDate().plusDays(complaint.getReservation().getNumOfDays())).format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")))
+                .append("\n\t ______________________________")
+                .append("\n\t Client complaint: ")
+                .append(complaint.getClientComment())
+                .append("\n\t Admin response: ")
+                .append(complaint.getAdminResponse())
+                .append("\n\t ______________________________")
+                .append("\n\t")
+                .append("\n\n\nYour bookingApp.com");
+        sendToEmail(email, subject, content.toString());
+    }
+
+    @Async
+    public void sendEmailAsAdminResponseFromComplaint(ComplaintReviewDTO complaint) throws InterruptedException {
+        sendEmailAsAdminResponseFromComplaintToOwnerOrClient(complaint, true);
+        sendEmailAsAdminResponseFromComplaintToOwnerOrClient(complaint, false);
+    }
 }

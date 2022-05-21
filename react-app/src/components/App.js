@@ -41,6 +41,7 @@ import AdminHomePage from './admin/AdminHomePage';
 import Reports from './analytics/Reports';
 import ReviewReservationReport from './admin/ReviewReservationReports';
 import ReviewRatingsAdmin from './admin/ReviewRatingsAdmin';
+import ReviewComplaints from './admin/ReviewComplaints';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -107,6 +108,7 @@ function App() {
                     <Route path="/adminHomePage" component={AdminHomePage} />
                     <Route path="/reviewReservationReportsAdmin" component={ReviewReservationReport} />
                     <Route path="/reviewRatingsAdmin" component={ReviewRatingsAdmin} />
+                    <Route paht="/reviewComplaintsAdmin" component={ReviewComplaints} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>

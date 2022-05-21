@@ -285,6 +285,20 @@ VALUES
     (null, true, 'commen15', true, false, 22, false);
 
 
+INSERT INTO public.complaints(description, admin_response, processed, reservation_id)
+VALUES
+       ('complaint1',null, false, 1),
+       ('complaint2',null, false, 4),
+       ('complaint3',null, false, 20),
+       ('complaint4',null, false, 23),
+       ('complaint5',null, false, 7),
+       ('complaint6','111 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam', true, 5),
+       ('complaint7','222 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam', true, 24),
+       ('complaint8','333 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam', true, 8),
+       ('complaint9','444 response4', true, 9),
+       ('complaint10','555 response5', true, 10);
+
+
 INSERT INTO unavailable_dates (start_time, end_time, entity_id)
 VALUES
     ('2022-06-04 9:00 pm', '2022-06-06 9:00 pm', 11),
