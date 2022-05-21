@@ -7,10 +7,10 @@ import javax.validation.constraints.Size;
 
 public class ComplaintReviewDTO {
     private Long id;
-    @Size(max = 500, message = "{validation.name.size.too_long}")
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String clientComment;
     private boolean processed;
-    @Size(max = 500, message = "{validation.name.size.too_long}")
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String adminResponse;
     private ReservationDTO reservation;
     private UserDTO owner;

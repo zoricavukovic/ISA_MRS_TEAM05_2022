@@ -232,10 +232,10 @@ export default function ReviewReservationReport() {
 
     let rows = [];
     let columns = [
-        { field: 'id', headerName: 'ID', width: 150 },
+        { field: 'id', headerName: 'Report ID', width: 150 },
         { field: 'Owner', headerName: 'Owner', width: 200 },
         { field: 'Client', headerName: 'Client', width: 200 },
-        { field: 'Comment', headerName: 'Comment', width: 200 },
+        { field: 'Comment', headerName: 'Owner Comment', width: 200 },
         { field: 'Processed', headerName: 'Processed', type: 'boolean', width: 200 }
 
     ];
@@ -317,8 +317,11 @@ export default function ReviewReservationReport() {
                 justifyContent="center"
                 style={{ margin: '1% 11% 1% 20%' }}
             >
+                <h3 color="rgba(17,16,29,255)">Review owners reports</h3>
+                <Divider sx={{ borderBottomWidth: 5, color: "rgba(17,16,29,255)" }} />
+                <br/>
 
-                <Box style={{ display: "flex", flexDirection: "row", margin: "1% auto 1% auto" }}>
+                <Box style={{ display: "flex", flexDirection: "row", margin: "1% auto 1% 40%" }}>
                     <Button variant="contained" onClick={loadProcessed} style={{ color: 'white', backgroundColor: 'rgb(68, 255, 162)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
                         Processed
                     </Button>

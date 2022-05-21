@@ -111,6 +111,15 @@ INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_n
 VALUES
 (nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++superadmin@gmail.com', 'SuperA', 'SuperA', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 6, true);
 
+INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
+VALUES
+(nextval('users_id_gen'), 'False','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++dzoni@gmail.com', 'Dzoni', 'Dzonic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'fdsaf ds f', '1971-12-20', 'bookingapp05mzr++roni@gmail.com', 'Roni', 'Ronic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'afddffd ', '1971-12-20', 'bookingapp05mzr++gogi@gmail.com', 'Gogi', 'Gogic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'miifds', '1971-12-20', 'bookingapp05mzr++moki@gmail.com', 'Moki', 'Mokic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'f dsafd s44', '1971-12-20', 'bookingapp05mzr+toki@gmail.com', 'Toki', 'Tokic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5);
+
+
 -- rooms
 INSERT INTO rooms (num_of_beds,room_num,cottage_id, deleted)
 VALUES
@@ -297,6 +306,15 @@ VALUES
        ('complaint8','333 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam', true, 8),
        ('complaint9','444 response4', true, 9),
        ('complaint10','555 response5', true, 10);
+
+INSERT INTO public.deleted_accounts(
+    accepted, admin_response, processed, reason, user_id)
+VALUES
+       (false, null, false, 'tako eto',17),
+       (false, null, false, 'mal nes nije ni bitno',18),
+       (false, null, false, 'fdsfsd df d',19),
+       (false, null, false, 'more mi se',20),
+       (false, null, false, 'brisi bre',21);
 
 
 INSERT INTO unavailable_dates (start_time, end_time, entity_id)

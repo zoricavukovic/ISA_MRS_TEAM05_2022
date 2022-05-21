@@ -6,6 +6,7 @@ import InsightsIcon from '@mui/icons-material/Insights';
 import ReviewsIcon from '@mui/icons-material/Reviews';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 
 const navbarDefaultList = [
   {
@@ -188,10 +189,9 @@ const navbarInstList = [
 
 
 
-
 const reviewReservationReports = {
   icon: ReviewsIcon,
-  desc: 'Review reservation' + '\n' + 'reports',
+  desc: 'Reservation reports',
   secondDesc: '',
   badge: 0,
   subList: [],
@@ -217,6 +217,15 @@ const reviewComplaints = {
   url: '/reviewComplaintsAdmin'
 }
 
+const reviewDeleteAccountRequest = {
+  icon: PersonRemoveIcon,
+  desc: 'Delete account requests',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/reviewDeleteAccountRequests'
+}
+
 const navbarSuperAdminList = [
   ...navbarDefaultList,
   {
@@ -229,12 +238,14 @@ const navbarSuperAdminList = [
   },
   reviewReservationReports,
   reviewRatingsFromClients,
-  reviewComplaints
+  reviewComplaints,
+  reviewDeleteAccountRequest
 ]
 
 const navbarAdminList = [
   ...navbarDefaultList,
   reviewReservationReports,
   reviewRatingsFromClients,
-  reviewComplaints
+  reviewComplaints,
+  reviewDeleteAccountRequest
 ]

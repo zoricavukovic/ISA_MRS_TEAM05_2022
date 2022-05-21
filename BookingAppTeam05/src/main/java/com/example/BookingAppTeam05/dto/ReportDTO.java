@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 public class ReportDTO {
     @NotNull
     private boolean clientCome;
-    @Size(max = 250, message = "{validation.name.size.too_long}")
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String comment;
     @NotNull
     private boolean penalizeClient;
