@@ -7,6 +7,7 @@ import ReviewsIcon from '@mui/icons-material/Reviews';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
 const navbarDefaultList = [
   {
@@ -198,6 +199,14 @@ const reviewReservationReports = {
   url: '/reviewReservationReportsAdmin'
 }
 
+const allRequests = {
+  icon: FormatListBulletedIcon,
+  desc: 'All requests',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/allRequestsCardsForAdmin'
+}
 
 const reviewRatingsFromClients = {
   icon: StarHalfIcon,
@@ -239,7 +248,8 @@ const navbarSuperAdminList = [
   reviewReservationReports,
   reviewRatingsFromClients,
   reviewComplaints,
-  reviewDeleteAccountRequest
+  reviewDeleteAccountRequest,
+  allRequests
 ]
 
 const navbarAdminList = [
@@ -247,5 +257,6 @@ const navbarAdminList = [
   reviewReservationReports,
   reviewRatingsFromClients,
   reviewComplaints,
-  reviewDeleteAccountRequest
+  reviewDeleteAccountRequest,
+  allRequests
 ]

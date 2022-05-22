@@ -1,11 +1,13 @@
 package com.example.BookingAppTeam05.service.users;
 
+import com.example.BookingAppTeam05.dto.AllRequestsNumsDTO;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.users.Admin;
 import com.example.BookingAppTeam05.dto.users.NewAdminDTO;
 import com.example.BookingAppTeam05.model.users.Role;
 import com.example.BookingAppTeam05.repository.users.AdminRepository;
-import com.example.BookingAppTeam05.service.PlaceService;
+import com.example.BookingAppTeam05.service.*;
+import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +20,21 @@ public class AdminService {
     private UserService userService;
     private RoleService roleService;
 
+    private ComplaintService complaintService;
+    private ReportService reportService;
+    private DeleteAccountService deleteAccountService;
+    private RatingService ratingService;
+
     @Autowired
-    public AdminService(AdminRepository adminRepository, PlaceService placeService, UserService userService, RoleService roleService) {
+    public AdminService(AdminRepository adminRepository, PlaceService placeService, UserService userService, RoleService roleService, ComplaintService complaintService, ReportService reportService, DeleteAccountService deleteAccountService, RatingService ratingService) {
         this.adminRepository = adminRepository;
         this.placeService = placeService;
         this.userService = userService;
         this.roleService = roleService;
+        this.complaintService = complaintService;
+        this.reportService = reportService;
+        this.deleteAccountService = deleteAccountService;
+        this.ratingService = ratingService;
     }
 
     @Transactional
@@ -45,5 +56,13 @@ public class AdminService {
 //            return "Error happend on server. Cant save admin: " + newAdminDTO.getEmail() + " " + newAdminDTO.getName() + " " + newAdminDTO.getSurname();
 //        }
 
+    }
+
+    public AllRequestsNumsDTO getAllRequestsNumsDTO() {
+        int ratingSize = ratingService.getAllUnprocessedRatingReviewDTOs().size();
+        int reportSize = reportService.getAllUnprocessedReportReviewDTOs().size();
+        int complaintSize = complaintService.getAllUnprocessedComplaintReviewDTOs().size();
+        int deleteAccountSize = deleteAccountService.getAllUnprocessedDeleteAccountRequestDTOs().size();
+        return new AllRequestsNumsDTO(reportSize, ratingSize, complaintSize, deleteAccountSize);
     }
 }

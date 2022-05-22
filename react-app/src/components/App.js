@@ -43,6 +43,7 @@ import ReviewReservationReport from './admin/ReviewReservationReports';
 import ReviewRatingsAdmin from './admin/ReviewRatingsAdmin';
 import ReviewComplaints from './admin/ReviewComplaints';
 import ReviewDeleteAccountRequests from './admin/ReviewDeleteAccountRequests';
+import AllRequestsCards from './admin/AllRequests';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -111,6 +112,8 @@ function App() {
                     <Route path="/reviewRatingsAdmin" component={ReviewRatingsAdmin} />
                     <Route path="/reviewComplaintsAdmin" component={ReviewComplaints} />
                     <Route path="/reviewDeleteAccountRequests" component={ReviewDeleteAccountRequests} />
+                    <Route path="/allRequestsCardsForAdmin" component={AllRequestsCards} />
+
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>

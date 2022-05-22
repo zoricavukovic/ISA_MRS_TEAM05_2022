@@ -28,3 +28,11 @@ export function tokenIsPresent() {
 export function getToken() {
     return localStorage.getItem('jwt');
 }
+
+export function setPasswordChangedForUser() {
+    let user = getCurrentUser();
+    if (user.userType.name === "ROLE_ADMIN") {
+        user.passwordChanged = 'true';
+        localStorage.setItem("user", JSON.stringify(user));
+    }
+}
