@@ -7,7 +7,10 @@ import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.Picture;
 import com.example.BookingAppTeam05.model.Pricelist;
-import com.example.BookingAppTeam05.model.RatingService;
+import com.example.BookingAppTeam05.model.Reservation;
+import com.example.BookingAppTeam05.service.RatingService;
+import com.example.BookingAppTeam05.model.UnavailableDate;
+import com.example.BookingAppTeam05.service.RatingService;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;
@@ -21,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingEntityService {
@@ -195,12 +200,68 @@ public class BookingEntityService {
                 }
                 break;
             }
-
             default:
                 break;
         }
+        if(entityDTO.getEntityType() != EntityType.ADVENTURE)
+            setAllUnavailableDatesForRange(entityDTO);
+        else
+            setAllUnavailableDates(entityDTO);
 
         return entityDTO;
+    }
+
+    private void setAllUnavailableDates(BookingEntityDTO entityDTO){
+        Set<LocalDateTime> unavailableDates = new HashSet<>();
+        List<ReservationDTO> NotCanceledReservations = entityDTO.getReservations().stream().filter(e-> !e.isCanceled()).collect(Collectors.toList());
+        for(ReservationDTO reservation:NotCanceledReservations){
+            LocalDateTime onlyDate = reservation.getStartDate().withHour(0).withMinute(0).withSecond(0).withNano(0);
+            Set<Integer> unavailableHours = new HashSet<>();
+            for(ReservationDTO reservationCheck:NotCanceledReservations){
+                LocalDateTime onlyDate2 = reservationCheck.getStartDate().withHour(0).withMinute(0).withSecond(0).withNano(0);
+                if(onlyDate.isEqual(onlyDate2))
+                    unavailableHours.add(reservationCheck.getStartDate().getHour());
+            }
+            if(unavailableHours.size() == 4)
+                unavailableDates.add(reservation.getStartDate());
+        }
+
+        entityDTO.setAllUnavailableDates(unavailableDates);
+
+    }
+
+    private void setAllUnavailableDatesForRange(BookingEntityDTO entityDTO){
+        Set<LocalDateTime> allUnavailableDates = new HashSet<>();
+        Set<LocalDateTime> lastDates = new HashSet<>();
+        List<ReservationDTO> NotCanceledReservations = entityDTO.getReservations().stream().filter(e-> !e.isCanceled()).collect(Collectors.toList());
+        for(ReservationDTO reservation:NotCanceledReservations){
+            for(int i=0;i< reservation.getNumOfDays();i++)
+                allUnavailableDates.add(reservation.getStartDate().plusDays(i));
+            if(reservation.getStartDate().getHour() >= 21)
+                allUnavailableDates.add(reservation.getStartDate().plusDays(reservation.getNumOfDays()));
+            else
+                lastDates.add(reservation.getStartDate().plusDays(reservation.getNumOfDays()));
+        }
+        for(UnavailableDate unavailableDate:entityDTO.getUnavailableDates()){
+            int days = 0;
+            LocalDateTime date = unavailableDate.getStartTime();
+            while(date.isBefore(unavailableDate.getEndTime())){
+                allUnavailableDates.add(date);
+                days++;
+                date = date.plusDays(days);
+            }
+        }
+        Set<LocalDateTime> additionalDates = new HashSet<>();
+        for(LocalDateTime unDate: allUnavailableDates){
+            for(LocalDateTime lastDay: lastDates){
+                long hours = Math.abs(ChronoUnit.HOURS.between(unDate, lastDay));
+                if(hours < 24)
+                    additionalDates.add(lastDay);
+            }
+        }
+        allUnavailableDates.addAll(additionalDates);
+        entityDTO.setAllUnavailableDates(allUnavailableDates);
+
     }
 
     public void setNewImagesForBookingEntity(BookingEntity bookingEntity, List<NewImageDTO> images) {

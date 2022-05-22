@@ -30,7 +30,6 @@ function ShowReservationsDetails(props) {
         setPricelist(props.history.location.state.pricelist);
         setAdditionalServices(props.history.location.state.additionalServices);
         setLoading(false);
-       
     }, []);
     if (isLoading) { return <div><CircularProgress /></div> }
     return (
@@ -42,7 +41,6 @@ function ShowReservationsDetails(props) {
                     <ClientDetails reservation={reservation}></ClientDetails>
                 </div>  
             </div>
-           
         </div>
     );
 }

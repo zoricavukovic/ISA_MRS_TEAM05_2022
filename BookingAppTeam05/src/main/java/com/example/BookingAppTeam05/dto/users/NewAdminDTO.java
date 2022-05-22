@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.model.users;
+package com.example.BookingAppTeam05.dto.users;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

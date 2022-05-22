@@ -7,11 +7,17 @@ import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.users.Client;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +41,7 @@ public class BookingEntityDTO {
     private Set<UnavailableDate> unavailableDates;
     public Set<PricelistDTO> pricelists;
     private Set<Picture> pictures;
+    private Set<LocalDateTime> allUnavailableDates;
 
     public BookingEntityDTO() {}
     public BookingEntityDTO(BookingEntity bookingEntity) {
@@ -165,5 +172,13 @@ public class BookingEntityDTO {
 
     public void setPricelists(Set<PricelistDTO> pricelists) {
         this.pricelists = pricelists;
+    }
+
+    public Set<LocalDateTime> getAllUnavailableDates() {
+        return allUnavailableDates;
+    }
+
+    public void setAllUnavailableDates(Set<LocalDateTime> allUnavailableDates) {
+        this.allUnavailableDates = allUnavailableDates;
     }
 }

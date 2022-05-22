@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {createTheme, styled, ThemeProvider} from "@mui/material/styles";
-import {CircularProgress, FormControl, InputLabel, List, NativeSelect, TextField} from "@mui/material";
+import {Alert, Autocomplete, CircularProgress, FormControl, Grid, InputAdornment, InputLabel, List, NativeSelect, Snackbar, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { format } from "date-fns";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -18,6 +21,8 @@ import { userLoggedIn } from '../../service/UserService';
 import { getCurrentUser } from '../../service/AuthService';
 import CaptainIcon from '../../icons/captainOrange.png';
 import Checkbox from '@mui/material/Checkbox';
+import { DateRangeOutlined, Domain, Person, Phone, Place } from '@mui/icons-material';
+import { Calendar } from 'react-date-range';
 
 function EditUserProfile(props) {
 
@@ -40,14 +45,16 @@ function EditUserProfile(props) {
     const [userData, setUserData] = useState({});
     const [changedUserData, setChangedUserData] = useState({});
     const [places, setPlaces] = useState([]);
-    const [allCountries, setAllCountries] = useState([])
     const [selectedPlace, setSelectedPlace] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [isLoading2, setLoading2] = useState(true);
-    const [country,setCountry] = useState("");
-    const [city,setCity] = useState("");
+    const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+    const [allPlacesList,setAllPlacesList] = useState([]);
+    const [openDate,setOpenDate] = useState(false);
+    const [dateOfBirth,setDateOfBirth] = useState(new Date());
     const history = useHistory();
     const [checked, setChecked] = React.useState();
+
     const handleChange = (event) => {
         setChecked(event.target.checked);
     };
@@ -64,37 +71,56 @@ function EditUserProfile(props) {
         if (userLoggedIn(history)) {
             getUserById(getCurrentUser().id).then(res => {
                 setUserData(res.data);
+                setDateOfBirth(new Date(res.data.dateOfBirth));
                 setChangedUserData(res.data);
                 setLoading(false);
                 if (res.data.userType.name === "ROLE_SHIP_OWNER"){
                     console.log(res.data.captain);
                     setChecked(res.data.captain);
                 }
-                setCountry(res.data.place.stateName);
             })
     
             getAllPlaces().then(results =>{
                 setPlaces(results.data);
-                var countries = []
-                for(var place of results.data)
-                        if(!countries.some(e=>place.stateName === e))
-                            countries.push(place.stateName);
-                
-                console.log(countries);
-                setAllCountries(countries);
                 setLoading2(false);
             })
         }
     }, []);
 
+    useEffect(() => {
+        console.log("USER DATA");
+        console.log(userData);
+        if(Object.keys(userData).length !== 0){
+            setSelectedPlaceId(userData.place.id);
+            setSelectedPlace({ 'label': userData.place.cityName + ',' + userData.place.zipCode + ',' + userData.place.stateName, 'id': userData.place.id });
+        }
+    }, [userData]);
+
+    const [open, setOpen] = React.useState(false);
+
+    const showNotification = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+        return;
+        }
+
+        setOpen(false);
+    };
 
     const saveChanges = (event) => {
-        
-        console.log("CHanged user data:",changedUserData);
-        editUserById(getCurrentUser().id, changedUserData).then(res=>{
+        event.preventDefault();
+        let changedData = changedUserData;
+        changedData.dateOfBirth = dateOfBirth;
+        changedData.place.id = selectedPlaceId;
+        setChangedUserData(changedData);
+        console.log("CHanged user data:",changedData);
+        editUserById(getCurrentUser().id, changedData).then(res=>{
             console.log("Uspesno!!");
             console.log(res.data);
-            alert("Changes saved");
+            showNotification();
         }).catch(res=>{
             console.log("Greska!!");
         })
@@ -102,6 +128,7 @@ function EditUserProfile(props) {
 
     const reset = (event)=>{
         setState( { key: Date.now() } );
+        setDateOfBirth(new Date(userData.dateOfBirth));
     }
 
     const makeChange = (event)=>{
@@ -119,44 +146,35 @@ function EditUserProfile(props) {
     }
 
     useEffect(() => {
-        setChangedUserData(prevState => ({
-            ...prevState,
-            place: selectedPlace
-        }));
-    },[selectedPlace])
+        getAllPlacesForTheList();
+    },[places])
 
-    useEffect(() => {
-        console.log(city);
-        let countryPlace = places.find(function (element) {
-            let someCityInCountry = element.stateName.localeCompare(country) === 0;
-            if(city)
-                return someCityInCountry && element.cityName.localeCompare(city)===0;
-            else
-                return someCityInCountry;
-        })
-        console.log("Pronadjeno mesto:");
-        console.log(countryPlace);
+    const handleDatePick = (date) =>{
+        console.log("Usao u picker");
+        date.setHours(12);
+        setDateOfBirth(date); 
+        setOpenDate(false);
+      }
 
-        setSelectedPlace(countryPlace);
-    }, [country,city])
-
-    useEffect(() => {
-        setChangedUserData(prevState => ({
-            ...prevState,
-            place: selectedPlace
-        }));
-    },[city])
-
-
-    const countryChanged = (event) =>{
-        setCountry(event.target.value);
+    const placeOnChange = (event, newValue) => {
+        event.preventDefault();
+        console.log(newValue);
+        if (newValue != null && newValue != undefined && newValue != '') {
+            setSelectedPlaceId(newValue.id);
+        } else {
+            setSelectedPlaceId(null);
+        }
     }
 
-    const cityChanged = (event) =>{
-        setCity(event.target.value);
-    };
+    const getAllPlacesForTheList = () => {
+        let newArray = [];
+        for (let place of places) {
+            newArray.push({ 'label': place.cityName + ',' + place.zipCode + ',' + place.stateName, 'id': place.id });
+        }
+        setAllPlacesList(newArray);
+      }
 
-    const SubmitButton = <ListItemButton component="a" onClick={saveChanges} style={{backgroundColor:"rgb(244,177,77)",color:"white",textAlign:"center", borderRadius: 7}}>
+    const SubmitButton = <ListItemButton button type="submit" component="button"  style={{backgroundColor:"rgb(244,177,77)",color:"white",textAlign:"center", borderRadius: 7}}>
         <ListItemText
             sx={{ my: 0 }}
             primary="Save Changes"
@@ -178,102 +196,83 @@ function EditUserProfile(props) {
 
         <div className="App" key={state.key}>
 
-            <div style={{ backgroundColor: 'aliceblue', margin: '8%', padding: '2%', borderRadius: '10px', minHeight: '55px' }} >
+            <div style={{ backgroundColor: 'aliceblue',display:'flex',  margin: '10% auto', marginBottom:'20px', borderRadius: '10px',width:'55%', minHeight: '100px', padding:'2%' }} >
+                <Grid container style={{justifyContent:'center', alignItems:'center'}}>
+                    <Grid item xs={12} md={10} lg={8}>
+                        {avatar}
+                        <div><Typography
+                            variant="h5"
+                            component="div"
+                            style={{ minWidth: '200px', minHeight: '20px' }}
+                            sx={{ mr: 2, display: { xs: 'none', color: 'black', fontWeight: "bold", md: 'flex' } }}
 
-                <div>
-                    {avatar}
-                    <div><Typography
-                        variant="h5"
-                        component="div"
-                        style={{ minWidth: '200px', minHeight: '20px' }}
-                        sx={{ mr: 2, display: { xs: 'none', color: 'black', fontWeight: "bold", md: 'flex' } }}
+                        >
+                            {userData.firstName} {userData.lastName}
+                        </Typography>
+                        </div>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex' } }}
 
-                    >
-                        {userData.firstName} {userData.lastName} {places["Iran"]}
-                    </Typography>
-                    </div>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex' } }}
+                        >
+                            {userData.email}
+                        </Typography>
+                        <Typography
+                            variant="h7"
+                            noWrap
+                            component="div"
+                            style={{marginTop:'10px'}}
+                            sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex'} }}
 
-                    >
-                        {userData.email}
-                    </Typography>
-                    <Typography
-                        variant="h7"
-                        noWrap
-                        component="div"
-                        style={{marginTop:'10px'}}
-                        sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex'} }}
-
-                    >
-                        {userData.userType.name}
-                    </Typography>
-
-                </div>
+                        >
+                            {userData.userType.name.substring(userData.userType.name.indexOf('_')+1)}
+                        </Typography>
+                    </Grid>
+                
                 {userData.userType.name !== "ROLE_ADMIN" ? (
-                    <Box sx={{ display: 'flex', float: 'right' }}>
-                        <ThemeProvider
-                            theme={createTheme({
-                                components: {
-                                    MuiListItemButton: {
-                                        defaultProps: {
-                                            disableTouchRipple: true,
+                    <Grid item xs="auto">
+                        <Box sx={{ display: 'flex', float: 'right' }}>
+                            <ThemeProvider
+                                theme={createTheme({
+                                    components: {
+                                        MuiListItemButton: {
+                                            defaultProps: {
+                                                disableTouchRipple: true,
+                                            },
                                         },
                                     },
-                                },
-                                palette: {
-                                    mode: 'dark',
-                                    primary: { main: 'rgb(102, 157, 246)' },
-                                    background: { paper: 'rgb(5, 30, 52)' },
-                                },
-                            })}
-                        >
-                            <Paper elevation={0} sx={{ maxWidth: 290 }}>
-                                <FireNav component="nav" disablePadding aria-disabled="true">
-                                    <ListItemButton component="a">
-                                        <ListItemIcon sx={{ fontSize: 20 }}>🔥 Loyalty Type</ListItemIcon>
-                                        <ListItemText
-                                            sx={{ my: 0 }}
-                                            primary={userData.loyaltyProgram}
-                                            primaryTypographyProps={{
-                                                fontSize: 20,
-                                                fontWeight: 'medium',
-                                                letterSpacing: 0,
-                                            }}
-                                        />
-                                    </ListItemButton>
-                                    <Divider />
-                                    <ListItem component="div" disablePadding>
-                                        <ListItemButton sx={{ height: 56 }}>
-                                            <ListItemIcon sx={{ fontSize: 20 }}>
-                                                <FormatListNumberedIcon color="primary" />
-                                                Loyalty Points
-                                            </ListItemIcon>
+                                    palette: {
+                                        mode: 'dark',
+                                        primary: { main: 'rgb(102, 157, 246)' },
+                                        background: { paper: 'rgb(5, 30, 52)' },
+                                    },
+                                })}
+                            >
+                                <Paper elevation={0} sx={{ maxWidth: 290 }}>
+                                    <FireNav component="nav" disablePadding aria-disabled="true">
+                                        <ListItemButton component="a">
+                                            <ListItemIcon sx={{ fontSize: 20 }}>🔥 Loyalty Type</ListItemIcon>
                                             <ListItemText
-                                                primary={userData.loyaltyPoints}
+                                                sx={{ my: 0 }}
+                                                primary={userData.loyaltyProgram}
                                                 primaryTypographyProps={{
-                                                    color: 'primary',
                                                     fontSize: 20,
                                                     fontWeight: 'medium',
-                                                    variant: 'body2',
+                                                    letterSpacing: 0,
                                                 }}
                                             />
                                         </ListItemButton>
-
-                                    </ListItem>
-                                    <Divider />
-                                    {userData.userType.name === "ROLE_CLIENT"?(
+                                        <Divider />
                                         <ListItem component="div" disablePadding>
                                             <ListItemButton sx={{ height: 56 }}>
                                                 <ListItemIcon sx={{ fontSize: 20 }}>
                                                     <FormatListNumberedIcon color="primary" />
-                                                    Penalties
+                                                    Loyalty Points
                                                 </ListItemIcon>
                                                 <ListItemText
-                                                    primary={userData.penalties}
+                                                    primary={userData.loyaltyPoints}
                                                     primaryTypographyProps={{
                                                         color: 'primary',
                                                         fontSize: 20,
@@ -284,12 +283,10 @@ function EditUserProfile(props) {
                                             </ListItemButton>
 
                                         </ListItem>
-                                    ):(
                                         <>
                                         {(userData.userType.name === "ROLE_SHIP_OWNER")? (
                                             <ListItem component="div" disablePadding>
                                                <img style={{marginLeft:'8%'}} src={CaptainIcon}></img>
-                                                 
                                                 <ListItemText
                                                     primary={" Captain"}
                                                     primaryTypographyProps={{
@@ -311,29 +308,21 @@ function EditUserProfile(props) {
                                            <div></div>
                                        )}
                                        </>
-                                    )}
-                                </FireNav>
-                            </Paper>
-                        </ThemeProvider>
-                    </Box>
+                                    </FireNav>
+                                </Paper>
+                            </ThemeProvider>
+                        </Box>
+                    </Grid>
                 ) : (<div></div>)}
-
+                </Grid>
             </div>
-
-
-
-            <Box style={{ backgroundColor: 'aliceblue', marginTop:'5%', marginLeft: '13%', marginRight: '13%', padding: '2%', borderRadius: '10px' }}
-                 component="form"
-                 sx={{
-                     '& .MuiTextField-root': { m: 1, width: '25ch' },
-                 }}
-                 noValidate
-                 autoComplete="off"
-                 minRows="3"
-            >
-                <table align="center">
-                    <tr>
-                        <td>
+            <div style={{margin:'0px auto', width:'30%'}}>
+            <form onSubmit={saveChanges}>
+                <Grid container spacing={2} style={{backgroundColor: 'aliceblue', margin:'0px auto' , borderRadius: '10px' ,justifyContent:"center" ,alignItems:"center", paddingBottom:'30px'}} >
+                        <Grid item xs={12} style={{margin:'0px 10%'}}>
+                            <h3 style={{ margin:'0px'}}>Personal informations:</h3>
+                        </Grid>
+                        <Grid item xs="auto">
                             <TextField
                                 id="outlined-read-only-input"
                                 label="First Name"
@@ -342,10 +331,16 @@ function EditUserProfile(props) {
                                 onChange={makeChange}
                                 InputProps={{
                                     readOnly: false,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Person />
+                                        </InputAdornment>
+                                        )
                                 }}
+                                required
                             />
-                        </td>
-                        <td>
+                        </Grid>
+                        <Grid item xs="auto">
                             <TextField
                                 id="outlined-read-only-input"
                                 label="Last Name"
@@ -354,13 +349,16 @@ function EditUserProfile(props) {
                                 onChange={makeChange}
                                 InputProps={{
                                     readOnly: false,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Person />
+                                        </InputAdornment>
+                                        )
                                 }}
+                                required
                             />
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
+                        </Grid>
+                        <Grid item xs="auto">
                             <TextField
                                 id="outlined-read-only-input"
                                 label="Phone Number"
@@ -369,69 +367,66 @@ function EditUserProfile(props) {
                                 onChange={makeChange}
                                 InputProps={{
                                     readOnly: false,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Phone />
+                                        </InputAdornment>
+                                        )
                                 }}
+                                required
                             />
-                        </td>
-
-                        <td>
-                            <TextField
-                                id="outlined-read-only-input"
-                                label="Date Of Birth"
-                                defaultValue={userData.dateOfBirth}
-                                name="dateOfBirth"
-                                onChange={makeChange}
+                        </Grid>
+                        <Grid item xs="auto">
+                            <><TextField style={{/*margin:'10px 10px'*/ }} onClick={()=>setOpenDate(!openDate)} label='Date of birth' placeholder={`${format(dateOfBirth, "dd.MM.yyyy.")}`} 
+                                value={`${format(dateOfBirth, "dd.MM.yyyy.")}`}
                                 InputProps={{
-                                    readOnly: false,
-                                }}
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                        <DateRangeOutlined />
+                                        </InputAdornment>
+                                    )
+                                    }}
+                                    />
+                                    {openDate && <div style={{
+                                            position:"absolute",
+                                            zIndex:99999,
+                                            backgroundColor:"white",
+                                            border:"1px solid rgb(5, 30, 52)"
+                                        }}
+                                        
+                                        >
+                                        <Calendar
+                                            editableDateInputs={true}
+                                            date={dateOfBirth}
+                                            onChange={handleDatePick}
+                                        />
+                                        </div>
+                                    }
+                            </>
+                        </Grid>
+                        <Grid item xs={11} zeroMinWidth>
+                            <Autocomplete
+                                disablePortal
+                                id="place"
+                                options={allPlacesList}
+                                defaultValue={selectedPlace}
+                                onChange={placeOnChange}
+                                renderInput={(params) => <TextField {...params} label="Place" 
+                                                            placeholder="Where are you going?"
+                                                            InputProps={{
+                                                                ...params.InputProps,
+                                                                startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <Place />
+                                                                </InputAdornment>
+                                                                )
+                                                            }}
+                                                        />}
+                                required
+                                isOptionEqualToValue={(option, value) => option.label === value.label}
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <FormControl style={{margin:'10px 10px'}}>
-                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                    Country
-                                </InputLabel>
-                                <NativeSelect
-                                    defaultValue={userData.place.stateName}
-                                    onChange = {countryChanged}
-                                    inputProps={{
-                                        name: 'Country',
-                                        id: 'uncontrolled-native',
-                                    }}
-                                >
-                                    {allCountries.map((state)=>(
-                                        <option value={state}>{state}</option>
-                                    ))}
-                                </NativeSelect>
-                            </FormControl>
-                        </td>
-                        <td>
-                            <FormControl>
-                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                    City
-                                </InputLabel>
-                                <NativeSelect
-                                    defaultValue={userData.place.cityName}
-                                    onChange = {cityChanged}
-                                    inputProps={{
-                                        name: 'city',
-                                        id: 'uncontrolled-native',
-                                    }}
-                                >
-                                    {places.map(place=> {
-                                            if (place.stateName === country)
-                                                return <option value={place.cityName}>{place.cityName}</option>
-                                            return <></>
-                                        }
-                                    )}
-                                </NativeSelect>
-                            </FormControl>
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td colSpan="2">
+                        </Grid>
+                        <Grid item xs={11} style={{justifyContent:'center', alignItems:'center'}}>
                             <TextField
                                 required
                                 id="outlined-required"
@@ -440,30 +435,32 @@ function EditUserProfile(props) {
                                 name="address"
                                 onChange={makeChange}
                                 style={{width:'100%'}}
+                                InputProps={{
+                                    readOnly: false,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Domain />
+                                        </InputAdornment>
+                                        )
+                                }}
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-
+                        </Grid>
+                        <Grid item xs="auto">
                             <Paper elevation={0} sx={{ maxWidth: 290 }}>
                                 <FireNav component="nav" disablePadding>
                                     {SubmitButton}
                                     <Divider />
-
-
                                     <Divider />
                                 </FireNav>
                             </Paper>
-                        </td>
-
-                        <td>
+                        </Grid>
+                        <Grid item xs="auto">
                             <Paper elevation={0} sx={{marginLeft:10, maxWidth: 290 }}>
                                 <FireNav component="nav" disablePadding>
-                                    <ListItemButton component="a" onClick={reset} style={{backgroundColor:"rgb(5, 30, 52)",color:"white",textAlign:"center", borderRadius: 7}}>
+                                    <ListItemButton component="a" type='button' onClick={reset} style={{backgroundColor:"rgb(5, 30, 52)",color:"white",textAlign:"center", borderRadius: 7}}>
                                         <ListItemText
                                             sx={{ my: 0 }}
-                                            primary="Reset" //STAVITI LOYALTY TIP
+                                            primary="Reset"
                                             primaryTypographyProps={{
                                                 fontSize: 20,
                                                 fontWeight: 'medium',
@@ -472,19 +469,18 @@ function EditUserProfile(props) {
                                         />
                                     </ListItemButton>
                                     <Divider />
-
-
                                     <Divider />
                                 </FireNav>
                             </Paper>
-
-                        </td>
-                    </tr>
-                </table>
-            </Box>
-
-
-
+                        </Grid>
+                    </Grid>
+                </form>
+            </div>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    Profile edited successfuly!
+                </Alert>
+            </Snackbar>
         </div>
 
     );

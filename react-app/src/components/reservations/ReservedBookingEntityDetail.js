@@ -13,10 +13,10 @@ import { getShipByIdCanBeDeleted } from '../../service/ShipService';
 import { getAdventureByIdCanBeDeleted } from '../../service/AdventureService';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import { getBookingEntityById } from '../../service/BookingEntityService';
 import { getCurrentUser } from '../../service/AuthService.js';
 
 export default function ReservedBookingEntityDetail(props) {
-    
     const history = useHistory();
     const [open, setOpen] = React.useState(false);
     const [isLoading, setLoading] = React.useState(true);
@@ -47,25 +47,16 @@ export default function ReservedBookingEntityDetail(props) {
 
 
     function showBookingEntity(){
-          if (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER"){
-            history.push({
-                pathname: "/showCottageProfile",
-                state: { bookingEntityId: bookingEntity.id }
-            })
-          }
-          else if (getCurrentUser().userType.name === "ROLE_SHIP_OWNER"){
-            history.push({
-                pathname: "/showShipProfile",
-                state: { bookingEntityId: bookingEntity.id }
-            })
-          }
-          else if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR"){
-            history.push({
-                pathname: "/showAdventureProfile",
-                state: { bookingEntityId: bookingEntity.id }
-            })
-          }
-         
+        let path = '/showShipProfile';
+        if(bookingEntity.entityType === "COTTAGE")
+            path = "/showCottageProfile"
+        else if(bookingEntity.entityType === "ADVENTURE")
+            path = '/showAdventureProfile'
+        
+        history.push({
+            pathname: path,
+            state: { bookingEntityId: bookingEntity.id }
+        })
     };
     
     useEffect(() => {

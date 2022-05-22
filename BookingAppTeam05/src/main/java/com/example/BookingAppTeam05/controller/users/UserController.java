@@ -48,28 +48,16 @@ public class UserController {
 
     @PutMapping("/updateUser/{id}")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
-    public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO)  {
-        User user = userService.findUserById(userId);
-
-        user.setAddress(userDTO.getAddress());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setDateOfBirth(userDTO.getDateOfBirth());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        Place place = placeService.getPlaceByZipCode(userDTO.getPlace().getZipCode());
-        user.setPlace(place);
-        final User updatedUser;
-        if (userDTO.getUserType().toString().equals("ROLE_SHIP_OWNER")){
-            ((ShipOwner) user).setCaptain(userDTO.isCaptain());
-        }
+    public ResponseEntity<UserDTO> updateUser(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO)  {
+        User updatedUser = null;
         try {
-            updatedUser = userService.save(user);
+            updatedUser = userService.updateUser(userId, userDTO);
         }
         catch(Exception e)
         {
-            return (ResponseEntity<User>) ResponseEntity.badRequest();
+            return (ResponseEntity<UserDTO>) ResponseEntity.badRequest();
         }
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(new UserDTO(updatedUser));
     }
 
     @PostMapping(value = "/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE)

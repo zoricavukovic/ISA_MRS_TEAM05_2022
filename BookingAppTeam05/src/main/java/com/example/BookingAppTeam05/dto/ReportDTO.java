@@ -8,10 +8,10 @@ import javax.validation.constraints.Size;
 public class ReportDTO {
     @NotNull
     private boolean clientCome;
-    @Size(max = 250, message = "{validation.name.size.too_long}")
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String comment;
     @NotNull
-    private boolean reward;
+    private boolean penalizeClient;
     @NotNull
     private Long reservationId;
 
@@ -20,17 +20,17 @@ public class ReportDTO {
     public ReportDTO() {
     }
 
-    public ReportDTO(boolean clientCome, String comment, boolean reward, Long reservationId, boolean processed) {
+    public ReportDTO(boolean clientCome, String comment, boolean penalizeClient, Long reservationId, boolean processed) {
         this.clientCome = clientCome;
         this.comment = comment;
-        this.reward = reward;
+        this.penalizeClient = penalizeClient;
         this.reservationId = reservationId;
         this.processed = processed;
     }
-    public ReportDTO(boolean clientCome, String comment, boolean reward, Long reservationId) {
+    public ReportDTO(boolean clientCome, String comment, boolean penalizeClient, Long reservationId) {
         this.clientCome = clientCome;
         this.comment = comment;
-        this.reward = reward;
+        this.penalizeClient = penalizeClient;
         this.reservationId = reservationId;
         this.processed = false;
     }
@@ -38,7 +38,7 @@ public class ReportDTO {
     public ReportDTO(Report report) {
         this.clientCome = report.isComeClient();
         this.comment = report.getComment();
-        this.reward = report.isPenalizeClient();
+        this.penalizeClient = report.isPenalizeClient();
         this.reservationId = report.getReservation().getId();
         this.processed = report.isProcessed();
     }
@@ -59,12 +59,12 @@ public class ReportDTO {
         this.comment = comment;
     }
 
-    public boolean isReward() {
-        return reward;
+    public boolean isPenalizeClient() {
+        return penalizeClient;
     }
 
-    public void setReward(boolean reward) {
-        this.reward = reward;
+    public void setPenalizeClient(boolean penalizeClient) {
+        this.penalizeClient = penalizeClient;
     }
 
     public Long getReservationId() {

@@ -9,7 +9,7 @@ public class Report {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @Column(name="comment", nullable = false)
+   @Column(name="comment", nullable = false, length = 1024)
    private String comment;
 
    @Column(name="penalizeClient", nullable = false)
@@ -20,6 +20,12 @@ public class Report {
 
    @Column(name="processed", nullable = false)
    private boolean processed;
+
+   @Column(name="adminResponse", length = 1024)
+   private String adminResponse;
+
+   @Column(name="adminPenalizeClient")
+   private boolean adminPenalizeClient;
 
    @OneToOne(fetch = FetchType.LAZY)
    public Reservation reservation;
@@ -33,6 +39,22 @@ public class Report {
    }
 
    public Report(){ }
+
+   public boolean isAdminPenalizeClient() {
+      return adminPenalizeClient;
+   }
+
+   public void setAdminPenalizeClient(boolean adminPenalizeClient) {
+      this.adminPenalizeClient = adminPenalizeClient;
+   }
+
+   public String getAdminResponse() {
+      return adminResponse;
+   }
+
+   public void setAdminResponse(String adminResponse) {
+      this.adminResponse = adminResponse;
+   }
 
    public Long getId() {
       return id;

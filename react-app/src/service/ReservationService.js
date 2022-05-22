@@ -8,7 +8,6 @@ export function getFastReservationsByBookingEntityId(bookingEntityId) {
     return api.get('reservations/fast/' + bookingEntityId);
 }
 
-
 export function getReservationsByOwnerIdAndFilter(ownerId, name, time, type) {
     return api.get('reservations/owner/' + ownerId + "/" + type + "/filter/name/" + name + "/time/" + time);
 }
@@ -19,5 +18,13 @@ export function addNewFastReservation(newFastReservation){
 
 export function addReservation(reservationDTO){
     return api.post('reservations/addReservation', reservationDTO);
+}
+
+export function getReservationsByClientId(id){
+    return api.get('reservations/client/'+id);
+}
+
+export function cancelReservationById(reservationId){
+    return api.post('reservations/cancel/'+reservationId);
 }
 

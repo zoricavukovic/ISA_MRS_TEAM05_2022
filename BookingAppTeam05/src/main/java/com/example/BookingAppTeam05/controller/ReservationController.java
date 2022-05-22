@@ -38,6 +38,12 @@ public class ReservationController {
         return ResponseEntity.ok(reservationDTOs);
     }
 
+    @GetMapping(value="/client/{clientId}")
+    public ResponseEntity<List<ReservationDTO>> getReservationsByClientId(@PathVariable Long clientId) {
+        List<ReservationDTO> reservationDTOs = reservationService.getReservationsByClientId(clientId);
+        return ResponseEntity.ok(reservationDTOs);
+    }
+
     @GetMapping(value="/fast/{bookingEntityId}")
     public ResponseEntity<List<ReservationDTO>> getFastReservationsByBookingEntityId(@PathVariable Long bookingEntityId) {
         List<ReservationDTO> reservationDTOs = getFastReservationDTOS(bookingEntityId);
@@ -95,6 +101,13 @@ public class ReservationController {
         if (tempReservation == null)
             return new ResponseEntity<>("Cannot create temporary reservation.", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(tempReservation.getId().toString(), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value="/cancel/{Id}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
+    public ResponseEntity<String> cancelReservation(@PathVariable Long Id) {
+        reservationService.cancelReservation(Id);
+        return ResponseEntity.ok("Sve je dobro");
     }
 
 }

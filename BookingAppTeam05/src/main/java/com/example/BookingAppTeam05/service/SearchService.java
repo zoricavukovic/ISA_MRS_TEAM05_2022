@@ -111,16 +111,30 @@ public class SearchService {
             startDate = startDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
             for (BookingEntity entity : entities) {
                 int takenTimeInDate = 0;
+                boolean unavailable = false;
                 for (Reservation reservation : entity.getReservations()) {
                     LocalDateTime onlyStartDate = reservation.getStartDate().withHour(0).withMinute(0).withSecond(0).withNano(0);
                     if (onlyStartDate.isEqual(startDate))
                         takenTimeInDate++;
                 }
-                if(takenTimeInDate == 4)
+                for(UnavailableDate unavailableDate:entity.getUnavailableDates()){
+                    if(isUnavailableDate(startDate, unavailableDate))
+                        unavailable = true;
+                }
+                if(takenTimeInDate == 4 || unavailable)
                     results.remove(entity);
             }
+
         }
         return results;
+    }
+
+    private boolean isUnavailableDate(LocalDateTime startDate, UnavailableDate unavailableDate) {
+        LocalDateTime onlyStartDate = unavailableDate.getStartTime().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime onlyEndDate = unavailableDate.getEndTime().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        return (onlyStartDate.isBefore(startDate) && onlyEndDate.isAfter(startDate)) ||
+                (onlyStartDate.isEqual(startDate) && unavailableDate.getStartTime().getHour() < 12) ||
+                (onlyEndDate.isEqual(startDate) && unavailableDate.getEndTime().getHour() > 17);
     }
 
     private List<BookingEntity> searchByMaxPersons(List<BookingEntity> entities, Long numOfPersons) {
@@ -142,16 +156,13 @@ public class SearchService {
             endDate = endDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
             for (BookingEntity entity : entities) {
                 for (Reservation reservation : entity.getReservations()) {
-                    LocalDateTime onlyStartDate = reservation.getStartDate().withHour(0).withMinute(0).withSecond(0).withNano(0);
-                    LocalDateTime onlyEndDate = reservation.getEndDate().withHour(0).withMinute(0).withSecond(0).withNano(0);
-                    if ((onlyStartDate.isBefore(startDate) && onlyEndDate.isAfter(startDate))
-                            || (onlyStartDate.isBefore(endDate) && onlyEndDate.isAfter(endDate))) {
+                    if (isDateRangeTaken(startDate, endDate, reservation.getStartDate(), reservation.getEndDate())) {
                         results.remove(entity);
                         break;
-                    } else if (onlyEndDate.isEqual(startDate) && reservation.getEndDate().getHour() >= 21) {
-                        results.remove(entity);
-                        break;
-                    } else if (onlyStartDate.isEqual(endDate) && reservation.getStartDate().getHour() <= 9) {
+                    }
+                }
+                for(UnavailableDate unavailableDate:entity.getUnavailableDates()){
+                    if(isDateRangeTaken(startDate,endDate, unavailableDate.getStartTime(), unavailableDate.getEndTime())){
                         results.remove(entity);
                         break;
                     }
@@ -159,5 +170,14 @@ public class SearchService {
             }
         }
         return results;
+    }
+
+    private boolean isDateRangeTaken(LocalDateTime startDate, LocalDateTime endDate, LocalDateTime unavailableStartDate,LocalDateTime unavailableEndDate) {
+        LocalDateTime onlyStartDate = unavailableStartDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime onlyEndDate = unavailableEndDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
+        return (onlyStartDate.isBefore(startDate) && onlyEndDate.isAfter(startDate))
+                || (onlyStartDate.isBefore(endDate) && onlyEndDate.isAfter(endDate))
+                || (onlyEndDate.isEqual(startDate) && unavailableEndDate.getHour() >= 21)
+                || (onlyStartDate.isEqual(endDate) && unavailableStartDate.getHour() <= 9);
     }
 }

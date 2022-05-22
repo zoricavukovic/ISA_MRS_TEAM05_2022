@@ -41,9 +41,13 @@ import ChangePassword from './ChangePassword';
 import searchForReservation from './SearchForReservation';
 import AddAdmin from './admin/AddAdmin';
 import AdminHomePage from './admin/AdminHomePage';
-
+import MyReservations from './reservations/MyReservations';
+import ShowReservationsDetailsForClient from './reservations/ReservationDetailsForClient';
 import Reports from './analytics/Reports';
-
+import ReviewReservationReport from './admin/ReviewReservationReports';
+import ReviewRatingsAdmin from './admin/ReviewRatingsAdmin';
+import ReviewComplaints from './admin/ReviewComplaints';
+import ReviewDeleteAccountRequests from './admin/ReviewDeleteAccountRequests';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -93,6 +97,7 @@ function App() {
 
                     <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
                     <Route path="/showReservationDetails" component={ShowReservationsDetails} />
+                    <Route path="/showReservationDetailsForClient" component={ShowReservationsDetailsForClient} />
 
                     <Route path="/showFastReservations" component={ShowFastReservations} />
                     <Route path="/addFastReservation" component={AddFastReservation} />
@@ -102,6 +107,8 @@ function App() {
                     <Route path="/editAdventure" component={EditAdventure} />
                     <Route path="/newReservation" component={NewReservation} />
                     <Route path="/search" component={searchForReservation} />
+                    <Route path="/myReservations" component={MyReservations} />
+
                     <Route path="/analytics" component={Reports} />
 
 
@@ -112,6 +119,10 @@ function App() {
                     <Route path="/changePassword" component={ChangePassword} />
                     <Route path="/addAdmin" component={AddAdmin} />
                     <Route path="/adminHomePage" component={AdminHomePage} />
+                    <Route path="/reviewReservationReportsAdmin" component={ReviewReservationReport} />
+                    <Route path="/reviewRatingsAdmin" component={ReviewRatingsAdmin} />
+                    <Route path="/reviewComplaintsAdmin" component={ReviewComplaints} />
+                    <Route path="/reviewDeleteAccountRequests" component={ReviewDeleteAccountRequests} />
                     <Redirect to="/"></Redirect>
                 </Switch>
             </Router>
