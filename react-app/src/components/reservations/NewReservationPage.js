@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Grid, Paper, Avatar, TextField, Button, Typography, Link, Checkbox, FormControlLabel, ListItemText, InputAdornment, FormControl, FormLabel, FormGroup, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ListItem } from '@mui/material'
-import { makeStyles } from '@mui/styles';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useHistory } from 'react-router-dom';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -9,14 +7,12 @@ import { format } from "date-fns";
 import { DateRange,Calendar } from 'react-date-range';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import { Add, AddCircleOutlined, DateRangeOutlined, Label, Person, RemoveCircleOutlined } from '@mui/icons-material';
+import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined } from '@mui/icons-material';
 import { getBookingEntityById } from '../../service/BookingEntityService';
-import { addReservation, addTemporaryReservation } from '../../service/ReservationService';
+import { addReservation } from '../../service/ReservationService';
 import { getCurrentUser } from '../../service/AuthService';
 
 export default function NewReservationPage(props) {
-    const [formData, setFormData] = useState({ email: '', password: '' });
-    const [badInput, setBadInput] = useState(false);
     const [type, setType] = useState("");
     const [openDate,setOpenDate] = useState(false);
     const [personNumber,setPersonNumber] = useState(1);
@@ -56,25 +52,17 @@ export default function NewReservationPage(props) {
     }];
     const oneDay = 60 * 60 * 24 * 1000;
 
-
     const [selectionRange, setSelectionRange] = useState({
         startDate: new Date(),
         endDate: new Date(new Date().getTime() + oneDay),
         key: 'selection',
       });
 
-    const makeChange = (event) => {
-        setBadInput(false);
-        setFormData(prevState => ({
-            ...prevState,
-            [event.target.name]: event.target.value
-        }));
-    }
-
     useEffect(() => {
         const entityId = props.history.location.state.bookingEntityId;
         console.log(entityId);
         getBookingEntityById(entityId).then(res => {
+            console.log("+++++++++ ENTITY+++++++");
             console.log(res.data);
             res.data.pricelists.sort(function (a, b) {
                 var key1 = a.startDate;
@@ -94,12 +82,41 @@ export default function NewReservationPage(props) {
                 setMaxNumOfPersons(50);
             setBookingEntity(res.data);
             setPricelistData(res.data.pricelists[0]);
-            findUnavailableDates(res.data);
+            let unaDates = []
+            for(let unDate of res.data.allUnavailableDates)
+                unaDates.push(new Date(unDate[0],unDate[1]-1,unDate[2],unDate[3],unDate[4]));
+            setUnavailableDates(unaDates);
+            //findUnavailableDates(res.data);
+            let searchParams = null;
+            if(props.history.location.state != null || props.history.location.state.searchParams != null)
+                 searchParams = props.history.location.state.searchParams;
+            
+            if(Object.keys(searchParams).length === 0){
+                if(res.data.entityType === "ADVENTURE")
+                    findNextAvailableDate(unaDates);
+                else
+                    findNextAvailableDateRange(unaDates);
+            }
+            else
+                setFieldsWithSearchedParams(searchParams);
             setLoaded(true);
             setPrice(res.data.pricelists[0].entityPricePerPerson);
             setType(res.data.entityType);
         });
     }, []);
+
+    const setFieldsWithSearchedParams =(searchParams)=> {
+        if (searchParams.endDate == null)
+            setStartDate(searchParams.startDate);
+        else
+            setSelectionRange({
+                startDate: searchParams.startDate,
+                endDate: searchParams.endDate,
+                key: 'selection'
+            });
+        if (!isNaN(searchParams.numOfPersons) && searchParams.numOfPersons != null)
+            setPersonNumber(searchParams.numOfPersons);
+    }
 
     const findUnavailableDates = (bookEntity)=>{
         var uDates = [];
@@ -116,42 +133,30 @@ export default function NewReservationPage(props) {
         console.log(uDates);
         for(var reservation of bookEntity.reservations)
         {
+            console.log("===============NEW RESERVATION================");
+            console.log(reservation);
             for(var i=0;i<reservation.numOfDays;i++){
-                
                 uDates.push(new Date(new Date(reservation.startDate).getTime()+i*oneDay));
+                console.log("ADDED:");
+                console.log(new Date(new Date(reservation.startDate).getTime()+i*oneDay));
             }
-            if(new Date(reservation.startDate).getHours() >= 21)
+            if(new Date(reservation.startDate).getHours() >= 21){
                 uDates.push(new Date(new Date(reservation.startDate).getTime()+reservation.numOfDays*oneDay));
+                console.log("ADDED Extra:");
+                console.log(new Date(new Date(reservation.startDate).getTime()+reservation.numOfDays*oneDay));
+            }
+            
         }
         setUnavailableDates(uDates);
-        console.log("PRETRAZENO");
-        let searchParams = props.history.location.state.searchParams;
-        console.log(searchParams);
-        if(Object.keys(searchParams).length === 0)
-            findNextAvailableDateRange(uDates);
-        else{
-            
-            setSelectionRange({
-                startDate: searchParams.startDate,
-                endDate: searchParams.endDate,
-                key: 'selection'
-            });
-            if(!isNaN(searchParams.numOfPersons) && searchParams.numOfPersons != null)
-            setPersonNumber(searchParams.numOfPersons);
-            
-        }
-
     };
 
     const isDateUnavailable = (date, unavDates)=>{
+        date.setHours(12);
         return unavDates.some(e =>{ 
-            date.setHours(12);
             const date1WithoutTime = new Date(date.getTime());
             const date2WithoutTime = new Date(e.getTime());
             date1WithoutTime.setUTCHours(0, 0, 0, 0);
             date2WithoutTime.setUTCHours(0, 0, 0, 0);
-            console.log(date1WithoutTime);
-            console.log(date2WithoutTime);
 
             return date1WithoutTime.getTime() === date2WithoutTime.getTime();
         })
@@ -163,9 +168,7 @@ export default function NewReservationPage(props) {
         var foundRange = false;
         while(!foundRange){
             if(isDateUnavailable(nextAvailableDates[0],unavDates))
-            {
                 nextAvailableDates[0] = new Date(nextAvailableDates[0].getTime()+oneDay);
-            }
             else{
                 nextAvailableDates[1] = new Date(nextAvailableDates[0].getTime()+oneDay);
                 if(!isDateUnavailable(nextAvailableDates[1],unavDates))
@@ -178,6 +181,18 @@ export default function NewReservationPage(props) {
             key: 'selection'
         });
     };
+
+    const findNextAvailableDate=(unavDates)=>{
+        var nextAvailableDate = new Date();
+        var foundRange = false;
+        while(!foundRange){
+            if(isDateUnavailable(nextAvailableDate,unavDates)){
+                nextAvailableDate = new Date(nextAvailableDate.getTime()+oneDay);
+                foundRange = true;
+            }
+        }
+        setStartDate(nextAvailableDate);
+    }
 
     useEffect(() => {
         if(Object.keys(bookingEntity).length !== 0)
@@ -196,10 +211,30 @@ export default function NewReservationPage(props) {
                 break;
             }
         }
-
         console.log(availableTimes);
         setTimes(availableTimes);
     }, [selectionRange]);
+
+    useEffect(() => {
+        if(Object.keys(bookingEntity).length !== 0)
+            for(var unavailableDate of bookingEntity.allUnavailableDates)
+            {
+                if(isDateUnavailable(startDate, [new Date(unavailableDate)]))
+                    availableTimes.forEach(time => {
+                        time.available = true;
+                        if(parseInt(time.value.split(':')[0]) == new Date(unavailableDate).getHours())
+                            time.available = false;
+                })
+            }
+        for(var time of availableTimes){
+            if(time.available == true){
+                setCheckedTime(time);
+                break;
+            }
+        }
+        console.log(availableTimes);
+        setTimes(availableTimes);
+    }, [startDate]);
 
     useEffect(() => {
         if(Object.keys(bookingEntity).length !== 0)
@@ -294,11 +329,15 @@ export default function NewReservationPage(props) {
     };
 
     const  handleSelect=(ranges)=>{
+        if(ranges.selection.endDate.getDate() === ranges.selection.startDate.getDate())
+            ranges.selection.endDate = new Date(ranges.selection.endDate.getTime() + oneDay);
+        console.log("OPSEG JEE");
+        console.log(ranges.selection);
         setSelectionRange(ranges.selection);
         var difference = ranges.selection.endDate.getTime() - ranges.selection.startDate.getTime();
         var daysBetweenDates = Math.ceil(difference/(1000*3600*24));
         console.log(daysBetweenDates);
-        if(daysBetweenDates == 0)
+        if(daysBetweenDates <= 0)
             daysBetweenDates = 1;
         setPrice(bookingEntity.pricelists[0].entityPricePerPerson*personNumber*daysBetweenDates+additionalPrice);
       };
@@ -327,12 +366,12 @@ export default function NewReservationPage(props) {
                                         backgroundColor:"white",
                                         border:"1px solid rgb(5, 30, 52)"
                                     }}
-                                    onBlur={()=>setOpenDate(!openDate)}
                                     >
                                     <Calendar
                                     date={startDate}
                                     onChange={(date)=>{setStartDate(date); setOpenDate(false);}}
                                     minDate={new Date()}
+                                    disabledDates={unavailableDates}
                                     editableDateInputs={true}
                                     />
                                 </div>
@@ -383,21 +422,22 @@ export default function NewReservationPage(props) {
                                     ),
                                 }}
                                 />
-                            {openDate && <DateRange
-                                style={{
-                                    position:"absolute",
-                                    zIndex:99999,
-                                    backgroundColor:"white",
-                                    border:"1px solid rgb(5, 30, 52)"
-                                }}
-                                disabledDates={unavailableDates}
-                                onBlur={()=>setOpenDate(!openDate)}
-                                editableDateInputs={true}
-                                ranges={[selectionRange]}
-                                onChange={handleSelect}
-                                className="date"
-                                minDate={new Date()}
-                            />}
+                            {openDate && <div style={{
+                                            position:"absolute",
+                                            zIndex:99999,
+                                            backgroundColor:"white",
+                                            border:"1px solid rgb(5, 30, 52)"
+                                        }}
+                                        ><DateRange
+                                            disabledDates={unavailableDates}
+                                            onBlur={()=>setOpenDate(!openDate)}
+                                            editableDateInputs={true}
+                                            ranges={[selectionRange]}
+                                            onChange={handleSelect}
+                                            className="date"
+                                            minDate={new Date()}
+                                            />
+                                     </div>}
                         </>
                         }
                         <div style={{zIndex:1}}>
@@ -426,6 +466,7 @@ export default function NewReservationPage(props) {
                                     onChange={radioButtonChanged}
                                     aria-labelledby="demo-row-radio-buttons-group-label"
                                     name="row-radio-buttons-group"
+                                    required
                                 >
                                     {
                                         isLoaded? times.map((time,index)=>{

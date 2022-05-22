@@ -2,6 +2,7 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
+import com.example.BookingAppTeam05.dto.users.ClientDTO;
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.Adventure;
@@ -260,5 +261,25 @@ public class ReservationService {
             System.out.println("EXCEPTION HAS HAPPENED!!!!");
         }
         return null;
+    }
+
+    public List<ReservationDTO> getReservationsByClientId(Long clientId) {
+        List<Reservation> reservations = reservationRepository.getReservationsByClientId(clientId);
+        List<ReservationDTO> reservationDTOS = new ArrayList<>();
+        for(Reservation res : reservations){
+            ReservationDTO newReservation = new ReservationDTO(res);
+            newReservation.setBookingEntity(new BookingEntityDTO(res.getBookingEntity()));
+            newReservation.setClient(new ClientDTO(res.getClient()));
+            reservationDTOS.add(newReservation);
+        }
+        return reservationDTOS;
+    }
+
+    public void cancelReservation(Long id) {
+        Reservation res = reservationRepository.findById(id).orElse(null);
+        if(res != null){
+            res.setCanceled(true);
+            reservationRepository.save(res);
+        }
     }
 }

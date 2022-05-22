@@ -38,6 +38,8 @@ import ChangePassword from './ChangePassword';
 import searchForReservation from './SearchForReservation';
 import AddAdmin from './admin/AddAdmin';
 import AdminHomePage from './admin/AdminHomePage';
+import MyReservations from './reservations/MyReservations';
+import ShowReservationsDetailsForClient from './reservations/ReservationDetailsForClient';
 
 
 
@@ -85,6 +87,7 @@ function App() {
                     <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route>
                     <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
                     <Route path="/showReservationDetails" component={ShowReservationsDetails} />
+                    <Route path="/showReservationDetailsForClient" component={ShowReservationsDetailsForClient} />
 
                     <Route path="/showFastReservations" component={ShowFastReservations} />
                     <Route path="/addFastReservation" component={AddFastReservation} />
@@ -94,6 +97,7 @@ function App() {
                     <Route path="/editAdventure" component={EditAdventure} />
                     <Route path="/newReservation" component={NewReservation} />
                     <Route path="/search" component={searchForReservation} />
+                    <Route path="/myReservations" component={MyReservations} />
 
 
 

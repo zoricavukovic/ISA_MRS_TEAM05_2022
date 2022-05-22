@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { List, TextField } from '@mui/material';
+import { Grid, InputAdornment, List, TextField } from '@mui/material';
 import React from 'react';
 
 
@@ -17,6 +17,7 @@ import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
 import { getUserById, userLoggedIn } from '../../service/UserService';
 import { getCurrentUser } from '../../service/AuthService';
 import { useHistory } from 'react-router-dom';
+import { AlternateEmail, DateRangeOutlined, Domain, LocationOn, Person, Phone, Public } from "@mui/icons-material";
 
 export default function UserProfile(props) {
 
@@ -63,43 +64,43 @@ export default function UserProfile(props) {
         return (
 
             <div className="App">
-                <div style={{ backgroundColor: 'aliceblue', margin: '8%', padding: '2%', borderRadius: '10px', minHeight: '55px' }} >
+                <div style={{ backgroundColor: 'aliceblue',display:'flex',  margin: '10% auto', marginBottom:'20px', borderRadius: '10px',width:'55%', minHeight: '100px', padding:'2%' }} >
+                    <Grid container style={{justifyContent:'center', alignItems:'center'}}>
+                        <Grid item xs={12} md={10} lg={8}>
+                            {avatar}
+                            <div><Typography
+                                variant="h5"
+                                component="div"
+                                style={{ minWidth: '200px', minHeight: '20px' }}
+                                sx={{ mr: 2, display: { xs: 'none', color: 'black', fontWeight: "bold", md: 'flex' } }}
 
-                    <div>
-                        {avatar}
-                        <div><Typography
-                            variant="h5"
-                            component="div"
-                            style={{ minWidth: '200px', minHeight: '20px' }}
-                            sx={{ mr: 2, display: { xs: 'none', color: 'black', fontWeight: "bold", md: 'flex' } }}
+                            >
+                                {userData.firstName} {userData.lastName}
+                            </Typography>
+                            </div>
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="div"
+                                sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex' } }}
 
-                        >
-                            {userData.firstName} {userData.lastName}
-                        </Typography>
-                        </div>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="div"
-                            sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex' } }}
+                            >
+                                {userData.email}
+                            </Typography>
+                            <Typography
+                                variant="h7"
+                                noWrap
+                                component="div"
+                                style={{ marginTop: '10px' }}
+                                sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex' } }}
 
-                        >
-                            {userData.email}
-                        </Typography>
-                        <Typography
-                            variant="h7"
-                            noWrap
-                            component="div"
-                            style={{ marginTop: '10px' }}
-                            sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex' } }}
-
-                        >
-                            {userData.userType.name}
-                        </Typography>
-
-                    </div>
+                            >
+                                {userData.userType.name.substring(userData.userType.name.indexOf('_')+1)}
+                            </Typography>
+                        </Grid>
                     {userData.userType.name !== "ROLE_ADMIN" ? (
-                        <Box sx={{ display: 'flex', float: 'right' }}>
+                        <Grid item xs="auto">
+                            <Box sx={{ display: 'flex', float: 'right' }}>
                             <ThemeProvider
                                 theme={createTheme({
                                     components: {
@@ -174,96 +175,164 @@ export default function UserProfile(props) {
                                 </Paper>
                             </ThemeProvider>
                         </Box>
+                        </Grid>
                     ) : (<div></div>)}
-
+                    </Grid>
                 </div>
-
-
-                <Box style={{ backgroundColor: 'aliceblue', marginTop: '5%', marginLeft: '13%', marginRight: '13%', padding: '2%', borderRadius: '10px' }}
-                    component="form"
-                    sx={{
-                        '& .MuiTextField-root': { m: 1, width: '25ch' },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                    minRows="3"
-                >
-                    <div>
-
+                <div style={{margin:'0px auto', width:'30%'}}>
+                <Grid container spacing={2} style={{backgroundColor: 'aliceblue', margin:'0px auto' , borderRadius: '10px' ,justifyContent:"center" ,alignItems:"center", paddingBottom:'30px'}} >
+                    
+                    <Grid item xs={12} style={{margin:'0px 5%'}}>
+                        <h3 style={{ margin:'0px'}}>Personal informations:</h3>
+                    </Grid>
+                    <Grid item xs="auto">
                         <TextField
                             id="outlined-read-only-input"
                             label="First Name"
                             defaultValue={userData.firstName}
                             InputProps={{
                                 readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Person />
+                                    </InputAdornment>
+                                    )
                             }}
                         />
-                        <TextField
-                            id="outlined-read-only-input"
-                            label="Last Name"
-                            defaultValue={userData.lastName}
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />
-                        <TextField
-                            id="outlined-read-only-input"
-                            label="Email Address"
-                            defaultValue={userData.email}
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />
-                        <TextField
-                            id="outlined-read-only-input"
-                            label="Phone Number"
-                            defaultValue={userData.phoneNumber}
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />
-                        {
-                            dateOfBirth === undefined || dateOfBirth === null || dateOfBirth === '' ?
-                                (
-                                    <TextField
-                                        id="outlined-read-only-input"
-                                        label="Date Of Birth"
-                                        defaultValue={""}
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
-                                    />
-                                ) :
-                                (
-                                    <TextField
-                                        id="outlined-read-only-input"
-                                        label="Date Of Birth"
-
-                                        defaultValue={new Intl.DateTimeFormat("en-GB", {
-                                            year: "numeric",
-                                            month: "long",
-                                            day: "2-digit"
-                                        }).format(dateOfBirth)}
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
-                                    />
+                    </Grid>
+                    <Grid item xs="auto">
+                    <TextField
+                        id="outlined-read-only-input"
+                        label="Last Name"
+                        defaultValue={userData.lastName}
+                        InputProps={{
+                            readOnly: true,
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Person />
+                                </InputAdornment>
                                 )
-                        }
+                        }}
+                    />
+                    </Grid>
+                    <Grid item xs="auto">
+                    <TextField
+                        id="outlined-read-only-input"
+                        label="Email Address"
+                        defaultValue={userData.email}
+                        InputProps={{
+                            readOnly: true,
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <AlternateEmail />
+                                </InputAdornment>
+                                )
+                        }}
+                    />
+                    </Grid>
+                    <Grid item xs="auto">
+                    <TextField
+                        id="outlined-read-only-input"
+                        label="Phone Number"
+                        defaultValue={userData.phoneNumber}
+                        InputProps={{
+                            readOnly: true,
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Phone />
+                                </InputAdornment>
+                                )
+                        }}
+                    />
+                    </Grid>
+                    <Grid item xs="auto">
+                    {
+                        dateOfBirth === undefined || dateOfBirth === null || dateOfBirth === '' ?
+                            (
+                                <TextField
+                                    id="outlined-read-only-input"
+                                    label="Date Of Birth"
+                                    defaultValue={""}
+                                    InputProps={{
+                                        readOnly: true,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <DateRangeOutlined />
+                                            </InputAdornment>
+                                            )
+                                    }}
+                                />
+                            ) :
+                            (
+                                <TextField
+                                    id="outlined-read-only-input"
+                                    label="Date Of Birth"
+
+                                    defaultValue={new Intl.DateTimeFormat("en-GB", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "2-digit"
+                                    }).format(dateOfBirth)}
+                                    InputProps={{
+                                        readOnly: true,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <DateRangeOutlined />
+                                            </InputAdornment>
+                                            )
+                                    }}
+                                />
+                            )
+                    }
+                    </Grid>
+                    <Grid item xs="auto">
                         <TextField
                             id="outlined-read-only-input"
-                            label="Location"
-                            defaultValue={userData.address + ", " + userData.place.cityName + ", " + userData.place.zipCode + ", " + userData.place.stateName}
+                            label="Address"
+                            defaultValue={userData.address}
                             InputProps={{
                                 readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <LocationOn />
+                                    </InputAdornment>
+                                    )
                             }}
                         />
+                    </Grid>
+                    <Grid item xs="auto">
+                        <TextField
+                            id="outlined-read-only-input"
+                            label="Place"
+                            defaultValue={userData.place.cityName + ", " + userData.place.zipCode}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Domain />
+                                    </InputAdornment>
+                                    )
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs="auto">
+                        <TextField
+                            id="outlined-read-only-input"
+                            label="State"
+                            defaultValue={userData.place.stateName}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Public />
+                                    </InputAdornment>
+                                    )
+                            }}
+                        />
+                    </Grid>
+                </Grid>
 
-                    </div>
-
-                </Box>
-
-
+                </div>
 
             </div>
 

@@ -28,6 +28,7 @@ export default function ImgReservation(props) {
     const history = useHistory();
     const [open, setOpen] = React.useState(false);
     const [openShowReport, setOpenShowReport] = React.useState(false);
+    const [openNotification, setOpenNotification] = React.useState(false);
     const [isLoading, setLoading] = React.useState(true);
     const [isLoadingAddServices, setLoadingAddServices] = React.useState(true);
     const [isLoadingReport, setLoadingReport] = React.useState(true);
@@ -55,7 +56,7 @@ export default function ImgReservation(props) {
     const [message, setMessage] = React.useState("");
     const [typeAlert, setTypeAlert] = React.useState("");
     const handleClick = () => {
-      setOpen(true);
+      setOpenNotification(true);
     };
   
     const handleClose = (event, reason) => {
@@ -72,6 +73,10 @@ export default function ImgReservation(props) {
   
       setOpenShowReport(false);
     };
+
+    const handleCloseNotification=(event)=>{
+        setOpenNotification(false);
+    }
 
     const handleChangeCome = (event) => {
       setCheckedCome(event.target.checked);
@@ -182,7 +187,7 @@ export default function ImgReservation(props) {
                 
             </table>
       </Card>
-      <table style={{textAlign:"left"}} style={{marginLeft:"18%"}}>
+      <table style={{textAlign:"left", marginLeft:"18%"}}>
 
             <tr>
                 <th style={{color: 'rgb(5, 30, 52)', backgroundColor:"aliceblue", padding:"3%", fontWeight:"normal"}}>Check-in</th>
@@ -277,7 +282,7 @@ export default function ImgReservation(props) {
                 
             </table>
       </Card>
-      <table style={{textAlign:"left"}} style={{marginLeft:"18%"}}>
+      <table style={{textAlign:"left", marginLeft:"18%"}}>
 
             <tr>
                 <th style={{color: 'rgb(5, 30, 52)', backgroundColor:"aliceblue", padding:"3%", fontWeight:"normal"}}>Check-in</th>
@@ -484,12 +489,10 @@ export default function ImgReservation(props) {
             </Card>)}
           </div>)}
        
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
+        <Snackbar open={openNotification} autoHideDuration={6000} onClose={handleCloseNotification}>
+        <Alert onClose={handleCloseNotification} severity={typeAlert} sx={{ width: '100%' }}>
           {message}
         </Alert>
-        
-        
       </Snackbar>
       </CardActions>
     </Card>

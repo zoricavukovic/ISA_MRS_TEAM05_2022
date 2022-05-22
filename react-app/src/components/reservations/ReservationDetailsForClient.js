@@ -6,14 +6,15 @@ import ReservedBookingEntityDetail from './ReservedBookingEntityDetail';
 import ClientDetails from './ClientDetails';
 import { getCurrentUser } from '../../service/AuthService.js';
 import { useHistory } from 'react-router-dom';
+import ReservationCardForClient from './ReservationCardForClient.js';
 
-function ShowReservationsDetails(props) {
+export default function ShowReservationsDetailsForClient(props) {
     const history = useHistory();
     const [reservation, setReservation] = useState({});
     const [pricelist, setPricelist] = useState({});
     const [additionalServices, setAdditionalServices] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    let ownerId = null;
+    let client = null;
     useEffect(() => {
         if (props.history.location.state === null || props.history.location.state === undefined){
             history.push('/login');
@@ -23,7 +24,7 @@ function ShowReservationsDetails(props) {
             history.push('/login');
         }
         else{
-            ownerId = owner.id;
+            client = owner.id;
         }
         console.log(props.history.location.state);
         setReservation(props.history.location.state.reservation);
@@ -33,16 +34,15 @@ function ShowReservationsDetails(props) {
     }, []);
     if (isLoading) { return <div><CircularProgress /></div> }
     return (
-        <div style={{marginLeft:"5%", marginRight:"5%"}}>
+        <div style={{/*marginLeft:"5%", marginRight:"5%"*/ margin:'0px auto', width:'70%'}}>
             <div style={{ display: "flex", flexWrap: 'no-wrap', flexDirection: "row", justifyContent: "left", marginTop:"5%" }} className="App">
-                <ImgReservation reservation={reservation} reservationId={reservation.id} details="false"></ImgReservation>
+                <ReservationCardForClient reservation={reservation} reservationId={reservation.id} details="false"></ReservationCardForClient>
                 <div style={{ display: "flex", flexWrap: 'no-wrap', flexDirection: "column", justifyContent: "left" }} className="App">
                     <ReservedBookingEntityDetail reservation={reservation} reservationId={reservation.id} details="false"></ReservedBookingEntityDetail>
                     <ClientDetails reservation={reservation}></ClientDetails>
                 </div>  
             </div>
+           
         </div>
     );
 }
-
-export default ShowReservationsDetails;
