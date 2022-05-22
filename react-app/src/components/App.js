@@ -18,6 +18,9 @@ import EditAdventure from './booking_entities/adventures/EditAdventure';
 
 import Sidebar from "./Sidebar";
 import Login from './Login';
+import Registration from './user/Registration';
+import ChooseAccType from './user/ChooseAccType';
+import RegistrationForm from './user/RegistrationForm';
 
 import ShowReservationsOwner from "./reservations/ShowReservationsOwner.js";
 import ShowReservationsDetails from "./reservations/ReservationDetails";
@@ -84,6 +87,10 @@ function App() {
                     <Route path="/editShip" component={EditShip} />
 
                     <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route>
+                    <Route path="/registration" ><Registration/></Route>
+                    <Route path="/chooseAccType" ><ChooseAccType/></Route>
+                    <Route path="/registrationForm" ><RegistrationForm/></Route>
+
                     <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
                     <Route path="/showReservationDetails" component={ShowReservationsDetails} />
 

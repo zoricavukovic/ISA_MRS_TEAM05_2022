@@ -60,17 +60,19 @@ public class BookingEntityService {
         this.adventureRepository = adventureRepository;
     }
 
-    public List<SearchedBookingEntityDTO> getSearchedBookingEntitiesDTOsByOnwerId(Long id) {
+    public List<SearchedBookingEntityDTO> getSearchedBookingEntitiesDTOsByOwnerId(Long id) {
         User owner = userService.findUserById(id);
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         switch (owner.getRole().getName()) {
             case "ROLE_COTTAGE_OWNER": {
                 List<Cottage> cottages = cottageService.getCottagesByOwnerId(id);
                 cottages.forEach(c -> retVal.add(new SearchedBookingEntityDTO(c)));
+                break;
             }
             case "ROLE_SHIP_OWNER": {
                 List<Ship> ships = shipService.getShipsByOwnerId(id);
                 ships.forEach(s -> retVal.add(new SearchedBookingEntityDTO(s)));
+                break;
             }
             case "ROLE_INSTRUCTOR": {
                 List<Adventure> adventures = adventureService.getAdventuresByOwnerId(id);
@@ -89,7 +91,8 @@ public class BookingEntityService {
 
     private void setPriceListAndRatingForSearchedBookingEntityDTO(SearchedBookingEntityDTO s) {
         Float avgRating = ratingService.getAverageRatingForEntityId(s.getId());
-        s.setAverageRating(avgRating);
+        if (avgRating == null) s.setAverageRating((float) 0);
+        else s.setAverageRating(avgRating);
         Pricelist pricelist = pricelistService.getCurrentPricelistForEntityId(s.getId());
         s.setEntityPricePerPerson(pricelist.getEntityPricePerPerson());
     }
