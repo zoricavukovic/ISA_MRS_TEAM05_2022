@@ -65,7 +65,7 @@ export default function ShowBoats() {
                     accept = false;
                 if(!isNaN(filterParams.maxCost) && filterParams.maxCost < e.entityPricePerPerson)
                     accept = false;
-                if(filterParams.rating != null && filterParams.rating != '' && e.averageRating != null && filterParams.rating != e.averageRating)
+                if(filterParams.rating != null && filterParams.rating != '' && e.averageRating != null && filterParams.rating > e.averageRating)
                     accept = false;
                 return accept;
             });
@@ -116,7 +116,7 @@ export default function ShowBoats() {
             <hr width="53%"></hr>
             {ships.length > 0 && 
                         <Box container style={{width:'40%', margin:'10px auto', display:'flex', alignItems:'center'}}>
-                            <ButtonGroup variant="outlined" aria-label="outlined button group" size='medium' style={{margin:'0px auto', backgroundColor:'aliceblue'}}>
+                            <ButtonGroup variant="outlined" aria-label="outlined button group" size='medium' style={{margin:'0px auto'}}>
                                 <Button name="name" variant={sortSelected==="name"?'contained':'outlined'} onClick={sortClicked}>{sortSelected === 'name' && sortIcon}Name</Button>
                                 <Button name="place" variant={sortSelected==="place"?'contained':'outlined'} onClick={sortClicked}>{sortSelected === 'place' && sortIcon}Place</Button>
                                 <Button name="rating" variant={sortSelected==="rating"?'contained':'outlined'} onClick={sortClicked}>{sortSelected === 'rating' && sortIcon}Rating</Button>

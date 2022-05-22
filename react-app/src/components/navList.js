@@ -75,7 +75,7 @@ const navbarClientList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/'
+    url:'/myReservations'
   }
 ]
 

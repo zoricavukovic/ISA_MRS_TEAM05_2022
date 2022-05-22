@@ -62,6 +62,7 @@ export default function SearchForReservation({setSearchParams,setFilterParams, t
       data.endDate = selectionRange.endDate;
     }
     else{
+      startDate.setHours(12);
       data.startDate = startDate;
       data.endDate = null;
     }
@@ -96,14 +97,12 @@ export default function SearchForReservation({setSearchParams,setFilterParams, t
   }
 
   const onFilter = data =>{
-    console.log("USAO U CHANGE");
     data.minCost = parseInt(data.minCost);
     data.maxCost = parseInt(data.maxCost);
     data.rating = ratingValue;
     console.log(data);
     if(data.minCost < data.maxCost || isNaN(data.minCost) || isNaN(data.maxCost)){
       setFilterParams(data);
-      console.log("SACUVAO");
     }
   }
 
@@ -184,7 +183,13 @@ export default function SearchForReservation({setSearchParams,setFilterParams, t
                           </>
   const [startDate, setStartDate] = useState(new Date());
 
-  const datePicker = <><TextField style={{/*margin:'10px 10px'*/ }} onClick={()=>setOpenDate(!openDate)} label='Date picker' placeholder={`${format(selectionRange.startDate, "dd.MM.yyyy.")}`} 
+  const handleDatePick = (date) =>{
+    console.log("Usao u picker");
+    setStartDate(date); 
+    setOpenDate(false);
+  }
+
+  const datePicker = <><TextField style={{/*margin:'10px 10px'*/ }} onClick={()=>setOpenDate(!openDate)} label='Date picker' placeholder={`${format(startDate, "dd.MM.yyyy.")}`} 
                           value={`${format(startDate, "dd.MM.yyyy.")}`}
                           InputProps={{
                               startAdornment: (
@@ -201,11 +206,12 @@ export default function SearchForReservation({setSearchParams,setFilterParams, t
                                       backgroundColor:"white",
                                       border:"1px solid rgb(5, 30, 52)"
                                   }}
-                                  onBlur={()=>setOpenDate(!openDate)}
+                                  
                                   >
                                   <Calendar
+                                    editableDateInputs={true}
                                     date={startDate}
-                                    onChange={(date)=>{setStartDate(date); setOpenDate(false);}}
+                                    onChange={handleDatePick}
                                   />
                                 </div>
                               }
@@ -331,7 +337,7 @@ export default function SearchForReservation({setSearchParams,setFilterParams, t
                                   
                                 </Grid>     
                                 <Grid item sx='auto'>
-                                  <ControlledRating value={ratingValue} hover={hover} onChange={onChangeFn} onChangeActive={onChangeActiveFn} />
+                                  <ControlledRating onChange={onChangeFn}/>
                                 </Grid>
                                 <Grid item xs="auto">
                                   <Button type="submit" label="Extra Soft" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', borderRadius: '10px', margin: '1%', backgroundColor: 'rgb(244, 177, 77)' }}>

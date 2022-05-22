@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ShipRepository extends JpaRepository<Ship, Long> {
 
     @Query("select distinct s from Ship s left join fetch s.place p left join fetch s.rulesOfConduct r " +
-            "left join fetch s.shipOwner owner left join fetch s.reservations res " +
+            "left join fetch s.shipOwner owner left join fetch s.reservations res left join fetch s.unavailableDates unaD " +
             "where s.deleted = False")
     List<Ship> findAll();
 

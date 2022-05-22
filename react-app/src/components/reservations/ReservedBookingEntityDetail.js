@@ -11,9 +11,9 @@ import Grid from '@mui/material/Grid';
 import { getCottageById } from '../../service/CottageService';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import { getBookingEntityById } from '../../service/BookingEntityService';
 
 export default function ReservedBookingEntityDetail(props) {
-    
     const history = useHistory();
     const [open, setOpen] = React.useState(false);
     const [isLoading, setLoading] = React.useState(true);
@@ -44,17 +44,23 @@ export default function ReservedBookingEntityDetail(props) {
 
 
     function showBookingEntity(){
-          history.push({
-              pathname: "/showCottageProfile",
-              state: { bookingEntityId: bookingEntity.id }
-          })
+        let path = '/showShipProfile';
+        if(bookingEntity.entityType === "COTTAGE")
+            path = "/showCottageProfile"
+        else if(bookingEntity.entityType === "ADVENTURE")
+            path = '/showAdventureProfile'
+        
+        history.push({
+            pathname: path,
+            state: { bookingEntityId: bookingEntity.id }
+        })
     };
     
     useEffect(() => {
         if (props === null || props === undefined){
             history.push('/login');
         }
-        getCottageById(props.reservation.bookingEntity.id).then(res => {
+        getBookingEntityById(props.reservation.bookingEntity.id).then(res => {
             setBookingEntity(res.data);
             console.log(res.data);
             let labelRules = [];
@@ -71,8 +77,6 @@ export default function ReservedBookingEntityDetail(props) {
             setRulesLabel(labelRules);
             setLoading(false);
         });
-        
-        
     }, [])
     if (isLoading) { return <div className="App"><CircularProgress /></div> }
   return (
