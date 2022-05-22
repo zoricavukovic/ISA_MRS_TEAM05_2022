@@ -65,6 +65,10 @@ export default function Sidebar({curUser, setCurUser}) {
       history.push(url);
 
   });
+  const goToRegistration = ((url,sendData)=>{
+      history.push(url);
+
+  });
 
   function toogleOpen() {
     setOpen(!open);
@@ -412,7 +416,7 @@ export default function Sidebar({curUser, setCurUser}) {
               }}
               >
                 <ListItemButton
-                      onClick={()=>goToPage('Login')}
+                      onClick={()=>goToPage('registration')}
                       sx={{
                         margin: '6px 14px',
                         padding: '10px',

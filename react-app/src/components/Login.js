@@ -113,7 +113,7 @@ export default function Login({setCurrentUser}) {
                     </Link>
                     </Typography> */}
                     <Typography > Do you have an account?&nbsp;
-                        <Link href="#" color='rgb(5, 30, 52)'>
+                        <Link href="registration" color='rgb(5, 30, 52)'>
                             Register
                         </Link>
                     </Typography>

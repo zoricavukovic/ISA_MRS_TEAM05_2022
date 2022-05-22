@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service;
 
+import com.example.BookingAppTeam05.dto.AnalyticsDTO;
 import com.example.BookingAppTeam05.dto.calendar.CalendarEntryDTO;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.UnavailableDate;
@@ -60,5 +61,20 @@ public class CalendarService {
     }
 
 
-
+    public List<AnalyticsDTO> getAnalyticsDTOByEntityId(Long id) {
+        List<CalendarEntryDTO> calendarEntryDTOS = getCalendarEntriesDTOByEntityId(id);
+        List<AnalyticsDTO> retVal = new ArrayList<>();
+        for (CalendarEntryDTO calendarEntryDTO: calendarEntryDTOS){
+            for (AnalyticsDTO analyticsDTO: retVal) {
+                if ((calendarEntryDTO.getType().equals("regular reservation") || calendarEntryDTO.getType().equals("fast reservation")) && analyticsDTO.getStartDate().equals(calendarEntryDTO.getStartDate()) && analyticsDTO.getEndDate().equals(calendarEntryDTO.getEndDate()))
+                {
+                    //analyticsDTO.analyticsDTO
+                }
+                else{
+                    //retVal.add(new AnalyticsDTO(calendarEntryDTO.getStartDate(), calendarEntryDTO.getEndDate(), calendarEntryDTO.getType(), calendarEntryDTO.getTitle(), 1))
+                }
+            }
+        }
+        return retVal;
+    }
 }

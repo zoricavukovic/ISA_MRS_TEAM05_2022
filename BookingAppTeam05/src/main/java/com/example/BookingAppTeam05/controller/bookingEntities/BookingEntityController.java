@@ -41,7 +41,7 @@ public class BookingEntityController {
 
     @GetMapping(value = "/allByOwner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getAllBookingEntitiesByOwnerId(@PathVariable Long id) {
-        List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOnwerId(id);
+        List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOwnerId(id);
         if (entities == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(entities, HttpStatus.OK);
@@ -59,7 +59,7 @@ public class BookingEntityController {
     @PostMapping(value="/simpleSearch", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedBookingEntitiesForOwner(@RequestBody SimpleSearchForBookingEntityOwnerDTO s) {
         try {
-            List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOnwerId(s.getOwnerId());
+            List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOwnerId(s.getOwnerId());
             if (entities == null)
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             entities = bookingEntityService.simpleFilterSearchForBookingEntities(entities, s);

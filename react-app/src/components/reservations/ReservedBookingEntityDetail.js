@@ -129,9 +129,6 @@ export default function ReservedBookingEntityDetail(props) {
                 setLoading(false);
             });
           }
-         
-        
-        
         
     }, [])
     if (isLoading) { return <div className="App"><CircularProgress /></div> }

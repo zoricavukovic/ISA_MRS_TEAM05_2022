@@ -1,6 +1,7 @@
 package com.example.BookingAppTeam05.controller;
 
 
+import com.example.BookingAppTeam05.dto.AnalyticsDTO;
 import com.example.BookingAppTeam05.dto.calendar.CalendarEntryDTO;
 import com.example.BookingAppTeam05.service.CalendarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ public class CalendarController {
     @GetMapping(value="/entity/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CalendarEntryDTO>> getCalendarEntriesForBookingEntity(@PathVariable  Long id) {
         List<CalendarEntryDTO> retVal = calendarService.getCalendarEntriesDTOByEntityId(id);
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/analysis/entity/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AnalyticsDTO>> getAnalyticsForBookingEntity(@PathVariable  Long id) {
+        List<AnalyticsDTO> retVal = calendarService.getAnalyticsDTOByEntityId(id);
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
