@@ -21,7 +21,8 @@ import { userLoggedIn } from '../../service/UserService';
 import { getCurrentUser } from '../../service/AuthService';
 import CaptainIcon from '../../icons/captainOrange.png';
 import Checkbox from '@mui/material/Checkbox';
-import { Place } from '@mui/icons-material';
+import { DateRangeOutlined, Domain, Person, Phone, Place } from '@mui/icons-material';
+import { Calendar } from 'react-date-range';
 
 function EditUserProfile(props) {
 
@@ -282,12 +283,10 @@ function EditUserProfile(props) {
                                             </ListItemButton>
 
                                         </ListItem>
-                                    ):(
                                         <>
                                         {(userData.userType.name === "ROLE_SHIP_OWNER")? (
                                             <ListItem component="div" disablePadding>
                                                <img style={{marginLeft:'8%'}} src={CaptainIcon}></img>
-                                                 
                                                 <ListItemText
                                                     primary={" Captain"}
                                                     primaryTypographyProps={{
@@ -309,7 +308,6 @@ function EditUserProfile(props) {
                                            <div></div>
                                        )}
                                        </>
-                                    )
                                     </FireNav>
                                 </Paper>
                             </ThemeProvider>

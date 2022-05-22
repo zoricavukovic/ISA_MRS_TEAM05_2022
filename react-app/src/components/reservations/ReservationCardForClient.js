@@ -56,7 +56,7 @@ export default function ReservationCardForClient(props) {
     });
   
     const [message, setMessage] = React.useState("");
-    const [typeAlert, setTypeAlert] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("success");
     const handleClick = () => {
       setOpenComplaint(true);
     };
@@ -125,8 +125,10 @@ export default function ReservationCardForClient(props) {
       setMessage("Rating added successfuly");
       event.preventDefault();
       console.log('Napravi Rating');
-      
-      createRating(rating).then(res=>{
+      let rat = rating;
+      rat.reviewDate = new Date();
+      setRating(rat);
+      createRating(rat).then(res=>{
         console.log("Uspesno napravio rating");
         setOpenRating(false);
         setOpenSnackbar(true);

@@ -48,6 +48,7 @@ public class RatingService {
         Rating rating = new Rating();
         rating.setComment(ratingDTO.getComment());
         rating.setValue(ratingDTO.getValue());
+        rating.setReviewDate(ratingDTO.getReviewDate());
         Reservation res = reservationRepository.findById(ratingDTO.getReservation().getId()).orElse(null);
         rating.setReservation(res);
         ratingRepository.save(rating);
