@@ -64,6 +64,8 @@ public class UserService {
 
     public void setNewPasswordForUser(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
+        if (user.getRole().getName().equals("ROLE_ADMIN"))
+            ((Admin)user).setPasswordChanged(true);
         userRepository.save(user);
     }
 

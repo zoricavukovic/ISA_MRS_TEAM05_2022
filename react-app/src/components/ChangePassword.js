@@ -15,7 +15,7 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { getCurrentUser } from "../service/AuthService";
+import { getCurrentUser, setPasswordChangedForUser } from "../service/AuthService";
 import { setNewPassword } from "../service/UserService";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
@@ -73,6 +73,7 @@ export default function ChangePassword() {
                 setTypeAlert("success");
                 setAlertMessage(res.data);
                 setOpenAlert(true);
+                setPasswordChangedForUser();
             })
             .catch(err => {
                 setTypeAlert("error");
