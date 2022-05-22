@@ -61,7 +61,7 @@ export function userLoggedInAsSuperAdminOrAdminWithResetedPassword(history) {
         return true;
     if (!userLoggedInWithRole(history, "ROLE_ADMIN"))
         return false;
-    if (getCurrentUser().passwordChanged === 'true') {
+    if (getCurrentUser().passwordChanged === true) {
         return true;
     }
     history.push('/changePassword');

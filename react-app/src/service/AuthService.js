@@ -32,7 +32,7 @@ export function getToken() {
 export function setPasswordChangedForUser() {
     let user = getCurrentUser();
     if (user.userType.name === "ROLE_ADMIN") {
-        user.passwordChanged = 'true';
+        user.passwordChanged = true;
         localStorage.setItem("user", JSON.stringify(user));
     }
 }

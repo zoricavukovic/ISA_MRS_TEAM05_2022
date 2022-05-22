@@ -329,15 +329,15 @@ VALUES
     ('2022-05-04 1:00 pm',12,3,1,7,'True','False', 1, 123),
     ('2022-05-05 1:00 pm',4,3,3,7,'True','False', 1, 1098);
 
-INSERT INTO ratings (comment, value, reservation_id, processed, review_date)
+INSERT INTO ratings (comment, value, reservation_id, approved, processed, review_date)
 VALUES
-    ('commen1', 3.0, 4, true, '2022-05-14 8:00 am'),
-    ('commen2', 2.5, 5, true, '2022-05-14 8:00 am'),
-    ('commen3', 4.0, 6, false, '2022-05-14 8:00 am'),
-    ('commen4', 4.5, 7, true, '2022-05-14 8:00 am'),
-    ('commen5', 1.0, 8, false, '2022-05-14 8:00 am'),
-    ('commen6', 0.5, 9, true,'2022-05-14 8:00 am'),
-    ('commen7', 5.0, 10, false,'2022-05-14 8:00 am');
+    ('commen1', 3.0, 4, true, true, '2022-05-14 8:00 am'),
+    ('commen2', 2.5, 5, true, true, '2022-05-14 8:00 am'),
+    ('commen3', 4.0, 6, false, false, '2022-05-14 8:00 am'),
+    ('commen4', 4.5, 7, true, true, '2022-05-14 8:00 am'),
+    ('commen5', 1.0, 8, false, false, '2022-05-14 8:00 am'),
+    ('commen6', 0.5, 9, true, true,'2022-05-14 8:00 am'),
+    ('commen7', 5.0, 10, false, false,'2022-05-14 8:00 am');
 
 INSERT INTO reservation_additional_service(reservation_id, additional_service_id)
 VALUES
