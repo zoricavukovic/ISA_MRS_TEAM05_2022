@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.dto;
+package com.example.BookingAppTeam05.dto.calendar;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

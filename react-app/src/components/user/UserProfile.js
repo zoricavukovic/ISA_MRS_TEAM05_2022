@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Grid, InputAdornment, List, TextField } from '@mui/material';
 import React from 'react';
+import CaptainIcon from '../../icons/captainOrange.png';
 
 
 import ListItem from '@mui/material/ListItem';
@@ -54,6 +55,7 @@ export default function UserProfile(props) {
                 setUserData(res.data);
                 if (res.data.dateOfBirth !== undefined && res.data.dateOfBirth !== null && res.data.dateOfBirth !== '')
                     setDateOfBirth(new Date(res.data.dateOfBirth[0], res.data.dateOfBirth[1] - 1, res.data.dateOfBirth[2]));
+                
                 setLoading(false);
             })
         }
@@ -136,7 +138,7 @@ export default function UserProfile(props) {
                                             <ListItemButton sx={{ height: 56 }}>
                                                 <ListItemIcon sx={{ fontSize: 20 }}>
                                                     <FormatListNumberedIcon color="primary" />
-                                                    Loyalty Points
+                                                     Loyalty Points
                                                 </ListItemIcon>
                                                 <ListItemText
                                                     primary={userData.loyaltyPoints}
@@ -170,7 +172,29 @@ export default function UserProfile(props) {
                                                 </ListItemButton>
 
                                             </ListItem>
-                                        ) : (<div></div>)}
+                                        ) : (
+                                        <>
+                                            {(userData.userType.name === "ROLE_SHIP_OWNER" && userData.captain == true)? (
+                                                 <ListItem component="div" disablePadding>
+                                                 <ListItemButton sx={{ height: 56 }}>
+                                                    <img src={CaptainIcon}></img>
+                                                      
+                                                     <ListItemText
+                                                         primary={" Captain"}
+                                                         primaryTypographyProps={{
+                                                             color: 'primary',
+                                                             fontSize: 20,
+                                                             fontWeight: 'medium',
+                                                             variant: 'body2',
+                                                         }}
+                                                     />
+                                                 </ListItemButton>
+ 
+                                             </ListItem>
+                                            ):(
+                                                <div></div>
+                                            )}
+                                        </>)}
                                     </FireNav>
                                 </Paper>
                             </ThemeProvider>

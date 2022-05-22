@@ -3,6 +3,7 @@ package com.example.BookingAppTeam05.service.users;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
 import com.example.BookingAppTeam05.model.Place;
+import com.example.BookingAppTeam05.model.users.ShipOwner;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.users.*;
 import com.example.BookingAppTeam05.service.PlaceService;
@@ -39,6 +40,9 @@ public class UserService {
         Place place = placeService.getPlaceById(userDTO.getPlace().getId());
         user.setPlace(place);
         final User updatedUser;
+        if (userDTO.getUserType().toString().equals("ROLE_SHIP_OWNER")){
+            ((ShipOwner) user).setCaptain(userDTO.isCaptain());
+        }
         updatedUser = userRepository.save(user);
         return user;
     }
@@ -61,6 +65,10 @@ public class UserService {
     public void setNewPasswordForUser(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    public void logicalDeleteUserById(Long id) {
+        userRepository.logicalDeleteUserById(id);
     }
 
     public String getHashedNewUserPassword(String password) {

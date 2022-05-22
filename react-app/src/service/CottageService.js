@@ -13,6 +13,10 @@ export function getCottageById(id) {
     return api.get('/cottages/' + id);
 }
 
+export function getCottageByIdCanBeDeleted(id) {
+    return api.get('/cottages/deleted/' + id);
+}
+
 export function addNewCottage(id, newCottage) {
     return api.post('/cottages/' + id, newCottage);
 }

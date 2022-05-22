@@ -54,18 +54,18 @@ VALUES
 (nextval('users_id_gen'), 'False','4502 Semper Ave','2001-01-22','bookingapp05mzr++dolan@gmail.com','Dolan','Grimes',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',5, 'False', 3),
 (nextval('users_id_gen'), 'False','4502 Semper Ave','2001-01-22','bookingapp05mzr++mikic@gmail.com','Mikic','Grimes',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',8, 'False', 3);
 
-INSERT INTO ship_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id, deleted, role_id)
+INSERT INTO ship_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id, deleted, role_id, captain)
 VALUES
-(nextval('users_id_gen'), 'False','Ap #392-5411 Ac, St.','2005-03-15','bookingapp05mzr++kristen@gmail.com','Kristen','Banks',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',1, 'False', 4),
-(nextval('users_id_gen'), 'False','3598 Ut, St.','1994-12-09','bookingapp05mzr++annNew@gmail.com','Ann','Newton',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',2, 'False', 4),
-(nextval('users_id_gen'), 'False','Ap #181-605 Est. St.','1987-04-08','bookingapp05mzr++stuartKnight@gmail.com','Stuart','Knight',69,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','016-17-140-44',2, 'False', 4);
+(nextval('users_id_gen'), 'False','Ap #392-5411 Ac, St.','2005-03-15','bookingapp05mzr++kristen@gmail.com','Kristen','Banks',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',1, 'False', 4, true),
+(nextval('users_id_gen'), 'False','3598 Ut, St.','1994-12-09','bookingapp05mzr++annNew@gmail.com','Ann','Newton',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',2, 'False', 4, true),
+(nextval('users_id_gen'), 'False','Ap #181-605 Est. St.','1987-04-08','bookingapp05mzr++stuartKnight@gmail.com','Stuart','Knight',69,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','016-17-140-44',2, 'False', 4, false);
 
 
 INSERT INTO clients (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id,penalties, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','bookingapp05mzr++jescieMullins@gmail.com','Jescie','Mullins',78,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',4,2, 'False', 2),
-(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','bookingapp05mzr++carolynGutie@gmail.com','Carolyn','Gutierrez',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-34-238-21',7,3, 'False', 2),
-(nextval('users_id_gen'), 'False','Ap #497-623 Interdum Road','2004-05-21','bookingapp05mzr++minaMinic@gmail.com','Mina','Minic',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',10,3, 'False', 2);
+(nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','bookingapp05mzr++jescieMullins@gmail.com','Jescie','Mullins',78,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',4,0, 'False', 2),
+(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','bookingapp05mzr++carolynGutie@gmail.com','Carolyn','Gutierrez',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-34-238-21',7,0, 'False', 2),
+(nextval('users_id_gen'), 'False','Ap #497-623 Interdum Road','2004-05-21','bookingapp05mzr++minaMinic@gmail.com','Mina','Minic',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',10,0, 'False', 2);
 
 
 INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, password_changed)
@@ -110,6 +110,15 @@ VALUES
 INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, password_changed)
 VALUES
 (nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++superadmin@gmail.com', 'SuperA', 'SuperA', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '065-43-432-34', 1, 'False', 6, true);
+
+INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
+VALUES
+(nextval('users_id_gen'), 'False','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++dzoni@gmail.com', 'Dzoni', 'Dzonic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'fdsaf ds f', '1971-12-20', 'bookingapp05mzr++roni@gmail.com', 'Roni', 'Ronic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'afddffd ', '1971-12-20', 'bookingapp05mzr++gogi@gmail.com', 'Gogi', 'Gogic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'miifds', '1971-12-20', 'bookingapp05mzr++moki@gmail.com', 'Moki', 'Mokic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'f dsafd s44', '1971-12-20', 'bookingapp05mzr+toki@gmail.com', 'Toki', 'Tokic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5);
+
 
 -- rooms
 INSERT INTO rooms (num_of_beds,room_num,cottage_id, deleted)
@@ -220,47 +229,92 @@ VALUES
 --cotages res
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
 VALUES
-    ('2019-03-12 5:00 am',1,17,1,8,'False','False', 1, 0),
-    ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 0),
-    ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 0);
+    ('2022-05-14 5:00 am',15,17,1,8,'False','False', 1, 255),
+    ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 78),
+    ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 12);
 
 
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
 VALUES
-    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 0),
-    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 0),
-    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 0),
+    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 4),
+    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 6),
+    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 6),
 
 
-    ('2022-01-15 7:00 pm',1,3,12,8,'False','False',1,0),
-    ('2022-01-20 7:00 pm',4,3,12,7,'False','False',1,0),
+    ('2022-01-15 7:00 pm',1,3,12,8,'False','False',1,3),
+    ('2022-01-20 7:00 pm',4,3,12,7,'False','False',1,12),
 
-    ('2022-01-20 7:00 pm',2,1,13,8,'False','False',1,0),
-    ('2022-01-25 7:00 pm',4,3,13,7,'False','False',1,0),
+    ('2022-01-20 7:00 pm',2,1,13,8,'False','False',1,2),
+    ('2022-01-25 7:00 pm',4,3,13,7,'False','False',1,12),
 
-    ('2022-01-25 7:00 pm',1,3,14,8,'False','False',1,0),
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False',1,0),
+    ('2022-01-25 7:00 pm',1,3,14,8,'False','False',1,3),
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False',1,4),
 
-    ('2022-05-15 7:00 pm',2,3,11,9,'False','False',1,0),
-    ('2022-05-20 7:00 pm',1,3,11,8,'False','False',1,0),
-    ('2022-05-22 7:00 pm',2,3,11,7,'False','False',1,0),
-    ('2022-04-22 7:00 pm',2,3,11,9,'False','False',1,0),
-    ('2022-05-25 8:00 pm',2,3,11,null,'True','False',1,0),
-    ('2022-05-28 9:00 pm',5,3,11,null,'True','False',1,0),
-    ('2022-04-25 10:00 pm',5,3,11,null,'True','False',1,0),
+    ('2022-05-15 7:00 pm',2,3,11,9,'False','False',1,6),
+    ('2022-05-20 7:00 pm',1,3,11,8,'False','False',1,3),
+    ('2022-05-22 7:00 pm',2,3,11,7,'False','False',1,6),
+    ('2022-04-22 7:00 pm',2,3,11,9,'False','False',1,6),
+    ('2022-05-25 8:00 pm',2,3,11,null,'True','False',1,6),
+    ('2022-05-28 9:00 pm',5,3,11,null,'True','False',1,15),
+    ('2022-04-25 10:00 pm',5,3,11,null,'True','False',1,15),
 
-    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 0),
-    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 0),
-    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 0),
+    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 4),
+    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 6),
+    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 6),
 
-    ('2022-01-15 7:00 pm',1,3,12,8,'False','False', 1, 0),
-    ('2022-01-20 7:00 pm',4,3,12,7,'False','False', 1, 0),
+    ('2022-01-15 7:00 pm',1,3,12,8,'False','False', 1, 3),
+    ('2022-01-20 7:00 pm',4,3,12,7,'False','False', 1, 12),
 
-    ('2022-01-20 7:00 pm',2,1,13,8,'False','False', 1, 0),
-    ('2022-01-25 7:00 pm',4,3,13,7,'False','False', 1, 0),
+    ('2022-01-20 7:00 pm',2,1,13,8,'False','False', 1, 2),
+    ('2022-01-25 7:00 pm',4,3,13,7,'False','False', 1, 12),
 
-    ('2022-01-25 7:00 pm',1,3,14,8,'False','False', 1, 0),
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 0);
+    ('2022-01-25 7:00 pm',1,3,14,8,'False','False', 1, 3),
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 4);
+
+
+INSERT INTO public.reports(
+    admin_response, come_client, comment, penalize_client, processed, reservation_id, admin_penalize_client)
+VALUES
+    (null, true, 'commen1 fds fds fdsfdf d fdsfds fds fsd f ds fdfdf d', true, false, 1, false),
+    ('response1', true, 'commen2 fdfdfdfd fd d', true, true, 4, false),
+    ('response2', true, 'commen3 fd fd fdfddfgfjgflkdgjfdlkjg lg fd ', true, true, 20, true),
+    (null, true, 'commen5 flkdj flkds jflkd', true, false, 23, false),
+    (null, true, 'commen5', false, false, 7, false),
+    (null, true, 'commen6', false, false, 25, false),
+
+    (null, true, 'commen7fdslkfjds', false, false, 24, false),
+    (null, true, 'commen8', true, false, 8, false),
+    (null, true, 'commen9', true, false, 9, false),
+    (null, true, 'commen10', true, false, 10, false),
+    (null, true, 'commen11', true, false, 11, false),
+    (null, true, 'commen12', true, false, 27, false),
+    (null, true, 'commen13', true, false, 26, false),
+    (null, true, 'commen15', true, false, 16, false),
+    (null, true, 'commen15', true, false, 3, false),
+    (null, true, 'commen15', true, false, 22, false);
+
+
+INSERT INTO public.complaints(description, admin_response, processed, reservation_id)
+VALUES
+       ('complaint1',null, false, 1),
+       ('complaint2',null, false, 4),
+       ('complaint3',null, false, 20),
+       ('complaint4',null, false, 23),
+       ('complaint5',null, false, 7),
+       ('complaint6','111 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam', true, 5),
+       ('complaint7','222 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam', true, 24),
+       ('complaint8','333 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam', true, 8),
+       ('complaint9','444 response4', true, 9),
+       ('complaint10','555 response5', true, 10);
+
+INSERT INTO public.deleted_accounts(
+    accepted, admin_response, processed, reason, user_id)
+VALUES
+       (false, null, false, 'tako eto',17),
+       (false, null, false, 'mal nes nije ni bitno',18),
+       (false, null, false, 'fdsfsd df d',19),
+       (false, null, false, 'more mi se',20),
+       (false, null, false, 'brisi bre',21);
 
 
 INSERT INTO unavailable_dates (start_time, end_time, entity_id)
@@ -275,17 +329,15 @@ VALUES
     ('2022-05-04 1:00 pm',12,3,1,7,'True','False', 1, 123),
     ('2022-05-05 1:00 pm',4,3,3,7,'True','False', 1, 1098);
 
-INSERT INTO ratings (comment, value, reservation_id)
+INSERT INTO ratings (comment, value, reservation_id, processed, review_date)
 VALUES
-    ('commen1', 3.0, 4),
-    ('commen2', 2.5, 5),
-    ('commen3', 4.0, 6),
-    ('commen4', 4.5, 7),
-    ('commen5', 1.0, 8),
-    ('commen6', 0.5, 9),
-    ('commen7', 5.0, 10);
-    --('commen8', 4.5, 11),
-    --('commen9', 4.5, 12);
+    ('commen1', 3.0, 4, true, '2022-05-14 8:00 am'),
+    ('commen2', 2.5, 5, true, '2022-05-14 8:00 am'),
+    ('commen3', 4.0, 6, false, '2022-05-14 8:00 am'),
+    ('commen4', 4.5, 7, true, '2022-05-14 8:00 am'),
+    ('commen5', 1.0, 8, false, '2022-05-14 8:00 am'),
+    ('commen6', 0.5, 9, true,'2022-05-14 8:00 am'),
+    ('commen7', 5.0, 10, false,'2022-05-14 8:00 am');
 
 INSERT INTO reservation_additional_service(reservation_id, additional_service_id)
 VALUES

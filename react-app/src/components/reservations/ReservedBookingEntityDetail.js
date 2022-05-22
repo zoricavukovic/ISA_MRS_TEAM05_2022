@@ -8,10 +8,13 @@ import {useEffect, useState} from "react";
 import { CircularProgress} from "@mui/material";
 import { URL_PICTURE_PATH } from "../../service/PictureService";
 import Grid from '@mui/material/Grid';
-import { getCottageById } from '../../service/CottageService';
+import { getCottageByIdCanBeDeleted } from '../../service/CottageService';
+import { getShipByIdCanBeDeleted } from '../../service/ShipService';
+import { getAdventureByIdCanBeDeleted } from '../../service/AdventureService';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { getBookingEntityById } from '../../service/BookingEntityService';
+import { getCurrentUser } from '../../service/AuthService.js';
 
 export default function ReservedBookingEntityDetail(props) {
     const history = useHistory();
@@ -58,25 +61,69 @@ export default function ReservedBookingEntityDetail(props) {
     
     useEffect(() => {
         if (props === null || props === undefined){
-            history.push('/login');
+            history.push('/forbiddenPage');
         }
-        getBookingEntityById(props.reservation.bookingEntity.id).then(res => {
-            setBookingEntity(res.data);
-            console.log(res.data);
-            let labelRules = [];
-            for (let rule of res.data.rulesOfConduct){
-                let label = "";
-                if (rule.allowed === true){
-                    label += "Allowed " + rule.ruleName;
+        if (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER"){
+            getCottageByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
+                setBookingEntity(res.data);
+                console.log(res.data);
+                let labelRules = [];
+                for (let rule of res.data.rulesOfConduct){
+                    let label = "";
+                    if (rule.allowed === true){
+                        label += "Allowed " + rule.ruleName;
+                    }
+                    else{
+                        label += "Unallowed " + rule.ruleName;
+                    }
+                    labelRules.push(label);
                 }
-                else{
-                    label += "Unallowed " + rule.ruleName;
+                setRulesLabel(labelRules);
+                setLoading(false);
+            });
+          }
+          else if (getCurrentUser().userType.name === "ROLE_SHIP_OWNER"){
+            getShipByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
+                setBookingEntity(res.data);
+                console.log(res.data);
+                let labelRules = [];
+                for (let rule of res.data.rulesOfConduct){
+                    let label = "";
+                    if (rule.allowed === true){
+                        label += "Allowed " + rule.ruleName;
+                    }
+                    else{
+                        label += "Unallowed " + rule.ruleName;
+                    }
+                    labelRules.push(label);
                 }
-                labelRules.push(label);
-            }
-            setRulesLabel(labelRules);
-            setLoading(false);
-        });
+                setRulesLabel(labelRules);
+                setLoading(false);
+            });
+          }
+          else if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR"){
+            getAdventureByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
+                setBookingEntity(res.data);
+                console.log(res.data);
+                let labelRules = [];
+                for (let rule of res.data.rulesOfConduct){
+                    let label = "";
+                    if (rule.allowed === true){
+                        label += "Allowed " + rule.ruleName;
+                    }
+                    else{
+                        label += "Unallowed " + rule.ruleName;
+                    }
+                    labelRules.push(label);
+                }
+                setRulesLabel(labelRules);
+                setLoading(false);
+            });
+          }
+         
+        
+        
+        
     }, [])
     if (isLoading) { return <div className="App"><CircularProgress /></div> }
   return (

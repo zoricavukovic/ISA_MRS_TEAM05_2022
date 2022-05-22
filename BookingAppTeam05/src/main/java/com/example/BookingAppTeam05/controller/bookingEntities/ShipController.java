@@ -83,6 +83,16 @@ public class ShipController {
     @GetMapping(value="/{id}")
     public ResponseEntity<ShipDTO> getShipById(@PathVariable Long id) {
         Ship ship = shipService.getShipById(id);
+        return getShipDTOResponseEntity(ship);
+    }
+
+    @GetMapping(value="/deleted/{id}")
+    public ResponseEntity<ShipDTO> getShipByIdCanBeDeleted(@PathVariable Long id) {
+        Ship ship = shipService.getShipByIdCanBeDeleted(id);
+        return getShipDTOResponseEntity(ship);
+    }
+
+    private ResponseEntity<ShipDTO> getShipDTOResponseEntity(Ship ship) {
         if (ship == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         ShipDTO shipDTO = new ShipDTO(ship);

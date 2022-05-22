@@ -49,6 +49,11 @@ public class CottageService {
     public Cottage getCottageById(Long id) {
         return cottageRepository.getCottageById(id);
     }
+
+    public Cottage getCottageByIdCanBeDeleted(Long id) {
+        return cottageRepository.getCottageByIdCanBeDeleted(id);
+    }
+
     public List<Cottage> getCottagesByOwnerId(Long id) {
         return cottageRepository.getCottagesByOwnerId(id);
     }

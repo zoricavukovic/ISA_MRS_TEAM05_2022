@@ -1,7 +1,7 @@
 package com.example.BookingAppTeam05.service.entities;
 
 import com.example.BookingAppTeam05.dto.*;
-import com.example.BookingAppTeam05.dto.entities.NewAdventureDTO;
+import com.example.BookingAppTeam05.dto.users.NewAdventureDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.users.Instructor;
@@ -48,6 +48,9 @@ public class AdventureService {
         return this.adventureRepository.getAdventureById(id);
     }
 
+    public Adventure getAdventureByIdCanBeDeleted(Long id) {
+        return this.adventureRepository.getAdventureByIdCanBeDeleted(id);
+    }
 
     public List<Adventure> findAll() {
         return this.adventureRepository.findAll();

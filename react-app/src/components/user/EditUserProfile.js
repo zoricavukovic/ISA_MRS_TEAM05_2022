@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createTheme, styled, ThemeProvider} from "@mui/material/styles";
 import {Alert, Autocomplete, CircularProgress, FormControl, Grid, InputAdornment, InputLabel, List, NativeSelect, Snackbar, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -19,8 +19,9 @@ import { editUserById, getAllUsers, getUserById } from '../../service/UserServic
 import { getAllPlaces, getPlaceById } from '../../service/PlaceService';
 import { userLoggedIn } from '../../service/UserService';
 import { getCurrentUser } from '../../service/AuthService';
-import { DateRangeOutlined, Domain, Person, Phone, Place } from '@mui/icons-material';
-import { Calendar } from 'react-date-range';
+import CaptainIcon from '../../icons/captainOrange.png';
+import Checkbox from '@mui/material/Checkbox';
+import { Place } from '@mui/icons-material';
 
 function EditUserProfile(props) {
 
@@ -51,6 +52,11 @@ function EditUserProfile(props) {
     const [openDate,setOpenDate] = useState(false);
     const [dateOfBirth,setDateOfBirth] = useState(new Date());
     const history = useHistory();
+    const [checked, setChecked] = React.useState();
+
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    };
     
     const avatar = <Avatar
         alt="Zorica Vukovic"
@@ -67,6 +73,10 @@ function EditUserProfile(props) {
                 setDateOfBirth(new Date(res.data.dateOfBirth));
                 setChangedUserData(res.data);
                 setLoading(false);
+                if (res.data.userType.name === "ROLE_SHIP_OWNER"){
+                    console.log(res.data.captain);
+                    setChecked(res.data.captain);
+                }
             })
     
             getAllPlaces().then(results =>{
@@ -166,7 +176,7 @@ function EditUserProfile(props) {
     const SubmitButton = <ListItemButton button type="submit" component="button"  style={{backgroundColor:"rgb(244,177,77)",color:"white",textAlign:"center", borderRadius: 7}}>
         <ListItemText
             sx={{ my: 0 }}
-            primary="Save Changes" //STAVITI LOYALTY TIP
+            primary="Save Changes"
             primaryTypographyProps={{
                 fontSize: 20,
                 fontWeight: 'medium',
@@ -272,27 +282,34 @@ function EditUserProfile(props) {
                                             </ListItemButton>
 
                                         </ListItem>
-                                        <Divider />
-                                        {userData.userType.name === "ROLE_CLIENT"?(
+                                    ):(
+                                        <>
+                                        {(userData.userType.name === "ROLE_SHIP_OWNER")? (
                                             <ListItem component="div" disablePadding>
-                                                <ListItemButton sx={{ height: 56 }}>
-                                                    <ListItemIcon sx={{ fontSize: 20 }}>
-                                                        <FormatListNumberedIcon color="primary" />
-                                                        Penalties
-                                                    </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={userData.penalties}
-                                                        primaryTypographyProps={{
-                                                            color: 'primary',
-                                                            fontSize: 20,
-                                                            fontWeight: 'medium',
-                                                            variant: 'body2',
-                                                        }}
-                                                    />
-                                                </ListItemButton>
+                                               <img style={{marginLeft:'8%'}} src={CaptainIcon}></img>
+                                                 
+                                                <ListItemText
+                                                    primary={" Captain"}
+                                                    primaryTypographyProps={{
+                                                        color: 'primary',
+                                                        fontSize: 20,
+                                                        fontWeight: 'medium',
+                                                        variant: 'body2',
+                                                    }}
+                                                />
+                                                 <Checkbox
+                                                    checked={checked}
+                                                    onChange={handleChange}
+                                                    inputProps={{ 'aria-label': 'controlled' }}
+                                                    
+                                                />
 
-                                            </ListItem>
-                                        ):(<div></div>)}
+                                        </ListItem>
+                                       ):(
+                                           <div></div>
+                                       )}
+                                       </>
+                                    )
                                     </FireNav>
                                 </Paper>
                             </ThemeProvider>

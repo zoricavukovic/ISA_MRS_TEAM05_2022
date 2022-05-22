@@ -55,9 +55,15 @@ export function userLoggedInAsCottageOwner(history) {
 export function userLoggedInAsShipOwner(history) {
     return userLoggedInWithRole(history, "ROLE_SHIP_OWNER");
 }
-export function userLoggedInAsAdmin(history) {
-    return userLoggedInWithRole(history, "ROLE_ADMIN");
+export function userLoggedInAsAdminWithResetedPassword(history) {
+    if (!userLoggedInWithRole(history, "ROLE_ADMIN"))
+        return false;
+    if (getCurrentUser().changePassword)
+        return true;
+    history.push('/changePassword');
+    return false;
 }
+
 export function userLoggedInAsClient(history) {
     return userLoggedInWithRole(history, "ROLE_CLIENT");
 }

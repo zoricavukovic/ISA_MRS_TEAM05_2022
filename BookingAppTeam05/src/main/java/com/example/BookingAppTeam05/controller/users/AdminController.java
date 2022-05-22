@@ -1,15 +1,13 @@
 package com.example.BookingAppTeam05.controller.users;
 
-import com.example.BookingAppTeam05.model.users.NewAdminDTO;
+import com.example.BookingAppTeam05.dto.users.NewAdminDTO;
 import com.example.BookingAppTeam05.service.users.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
