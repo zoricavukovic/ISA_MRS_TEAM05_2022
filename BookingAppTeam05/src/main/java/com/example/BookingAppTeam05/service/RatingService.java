@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,9 @@ public class RatingService {
         Rating rating = new Rating();
         rating.setComment(ratingDTO.getComment());
         rating.setValue(ratingDTO.getValue());
-        rating.setReviewDate(ratingDTO.getReviewDate());
+        rating.setReviewDate(LocalDateTime.now());
+        rating.setProcessed(false);
+        rating.setApproved(false);
         Reservation res = reservationRepository.findById(ratingDTO.getReservation().getId()).orElse(null);
         rating.setReservation(res);
         ratingRepository.save(rating);

@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import { Grid, TextField, Typography } from "@mui/material";
 import { DialogContent, DialogTitle, Divider } from "@mui/material";
 import { Dialog } from "@mui/material";
-import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
-import { useForm } from "react-hook-form";
 import Alert from '@mui/material/Alert';
-import { userLoggedInAsAdminWithResetedPassword, userLoggedInAsSuperAdmin } from "../../service/UserService";
+import { userLoggedInAsSuperAdminOrAdminWithResetedPassword } from "../../service/UserService";
 import { getAllReportsForViewByType, giveResponseForReport, PROCESSED, UNPROCESSED } from "../../service/ReportService";
 import { DataGrid } from "@mui/x-data-grid";
-import { fontWeight, height } from "@mui/system";
 import { Card, Checkbox, TextareaAutosize } from "@mui/material";
-import { SecurityUpdateSharp } from "@mui/icons-material";
 import { Snackbar } from "@mui/material";
-
+import { useHistory } from "react-router-dom";
+import { Typography } from "@mui/material";
 
 function ReviewDialog(props) {
 
@@ -229,6 +223,7 @@ export default function ReviewReservationReport() {
     const [isLoadingReports, setLoadingReports] = useState(true);
     const [reports, setReports] = useState();
     const [selectedReport, setSelectedReport] = useState(null);
+    const history = useHistory();
 
     let rows = [];
     let columns = [
@@ -299,7 +294,7 @@ export default function ReviewReservationReport() {
     }
 
     useEffect(() => {
-        if (userLoggedInAsSuperAdmin && userLoggedInAsAdminWithResetedPassword) {
+        if (userLoggedInAsSuperAdminOrAdminWithResetedPassword(history)) {
             loadUnprocessed();
         }
     }, [])

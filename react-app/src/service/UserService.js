@@ -55,11 +55,15 @@ export function userLoggedInAsCottageOwner(history) {
 export function userLoggedInAsShipOwner(history) {
     return userLoggedInWithRole(history, "ROLE_SHIP_OWNER");
 }
-export function userLoggedInAsAdminWithResetedPassword(history) {
+
+export function userLoggedInAsSuperAdminOrAdminWithResetedPassword(history) {
+    if (getCurrentUser().userType.name === "ROLE_SUPER_ADMIN")
+        return true;
     if (!userLoggedInWithRole(history, "ROLE_ADMIN"))
         return false;
-    if (getCurrentUser().changePassword)
+    if (getCurrentUser().passwordChanged === true) {
         return true;
+    }
     history.push('/changePassword');
     return false;
 }

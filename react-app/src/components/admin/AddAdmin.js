@@ -24,7 +24,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import addNewAdmin from "../../service/AdminService";
+import {addNewAdmin} from "../../service/AdminService";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 

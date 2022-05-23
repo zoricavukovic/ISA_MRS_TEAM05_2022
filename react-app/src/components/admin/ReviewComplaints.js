@@ -1,26 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import { Grid, TextField, Typography } from "@mui/material";
 import { DialogContent, DialogTitle, Divider } from "@mui/material";
 import { Dialog } from "@mui/material";
-import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
-import { useForm } from "react-hook-form";
 import Alert from '@mui/material/Alert';
-import { userLoggedInAsAdminWithResetedPassword, userLoggedInAsSuperAdmin } from "../../service/UserService";
+import { userLoggedInAsSuperAdminOrAdminWithResetedPassword } from "../../service/UserService";
 import { PROCESSED, UNPROCESSED } from "../../service/ReportService";
 import { DataGrid } from "@mui/x-data-grid";
-import { fontWeight, height } from "@mui/system";
-import { Card, Checkbox, TextareaAutosize } from "@mui/material";
-import { SecurityUpdateSharp } from "@mui/icons-material";
+import { Card, TextareaAutosize } from "@mui/material";
 import { Snackbar } from "@mui/material";
 import { getAllComplaintsForViewByType, giveResponseForComplaint } from "../../service/ComplaintService";
 import Avatar from '@mui/material/Avatar';
-import { deepOrange, deepPurple } from '@mui/material/colors';
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { deepOrange } from '@mui/material/colors';
+import { useHistory } from "react-router-dom";
+import { Typography } from "@mui/material";
 
 
 function ReviewDialog(props) {
@@ -217,6 +211,7 @@ export default function ReviewComplaints() {
     const [isLoadingComplaints, setLoadingComplaints] = useState(true);
     const [complaints, setComplaints] = useState();
     const [selectedComplaint, setSelectedComplaint] = useState(null);
+    const history = useHistory();
 
     let rows = [];
     let columns = [
@@ -288,7 +283,7 @@ export default function ReviewComplaints() {
     }
 
     useEffect(() => {
-        if (userLoggedInAsSuperAdmin && userLoggedInAsAdminWithResetedPassword) {
+        if (userLoggedInAsSuperAdminOrAdminWithResetedPassword(history)) {
             loadUnprocessed();
         }
     }, [])

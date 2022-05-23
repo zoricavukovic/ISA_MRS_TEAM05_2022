@@ -1,5 +1,9 @@
 import api from "./baseApi";
 
-export default function addNewAdmin(newAdmin) {
+export function addNewAdmin(newAdmin) {
     return api.post('/admins', newAdmin);
+}
+
+export function getAllRequests() {
+    return api.get('/admins/allRequestsNums');
 }

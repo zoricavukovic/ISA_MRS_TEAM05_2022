@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
-import { Grid, TextField, Typography } from "@mui/material";
 import { DialogContent, DialogTitle, Divider } from "@mui/material";
 import { Dialog } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import Alert from '@mui/material/Alert';
-import { userLoggedInAsAdminWithResetedPassword, userLoggedInAsSuperAdmin } from "../../service/UserService";
+import { userLoggedInAsSuperAdminOrAdminWithResetedPassword } from "../../service/UserService";
 import { PROCESSED, UNPROCESSED } from "../../service/ReportService";
 import { DataGrid } from "@mui/x-data-grid";
-import { Card, Checkbox, TextareaAutosize } from "@mui/material";
+import { Checkbox, TextareaAutosize } from "@mui/material";
 import { Snackbar } from "@mui/material";
 import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import { deepOrange, deepPurple } from '@mui/material/colors';
+import { deepOrange } from '@mui/material/colors';
+import { Typography } from "@mui/material";
 
 import { deleteReviewById, getAllRatingsForViewByType, putReviewForPublication } from "../../service/RatingService"
 import { useHistory } from "react-router-dom";
@@ -183,6 +182,7 @@ export default function ReviewRatingsAdmin() {
     const [isLoadingReviews, setLoadingReviews] = useState(true);
     const [reviews, setReviews] = useState();
     const [selectedReview, setSelectedReview] = useState(null);
+    const history = useHistory();
 
     let rows = [];
     let columns = [
@@ -252,7 +252,7 @@ export default function ReviewRatingsAdmin() {
     }
 
     useEffect(() => {
-        if (userLoggedInAsSuperAdmin && userLoggedInAsAdminWithResetedPassword) {
+        if (userLoggedInAsSuperAdminOrAdminWithResetedPassword(history)) {
             loadUnprocessed();
         }
     }, [])
