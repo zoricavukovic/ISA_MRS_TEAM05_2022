@@ -271,7 +271,51 @@ export default function Reports() {
                         }}
                       />
 
-                      
+<Chart
+                        options={
+                          {
+                            chart: {
+                              id: "basic-bar", 
+                              foreColor:'rgb(5, 30, 52)',
+                              colors: ['#2E93fA', '#66DA26', '#546E7A', '#E91E63', '#FF9800']
+                            },
+                            colors: ['rgb(5, 30, 52)'],
+                            xaxis: {
+                              categories: categ
+                            },
+                            fill:{
+                              colors: ['rgb(244, 177, 77)']
+                            },
+                           
+                            title:{
+                              text:"Total Sum Per " + timeChoosen[0].toUpperCase() + timeChoosen.slice(1),
+                              align:'center',
+                              margin:20,
+                              offsetY:20,
+                              style:{
+                                fontSize:'18px'
+                              }
+                            }
+                          }
+                        }
+                        series={[
+                          {
+                            name: "Total Sum",
+                            data: sumCosts
+                          }
+                        ]}
+                        type="area"
+                        stacked= "false"
+                        width="470"
+                        zoom= {{
+                          type: 'x',
+                          enabled: true,
+                          autoScaleYaxis: true
+                        }}
+                        toolbar={ {
+                          autoSelected: 'zoom'
+                        }}
+                      />
                     </div>
                       
                 </Box>
