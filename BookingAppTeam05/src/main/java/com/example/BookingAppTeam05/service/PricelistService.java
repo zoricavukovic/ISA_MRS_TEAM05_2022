@@ -25,6 +25,10 @@ public class PricelistService {
         return pricelistRepository.getCurrentPricelistByBookingEntityId(id);
     }
 
+    public List<Pricelist> getPricelistsForEntityId(Long id) {
+        return pricelistRepository.getCurrentPricelistByBookingEntityId(id);
+    }
+
     public Pricelist getCurrentPricelistForEntityId(Long id) {
         return pricelistRepository.getCurrentPricelistByBookingEntityId(id).get(0);
     }
@@ -47,4 +51,6 @@ public class PricelistService {
         retVal.setStartDate(LocalDateTime.now());
         return retVal;
     }
+
+
 }

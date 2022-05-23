@@ -31,7 +31,7 @@ public class PricelistController {
     }
 
     @GetMapping(value="/{id}")
-    public ResponseEntity<PricelistDTO> getAllById(@PathVariable Long id) {
+    public ResponseEntity<PricelistDTO> getById(@PathVariable Long id) {
         List<Pricelist> pricelistList = pricelistService.getCurrentPricelistByBookingEntityId(id);
         if (pricelistList == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

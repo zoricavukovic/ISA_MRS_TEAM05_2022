@@ -19,24 +19,24 @@ public class AnalyticsDTO {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endDate;
 
-    private String type;
-    private String title;
     private int numOfReservationPerWeek;
     private int numOfReservationPerMonth;
     private int numOfReservationPerYear;
+    private String textValue;
+    private double sumCost;
 
     public AnalyticsDTO() {
     }
 
-    public AnalyticsDTO(LocalDateTime startDate, LocalDateTime endDate, String type, String title,
-                        int numOfReservationPerWeek, int numOfReservationPerMonth, int numOfReservationPerYear) {
+    public AnalyticsDTO(LocalDateTime startDate, LocalDateTime endDate, String textValue, int numOfReservationPerWeek,
+                        int numOfReservationPerMonth, int numOfReservationPerYear, double sumCost) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.type = type;
-        this.title = title;
+        this.textValue = textValue;
         this.numOfReservationPerWeek = numOfReservationPerWeek;
         this.numOfReservationPerMonth = numOfReservationPerMonth;
         this.numOfReservationPerYear = numOfReservationPerYear;
+        this.sumCost = sumCost;
     }
 
     public LocalDateTime getStartDate() {
@@ -53,22 +53,6 @@ public class AnalyticsDTO {
 
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public int getNumOfReservationPerWeek() {
@@ -93,5 +77,21 @@ public class AnalyticsDTO {
 
     public void setNumOfReservationPerYear(int numOfReservationPerYear) {
         this.numOfReservationPerYear = numOfReservationPerYear;
+    }
+
+    public String getTextValue() {
+        return textValue;
+    }
+
+    public void setTextValue(String textValue) {
+        this.textValue = textValue;
+    }
+
+    public double getSumCost() {
+        return sumCost;
+    }
+
+    public void setSumCost(double sumCost) {
+        this.sumCost = sumCost;
     }
 }

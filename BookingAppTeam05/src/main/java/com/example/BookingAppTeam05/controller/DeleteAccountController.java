@@ -4,7 +4,6 @@ import com.example.BookingAppTeam05.dto.CreatedReportReviewDTO;
 import com.example.BookingAppTeam05.dto.DeleteAccountRequestDTO;
 import com.example.BookingAppTeam05.model.DeleteAccountRequest;
 import com.example.BookingAppTeam05.service.DeleteAccountService;
-import javafx.application.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

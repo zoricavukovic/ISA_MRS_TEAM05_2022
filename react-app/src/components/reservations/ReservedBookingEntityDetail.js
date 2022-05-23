@@ -63,7 +63,8 @@ export default function ReservedBookingEntityDetail(props) {
         if (props === null || props === undefined){
             history.push('/forbiddenPage');
         }
-        if (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER"){
+        console.log(props.reservation.bookingEntity.entityType);
+        if (props.reservation.bookingEntity.entityType === "COTTAGE"){
             getCottageByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
                 setBookingEntity(res.data);
                 console.log(res.data);
@@ -82,7 +83,7 @@ export default function ReservedBookingEntityDetail(props) {
                 setLoading(false);
             });
           }
-          else if (getCurrentUser().userType.name === "ROLE_SHIP_OWNER"){
+          else if (props.reservation.bookingEntity.entityType === "SHIP"){
             getShipByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
                 setBookingEntity(res.data);
                 console.log(res.data);
@@ -101,7 +102,7 @@ export default function ReservedBookingEntityDetail(props) {
                 setLoading(false);
             });
           }
-          else if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR"){
+          else if (props.reservation.bookingEntity.entityType === "ADVENTURE"){
             getAdventureByIdCanBeDeleted(props.reservation.bookingEntity.id).then(res => {
                 setBookingEntity(res.data);
                 console.log(res.data);

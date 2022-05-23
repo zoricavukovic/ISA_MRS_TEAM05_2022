@@ -31,9 +31,21 @@ public class CalendarController {
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
-    @GetMapping(value="/analysis/entity/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AnalyticsDTO>> getAnalyticsForBookingEntity(@PathVariable  Long id) {
-        List<AnalyticsDTO> retVal = calendarService.getAnalyticsDTOByEntityId(id);
+    @GetMapping(value="/week/entity/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AnalyticsDTO>> getAnalyticsWeekForBookingEntity(@PathVariable  Long id) {
+        List<AnalyticsDTO> retVal = calendarService.getAnalyticsWeekDTOByEntityId(id);
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/month/entity/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AnalyticsDTO>> getAnalyticsMonthForBookingEntity(@PathVariable  Long id) {
+        List<AnalyticsDTO> retVal = calendarService.getAnalyticsMonthDTOByEntityId(id);
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/year/entity/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AnalyticsDTO>> getAnalyticsYearForBookingEntity(@PathVariable  Long id) {
+        List<AnalyticsDTO> retVal = calendarService.getAnalyticsYearDTOByEntityId(id);
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 

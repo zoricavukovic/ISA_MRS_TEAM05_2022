@@ -166,7 +166,7 @@ public class ReservationService {
     }
     public List<Reservation> getFastReservationsByBookingEntityId(Long bookingEntityId) {
         List<Reservation> allFastRes = reservationRepository.getFastReservationsByBookingEntityId(bookingEntityId);
-        System.out.println("caocao" + " " + allFastRes.size());
+        //System.out.println("caocao" + " " + allFastRes.size());
         List<Reservation> activeFastRes = new ArrayList<>();
         for (Reservation r : allFastRes){
             System.out.println(allFastRes.size());

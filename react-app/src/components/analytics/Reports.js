@@ -7,78 +7,23 @@ import Chart from "react-apexcharts";
 import { CircularProgress } from "@mui/material";
 import { getAllBookingEntitiesByOwnerId } from '../../service/BookingEntityService';
 import { getCurrentUser } from '../../service/AuthService.js';
-import { getAnalysisByBookintEntityId } from '../../service/CalendarService';
+import { getAnalysisWeekByBookintEntityId } from '../../service/CalendarService';
+import { getAnalysisMonthByBookintEntityId } from '../../service/CalendarService';
+import { getAnalysisYearByBookintEntityId } from '../../service/CalendarService';
 import GradeIcon from '@mui/icons-material/Grade';
 import Autocomplete from '@mui/material/Autocomplete';
-import CalendarCard from '../calendar/CalendarCard'
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 export default function Reports() {
     const [loading, setLoading] = React.useState(true);
-    const [loadingReservations, setLoadingReservations] = React.useState(true);
-    const [value, setValue] = React.useState(new Date());
-    const [entities, setEntities] = React.useState();
-    const [state, setState] = React.useState(
-      {
-        options: {
-          chart: {
-            id: "basic-bar"
-          },
-          xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
-          }
-        },
-        series: [
-          {
-            name: "series-1",
-            data: [30, 40, 45, 50, 49, 60, 70, 91]
-          }
-        ]
-      }
-    );
-    const options = {
-        responsive: true,
-        chart: {
-          type: 'area',
-          stacked: false,
-          height: 350,
-          zoom: {
-            type: 'x',
-            enabled: true,
-            autoScaleYaxis: true
-          },
-          toolbar: {
-            autoSelected: 'zoom'
-          },
-        plugins: {
-          legend: {
-            position: 'top'
-          }},
-          title: {
-            display: true,
-            text: 'Chart.js Line Chart',
-          },
-        },
-      };
-      const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const [isLoading, setIsLoading] = React.useState();
+    const [categ, setCateg] = React.useState();
 
-    const data = {
-        labels,
-        datasets: [
-          {
-            label: 'Dataset 1',
-            data: labels,
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          },
-          {
-            label: 'Dataset 2',
-            data: labels,
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-          },
-        ],
-      };
-      
+    const [timeChoosen, setTimeChoosen] = React.useState("week");
+    function onChangeValueTime(event) {
+      setTimeChoosen(event.target.value);
+    }
+    
     function DisplayAverageRate(props){
       return <div>
         <div style={{   width:'auto',
@@ -86,7 +31,8 @@ export default function Reports() {
                         color: 'rgb(5, 30, 52)',
                         padding:'1%',
                         marginTop: '5%',
-                        marginRight:'82%',
+                        marginLeft:'7%',
+                        marginRight:'70%',
                         border: '1px solid rgb(244, 177, 77)',
                         borderRadius: '10px'
                     }} 
@@ -106,71 +52,145 @@ export default function Reports() {
     </div>
     }
 
-    function DisplayChartReservations(props){
-      console.log(props);
-      getAnalysisByBookintEntityId(11).then( reservations => {
-        console.log(reservations);
-        // setReservationsBox(reservations);
-        
-      })
-      return <div>OK</div>
-      
-    }
+    const [chartsResLoading, setChartsResLoading] = React.useState(true);
+    const [numOfRes, setNumOfRes] = React.useState([]);
+    const [sumCosts, setSumCost] = React.useState([]);
+    const [selectedEntity, setSelectedEntity] = React.useState();
+    const [optionsBox, setOptionsBox] = React.useState([]);
+    const [name, setName] = React.useState();
 
-
-      const [selectedEntity, setSelectedEntity] = React.useState();
-      const [optionsBox, setOptionsBox] = React.useState([]);
-      const [reservationsBox, setReservationsBox] = React.useState([]);
-  
     useEffect(() => {
+
       getAllBookingEntitiesByOwnerId(getCurrentUser().id)
         .then(res => {
-            
-            const sorted = [...res.data].sort((a, b) => b.averageRating - a.averageRating);
-            
             let optBox = [];
+            let idSelectedEntity = -1;
             for (let opt of res.data){
+              if (selectedEntity != undefined || selectedEntity != null){
+                  if (opt.name === selectedEntity.label){
+                    console.log(opt);
+                    idSelectedEntity = opt.id;
+                  }
+              }
               optBox.push({'label': opt.name, 'id': opt.name, 'data': opt});
-              // getCalendarValuesByBookintEntityId(opt.id).then( reservations => {
-              //   let resBox = reservationsBox;
-                
-              //   resBox.push({'label': opt.name, 'id': opt.name, 'data': reservations.data});
-              //   setReservationsBox(resBox);
-              // })
+    
             }
-            setEntities(sorted);
             setOptionsBox(optBox);
-            setSelectedEntity(optBox[0]);
-            setLoading(false);
-            setLoadingReservations(false);
+            if (isLoading !== 1){
+              setSelectedEntity(optBox[0]);
+            }
             
+            if (timeChoosen === "week"){
+              if (isLoading !== 1){
+              
+                console.log(optBox[0].data.id);
+                getAnalysisWeekByBookintEntityId(optBox[0].data.id).then( reservations => {
+              
+                  let cat = [];
+                  let numOfReservation = [];
+                  let sum = [];
+                  for (let res of reservations.data){
+                      cat.push(res.textValue);
+                      numOfReservation.push(res.numOfReservationPerWeek);
+                      sum.push(res.sumCost);
+                  }
+                  
+                  setCateg(cat);
+                  setNumOfRes(numOfReservation);
+                  setSumCost(sum);
+                  setChartsResLoading(false);
+                  
+                })
+            
+              }else{
+                console.log(idSelectedEntity);
+                getAnalysisWeekByBookintEntityId(idSelectedEntity).then( reservations => {
+                
+                  let cat = [];
+                  let numOfReservation = [];
+                  let sum = [];
+                  for (let res of reservations.data){
+                      cat.push(res.textValue);
+                      numOfReservation.push(res.numOfReservationPerWeek);
+                      sum.push(res.sumCost);
+                  }
+                  
+                  setCateg(cat);
+                  setNumOfRes(numOfReservation);
+                  console.log(numOfReservation);
+                  setSumCost(sum);
+                  setChartsResLoading(false);
+                  
+                })
+              }
+            }
+            else if (timeChoosen === "month"){
+              getAnalysisMonthByBookintEntityId(idSelectedEntity).then( reservations => {
+                let cat = [];
+                let numOfReservation = [];
+                let sum = [];
+                for (let res of reservations.data){
+                    cat.push(res.textValue);
+                    numOfReservation.push(res.numOfReservationPerMonth);
+                    sum.push(res.sumCost);
+                }
+                
+                setCateg(cat);
+                setNumOfRes(numOfReservation);
+                setSumCost(sum);
+                setChartsResLoading(false);
+                
+              })
+            }
+            else if (timeChoosen === "year"){
+              
+              getAnalysisYearByBookintEntityId(idSelectedEntity).then( reservations => {
+                let cat = [];
+                let numOfReservation = [];
+                let sum = [];
+                for (let res of reservations.data){
+                    cat.push(res.textValue);
+                    numOfReservation.push(res.numOfReservationPerYear);
+                    sum.push(res.sumCost);
+                }
+                
+                setCateg(cat);
+                setNumOfRes(numOfReservation);
+                setSumCost(sum);
+                setChartsResLoading(false);
+                
+              })
+            }
+            setIsLoading(1);
+            setLoading(false);
         });
-    }, []);
+      }, [timeChoosen, name]);
   
-    if (loading) return <><CircularProgress /></> 
+    if (loading || chartsResLoading) return <><CircularProgress /></> 
     return (
         <div>
             <Container >
                 <Box style={{marginTop:'2%', padding:'1%', borderRadius: '10px', display: "flex", flexWrap: 'wrap', flexDirection: "row"}} sx={{ bgcolor: 'aliceblue', width:'100%' }}>
-                    <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', margin: '1%', marginLeft: '4%', padding: '1%', borderRadius: '10px', width: '15%', display: "flex", flexWrap: 'wrap', flexDirection: "row"}} >
+                    <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', margin: '1%', marginLeft: '13.5%', padding: '1%', borderRadius: '10px', width: '15%', display: "flex", flexWrap: 'wrap', flexDirection: "row"}} >
                         <InsightsIcon/>
-                        <div style={{marginTop:'1%', marginLeft:'5%'}}>Dashboard</div>
+                        <div style={{marginTop:'1%', marginLeft:'3%'}}>Dashboard</div>
                         
                     </div>
                     <Autocomplete
-                    disablePortal
                     id="selectedEntity"
                     size="small"
                     options={optionsBox}
                     sx={{ width: '250px' }}
                     defaultValue={selectedEntity}
-                    style={{marginTop:'1%', marginLeft:'50%'}}
+                    style={{marginTop:'1%', marginLeft:'35%'}}
                     onChange={(event, newValue) => {
                       if (newValue != null && newValue != undefined && newValue != '') {
                         setSelectedEntity(newValue);
+                        setName(newValue);
 
                     } else {
-                      setSelectedEntity(null);
+                      setSelectedEntity(optionsBox[0]);
+                      setName(optionsBox[0]);
                     }
                     }}
                     renderInput={(params) => <TextField {...params} label="Select Entity" 
@@ -181,20 +201,66 @@ export default function Reports() {
                     //{...register("place")}
                 />
                 </Box>
-                <Box style={{ marginTop:'1%', marginLeft:'5%', padding:'1%', borderRadius: '10px'}}>
-                    <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', float:'left', padding: '1%', borderRadius: '10px', width: '15%', display: "flex"}} >
+                <Box style={{ marginTop:'1%', marginLeft:'7%', padding:'1%', borderRadius: '10px'}}>
+                    <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', float:'left', padding: '1%', borderRadius: '10px', width: '15%', display: "flex", marginLeft:"7%"}} >
                         <GradeIcon/>
                         <div style={{marginTop:'3%', marginLeft:'5%'}}>Avg. Rating</div>
                     </div>
                     
                       <DisplayAverageRate entity={selectedEntity}/>
-                      <DisplayChartReservations entity = {11}/>
+                      <div style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', margin: '1%', marginLeft: '7%', padding: '1%', borderRadius: '10px', width: '30%'}} >
+                        
+                          <div style={{fontWeight: 'bold', textAlign: 'center', marginTop:'1%', marginLeft:'3%', display: "flex", flexWrap: 'wrap', flexDirection: "row"}}><AccessTimeIcon/> Choose Date Period For Report</div>
+                          
+                        <table onChange={onChangeValueTime}
+                            style={{display: "flex", flexDirection: "row", flexWrap: 'wrap', marginLeft:"7%", marginTop:"1%", minWidth:'200px', color: 'rgb(5, 30, 52)'}}>
+                            <tr>
+                                <td><input type="radio" value="week" name="time" />Week</td>
+                            </tr>
+                            <tr>
+                                <td><input type="radio" value="month" name="time" />Month</td>
+                            </tr>
+                            <tr>
+                                <td><input type="radio" value="year" name="time" />Year</td>
+                            </tr>
+                          </table>
+                        </div>
+                     
+                     
+                      <div style={{display: "flex", flexDirection: "row", flexWrap: 'wrap', justifyContent:'left', marginLeft:"7%", marginTop:"1%", minWidth:'200px', color: 'rgb(5, 30, 52)'}}>
                       <Chart
-                        options={state.options}
-                        series={state.series}
-                        type="area"
+                        options={
+                          {
+                            chart: {
+                              id: "basic-bar",
+                              foreColor:'rgb(5, 30, 52)'
+                            },
+                            xaxis: {
+                              categories: categ
+                            },
+                            fill:{
+                              colors: ['rgb(244, 177, 77)']
+                            },
+                            title:{
+                              text:"Num Of Res Per " + timeChoosen[0].toUpperCase() + timeChoosen.slice(1),
+                              align:'center',
+                              margin:20,
+                              offsetY:20,
+                              style:{
+                                fontSize:'18px'
+                              }
+                            }
+                          }
+                        }
+                        series={[
+                          {
+                            name: "Num Of Res Per " + timeChoosen,
+                            data: numOfRes
+                          }
+                        ]}
+                        type="bar"
                         stacked= "false"
-                        width="500"
+                        width="470"
                         zoom= {{
                           type: 'x',
                           enabled: true,
@@ -204,6 +270,10 @@ export default function Reports() {
                           autoSelected: 'zoom'
                         }}
                       />
+
+                      
+                    </div>
+                      
                 </Box>
                 
             </Container>
