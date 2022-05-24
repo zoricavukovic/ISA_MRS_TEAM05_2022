@@ -47,7 +47,7 @@ export default function AllRequestsCards() {
         history.push("/reviewRatingsAdmin");
     }
     const openNewAccountRequests = (event) => {
-        console.log("Todo");
+        history.push("/reviewNewAccountRequests");
     }
 
     useEffect(() => {
@@ -71,7 +71,6 @@ export default function AllRequestsCards() {
                         <Badge
                             badgeContent={allRequests.reservationReportsCounter}
                             color="primary"
-                        //classes={{ badge: classes.badge }}
                         >
                             <h3 className={styles.card__header}>Owners reports</h3>
                         </Badge>
@@ -90,7 +89,6 @@ export default function AllRequestsCards() {
                         <Badge
                             badgeContent={allRequests.clientComplaintsCounter}
                             color="primary"
-                        //classes={{ badge: classes.badge }}
                         >
                             <h3 className={styles.card__header}>Client complaints</h3>
                         </Badge>
@@ -111,7 +109,6 @@ export default function AllRequestsCards() {
                         <Badge
                             badgeContent={allRequests.clientRatingsCounter}
                             color="primary"
-                        //classes={{ badge: classes.badge }}
                         >
                             <h3 className={styles.card__header}>Client reviews</h3>
                         </Badge>
@@ -131,7 +128,6 @@ export default function AllRequestsCards() {
                         <Badge
                             badgeContent={allRequests.deleteAccountRequests}
                             color="primary"
-                        //classes={{ badge: classes.badge }}
                         >
                             <h3 className={styles.card__header}>Delete account requests</h3>
                         </Badge>
@@ -149,9 +145,8 @@ export default function AllRequestsCards() {
                 <div className={styles.card}>
                     <Box onClick={openNewAccountRequests} className={styles.card__content}>
                         <Badge
-                            badgeContent={allRequests.deleteAccountRequests}
+                            badgeContent={allRequests.newAccountRequests}
                             color="primary"
-                        //classes={{ badge: classes.badge }}
                         >
                             <h3 className={styles.card__header}>New registation requests</h3>
                         </Badge>

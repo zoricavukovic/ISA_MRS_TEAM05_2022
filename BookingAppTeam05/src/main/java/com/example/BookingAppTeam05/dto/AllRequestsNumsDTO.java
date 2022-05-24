@@ -5,14 +5,24 @@ public class AllRequestsNumsDTO {
     private int clientRatingsCounter;
     private int clientComplaintsCounter;
     private int deleteAccountRequests;
+    private int newAccountRequests;
 
     public AllRequestsNumsDTO() {}
 
-    public AllRequestsNumsDTO(int reservationReportsCounter, int clientRatingsCounter, int clientComplaintsCounter, int deleteAccountRequests) {
+    public AllRequestsNumsDTO(int reservationReportsCounter, int clientRatingsCounter, int clientComplaintsCounter, int deleteAccountRequests, int newAccountRequests) {
         this.reservationReportsCounter = reservationReportsCounter;
         this.clientRatingsCounter = clientRatingsCounter;
         this.clientComplaintsCounter = clientComplaintsCounter;
         this.deleteAccountRequests = deleteAccountRequests;
+        this.newAccountRequests = newAccountRequests;
+    }
+
+    public int getNewAccountRequests() {
+        return newAccountRequests;
+    }
+
+    public void setNewAccountRequests(int newAccountRequests) {
+        this.newAccountRequests = newAccountRequests;
     }
 
     public int getReservationReportsCounter() {

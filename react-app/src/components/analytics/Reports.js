@@ -63,6 +63,9 @@ export default function Reports() {
 
       getAllBookingEntitiesByOwnerId(getCurrentUser().id)
         .then(res => {
+            if (res.data.length === 0)
+                return;
+            
             let optBox = [];
             let idSelectedEntity = -1;
             for (let opt of res.data){
