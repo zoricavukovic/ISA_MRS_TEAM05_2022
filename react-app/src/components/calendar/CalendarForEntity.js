@@ -48,45 +48,6 @@ const resources = [{
     ]
 }];
 
-
-function ConfirmDialog(props) {
-    return (
-        <Dialog
-            open={props.confirmDialog}
-            onClose={props.handleCloseConfirmDialog}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">
-                {"Confirm adding unavailable dates"}
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    {console.log("IZ DIALOGAAAA")}
-                    {console.log(props.data)}
-                    {
-                        (props.data !== undefined && props.data !== '' && props.data !== null) ?
-                            (<div>
-                                It looks like there are some unavailable dates that overlap with this dates.
-                                Your entity now won't be available from {props.data.startDate} to {props.data.endDate}.
-                                Do you want to proceed?
-                            </div>) :
-                            (<div></div>)
-                    }
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={props.handleOpenConfirmDialog} autoFocus>
-                    Yes
-                </Button>
-                <Button onClick={props.handleCloseConfirmDialog}>No</Button>
-            </DialogActions>
-        </Dialog>
-    );
-}
-
-
-
 export default function CalendarForEntity() {
 
 
@@ -455,7 +416,7 @@ export default function CalendarForEntity() {
                                                     />
                                                     <Button
                                                         variant="contained"
-                                                        style={{ color: 'white', fontSize:'9px', textAlign: 'center', backgroundColor: 'rgb(68, 255, 162)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
+                                                        style={{ color: 'white', fontSize:'9px', textAlign: 'center', backgroundColor: 'rgba(38,166,154,255)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
                                                         onClick={() => { handleSetAvailableDate(item)}}
                                                     >
                                                         Set as available

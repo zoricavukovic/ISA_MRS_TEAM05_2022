@@ -120,6 +120,25 @@ VALUES
 (nextval('users_id_gen'), 'False', 'f dsafd s44', '1971-12-20', 'bookingapp05mzr+toki@gmail.com', 'Toki', 'Tokic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5);
 
 
+---------------zahtevi novih korisnika na cekanju----------------------------
+INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
+VALUES
+(nextval('users_id_gen'), 'True','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++noviInst1@gmail.com', 'Baki', 'Bakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'True', 'fdsaf ds f', '1971-12-20', 'bookingapp05mzr++noviInst2@gmail.com', 'Daki', 'Dakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5);
+
+INSERT INTO ship_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id, deleted, role_id, captain)
+VALUES
+(nextval('users_id_gen'), 'True','Ap #392-5411 Ac, St.','2005-03-15','bookingapp05mzr++noviShipOwner1@gmail.com','Dana','Danic',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',1, 'False', 4, true),
+(nextval('users_id_gen'), 'True','3598 Ut, St.','1994-12-09','bookingapp05mzr++noviShipOwner2@gmail.com','Ratko','Rakic',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',2, 'False', 4, false);
+
+INSERT INTO cottage_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number, place_id, deleted, role_id)
+VALUES
+(nextval('users_id_gen'), 'True','Ap #225-738 At, Rd.','1979-03-13','bookingapp05mzr++noviCottageOwner1@gmail.com','Bagi','Bagic',65,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','052-38-778-82',1, 'False', 3),
+(nextval('users_id_gen'), 'True','4502 Semper Ave','2001-01-22','bookingapp05mzr++noviCottageOwner2@gmail.com','Dari','Daric',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',5, 'False', 3);
+------------------------------------------------------------------------------------
+
+
+
 -- rooms
 INSERT INTO rooms (num_of_beds,room_num,cottage_id, deleted)
 VALUES
@@ -230,46 +249,46 @@ VALUES
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
 VALUES
     ('2022-05-14 5:00 am',15,17,1,8,'False','False', 1, 255),
-    ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 78),
-    ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 12);
+    ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 780),
+    ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 120);
 
 
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
 VALUES
-    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 4),
-    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 6),
-    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 6),
+    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 45),
+    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 66),
+    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 80),
 
 
-    ('2022-01-15 7:00 pm',1,3,12,8,'False','False',1,3),
-    ('2022-01-20 7:00 pm',4,3,12,7,'False','False',1,12),
+    ('2022-01-15 7:00 pm',1,3,12,8,'False','False',1,100),
+    ('2022-01-20 7:00 pm',4,3,12,7,'False','False',1,120),
 
-    ('2022-01-20 7:00 pm',2,1,13,8,'False','False',1,2),
-    ('2022-01-25 7:00 pm',4,3,13,7,'False','False',1,12),
+    ('2022-01-20 7:00 pm',2,1,13,8,'False','False',1,200),
+    ('2022-01-25 7:00 pm',4,3,13,7,'False','False',1,120),
 
-    ('2022-01-25 7:00 pm',1,3,14,8,'False','False',1,3),
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False',1,4),
+    ('2022-01-25 7:00 pm',1,3,14,8,'False','False',1,350),
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False',1,400),
 
-    ('2022-05-15 7:00 pm',2,3,11,9,'False','False',1,6),
-    ('2022-05-20 7:00 pm',1,3,11,8,'False','False',1,3),
-    ('2022-05-22 7:00 pm',2,3,11,7,'False','False',1,6),
-    ('2022-04-22 7:00 pm',2,3,11,9,'False','False',1,6),
-    ('2022-05-25 8:00 pm',2,3,11,null,'True','False',1,6),
-    ('2022-05-28 9:00 pm',5,3,11,null,'True','False',1,15),
-    ('2022-04-25 10:00 pm',5,3,11,null,'True','False',1,15),
+    ('2022-05-15 7:00 pm',2,3,11,9,'False','False',1,170),
+    ('2022-05-20 7:00 pm',1,3,11,8,'False','False',1,250),
+    ('2022-05-22 7:00 pm',2,3,11,7,'False','False',1,600),
+    ('2022-04-22 7:00 pm',2,3,11,9,'False','False',1,1500),
+    ('2022-05-25 8:00 pm',2,3,11,null,'True','False',1,400),
+    ('2022-05-28 9:00 pm',5,3,11,null,'True','False',1,85),
+    ('2022-04-25 10:00 pm',5,3,11,null,'True','False',1,33),
 
-    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 4),
-    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 6),
-    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 6),
+    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 33),
+    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 99),
+    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 102),
 
-    ('2022-01-15 7:00 pm',1,3,12,8,'False','False', 1, 3),
-    ('2022-01-20 7:00 pm',4,3,12,7,'False','False', 1, 12),
+    ('2022-01-15 7:00 pm',1,3,12,8,'False','False', 1, 345),
+    ('2022-01-20 7:00 pm',4,3,12,7,'False','False', 1, 245),
 
-    ('2022-01-20 7:00 pm',2,1,13,8,'False','False', 1, 2),
-    ('2022-01-25 7:00 pm',4,3,13,7,'False','False', 1, 12),
+    ('2022-01-20 7:00 pm',2,1,13,8,'False','False', 1, 230),
+    ('2022-01-25 7:00 pm',4,3,13,7,'False','False', 1, 333),
 
-    ('2022-01-25 7:00 pm',1,3,14,8,'False','False', 1, 3),
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 4);
+    ('2022-01-25 7:00 pm',1,3,14,8,'False','False', 1, 222),
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 111);
 
 
 INSERT INTO public.reports(

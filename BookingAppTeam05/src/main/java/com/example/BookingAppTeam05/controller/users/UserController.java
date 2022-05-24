@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -98,6 +99,20 @@ public class UserController {
         if (user != null)
             return new ResponseEntity<String>("This email is already taken.", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>("Email is unique.", HttpStatus.OK);
+    }
+
+    @GetMapping(value="/getAllNewAccountRequests")
+    public ResponseEntity<List<NewAccountRequestDTO>> getAllNewAccountRequests() {
+        List<NewAccountRequestDTO> retVal = userService.getAllNewAccountRequestDTOs();
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+    @PutMapping(value="/giveResponseForNewAccountRequest", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> giveResponse(@RequestBody NewAccountRequestDTO d) {
+        String errorCode = userService.giveResponseForNewAccountRequest(d);
+        if (errorCode != null)
+            return new ResponseEntity<>(errorCode, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("sve ok", HttpStatus.OK);
     }
 }
 

@@ -82,6 +82,8 @@ public class AdventureController {
         if (newAdventure == null) {
             return new ResponseEntity<>("Error. Cant create adventure", HttpStatus.BAD_REQUEST);
         }
+        System.out.println("------------------");
+        System.out.println(newAdventure.getId());
         return new ResponseEntity<>(newAdventure.getId().toString(), HttpStatus.OK);
     }
 

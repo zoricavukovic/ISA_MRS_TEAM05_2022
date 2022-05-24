@@ -227,11 +227,11 @@ export default function ReviewReservationReport() {
 
     let rows = [];
     let columns = [
-        { field: 'id', headerName: 'Report ID', width: 150 },
-        { field: 'Owner', headerName: 'Owner', width: 200 },
-        { field: 'Client', headerName: 'Client', width: 200 },
-        { field: 'Comment', headerName: 'Owner Comment', width: 200 },
-        { field: 'Processed', headerName: 'Processed', type: 'boolean', width: 200 }
+        { field: 'id', headerName: 'Report ID', width: 180 },
+        { field: 'Owner', headerName: 'Owner', width: 220 },
+        { field: 'Client', headerName: 'Client', width: 220 },
+        { field: 'Comment', headerName: 'Owner Comment', width: 220 },
+        { field: 'Processed', headerName: 'Processed', type: 'boolean', width: 220 }
 
     ];
 
@@ -317,7 +317,7 @@ export default function ReviewReservationReport() {
                 <br/>
 
                 <Box style={{ display: "flex", flexDirection: "row", margin: "1% auto 1% 40%" }}>
-                    <Button variant="contained" onClick={loadProcessed} style={{ color: 'white', backgroundColor: 'rgb(68, 255, 162)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+                    <Button variant="contained" onClick={loadProcessed} style={{ color: 'white', backgroundColor: 'rgba(38,166,154,255)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
                         Processed
                     </Button>
                     <Button variant="contained" onClick={loadUnprocessed} style={{ color: 'white', backgroundColor: 'rgb(252,38, 38)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>

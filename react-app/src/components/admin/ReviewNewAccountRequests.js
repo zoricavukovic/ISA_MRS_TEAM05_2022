@@ -5,20 +5,46 @@ import { DialogContent, DialogTitle, Divider } from "@mui/material";
 import { Dialog } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import Alert from '@mui/material/Alert';
-import {userLoggedInAsSuperAdminOrAdminWithResetedPassword } from "../../service/UserService";
+import { getAllNewAccountRequests, giveResponseForNewAccountRequest, userLoggedInAsSuperAdminOrAdminWithResetedPassword } from "../../service/UserService";
 import { DataGrid } from "@mui/x-data-grid";
 import { Checkbox, TextareaAutosize } from "@mui/material";
 import { Snackbar } from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import { deepOrange } from '@mui/material/colors';
 import { useHistory } from "react-router-dom";
-import { getAllUnprocessedDeleteAccountRequests, giveResponseForDeleteAccountRequest } from "../../service/DeleteAccountRequestService";
 import { Typography } from "@mui/material";
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import ShipOwner from "../../icons/shipOwner.png";
+import CottageOwner from "../../icons/cottageOwner.png";
+import Instructor from "../../icons/instructor.png";
+import UserInfoGrid from "../user/UserInfoGrid";
+
+
+function RenderUserType(props) {
+    return (
+        <div style={{
+            backgroundColor: 'aliceblue',
+            color: 'rgb(5, 30, 52)',
+            padding: '1%',
+            border: '1px solid rgb(244, 177, 77)',
+            borderRadius: '10px',
+            height: '100px',
+            width: '120px',
+            display: 'flex',
+            justifyContent:'center',
+            alignItems:'center',
+            flexDirection:'column'
+        }} >
+            <img src={props.ownerTypeImg}></img>
+            <Typography gutterBottom sx={{ mt: '1%' }} style={{ fontWeight: "bold", fontSize: '15px' }} color='rgb(5, 30, 52)'>
+                {props.ownerTypeText}
+            </Typography>
+        </div>
+    );
+}
+
 
 function ReviewDialog(props) {
-
-
-    const history = useHistory();
 
     const [adminResponse, setAdminResponse] = useState('');
     const [hiddenErrorResponse, setHiddenErrorResponse] = useState("none");
@@ -27,7 +53,7 @@ function ReviewDialog(props) {
     const [alertMessage, setAlertMessage] = React.useState("");
     const [typeAlert, setTypeAlert] = React.useState("");
 
-    const [checkedAllowDeleting, setCheckedAllowDeleting] = useState(false);
+    const [checkedAllowAdding, setCheckedAllowAdding] = useState(false);
     const [requestSent, setRequestSent] = useState(false);
 
     const handleCloseAlert = () => {
@@ -44,23 +70,17 @@ function ReviewDialog(props) {
         }
     }
 
-    const showUserProfile = (event, userId) => {
-        event.preventDefault();
-        history.push({
-            pathname: "/userProfile",
-            state: { userId: userId }
-        })
-    };
-
     const handleAdminResponseToDeleteRequest = () => {
         if (!checkAdminResponseLength())
             return;
 
-        let obj = props.deleteRequest;
+        let obj = props.newRequest;
         obj.adminResponse = adminResponse;
-        obj.accepted = checkedAllowDeleting;
+        obj.accepted = checkedAllowAdding;
+        console.log("Ispisissssssssss");
+        console.log(obj);
 
-        giveResponseForDeleteAccountRequest(obj)
+        giveResponseForNewAccountRequest(obj)
             .then(res => {
                 setTypeAlert("success");
                 setAlertMessage("Successfuly sent response to user");
@@ -75,53 +95,49 @@ function ReviewDialog(props) {
             });
     }
 
+    const RenderUserImgByType = () => {
+        if (props.newRequest.user.userType.name === "ROLE_COTTAGE_OWNER") {
+            return (<RenderUserType ownerTypeImg={CottageOwner} ownerTypeText="Cottage owner"/>);
+        } else if (props.newRequest.user.userType.name === "ROLE_INSTRUCTOR") {
+            return (<RenderUserType ownerTypeImg={Instructor} ownerTypeText="Instructor"/>);
+        } else if (props.newRequest.user.userType.name === "ROLE_SHIP_OWNER") {
+            return (<RenderUserType ownerTypeImg={ShipOwner} ownerTypeText="Ship owner"/>);
+        }
+        return <div></div>
+    }
+
     return (
         <div>
-            <Dialog open={props.openReviewDialog} onClose={props.handleCloseReviewDialog} sm>
-                <DialogTitle>Process Delete Request</DialogTitle>
+            <Dialog open={props.openReviewDialog} onClose={props.handleCloseReviewDialog} md>
+                <DialogTitle>Process New Account Request</DialogTitle>
                 <Divider />
                 <DialogContent>
-                    <div>
-                        <h3 style={{ color: 'rgb(5, 30, 52)' }}>User reason for deleting acount</h3>
-                        <Box style={{ width: '100%', display: "flex", gap: '4px', flexDirection: "row", color: 'white', backgroundColor: 'rgba(17,16,29,255)', borderTopRightRadius: '10px', borderBottomRightRadius: '10px', borderTopLeftRadius: '20px' }}>
-                            <Avatar sx={{ color: 'white', bgcolor: deepOrange[500] }}>{props.deleteRequest.user.firstName[0]}</Avatar>
-                            <Typography button onClick={(event) => showUserProfile(event, props.deleteRequest.user.id)} variant="subtitle1">
-                                {props.deleteRequest.user.firstName + ' ' + props.deleteRequest.user.lastName}
-                            </Typography>
-                        </Box>
-                        <TextareaAutosize
-                            aria-label="minimum height"
-                            minRows={3}
-                            value={props.deleteRequest.reason}
-                            name="reason"
-                            style={{ width: '98%' }}
-                            disabled
-                            readOnly
-                        />
+                    <div style={{width:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>
+                        <RenderUserImgByType />    
                     </div>
-
+                    <UserInfoGrid userData={props.newRequest.user} />
                     <br />
                     <Divider sx={{ borderBottomWidth: 5 }} />
                     <br />
-                    <Typography>Check the box if you want to delete this user account</Typography>
+                    <Typography>Check the box if you want to accept this request</Typography>
                     <Checkbox
-                        checked={checkedAllowDeleting}
-                        defaultChecked={checkedAllowDeleting}
-                        onChange={e => { setCheckedAllowDeleting(e.target.checked) }}
+                        checked={checkedAllowAdding}
+                        defaultChecked={checkedAllowAdding}
+                        onChange={e => { setCheckedAllowAdding(e.target.checked) }}
                         inputProps={{ 'aria-label': 'controlled' }}
                     />
-                    <br/>
-                    <br/>
-                    {!checkedAllowDeleting ?
+                    <br />
+                    <br />
+                    {!checkedAllowAdding ?
                         (
                             <div>
                                 <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>Enter response here:<br /></Typography>
-                                <Typography style={{ fontSize: '10px' }} variant="caption">Note: This response will be sent to user: {props.deleteRequest.user.email}</Typography>
+                                <Typography style={{ fontSize: '10px' }} variant="caption">Note: This response will be sent to user: {props.newRequest.user.email}</Typography>
                                 <TextareaAutosize
                                     aria-label="minimum height"
                                     minRows={4}
                                     value={adminResponse}
-                                    placeholder="Enter the reason why you dont allow this user to delete his account..."
+                                    placeholder="Enter the reason why you dont allow this user to register his account..."
                                     onChange={e => { setAdminResponse(e.target.value) }}
                                     autoFocus
                                     style={{ width: 300 }}
@@ -131,7 +147,7 @@ function ReviewDialog(props) {
                         ) : (<div></div>)
                     }
                 </DialogContent>
-                <Divider/>
+                <Divider />
                 <DialogActions>
                     {!requestSent ? (<Button onClick={handleAdminResponseToDeleteRequest}>Send response</Button>) : (<div></div>)}
                     <Button onClick={props.handleCloseReviewDialog}>Cancel</Button>
@@ -148,26 +164,54 @@ function ReviewDialog(props) {
 }
 
 
-export default function ReviewDeleteAccountRequests() {
+export default function ReviewNewAccountRequests() {
 
     const [openReviewDialog, setOpenReviewDialog] = useState();
-    const [isLoadingDeleteRequests, setLoadingDeleteRequests] = useState(true);
-    const [deleteRequests, setDeleteRequests] = useState();
-    const [selectedDeleteRequest, setSelectedDeleteRequest] = useState(null);
+    const [isLoadingNewAccountRequests, setLoadingNewAccountRequests] = useState(true);
+    const [newAccountRequests, setNewAccountRequests] = useState();
+    const [selectedNewAccountRequest, setNewAccountRequest] = useState(null);
     const history = useHistory();
 
     let rows = [];
     let columns = [
-        { field: 'id', headerName: 'Request ID', width: 200 },
-        { field: 'User', headerName: 'User', width: 250 },
-        { field: 'Reason', headerName: 'Reason For Deleting', width: 250 },
-        { field: 'Processed', headerName: 'Processed', type: 'boolean', width: 250 }
-
+        { field: 'id', headerName: 'User ID', width: 120 },
+        { field: 'User', headerName: 'User', width: 200 },
+        { field: 'Email', headerName: 'Email', width: 400 },
+        {
+            field: 'Type',
+            headerName: 'Type',
+            width: 120,
+            renderCell: (params) => {
+                const IconByType = (props) => {
+                    if (params.value === "ROLE_COTTAGE_OWNER") {
+                        return (
+                            <img style={{ width: "45px" }} src={CottageOwner}></img>
+                        );
+                    }
+                    else if (params.value === "ROLE_INSTRUCTOR") {
+                        return (
+                            <img style={{ width: "45px" }} src={Instructor}></img>
+                        );
+                    }
+                    else if (params.value === "ROLE_SHIP_OWNER") {
+                        return (
+                            <img style={{ width: "45px" }} src={ShipOwner}></img>
+                        );
+                    }
+                }
+                return (
+                    <div>
+                        <IconByType />
+                    </div>
+                );
+            }
+        },
+        { field: 'Processed', headerName: 'Processed', type: 'boolean', width: 120 }
     ];
 
     const handleCloseReviewDialog = () => {
         setOpenReviewDialog(false);
-        setSelectedDeleteRequest(null);
+        setNewAccountRequest(null);
         loadUnprocessed();
     }
     const handleOpenReviewDialog = () => {
@@ -176,14 +220,12 @@ export default function ReviewDeleteAccountRequests() {
 
     const fillRowsWithData = () => {
         let newRows = [];
-        for (let r of deleteRequests) {
-            let reason = r.reason;
-            if (reason > 20)
-                reason = reason.slice(0, 20) + '...';
+        for (let r of newAccountRequests) {
             let rowToAdd = {
-                'id': r.id,
+                'id': r.user.id,
                 'User': r.user.firstName + ' ' + r.user.lastName,
-                'Reason': reason,
+                'Email': r.user.email,
+                'Type': r.user.userType.name,
                 'Processed': r.processed
             }
             newRows.push(rowToAdd);
@@ -192,23 +234,23 @@ export default function ReviewDeleteAccountRequests() {
     }
 
     const loadUnprocessed = () => {
-        setLoadingDeleteRequests(true);
-        getAllUnprocessedDeleteAccountRequests()
+        setLoadingNewAccountRequests(true);
+        getAllNewAccountRequests()
             .then(res => {
-                setDeleteRequests(res.data);
-                setLoadingDeleteRequests(false);
+                setNewAccountRequests(res.data);
+                setLoadingNewAccountRequests(false);
             })
     }
 
     const findDeleteRequestByIndex = (index) => {
-        for (let r of deleteRequests) {
-            if (r.id === index) return r;
+        for (let r of newAccountRequests) {
+            if (r.user.id === index) return r;
         }
     }
 
     const handleOnSelectRow = (index) => {
         let deleteRequest = findDeleteRequestByIndex(index);
-        setSelectedDeleteRequest(deleteRequest);
+        setNewAccountRequest(deleteRequest);
         handleOpenReviewDialog();
     }
 
@@ -218,7 +260,7 @@ export default function ReviewDeleteAccountRequests() {
         }
     }, [])
 
-    if (isLoadingDeleteRequests) {
+    if (isLoadingNewAccountRequests) {
         return <div className="App">Loading...</div>
     }
     else {
@@ -231,21 +273,20 @@ export default function ReviewDeleteAccountRequests() {
                 justifyContent="center"
                 style={{ margin: '1% 11% 1% 25%' }}
             >
-                <h3 color="rgba(17,16,29,255)">Review deleting account requests</h3>
-                <br/>
-
-                {(selectedDeleteRequest !== null) ?
+                <h3 color="rgba(17,16,29,255)">New account requests</h3>
+                <br />
+                {(selectedNewAccountRequest !== null) ?
                     (<ReviewDialog
                         openReviewDialog={openReviewDialog}
                         handleCloseReviewDialog={handleCloseReviewDialog}
-                        deleteRequest={selectedDeleteRequest}
+                        newRequest={selectedNewAccountRequest}
                     />
                     ) : (<div></div>)
                 }
-                <div style={{width: '90%'}}>
+                <div >
                     <Divider sx={{ borderBottomWidth: 5, color: "rgba(17,16,29,255)" }} />
-                    {deleteRequests.length === true ? (
-                        <h5 style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', marginLeft: "15%" }}>There are no delete requests.</h5>
+                    {newAccountRequests.length === true ? (
+                        <h5 style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', marginLeft: "15%" }}>There are no new account requests.</h5>
                     ) : (
                         <DataGrid
                             sx={{

@@ -123,6 +123,7 @@ export default function AddAdventure() {
                 });
             })
             .catch(res => {
+                console.log(res.response);
                 alert("Error happened on server. Can't create adventure." + res.response.data);
             });
 

@@ -109,7 +109,7 @@ export default function ShowAdventures() {
     return (
         <>
             <SearchForReservation setSearchParams={setSearchParams} setFilterParams={setFilterParams} type={"adventure"}></SearchForReservation>
-            <hr width="53%"></hr>
+            <hr style={{width:"100%"}}></hr>
             {adventures.length > 0 && 
                         <Box container style={{width:'40%', margin:'10px auto', display:'flex', alignItems:'center'}}>
                             <ButtonGroup variant="text" aria-label="outlined button group" size='medium' style={{margin:'0px auto', /*backgroundColor:'aliceblue'*/}}>

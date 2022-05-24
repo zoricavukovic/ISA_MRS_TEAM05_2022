@@ -34,6 +34,7 @@ import Home from "../../map/GoogleMap";
 import ShipSpecificationCard from "./ShipSpecificationCard";
 import { checkIfCanEditEntityById } from '../../../service/BookingEntityService';
 import { URL_PICTURE_PATH } from '../../../service/PictureService';
+import RenderImageSlider from '../../image_slider/RenderImageSlider';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -195,16 +196,7 @@ export default function CardIm(props) {
     if (isLoadingShip || isLoadingPricelist) { return <div className="App">Loading...</div> }
     return (
         <Card style={{ margin: "1% 9% 1% 9%" }} sx={{}}>
-            {shipBasicData.pictures.length === 0 ? (
-                <CardMedia
-                    component="img"
-                    height="300"
-                    alt="No Images"
-                />
-
-            ) : (
-                <ImageSlider slides={shipBasicData.pictures.map((im) => ({ 'image': URL_PICTURE_PATH + im.picturePath }))} />
-            )}
+            <RenderImageSlider pictures={shipBasicData.pictures}/>
             <CardHeader
 
                 title={shipBasicData.name + ": " + shipBasicData.shipType}

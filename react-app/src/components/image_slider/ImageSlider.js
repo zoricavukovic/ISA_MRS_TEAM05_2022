@@ -5,7 +5,7 @@ import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from 'react-icons/fa';
 import styles from './image_slider.module.css';
 
 
-const ImageSlider = ({ slides }) => {
+export default function ImageSlider({ slides, imageHeight }) {
   const [current, setCurrent] = useState(0);
   const length = slides.length;
 
@@ -33,13 +33,12 @@ const ImageSlider = ({ slides }) => {
             <FaArrowAltCircleRight className={styles.rightArrow} onClick={nextSlide} />
       
             {index === current && (
-              <img src={slide.image} alt='travel image' className={styles.image} />
+              <img src={slide.image} alt='travel image' style={{height:imageHeight}} className={styles.image} />
             )}
           </div>
         );
       })}
     </section>
   );
-};
-
-export default ImageSlider;
+  
+}

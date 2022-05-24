@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service.users;
 
+import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
 import com.example.BookingAppTeam05.model.Place;
@@ -7,6 +8,7 @@ import com.example.BookingAppTeam05.model.repository.users.UserRepository;
 import com.example.BookingAppTeam05.model.users.Admin;
 import com.example.BookingAppTeam05.model.users.ShipOwner;
 import com.example.BookingAppTeam05.model.users.User;
+import com.example.BookingAppTeam05.service.EmailService;
 import com.example.BookingAppTeam05.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,17 +16,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.beans.Transient;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserService {
 
     private UserRepository userRepository;
     private PlaceService placeService;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private EmailService emailService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PlaceService placeService) {
+    public UserService(UserRepository userRepository, PlaceService placeService, EmailService emailService) {
         this.userRepository = userRepository;
         this.placeService = placeService;
+        this.emailService = emailService;
     }
 
     public User findUserById(Long id) {
@@ -80,5 +89,39 @@ public class UserService {
 
     public String createUser(UserDTO userDTO) {
         return "";
+    }
+    
+    public List<NewAccountRequestDTO> getAllNewAccountRequestDTOs() {
+        List<User> newAccounts = userRepository.getAllNewAccountRequests();
+        List<NewAccountRequestDTO> retVal = new ArrayList<>();
+        for (User u : newAccounts) {
+            UserDTO userDTO = new UserDTO(u);
+            userDTO.setPlace(u.getPlace());
+            retVal.add(new NewAccountRequestDTO(userDTO, null, false));
+        }
+        return retVal;
+    }
+
+    @Transactional
+    public String giveResponseForNewAccountRequest(NewAccountRequestDTO d) {
+        User user = userRepository.findUserById(d.getUser().getId());
+        if (user == null)
+            return "Cant find user with id " + d.getUser().getId();
+        if (!user.isNotYetActivated())
+            return "This user account is already approved.";
+
+        if (d.isAccepted()) {
+            user.setNotYetActivated(false);
+            userRepository.save(user);
+        } else {
+            userRepository.physicalDeleteUserById(d.getUser().getId());
+        }
+        try {
+            emailService.sendEmailAsAdminResponseFromNewAccountRequest(d);
+        } catch (Exception e) {
+            return "Error happened while sending email about new account request to user";
+        }
+        return null;
+
     }
 }
