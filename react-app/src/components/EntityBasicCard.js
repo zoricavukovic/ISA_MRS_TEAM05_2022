@@ -10,7 +10,7 @@ import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { useHistory } from "react-router-dom";
 import RatingEntity from "./Rating";
 import { getCurrentUser } from "../service/AuthService";
-import {logicalDeleteBookingEntityById} from "../service/BookingEntityService";
+import { logicalDeleteBookingEntityById } from "../service/BookingEntityService";
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
@@ -21,6 +21,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
+import ImageSlider from "./image_slider/ImageSlider";
 
 export default function EntityBasicCard(props) {
 
@@ -78,25 +79,27 @@ export default function EntityBasicCard(props) {
                 pathname: "/showCottageProfile",
                 state: { bookingEntityId: props.bookingEntity.id }
             })
-        } else if (props.bookingEntity.entityType === "ADVENTURE"){
+        } else if (props.bookingEntity.entityType === "ADVENTURE") {
             history.push({
                 pathname: "/showAdventureProfile",
                 state: { bookingEntityId: props.bookingEntity.id }
             })
-        }  else if (props.bookingEntity.entityType === "SHIP")
+        } else if (props.bookingEntity.entityType === "SHIP")
             history.push({
                 pathname: "/showShipProfile",
                 state: { bookingEntityId: props.bookingEntity.id }
-        })
+            })
     };
 
     const reserveBookingEntity = () => {
         console.log("Evo me");
         console.log(props.searchParams);
         history.push({
-            pathname:"/newReservation",
-            state:{ bookingEntityId: props.bookingEntity.id,
-                    searchParams: props.searchParams }
+            pathname: "/newReservation",
+            state: {
+                bookingEntityId: props.bookingEntity.id,
+                searchParams: props.searchParams
+            }
         })
     }
 
@@ -136,13 +139,25 @@ export default function EntityBasicCard(props) {
                     alt="No Images"
                 />
             ) : (
-                <CardMedia
-                    component="img"
-                    height="140"
-                    alt="No Images"
-                    image={URL_PICTURE_PATH + props.bookingEntity.pictures[0]}
-                >
-                </CardMedia>
+                <div>
+                    {
+                        props.bookingEntity.pictures.length > 1 ?
+                            (
+                                <CardMedia>
+                                    <ImageSlider imageHeight="25vh" slides={props.bookingEntity.pictures.map((im) => ({ 'image': URL_PICTURE_PATH + im }))} />
+                                </CardMedia>
+                            ) : 
+                            (
+                                <CardMedia
+                                    component="img"
+                                    style={{height:"26vh"}}
+                                    alt="No Images"
+                                    image={URL_PICTURE_PATH + props.bookingEntity.pictures[0]}
+                                >
+                                </CardMedia>
+                            )
+                    }
+                </div>
             )}
             <CardContent>
                 <Typography style={{ textAlign: "left" }} gutterBottom variant="h5" component="div">

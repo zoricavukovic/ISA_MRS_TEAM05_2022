@@ -34,6 +34,7 @@ import Home from "../../map/GoogleMap";
 import { URL_PICTURE_PATH } from '../../../service/PictureService';
 import { propsLocationStateFound } from '../../forbiddenNotFound/notFoundChecker';
 import { checkIfCanEditEntityById } from '../../../service/BookingEntityService';
+import RenderImageSlider from '../../image_slider/RenderImageSlider';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -184,16 +185,7 @@ export default function CardIm(props) {
     if (isLoadingCottage || isLoadingPricelist) { return <div className="App">Loading...</div> }
     return (
         <Card style={{ margin: "1% 9% 1% 9%" }} sx={{}}>
-            {cottageBasicData.pictures.length === 0 ? (
-                <CardMedia
-                    component="img"
-                    height="300"
-                    alt="No Images"
-                />
-
-            ) : (
-                <ImageSlider slides={cottageBasicData.pictures.map((im) => ({ 'image': URL_PICTURE_PATH + im.picturePath }))} />
-            )}
+            <RenderImageSlider pictures={cottageBasicData.pictures}/>
             <CardHeader
 
                 title={cottageBasicData.name}
