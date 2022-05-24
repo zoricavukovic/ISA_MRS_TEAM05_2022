@@ -111,7 +111,7 @@ export default function ShowCottages() {
 
     return (<>
             <SearchForReservation setSearchParams={setSearchParams} setFilterParams={setFilterParams}  type="cottage"></SearchForReservation>
-            <hr width="53%"></hr>
+            <hr style={{width:"100%"}}></hr>
             {cottages.length > 0 && 
                         <Box container style={{width:'40%', margin:'10px auto', display:'flex', alignItems:'center'}}>
                             <ButtonGroup variant="outlined" aria-label="outlined button group" size='medium' style={{margin:'0px auto'}}>

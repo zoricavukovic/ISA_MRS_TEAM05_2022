@@ -305,7 +305,7 @@ export default function ReviewComplaints() {
                 <Divider sx={{ borderBottomWidth: 5, color: "rgba(17,16,29,255)" }} />
                 <br/>
                 <Box style={{ display: "flex", flexDirection: "row", margin: "1% auto 1% 40%" }}>
-                    <Button variant="contained" onClick={loadProcessed} style={{ color: 'white', backgroundColor: 'rgb(68, 255, 162)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
+                    <Button variant="contained" onClick={loadProcessed} style={{ color: 'white', backgroundColor: 'rgba(38,166,154,255)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
                         Processed
                     </Button>
                     <Button variant="contained" onClick={loadUnprocessed} style={{ color: 'white', backgroundColor: 'rgb(252,38, 38)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>

@@ -158,10 +158,10 @@ export default function ReviewDeleteAccountRequests() {
 
     let rows = [];
     let columns = [
-        { field: 'id', headerName: 'Request ID', width: 150 },
-        { field: 'User', headerName: 'User', width: 200 },
-        { field: 'Reason', headerName: 'Reason For Deleting', width: 200 },
-        { field: 'Processed', headerName: 'Processed', type: 'boolean', width: 200 }
+        { field: 'id', headerName: 'Request ID', width: 200 },
+        { field: 'User', headerName: 'User', width: 250 },
+        { field: 'Reason', headerName: 'Reason For Deleting', width: 250 },
+        { field: 'Processed', headerName: 'Processed', type: 'boolean', width: 250 }
 
     ];
 
@@ -178,8 +178,8 @@ export default function ReviewDeleteAccountRequests() {
         let newRows = [];
         for (let r of deleteRequests) {
             let reason = r.reason;
-            if (reason > 15)
-                reason = reason.slice(0, 15) + '...';
+            if (reason > 20)
+                reason = reason.slice(0, 20) + '...';
             let rowToAdd = {
                 'id': r.id,
                 'User': r.user.firstName + ' ' + r.user.lastName,
@@ -229,10 +229,9 @@ export default function ReviewDeleteAccountRequests() {
             <Box
                 alignItems="center"
                 justifyContent="center"
-                style={{ margin: '1% 11% 1% 20%' }}
+                style={{ margin: '1% 11% 1% 25%' }}
             >
                 <h3 color="rgba(17,16,29,255)">Review deleting account requests</h3>
-                <Divider sx={{ borderBottomWidth: 5, color: "rgba(17,16,29,255)" }} />
                 <br/>
 
                 {(selectedDeleteRequest !== null) ?
@@ -243,7 +242,8 @@ export default function ReviewDeleteAccountRequests() {
                     />
                     ) : (<div></div>)
                 }
-                <div>
+                <div style={{width: '90%'}}>
+                    <Divider sx={{ borderBottomWidth: 5, color: "rgba(17,16,29,255)" }} />
                     {deleteRequests.length === true ? (
                         <h5 style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', marginLeft: "15%" }}>There are no delete requests.</h5>
                     ) : (
