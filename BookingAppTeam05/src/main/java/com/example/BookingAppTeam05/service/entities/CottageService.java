@@ -1,25 +1,15 @@
 package com.example.BookingAppTeam05.service.entities;
 
-import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
-import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
-import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.model.Room;
 import com.example.BookingAppTeam05.model.RuleOfConduct;
 import com.example.BookingAppTeam05.model.entities.Cottage;
-import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.repository.entities.CottageRepository;
+import com.example.BookingAppTeam05.model.repository.entities.CottageRepository;
 import com.example.BookingAppTeam05.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;

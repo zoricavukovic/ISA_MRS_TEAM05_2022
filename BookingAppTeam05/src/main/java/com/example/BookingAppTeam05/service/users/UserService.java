@@ -3,10 +3,10 @@ package com.example.BookingAppTeam05.service.users;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
 import com.example.BookingAppTeam05.model.Place;
+import com.example.BookingAppTeam05.model.repository.users.UserRepository;
 import com.example.BookingAppTeam05.model.users.Admin;
 import com.example.BookingAppTeam05.model.users.ShipOwner;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.repository.users.*;
 import com.example.BookingAppTeam05.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -76,5 +76,9 @@ public class UserService {
 
     public String getHashedNewUserPassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    public String createUser(UserDTO userDTO) {
+        return "";
     }
 }

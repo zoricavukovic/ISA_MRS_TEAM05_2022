@@ -1,12 +1,9 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.dto.CreatedReportReviewDTO;
 import com.example.BookingAppTeam05.dto.DeleteAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.model.DeleteAccountRequest;
-import com.example.BookingAppTeam05.model.Report;
-import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.repository.DeleteAccountRepository;
+import com.example.BookingAppTeam05.model.repository.DeleteAccountRepository;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

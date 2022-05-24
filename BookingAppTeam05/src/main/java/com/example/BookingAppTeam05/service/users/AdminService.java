@@ -5,9 +5,8 @@ import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.users.Admin;
 import com.example.BookingAppTeam05.dto.users.NewAdminDTO;
 import com.example.BookingAppTeam05.model.users.Role;
-import com.example.BookingAppTeam05.repository.users.AdminRepository;
+import com.example.BookingAppTeam05.model.repository.users.AdminRepository;
 import com.example.BookingAppTeam05.service.*;
-import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,46 +1,181 @@
-
-import React, { useEffect, useState, useRef } from "react";
-import { useHistory } from "react-router-dom";
-import { getAllPlaces } from "../../service/PlaceService";
-import { checkIfEmailAlreadyExist, userLoggedInAsSuperAdmin } from "../../service/UserService";
-
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+import React, {useEffect, useState, useRef} from 'react';
+import {createTheme, styled, ThemeProvider} from "@mui/material/styles";
+import {Alert, Autocomplete, CircularProgress, FormControl, Grid, InputAdornment, InputLabel, List, NativeSelect, Snackbar, TextField} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { format } from "date-fns";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import {useHistory} from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import { editUserById, getUserById } from '../../service/UserService';
+import { getAllPlaces } from '../../service/PlaceService';
+import { userLoggedIn } from '../../service/UserService';
+import { getCurrentUser } from '../../service/AuthService';
+import CaptainIcon from '../../icons/captainOrange.png';
+import Checkbox from '@mui/material/Checkbox';
+import { DateRangeOutlined, Domain, Person, Phone, Place } from '@mui/icons-material';
+import { Calendar } from 'react-date-range';
 import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Divider, Grid } from "@mui/material";
-import { useForm } from "react-hook-form";
-import Box from '@mui/material/Box';
-import Autocomplete from '@mui/material/Autocomplete';
-
-import 'react-phone-input-2/lib/material.css'
-import PhoneInput from 'react-phone-input-2'
-
 import IconButton from '@mui/material/IconButton';
 import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import {addNewAdmin} from "../../service/AdminService";
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
+import { useForm } from "react-hook-form";
+import EmailIcon from '@mui/icons-material/Email';
+import KeyIcon from '@mui/icons-material/Key';
+
+function RegistrationForm(props) {
 
 
-export default function RegistrationForm() {
+    const FireNav = styled(List)({
+        '& .MuiListItemButton-root': {
+            paddingLeft: 24,
+            paddingRight: 24,
+        },
+        '& .MuiListItemIcon-root': {
+            minWidth: 0,
+            marginRight: 16,
+        },
+        '& .MuiSvgIcon-root': {
+            fontSize: 20,
+        },
+    });
 
+
+    const [userData, setUserData] = useState({});
+    const [changedUserData, setChangedUserData] = useState({
+        "firstName":"",
+        "lastName": "",
+        "dateOfBirth":null,
+        "place":{
+            "id":0
+        },
+        "password":"",
+        "address":"",
+        "email":""
+    });
+    const [places, setPlaces] = useState([]);
+    const [selectedPlace, setSelectedPlace] = useState({});
+    const [isLoading, setLoading] = useState(true);
+    const [isLoading2, setLoading2] = useState(true);
+    const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+    const [allPlacesList,setAllPlacesList] = useState([]);
+    const [openDate,setOpenDate] = useState(false);
+    const [dateOfBirth,setDateOfBirth] = useState(new Date());
     const history = useHistory();
+    const [checked, setChecked] = React.useState();
+
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    };
+    
+    useEffect(() => {
+       
+        getAllPlaces().then(results =>{
+            setPlaces(results.data);
+            setSelectedPlaceId(results.data[0].id);
+            setLoading2(false);
+        })
+        
+    }, []);
+
+            //setSelectedPlaceId(userData.place.id);
+            //setSelectedPlace({ 'label': userData.place.cityName + ',' + userData.place.zipCode + ',' + userData.place.stateName, 'id': userData.place.id });
+        
+
+    const [open, setOpen] = React.useState(false);
+
+    const showNotification = () => {
+        setOpen(true);
+    };
+
+    const [openDialog, setOpenDialog] = React.useState(true);
+ 
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+        return;
+        }
+
+        setOpen(false);
+    };
+
+    const saveChanges = (event) => {
+        console.log(changedData);
+        event.preventDefault();
+        let changedData = changedUserData;
+        changedData.dateOfBirth = dateOfBirth;
+        changedData.place.id = selectedPlaceId;
+        setChangedUserData(changedData);
+        console.log("CHanged user data:",changedData);
+        editUserById(getCurrentUser().id, changedData).then(res=>{
+            console.log("Uspesno!!");
+            console.log(res.data);
+            showNotification();
+        }).catch(res=>{
+            console.log("Greska!!");
+        })
+    };
+
+    const makeChange = (event)=>{
+        var value = event.target.value;
+        if(event.target.name === "dateOfBirth"){
+            let year = parseInt(value.split(',')[0]);
+            let month = parseInt(value.split(',')[1]);
+            let day = parseInt(value.split(',')[2]);
+            value = [year,month,day];
+        }
+        setChangedUserData(prevState => ({
+            ...prevState,
+            [event.target.name]: value
+        }));
+    }
+
+    useEffect(() => {
+        getAllPlacesForTheList();
+        
+    },[places])
+
+    const handleDatePick = (date) =>{
+        console.log("Usao u picker");
+        date.setHours(12);
+        setDateOfBirth(date); 
+        setOpenDate(false);
+      }
+
+    const placeOnChange = (event, newValue) => {
+        event.preventDefault();
+        console.log(newValue);
+        if (newValue != null && newValue != undefined && newValue != '') {
+            setSelectedPlaceId(newValue.id);
+        } else {
+            setSelectedPlaceId(null);
+        }
+    }
+
+    const getAllPlacesForTheList = () => {
+        let newArray = [];
+        for (let place of places) {
+            newArray.push({ 'label': place.cityName + ',' + place.zipCode + ',' + place.stateName, 'id': place.id });
+        }
+        
+        setAllPlacesList(newArray);
+      }
+
+
+
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
-
-
-    const [openAlert, setOpenAlert] = React.useState(false);
-    const [alertMessage, setAlertMessage] = React.useState("");
-    const [typeAlert, setTypeAlert] = React.useState("");
-
-
-    const [hiddenEmailAlreadyExistError, setHiddenEmailAlreadyExistError] = useState("none");
 
     //----------------password-----------------------/
     const newPassword = useRef({});
@@ -54,314 +189,289 @@ export default function RegistrationForm() {
 
     //------------------------------------------
 
-    const [phoneValue, setphoneValue] = useState();
-    const [hiddenErrorPhone, setHiddenErrorPhone] = useState("none");
+    const SubmitButton = <ListItemButton button type="submit" component="button"  style={{backgroundColor:"rgb(244,177,77)",color:"white",textAlign:"center", borderRadius: 7}}>
+        <ListItemText
+            sx={{ my: 0 }}
+            primary="Register"
+            primaryTypographyProps={{
+                fontSize: 20,
+                fontWeight: 'medium',
+                letterSpacing: 0,
+            }}
+        />
+    </ListItemButton>
 
-    //----------------------------------------------------
-    const [open, setOpen] = React.useState(true);
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-        history.push('/showAdventures');
-    };
-    //----------------------------------------------------------------
-    const [places, setPlaces] = React.useState([]);
-    const [selectedPlaceId, setSelectedPlaceId] = useState('');
-    const [isLoadingPlaces, setLoadingPlaces] = useState(true);
-    const [hiddenErrorPlace, setHiddenErrorPlace] = useState("none");
-    let allPlacesList;
-
-    const placeOnChange = (event, newValue) => {
-        if (newValue != null && newValue != undefined && newValue != '') {
-            setSelectedPlaceId(newValue.id);
-        } else {
-            setSelectedPlaceId('');
-        }
-    }
-
-    const getAllPlacesForTheList = () => {
-        let newArray = [];
-        for (let place of places) {
-            newArray.push({ 'label': place.cityName + ',' + place.zipCode + ',' + place.stateName, 'id': place.id });
-        }
-        allPlacesList = newArray;
-    }
-    //-------------------------------------------------------------------
+    const [state,setState] = useState({
+        key : Date.now()
+    });
 
 
-
-    const checkPlaceSelected = () => {
-        if (selectedPlaceId !== null && selectedPlaceId !== undefined && selectedPlaceId !== '') {
-            setHiddenErrorPlace("none");
-            return true;
-        } else {
-            setHiddenErrorPlace("block");
-            return false;
-        }
-    }
-
-    const checkPhoneSelected = () => {
-        if (phoneValue !== null && phoneValue !== undefined && phoneValue !== '') {
-            setHiddenErrorPhone("none");
-            return true;
-        } else {
-            setHiddenErrorPhone("block");
-            return false;
-        }
-    }
-
-    const emailAddressAlreadyExist = (email) => {
-        checkIfEmailAlreadyExist(email)
-            .then(res => {
-                setHiddenEmailAlreadyExistError("none");
-                return false;
-            })
-            .catch(err => {
-                setHiddenEmailAlreadyExistError("block");
-                return true;
-            })
-    }
-
-    const onFormSubmit = data => {
-        if (!checkPlaceSelected() || !checkPhoneSelected() || emailAddressAlreadyExist(data.email))
-            return;
-
-        let newAdmin = {
-            email: data.email,
-            name: data.name,
-            surname: data.surname,
-            phoneNumber: phoneValue,
-            address: data.address,
-            placeId: selectedPlaceId,
-            password: data.newPassword,
-            passwordChanged: false
-        }
-        addNewAdmin(newAdmin)
-            .then(res => {
-                setTypeAlert("success");
-                setAlertMessage(res.data);
-                setOpenAlert(true);
-            })
-            .catch(err => {
-                setTypeAlert("error");
-                setAlertMessage(err.response.data);
-                setOpenAlert(true);
-            });
-    }
-
-
-    useEffect(() => {
-        getAllPlaces()
-            .then(res => {
-                setPlaces(res.data);
-                setLoadingPlaces(false);
-        })
-        
-
-    }, []);
-
-    if (isLoadingPlaces) {
-        return <div className="App">Loading...</div>
-    }
-    else {
-        { getAllPlacesForTheList() }
-        return (
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                style={{ margin: '1% auto 1% auto', padding: '1%', width: '100%', borderRadius: '10px' }}
-                fullWidth
-                maxWidth="sm"
-            >
-                <DialogTitle>Registration Form</DialogTitle>
+    if (isLoading2) { return <div className="App"><CircularProgress /></div> }
+    return (
+        <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            style={{ margin: '1% auto 1% auto', padding: '1%', width: '50%', borderRadius: '10px' }}
+            fullWidth
+            maxWidth="sm"
+        >
+            
+            <div className="App" key={state.key} style={{backgroundColor: 'aliceblue'}}>
+            <Grid style={{ padding:'5%', display: "flex", flexDirection: "row", flexWrap: 'wrap' }} container alignItems="left" display="flex" flexDirection="column" justifyContent="center">
+              
+                <Typography sx={{ marginLeft: '2.5%', mt: '1%'}} style={{fontWeight:"bold", fontSize:'20px'}} color='rgb(5, 30, 52)'>
+                Registration Form
+                </Typography>
                 <Divider />
-                <br />
-                <DialogContent>
-                    <Box
-                        component="form"
-                        noValidate
-                        onSubmit={handleSubmit(onFormSubmit)}
-                        style={{ width: '100%' }}
-                    >
-                        <Grid
-                            direction="column"
-                            alignItems="center"
-                            justifyContent="center"
-                            container
-                            spacing={2}
-                        >
-
-                            <Grid item xs={12} sm={12}>
+               
+            </Grid>
+                <div style={{margin:'0px auto', width:'80%'}}>
+                <form onSubmit={saveChanges}>
+                    <Grid container spacing={2} style={{backgroundColor: 'aliceblue', margin:'0px auto' , borderRadius: '10px' ,justifyContent:"center" ,alignItems:"center", paddingBottom:'30px'}} >
+                    
+                            <Grid item xs="auto">
                                 <TextField
-                                    name="name"
-                                    id="name"
-                                    label="Name"
-                                    placeholder="Name"
-                                    style={{ width: '300px' }}
-                                    {...register("name", {
-                                        required: "Please specify name",
-                                        maxLength: {
-                                            value: 50,
-                                            message: "Name field cant be longer than 50 characters"
-                                        }
-                                    })}
+                                    id="outlined-read-only-input"
+                                    label="First Name"
+                                    placeholder="First Name"
+                                    defaultValue={userData.firstName}
+                                    name="firstName"
+                                    onChange={makeChange}
+                                    InputProps={{
+                                        readOnly: false,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Person />
+                                            </InputAdornment>
+                                            )
+                                    }}
+                                    required
                                 />
                             </Grid>
-                            {errors.name && <p style={{ color: '#ED6663' }}>{errors.name.message}</p>}
-                            <Grid item xs={12} sm={12}>
+                            <Grid item xs="auto">
                                 <TextField
-                                    name="surname"
-                                    id="surname"
-                                    label="Surname"
-                                    placeholder="Surname"
-                                    style={{ width: '300px' }}
-                                    {...register("surname", {
-                                        required: "Please specify surname",
-                                        maxLength: {
-                                            value: 50,
-                                            message: "Surname field cant be longer than 50 characters"
-                                        }
-                                    })}
+                                    id="outlined-read-only-input"
+                                    label="Last Name"
+                                    defaultValue={userData.lastName}
+                                    placeholder="Last Name"
+                                    name="lastName"
+                                    onChange={makeChange}
+                                    InputProps={{
+                                        readOnly: false,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Person />
+                                            </InputAdornment>
+                                            )
+                                    }}
+                                    required
                                 />
                             </Grid>
-                            {errors.surname && <p style={{ color: '#ED6663' }}>{errors.surname.message}</p>}
-                            <Grid item xs={12} sm={12}>
+                            <Grid item xs="auto">
                                 <TextField
-                                    name="email"
-                                    id="email"
+                                    id="outlined-read-only-input"
                                     label="Email"
+                                    name="email"
                                     placeholder="Email"
-                                    style={{ width: '300px' }}
-                                    {...register("email", {
-                                        required: "Please specify an email",
-                                        maxLength: {
-                                            value: 50,
-                                            message: "Email field cant be longer than 50 characters"
-                                        },
-                                        pattern: {
-                                            value: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
-                                            message: "Invalid email address"
-                                        }
-                                    })
-                                    }
+                                    onChange={makeChange}
+                                    InputProps={{
+                                        readOnly: false,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <EmailIcon />
+                                            </InputAdornment>
+                                            )
+                                    }}
+                                    required
                                 />
                             </Grid>
-                            {errors.email && <p style={{ color: '#ED6663' }}>{errors.email.message}</p>}
-                            <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenEmailAlreadyExistError }}>This email is already taken.</p>
-                            <Grid item xs={12} sm={12}>
+                            <Grid item xs="auto">
                                 <TextField
-                                    name="address"
-                                    id="address"
-                                    label="Address"
-                                    placeholder="Address"
-                                    style={{ width: '300px' }}
-                                    {...register("address", {
-                                        required: "Please specify an address",
-                                        maxLength: {
-                                            value: 50,
-                                            message: "Address field cant be longer than 100 characters"
-                                        }
-                                    })}
+                                    id="outlined-read-only-input"
+                                    label="Phone Number"
+                                    defaultValue={userData.phoneNumber}
+                                    name="phoneNumber"
+                                    placeholder="Phone Number"
+                                    onChange={makeChange}
+                                    InputProps={{
+                                        readOnly: false,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Phone />
+                                            </InputAdornment>
+                                            )
+                                    }}
+                                    required
                                 />
                             </Grid>
-                            {errors.address && <p style={{ color: '#ED6663' }}>{errors.address.message}</p>}
-                            <Grid item xs={12} sm={12}>
+                            <Grid item xs="auto">
+                                <><TextField style={{/*margin:'10px 10px'*/ }} onClick={()=>setOpenDate(!openDate)} label='Date of birth' placeholder={`${format(dateOfBirth, "dd.MM.yyyy.")}`} 
+                                    value={`${format(dateOfBirth, "dd.MM.yyyy.")}`}
+                                    placeholder="Date Of Birth"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                            <DateRangeOutlined />
+                                            </InputAdornment>
+                                        )
+                                        }}
+                                        />
+                                        {openDate && <div style={{
+                                                position:"absolute",
+                                                zIndex:99999,
+                                                backgroundColor:"white",
+                                                border:"1px solid rgb(5, 30, 52)"
+                                            }}
+                                            
+                                            >
+                                            <Calendar
+                                                editableDateInputs={true}
+                                                date={dateOfBirth}
+                                                onChange={handleDatePick}
+                                            />
+                                            </div>
+                                        }
+                                </>
+                            </Grid>
+                            <Grid item xs="auto">
                                 <Autocomplete
                                     disablePortal
                                     id="place"
                                     options={allPlacesList}
-                                    sx={{ width: '300px' }}
+                                    style={{width:'100%'}}
                                     onChange={placeOnChange}
-                                    renderInput={(params) => <TextField {...params} label="Place" />}
+                                    renderInput={(params) => <TextField {...params} label="Place" 
+                                                                placeholder="Place"
+                                                                InputProps={{
+                                                                    ...params.InputProps,
+                                                                    startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Place />
+                                                                    </InputAdornment>
+                                                                    )
+                                                                }}
+                                                            />}
+                                    required
+                                    isOptionEqualToValue={(option, value) => option.label === value.label}
                                 />
                             </Grid>
-                            <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenErrorPlace }}>Please check place.</p>
-                            <Grid item xs={12} sm={12}>
-                                <PhoneInput
-                                    country={'rs'}
-                                    value={phoneValue}
-                                    onChange={setphoneValue}
-                                    inputProps={{
-                                        name: 'phone',
-                                        required: true,
+                            <Grid item xs="auto">
+                                <TextField
+                                    required
+                                    id="outlined-required"
+                                    label="Address"
+                                    name="address"
+                                    onChange={makeChange}
+                                    style={{width:'100%'}}
+                                    InputProps={{
+                                        readOnly: false,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Domain />
+                                            </InputAdornment>
+                                            )
                                     }}
                                 />
                             </Grid>
-                            <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenErrorPhone }}>Please enter phone number.</p>
-                            <Grid item xs={12} sm={12}>
-                                <FormControl sx={{ m: 1, width: '250px' }} variant="standard">
-                                    <InputLabel>Type password</InputLabel>
-                                    <Input
-                                        id="newPassword"
-                                        name="newPassword"
-                                        type={showNewPassword ? 'text' : 'password'}
-                                        placeholder="Type password"
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={handleClickShowNewPassword}
-                                                >
-                                                    {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
+                        
+                            <Grid item xs="auto">
+                                <TextField
+                                    required
+                                    id="outlined-required"
+                                    label="Type password"
+                                    placeholder="Type password"
+                                    type={showNewPassword ? 'text' : 'password'}
+                                    name="newPassword"
+                                    onChange={makeChange}
+                                    style={{width:'100%'}}
+                                    InputProps={{
+                                        readOnly: false,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <KeyIcon />
                                             </InputAdornment>
+                                            ),
+                                            endAdornment:(
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={handleClickShowNewPassword}
+                                                    >
+                                                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            )
+                                    }}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowNewPassword}
+                                            >
+                                                {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    {...register("newPassword", {
+                                        required: "You must specify a password",
+                                        minLength: {
+                                            value: 8,
+                                            message: "Password must have at least 8 characters"
                                         }
-                                        {...register("newPassword", {
-                                            required: "You must specify a password",
-                                            minLength: {
-                                                value: 8,
-                                                message: "Password must have at least 8 characters"
-                                            }
-                                        })}
-                                    />
-                                </FormControl>
+                                    })}
+                                />
                             </Grid>
                             {errors.newPassword && <p style={{ color: '#ED6663' }}>{errors.newPassword.message}</p>}
-
-                            <Grid item xs={12} sm={12}>
-                                <FormControl sx={{ m: 1, width: '250px' }} variant="standard">
-                                    <InputLabel>Retype new password</InputLabel>
-                                    <Input
-                                        id="retypedPassword"
-                                        name="retypedPassword"
-                                        type="password"
-                                        placeholder="Retype password"
-                                        {...register("retypedPassword", {
-                                            validate: value =>
-                                                value === newPassword.current || "The passwords do not match"
-                                        })}
-                                    />
-                                </FormControl>
-                            </Grid>
+                            <Grid item xs="auto">
+                                <TextField
+                                    required
+                                    id="outlined-required"
+                                    label="Retype password"
+                                    placeholder="Retype password"
+                                    name="retypedPassword"
+                                    onChange={makeChange}
+                                    style={{width:'100%'}}
+                                    InputProps={{
+                                        readOnly: false,
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <KeyIcon />
+                                            </InputAdornment>
+                                            )
+                                    }}
+                                   
+                                    {...register("retypedPassword", {
+                                        validate: value =>
+                                            value === newPassword.current || "The passwords do not match."
+                                    })}
+                                />
+                                </Grid>
                             {errors.retypedPassword && <p style={{ color: '#ED6663' }}>{errors.retypedPassword.message}</p>}
+                   
+                            <Grid item xs="auto">
+                                <Paper elevation={0} sx={{ maxWidth: 290 }}>
+                                    <FireNav component="nav" disablePadding>
+                                        {SubmitButton}
+                                        <Divider />
+                                        <Divider />
+                                    </FireNav>
+                                </Paper>
+                            </Grid>
+                        
+                        
                         </Grid>
-                        <br />
 
+                    </form>
+                </div>
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                        Profile edited successfuly!
+                    </Alert>
+                </Snackbar>
+            </div>
+        </Dialog>
 
-                        <Box style={{ display: "flex", flexDirection: "row" }}>
-                            <Button type="submit" onSubmit={handleSubmit(onFormSubmit)} variant="contained" style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '33.5%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
-                                Save
-                            </Button>
-                            <Button
-                                variant="contained"
-                                style={{ color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginLeft: '2%', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}
-                                onClick={handleClose}
-                            >
-                                Close
-                            </Button>
-
-                        </Box>
-                        <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
-                                {alertMessage}
-                            </Alert>
-                        </Snackbar>
-                    </Box>
-                </DialogContent>
-
-            </Dialog >
-        );
-    }
+    );
 }
+
+export default RegistrationForm;
