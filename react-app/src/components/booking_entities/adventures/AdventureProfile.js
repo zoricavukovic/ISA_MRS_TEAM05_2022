@@ -20,16 +20,16 @@ import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
-import ImageSlider from "../../image_slider/ImageSlider";
-import { getAdventureById  } from "../../../service/AdventureService";
-import {checkIfCanEditEntityById} from "../../../service/BookingEntityService";
+import { getAdventureById } from "../../../service/AdventureService";
+import { checkIfCanEditEntityById } from "../../../service/BookingEntityService";
 import { getPricelistByEntityId } from "../../../service/PricelistService";
-import { URL_PICTURE_PATH } from "../../../service/PictureService";
 import Chip from '@mui/material/Chip';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { propsLocationStateFound } from "../../forbiddenNotFound/notFoundChecker";
+import RenderImageSlider from "../../image_slider/RenderImageSlider.js";
+
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -136,7 +136,7 @@ function AdventureActions(props) {
                 props.history.push({
                     pathname: "/editAdventure",
                     state: { bookingEntityId: props.adventureId }
-                });        
+                });
             })
             .catch(res => {
                 props.setMessage(res.response.data);
@@ -164,7 +164,7 @@ function AdventureActions(props) {
     return (
         <CardActions disableSpacing>
             <IconButton onClick={showCalendarForEntity}>
-                <Chip icon={<CalendarMonthIcon />} label="Calendar"/>
+                <Chip icon={<CalendarMonthIcon />} label="Calendar" />
             </IconButton>
 
             <IconButton value="module" aria-label="module" onClick={editAdventure}>
@@ -186,6 +186,7 @@ function AdventureActions(props) {
         </CardActions>
     )
 }
+
 
 
 export default function AdventureProfile(props) {
@@ -234,7 +235,7 @@ export default function AdventureProfile(props) {
         { adventureId = props.location.state.bookingEntityId }
         return (
             <Card style={{ margin: "1% 9% 1% 9%" }} sx={{}}>
-                <ImageSlider slides={adventureData.pictures.map((im) => ({ 'image': URL_PICTURE_PATH + im.picturePath }))} />
+                <RenderImageSlider pictures={adventureData.pictures}/>
                 <br />
                 <CardHeader
                     title={adventureData.name}
