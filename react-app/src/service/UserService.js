@@ -78,3 +78,7 @@ export function userLoggedInAsSuperAdmin(history) {
 export function getAllNewAccountRequests() {
     return api.get('/users/getAllNewAccountRequests');
 }
+
+export function giveResponseForNewAccountRequest(response) {
+    return api.put('/users/giveResponseForNewAccountRequest', response);
+}

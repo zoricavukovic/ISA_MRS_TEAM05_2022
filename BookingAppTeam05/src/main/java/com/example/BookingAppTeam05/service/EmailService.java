@@ -4,6 +4,7 @@ import com.example.BookingAppTeam05.dto.ComplaintReviewDTO;
 import com.example.BookingAppTeam05.dto.CreatedReportReviewDTO;
 import com.example.BookingAppTeam05.dto.DeleteAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.RatingReviewDTO;
+import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
 import com.example.BookingAppTeam05.model.Report;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.users.Client;
@@ -253,6 +254,41 @@ public class EmailService {
                 .append(statusMessage)
                 .append("\n\t -------------------------")
                 .append("\n\t Reason for deleting: " + d.getReason())
+                .append("\n\t Admin response: " + adminResponse)
+                .append("\n\n\nYour bookingApp.com");
+
+        sendToEmail(d.getUser().getEmail(), subject, content.toString());
+    }
+
+    @Async
+    public void sendEmailAsAdminResponseFromNewAccountRequest(NewAccountRequestDTO d) throws InterruptedException {
+        String subject = "Your account request is processed. Please check message.";
+
+        String firstName = d.getUser().getFirstName();
+        String lastName = d.getUser().getLastName();
+        String statusMessage = "";
+        String adminResponse = "";
+
+        if (d.isAccepted())
+            statusMessage = "Your account is successfuly approved. Welcome to bookingApp.com!";
+        else
+            statusMessage = "Your account request is not approved.";
+
+        if (d.isAccepted())
+            adminResponse = "Your account is successfuly approved. Welcome to bookingApp.com!";
+        else
+            adminResponse = d.getAdminResponse();
+
+
+        StringBuilder content = new StringBuilder();
+
+        content.append("Dear ")
+                .append(firstName)
+                .append(" ")
+                .append(lastName)
+                .append(",\n\n\t")
+                .append(statusMessage)
+                .append("\n\t -------------------------")
                 .append("\n\t Admin response: " + adminResponse)
                 .append("\n\n\nYour bookingApp.com");
 

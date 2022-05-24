@@ -49,13 +49,12 @@ public class AdminService {
         Role role = roleService.findByName("ROLE_ADMIN");
 
         Admin admin = new Admin(newAdminDTO.getEmail(), newAdminDTO.getName(), newAdminDTO.getSurname(), newAdminDTO.getAddress(), newAdminDTO.getPhoneNumber(), password, false, place, role);
-        //try {
+        try {
             adminRepository.save(admin);
             return null;
-//        } catch (Exception e) {
-//            return "Error happend on server. Cant save admin: " + newAdminDTO.getEmail() + " " + newAdminDTO.getName() + " " + newAdminDTO.getSurname();
-//        }
-
+        } catch (Exception e) {
+            return "Error happend on server. Cant save admin: " + newAdminDTO.getEmail() + " " + newAdminDTO.getName() + " " + newAdminDTO.getSurname();
+        }
     }
 
     public AllRequestsNumsDTO getAllRequestsNumsDTO() {
@@ -63,6 +62,7 @@ public class AdminService {
         int reportSize = reportService.getAllUnprocessedReportReviewDTOs().size();
         int complaintSize = complaintService.getAllUnprocessedComplaintReviewDTOs().size();
         int deleteAccountSize = deleteAccountService.getAllUnprocessedDeleteAccountRequestDTOs().size();
-        return new AllRequestsNumsDTO(reportSize, ratingSize, complaintSize, deleteAccountSize);
+        int newRequestSize = userService.getAllNewAccountRequestDTOs().size();
+        return new AllRequestsNumsDTO(reportSize, ratingSize, complaintSize, deleteAccountSize, newRequestSize);
     }
 }

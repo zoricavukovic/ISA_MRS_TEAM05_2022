@@ -90,5 +90,13 @@ public class UserController {
         List<NewAccountRequestDTO> retVal = userService.getAllNewAccountRequestDTOs();
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
+
+    @PutMapping(value="/giveResponseForNewAccountRequest", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> giveResponse(@RequestBody NewAccountRequestDTO d) {
+        String errorCode = userService.giveResponseForNewAccountRequest(d);
+        if (errorCode != null)
+            return new ResponseEntity<>(errorCode, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("sve ok", HttpStatus.OK);
+    }
 }
 

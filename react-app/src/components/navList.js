@@ -259,8 +259,8 @@ const navbarSuperAdminList = [
   reviewRatingsFromClients,
   reviewComplaints,
   reviewDeleteAccountRequest,
-  allRequests,
-  reviewNewAccountRequests
+  reviewNewAccountRequests,
+  allRequests
 ]
 
 const navbarAdminList = [
@@ -269,6 +269,6 @@ const navbarAdminList = [
   reviewRatingsFromClients,
   reviewComplaints,
   reviewDeleteAccountRequest,
+  reviewNewAccountRequests,
   allRequests,
-  reviewNewAccountRequests
 ]
