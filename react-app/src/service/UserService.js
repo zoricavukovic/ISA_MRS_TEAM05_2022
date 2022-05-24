@@ -74,3 +74,7 @@ export function userLoggedInAsClient(history) {
 export function userLoggedInAsSuperAdmin(history) {
     return userLoggedInWithRole(history, "ROLE_SUPER_ADMIN");
 }
+
+export function getAllNewAccountRequests() {
+    return api.get('/users/getAllNewAccountRequests');
+}

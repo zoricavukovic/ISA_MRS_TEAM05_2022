@@ -8,6 +8,7 @@ import StarHalfIcon from '@mui/icons-material/StarHalf';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 
 const navbarDefaultList = [
   {
@@ -235,6 +236,15 @@ const reviewDeleteAccountRequest = {
   url: '/reviewDeleteAccountRequests'
 }
 
+const reviewNewAccountRequests = {
+  icon: PersonAddAlt1Icon,
+  desc: 'New account requests',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/reviewNewAccountRequests'
+}
+
 const navbarSuperAdminList = [
   ...navbarDefaultList,
   {
@@ -249,7 +259,8 @@ const navbarSuperAdminList = [
   reviewRatingsFromClients,
   reviewComplaints,
   reviewDeleteAccountRequest,
-  allRequests
+  allRequests,
+  reviewNewAccountRequests
 ]
 
 const navbarAdminList = [
@@ -258,5 +269,6 @@ const navbarAdminList = [
   reviewRatingsFromClients,
   reviewComplaints,
   reviewDeleteAccountRequest,
-  allRequests
+  allRequests,
+  reviewNewAccountRequests
 ]

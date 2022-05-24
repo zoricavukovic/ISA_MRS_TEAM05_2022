@@ -47,7 +47,7 @@ export default function AllRequestsCards() {
         history.push("/reviewRatingsAdmin");
     }
     const openNewAccountRequests = (event) => {
-        console.log("Todo");
+        history.push("/reviewNewAccountRequests");
     }
 
     useEffect(() => {

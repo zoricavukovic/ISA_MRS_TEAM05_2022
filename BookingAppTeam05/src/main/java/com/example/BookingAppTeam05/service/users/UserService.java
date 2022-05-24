@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service.users;
 
+import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
 import com.example.BookingAppTeam05.model.Place;
@@ -13,6 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -76,5 +80,15 @@ public class UserService {
 
     public String getHashedNewUserPassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    public List<NewAccountRequestDTO> getAllNewAccountRequestDTOs() {
+        List<User> newAccounts = userRepository.getAllNewAccountRequests();
+        List<NewAccountRequestDTO> retVal = new ArrayList<>();
+        for (User u : newAccounts) {
+            UserDTO userDTO = new UserDTO(u);
+            retVal.add(new NewAccountRequestDTO(userDTO, null, false));
+        }
+        return retVal;
     }
 }
