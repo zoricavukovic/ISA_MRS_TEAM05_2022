@@ -75,6 +75,22 @@ public class UserController {
         }
     }
 
+    @PostMapping(value = "/createUser", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) {
+        String created = userService.createUser(userDTO);
+        User user = userService.findUserById(userDTO.getId());
+//        if (userService.passwordIsCorrect(user, userDTO.getNewPassword()))
+//            return new ResponseEntity<String>("Please choose different password", HttpStatus.BAD_REQUEST);
+//        if (userService.passwordIsCorrect(user, changePasswordDTO.getCurrPassword())) {
+//            userService.setNewPasswordForUser(user, changePasswordDTO.getNewPassword());
+//            return new ResponseEntity<String>("Successfully changed password", HttpStatus.OK);
+//        }
+//        else {
+//            return new ResponseEntity<String>("Entered password is incorrect", HttpStatus.BAD_REQUEST);
+//        }BAD_REQUEST
+        return new ResponseEntity<String>("Entered password is incorrect", HttpStatus.OK);
+    }
+
 
     @GetMapping(value="/checkIfEmailAlreadyExist/{email}")
     public ResponseEntity<String> checkIfCanEdit(@PathVariable String email) {

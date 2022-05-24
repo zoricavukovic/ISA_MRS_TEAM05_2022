@@ -2,7 +2,7 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.NewRuleOfConductDTO;
 import com.example.BookingAppTeam05.model.RuleOfConduct;
-import com.example.BookingAppTeam05.repository.RuleOfConductRepository;
+import com.example.BookingAppTeam05.model.repository.RuleOfConductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

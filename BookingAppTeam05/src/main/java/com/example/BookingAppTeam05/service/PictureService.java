@@ -2,15 +2,11 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.NewImageDTO;
 import com.example.BookingAppTeam05.model.Picture;
-import com.example.BookingAppTeam05.repository.PictureRepository;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import com.example.BookingAppTeam05.model.repository.PictureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 
 import java.io.*;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;

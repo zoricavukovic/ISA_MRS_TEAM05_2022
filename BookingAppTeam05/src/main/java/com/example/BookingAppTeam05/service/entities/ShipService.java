@@ -4,7 +4,7 @@ import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.repository.entities.ShipRepository;
+import com.example.BookingAppTeam05.model.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.service.NavigationEquipmentService;
 import com.example.BookingAppTeam05.service.PictureService;
 import com.example.BookingAppTeam05.service.ReservationService;

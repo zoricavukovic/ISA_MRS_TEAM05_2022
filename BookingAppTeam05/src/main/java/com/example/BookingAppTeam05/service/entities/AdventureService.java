@@ -6,7 +6,7 @@ import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.repository.entities.AdventureRepository;
+import com.example.BookingAppTeam05.model.repository.entities.AdventureRepository;
 import com.example.BookingAppTeam05.service.FishingEquipmentService;
 import com.example.BookingAppTeam05.service.PictureService;
 import com.example.BookingAppTeam05.service.PricelistService;

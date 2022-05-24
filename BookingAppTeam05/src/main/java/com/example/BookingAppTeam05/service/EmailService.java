@@ -7,20 +7,15 @@ import com.example.BookingAppTeam05.dto.RatingReviewDTO;
 import com.example.BookingAppTeam05.model.Report;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.users.Client;
-import com.example.BookingAppTeam05.repository.SubscriberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

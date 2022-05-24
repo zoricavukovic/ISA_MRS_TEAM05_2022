@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.repository.entities;
+package com.example.BookingAppTeam05.model.repository.entities;
 
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.users.User;

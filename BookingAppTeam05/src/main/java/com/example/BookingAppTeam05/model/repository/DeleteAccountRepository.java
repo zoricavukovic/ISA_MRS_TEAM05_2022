@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.repository;
+package com.example.BookingAppTeam05.model.repository;
 
 import com.example.BookingAppTeam05.model.DeleteAccountRequest;
 import com.example.BookingAppTeam05.model.Report;

@@ -14,6 +14,10 @@ export function editUserById(id, editedUser) {
     return api.put('/users/updateUser/' + id, editedUser);
 }
 
+export function createUser(newUser) {
+    return api.put('/users/createUser', newUser);
+}
+
 export function sendLogInForm(form){
     return api.post('/users/login',form);
 }

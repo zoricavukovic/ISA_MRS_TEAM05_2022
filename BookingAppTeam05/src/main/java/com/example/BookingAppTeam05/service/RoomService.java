@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.repository.RoomRepository;
+import com.example.BookingAppTeam05.model.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

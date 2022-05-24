@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.repository.users;
+package com.example.BookingAppTeam05.model.repository.users;
 
 import com.example.BookingAppTeam05.model.users.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
