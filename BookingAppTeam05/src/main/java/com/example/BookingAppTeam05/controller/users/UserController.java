@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -77,21 +79,18 @@ public class UserController {
     }
 
     @PostMapping(value = "/createUser", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> createUser(@Valid  @RequestBody UserDTO userDTO) {
         String created = userService.createUser(userDTO);
-        User user = userService.findUserById(userDTO.getId());
-//        if (userService.passwordIsCorrect(user, userDTO.getNewPassword()))
-//            return new ResponseEntity<String>("Please choose different password", HttpStatus.BAD_REQUEST);
-//        if (userService.passwordIsCorrect(user, changePasswordDTO.getCurrPassword())) {
-//            userService.setNewPasswordForUser(user, changePasswordDTO.getNewPassword());
-//            return new ResponseEntity<String>("Successfully changed password", HttpStatus.OK);
-//        }
-//        else {
-//            return new ResponseEntity<String>("Entered password is incorrect", HttpStatus.BAD_REQUEST);
-//        }BAD_REQUEST
-        return new ResponseEntity<String>("Entered password is incorrect", HttpStatus.OK);
+        if (created == null){
+            return new ResponseEntity<String>("Successfully created user.", HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(created + "", HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping(value="/activateAccount/{email}")
+    public ResponseEntity<String> activateAccount(@PathVariable String email) {
+        return userService.activateAccount(email);
+    }
 
     @GetMapping(value="/checkIfEmailAlreadyExist/{email}")
     public ResponseEntity<String> checkIfCanEdit(@PathVariable String email) {

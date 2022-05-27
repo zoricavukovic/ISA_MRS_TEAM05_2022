@@ -28,9 +28,21 @@ public class ShipOwner extends User {
    @Column(name="captain")
    private boolean captain;
 
+   private String reason;
+
    public ShipOwner() {}
 
+   public ShipOwner(String email, String firstName, String lastName, String address, String phoneNumber, String password, boolean notYetActivated, Place place, Role role, boolean captain) {
+      super(email, firstName, lastName, address, phoneNumber, password, notYetActivated, place, role);
+      this.captain = captain;
+   }
 
+   public ShipOwner(String email, String firstName, String lastName, String address, LocalDate dateOfBirth, String phoneNumber,
+                    String password, boolean notYetActivated, Place place, Role role, boolean captain, String reason) {
+      super(email, firstName, lastName, address, dateOfBirth, phoneNumber, password, notYetActivated, place, role);
+      this.captain = captain;
+      this.reason = reason;
+   }
 
    public Set<Ship> getShips() {
       return ships;
@@ -46,5 +58,13 @@ public class ShipOwner extends User {
 
    public void setCaptain(boolean captain) {
       this.captain = captain;
+   }
+
+   public String getReason() {
+      return reason;
+   }
+
+   public void setReason(String reason) {
+      this.reason = reason;
    }
 }

@@ -4,25 +4,42 @@ import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.users.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class UserDTO {
     private Long id;
+    @NotBlank
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String email;
+    @NotBlank
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String firstName;
+    @NotBlank
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String lastName;
+
     private LocalDate dateOfBirth;
+    @NotBlank
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String address;
+    @NotBlank(message = "mobileNumber is required")
+    @Size(min = 7, max = 10)
     private String phoneNumber;
+    @NotBlank
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String password;
     private int loyaltyPoints;
     private boolean accountAllowed;
     private Place place;
     private Role userType;
+    private String userTypeValue;
     private int penalties; // only for clients
     private boolean captain; // only for shipOwners
     private boolean passwordChanged; // only for admins
     private LoyaltyProgram loyaltyProgram;
+    private String reason; //only for owners
 
     public UserDTO() {}
 
@@ -39,7 +56,6 @@ public class UserDTO {
         this.accountAllowed = user.isNotYetActivated();
         this.userType = user.getRole();
         this.loyaltyProgram = user.getLoyaltyProgram();
-
         setAdditionalFieldIfNeeded(user);
     }
 
@@ -54,6 +70,13 @@ public class UserDTO {
                 break;
             case "ROLE_SHIP_OWNER":
                 setCaptain(((ShipOwner) user).isCaptain());
+                setReason(((ShipOwner) user).getReason());
+                break;
+            case "ROLE_COTTAGE_OWNER":
+                setReason(((CottageOwner) user).getReason());
+                break;
+            case "ROLE_INSTRUCTOR":
+                setReason(((Instructor) user).getReason());
                 break;
         }
     }
@@ -184,5 +207,21 @@ public class UserDTO {
 
     public void setLoyaltyProgram(LoyaltyProgram loyaltyProgram) {
         this.loyaltyProgram = loyaltyProgram;
+    }
+
+    public String getUserTypeValue() {
+        return userTypeValue;
+    }
+
+    public void setUserTypeValue(String userTypeValue) {
+        this.userTypeValue = userTypeValue;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
-import ImgReservation from "./ReservationBasicCard.js";
+import ReservationBasicCard from "./ReservationBasicCard.js";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -136,7 +136,7 @@ function ShowReservationsOwner() {
     const displayReservations = reservations
     .map(res=> {
         console.log(res);
-        return <ImgReservation reservation={res} reservationId={res.id} details="true"></ImgReservation>
+        return <ReservationBasicCard reservation={res} reservationId={res.id} details="true"></ReservationBasicCard>
     })
 
     const [open, setOpen] = React.useState(false);

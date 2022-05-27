@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -81,6 +82,18 @@ public abstract class User implements UserDetails {
       this.notYetActivated = notYetActivated;
       this.place = place;
       this.role = role;
+   }
+   public User(String email, String firstName, String lastName, String address, LocalDate dateOfBirth, String phoneNumber, String password, boolean notYetActivated, Place place, Role role) {
+      this.email = email;
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.address = address;
+      this.phoneNumber = phoneNumber;
+      this.password = password;
+      this.notYetActivated = notYetActivated;
+      this.place = place;
+      this.role = role;
+      this.dateOfBirth = dateOfBirth;
    }
 
    @Override

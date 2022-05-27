@@ -15,7 +15,7 @@ export function editUserById(id, editedUser) {
 }
 
 export function createUser(newUser) {
-    return api.put('/users/createUser', newUser);
+    return api.post('/users/createUser', newUser);
 }
 
 export function sendLogInForm(form){
@@ -39,6 +39,9 @@ export function checkIfEmailAlreadyExist(email) {
     return api.get('/users/checkIfEmailAlreadyExist/' + email);
 }
 
+export function activateAccount(email) {
+    return api.get('/users/activateAccount/'+ email);
+}
 
 function userLoggedInWithRole(history, role) {
     if (userLoggedIn(history)) {

@@ -50,6 +50,7 @@ import ReviewComplaints from './admin/ReviewComplaints';
 import ReviewDeleteAccountRequests from './admin/ReviewDeleteAccountRequests';
 import AllRequestsCards from './admin/AllRequests';
 import ReviewNewAccountRequests from './admin/ReviewNewAccountRequests';
+import AcceptedAccount from './user/AcceptedAccount';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -96,6 +97,8 @@ function App() {
                     <Route path="/registration" ><Registration/></Route>
                     <Route path="/chooseAccType" ><ChooseAccType/></Route>
                     <Route path="/registrationForm" ><RegistrationForm/></Route>
+                    <Route path="/activatedAccount/:email" ><AcceptedAccount/></Route>
+                    
 
                     <Route path="/showReservationsOwner" component={ShowReservationsOwner} />
                     <Route path="/showReservationDetails" component={ShowReservationsDetails} />

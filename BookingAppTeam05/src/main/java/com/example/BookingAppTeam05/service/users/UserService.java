@@ -5,17 +5,18 @@ import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.repository.users.UserRepository;
-import com.example.BookingAppTeam05.model.users.Admin;
-import com.example.BookingAppTeam05.model.users.ShipOwner;
-import com.example.BookingAppTeam05.model.users.User;
+import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.EmailService;
 import com.example.BookingAppTeam05.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.RollbackException;
 import javax.transaction.Transactional;
 import java.beans.Transient;
 import java.util.ArrayList;
@@ -28,12 +29,14 @@ public class UserService {
     private PlaceService placeService;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private EmailService emailService;
+    private RoleService roleService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PlaceService placeService, EmailService emailService) {
+    public UserService(UserRepository userRepository, PlaceService placeService, EmailService emailService, RoleService roleService) {
         this.userRepository = userRepository;
         this.placeService = placeService;
         this.emailService = emailService;
+        this.roleService = roleService;
     }
 
     public User findUserById(Long id) {
@@ -87,10 +90,52 @@ public class UserService {
         return passwordEncoder.encode(password);
     }
 
+    @Transactional
     public String createUser(UserDTO userDTO) {
-        return "";
+
+        Place place = placeService.getPlaceById(userDTO.getPlace().getId());
+        if (place == null)
+            return "Can't find place with id: " + userDTO.getPlace().getId();
+        if (findUserByUsername("bookingapp05mzr++" + userDTO.getEmail()) != null)
+            return "User with email address: " + userDTO.getEmail() + " already exist.";
+
+        String password = getHashedNewUserPassword(userDTO.getPassword());
+        Role role = roleService.findByName(userDTO.getUserTypeValue());
+        User u = null;
+        switch (userDTO.getUserTypeValue()) {
+            case "ROLE_CLIENT":
+                u = new Client("bookingapp05mzr++" + userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getAddress(),
+                        userDTO.getDateOfBirth(), userDTO.getPhoneNumber(), password, true, place, role, 0);
+                break;
+            case "ROLE_COTTAGE_OWNER":
+                u = new CottageOwner("bookingapp05mzr++" + userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getAddress(),
+                        userDTO.getDateOfBirth(), userDTO.getPhoneNumber(), password, true, place, role, userDTO.getReason());
+
+                break;
+            case "ROLE_SHIP_OWNER":
+                u = new ShipOwner("bookingapp05mzr++" + userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getAddress(),
+                        userDTO.getDateOfBirth(), userDTO.getPhoneNumber(), password, true, place, role, userDTO.isCaptain(), userDTO.getReason());
+                break;
+            case "ROLE_INSTRUCTOR":
+                u = new Instructor("bookingapp05mzr++" + userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName(), userDTO.getAddress(),
+                        userDTO.getDateOfBirth(), userDTO.getPhoneNumber(), password, true, place, role, userDTO.getReason());
+                break;
+        }
+        if (u== null){
+            return "Error happened on server. Cant create user: " + userDTO.getEmail() + " " + userDTO.getFirstName() + " " + userDTO.getLastName();
+        }
+        try {
+            assert false;
+            userRepository.save(u);
+            if (userDTO.getUserTypeValue().equals("ROLE_CLIENT")){
+                emailService.sendActivationMessage(u);
+            }
+            return null;
+        } catch (Exception e) {
+            return "Error happened on server. Cant create user: " + userDTO.getEmail() + " " + userDTO.getFirstName() + " " + userDTO.getLastName();
+        }
     }
-    
+
     public List<NewAccountRequestDTO> getAllNewAccountRequestDTOs() {
         List<User> newAccounts = userRepository.getAllNewAccountRequests();
         List<NewAccountRequestDTO> retVal = new ArrayList<>();
@@ -123,5 +168,16 @@ public class UserService {
         }
         return null;
 
+    }
+
+    public ResponseEntity<String> activateAccount(String email) {
+        try{
+            User user = userRepository.findByEmailAndNotYetActivated(email);
+            user.setNotYetActivated(false);
+            userRepository.save(user);
+            return new ResponseEntity<>("Account is activated.", HttpStatus.OK);
+        } catch (Exception ex){
+            return new ResponseEntity<>("Account not activated.", HttpStatus.BAD_REQUEST);
+        }
     }
 }

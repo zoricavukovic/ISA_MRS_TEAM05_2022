@@ -24,7 +24,10 @@ export default function Registration() {
     }
 
     function registerForm(){
-        history.push('/registrationForm');
+        history.push({
+            pathname: "/registrationForm",
+            state: { userType:  "ROLE_CLIENT"}
+        });
     }
 
     return (
