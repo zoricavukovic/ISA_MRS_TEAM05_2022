@@ -41,7 +41,7 @@ public class AdminService {
         Place place = placeService.getPlaceById(newAdminDTO.getPlaceId());
         if (place == null)
             return "Can't find place with id: " + newAdminDTO.getPlaceId();
-        if (userService.findUserByUsername(newAdminDTO.getAddress()) != null)
+        if (userService.findUserByUsername(newAdminDTO.getEmail()) != null)
             return "User with email adress: " + newAdminDTO.getAddress() + " already exist.";
 
         String password = userService.getHashedNewUserPassword(newAdminDTO.getPassword());

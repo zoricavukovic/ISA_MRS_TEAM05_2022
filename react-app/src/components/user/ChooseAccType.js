@@ -44,12 +44,27 @@ export default function Registration() {
     
     const handleClose = () => {
         setOpen(false);
-        history.push('/showAdventures');
     };
 
-    function registerForm(){
-        history.push('/registrationForm');
+    function registerFormCottageOwner(){
+        registerForm("ROLE_COTTAGE_OWNER");
     }
+
+    function registerFormShipOwner(){
+        registerForm("ROLE_SHIP_OWNER");
+    }
+
+    function registerFormInstructor(){
+        registerForm("ROLE_INSTRUCTOR");
+    }
+
+    function registerForm(type){
+        history.push({
+            pathname: "/registrationForm",
+            state: { userType:  type}
+        });
+    }
+
     return (
         <Dialog
             open={open}
@@ -74,7 +89,7 @@ export default function Registration() {
             <Grid style={{ padding:'1%', display: "flex", flexDirection: "row", flexWrap: 'wrap' }} container alignItems="left" display="flex" flexDirection="column" justifyContent="center">
                 
                 <Button display="block">
-                <div onClick={registerForm} gutterBottom style={{   width:'auto',
+                <div onClick={registerFormCottageOwner} gutterBottom style={{   width:'auto',
                     backgroundColor: 'aliceblue',
                     color: 'rgb(5, 30, 52)',
                     padding:'1%',
@@ -90,7 +105,7 @@ export default function Registration() {
                 </div>
                 </Button>
                 <Button display="block">
-                <div onClick={registerForm} gutterBottom style={{   width:'auto',
+                <div onClick={registerFormShipOwner} gutterBottom style={{   width:'auto',
                     backgroundColor: 'aliceblue',
                     color: 'rgb(5, 30, 52)',
                     padding:'1%',
@@ -106,7 +121,7 @@ export default function Registration() {
                 </div>
                 </Button>
                 <Button display="block">
-                <div onClick={registerForm} gutterBottom style={{   width:'auto',
+                <div onClick={registerFormInstructor} gutterBottom style={{   width:'auto',
                     backgroundColor: 'aliceblue',
                     color: 'rgb(5, 30, 52)',
                     padding:'1%',

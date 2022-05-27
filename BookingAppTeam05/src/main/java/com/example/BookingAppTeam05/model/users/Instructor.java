@@ -16,10 +16,21 @@ import java.util.*;
 public class Instructor extends User {
 
    @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   public Set<Adventure> adventures = new HashSet<>();
+   private Set<Adventure> adventures = new HashSet<>();
+
+   private String reason;
 
    public Instructor() {}
 
+   public Instructor(String email, String firstName, String lastName, String address, String phoneNumber, String password, boolean notYetActivated, Place place, Role role) {
+      super(email, firstName, lastName, address, phoneNumber, password, notYetActivated, place, role);
+   }
+
+   public Instructor(String email, String firstName, String lastName, String address, LocalDate dateOfBirth, String phoneNumber,
+                     String password, boolean notYetActivated, Place place, Role role, String reason) {
+      super(email, firstName, lastName, address, dateOfBirth, phoneNumber, password, notYetActivated, place, role);
+      this.reason = reason;
+   }
 
    public Set<Adventure> getAdventures() {
       return adventures;
@@ -27,5 +38,13 @@ public class Instructor extends User {
 
    public void setAdventures(Set<Adventure> adventures) {
       this.adventures = adventures;
+   }
+
+   public String getReason() {
+      return reason;
+   }
+
+   public void setReason(String reason) {
+      this.reason = reason;
    }
 }

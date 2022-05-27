@@ -24,7 +24,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import InfoIcon from '@mui/icons-material/Info';
 import RecommendIcon from '@mui/icons-material/Recommend';
 
-export default function ImgReservation(props) {
+export default function ReservationBasicCard(props) {
     const history = useHistory();
     const [open, setOpen] = React.useState(false);
     const [openShowReport, setOpenShowReport] = React.useState(false);
@@ -434,7 +434,7 @@ export default function ImgReservation(props) {
             <table style={{whiteSpace: "nowrap"}}>
                 <tr>
                     <th><h4>{props.reservation.bookingEntity.name}</h4></th>
-                    <th style={{paddingLeft:"3%"}}>€ {reservationCost}</th>
+                    <th style={{paddingLeft:"3%"}}>€ {props.reservation.cost}</th>
                 </tr>
                 
             </table>

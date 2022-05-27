@@ -32,6 +32,16 @@ public class Client extends User {
    public Client(){
    }
 
+   public Client(String email, String firstName, String lastName, String address, String phoneNumber, String password, boolean notYetActivated, Place place, Role role, int penalties) {
+      super(email, firstName, lastName, address, phoneNumber, password, notYetActivated, place, role);
+      this.penalties = penalties;
+   }
+
+   public Client(String email, String firstName, String lastName, String address, LocalDate dateOfBirth, String phoneNumber, String password, boolean notYetActivated, Place place, Role role, int penalties) {
+      super(email, firstName, lastName, address, dateOfBirth, phoneNumber, password, notYetActivated, place, role);
+      this.penalties = penalties;
+   }
+
    public int getPenalties() {
       return penalties;
    }
