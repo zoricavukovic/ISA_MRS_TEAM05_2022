@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Grid, InputAdornment, List, TextField } from '@mui/material';
+import { DialogContent, DialogTitle, Grid, InputAdornment, List, TextField } from '@mui/material';
 import React from 'react';
 import CaptainIcon from '../../icons/captainOrange.png';
 
@@ -17,9 +17,17 @@ import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
 import { getUserById, userLoggedIn } from '../../service/UserService';
 import { getCurrentUser } from '../../service/AuthService';
+import {getCurrentLoyaltyProgram} from '../../service/LoyaltyProgramService';
 import { useHistory } from 'react-router-dom';
 import { AlternateEmail, DateRangeOutlined, Domain, LocationOn, Person, Phone, Public } from "@mui/icons-material";
 import UserInfoGrid from "./UserInfoGrid";
+import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+
+import Dialog from '@mui/material/Dialog';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import LoyaltyProgramToolTip from "../loyaltyProgram/LoyaltyProgramsToolTip";
 
 export default function UserProfile(props) {
 
@@ -40,6 +48,12 @@ export default function UserProfile(props) {
 
     const [userData, setUserData] = useState({});
     const [isLoading, setLoading] = useState(true);
+
+
+    const [loyaltyProgram, setLoyaltyProgram] = useState(null);
+    const [isLoadingLoyaltyProgram, setIsLoadingLoyaltyProgram] = useState(true);
+  
+
     const history = useHistory();
     const avatar = <Avatar
         alt="Zorica Vukovic"
@@ -54,17 +68,21 @@ export default function UserProfile(props) {
             getUserById(getCurrentUser().id).then(res => {
                 setUserData(res.data);
                 setLoading(false);
-            })
+            });
+            getCurrentLoyaltyProgram().then(res => {
+                setLoyaltyProgram(res.data);
+                setIsLoadingLoyaltyProgram(false);
+            });
         }
     }, []);
 
-    if (isLoading) { return <div className="App">Loading...</div> }
+    if (isLoading || isLoadingLoyaltyProgram) { return <div className="App">Loading...</div> }
     else {
         return (
 
             <div className="App">
-                <div style={{ backgroundColor: 'aliceblue',display:'flex',  margin: '10% auto', marginBottom:'20px', borderRadius: '10px',width:'55%', minHeight: '100px', padding:'2%' }} >
-                    <Grid container style={{justifyContent:'center', alignItems:'center'}}>
+                <div style={{ backgroundColor: 'aliceblue', display: 'flex', margin: '10% auto', marginBottom: '20px', borderRadius: '10px', width: '55%', minHeight: '100px', padding: '2%' }} >
+                    <Grid container style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <Grid item xs={12} md={10} lg={8}>
                             {avatar}
                             <div><Typography
@@ -94,114 +112,115 @@ export default function UserProfile(props) {
                                 sx={{ mr: 2, display: { xs: 'none', color: 'black', md: 'flex' } }}
 
                             >
-                                {userData.userType.name.substring(userData.userType.name.indexOf('_')+1)}
+                                {userData.userType.name.substring(userData.userType.name.indexOf('_') + 1)}
                             </Typography>
                         </Grid>
-                    {userData.userType.name !== "ROLE_ADMIN" ? (
-                        <Grid item xs="auto">
-                            <Box sx={{ display: 'flex', float: 'right' }}>
-                            <ThemeProvider
-                                theme={createTheme({
-                                    components: {
-                                        MuiListItemButton: {
-                                            defaultProps: {
-                                                disableTouchRipple: true,
+                        {userData.userType.name !== "ROLE_ADMIN" && userData.userType.name !== "ROLE_SUPER_ADMIN" ? (
+                            <Grid item xs="auto">
+                                <LoyaltyProgramToolTip loyaltyProgram={loyaltyProgram}/>
+                                <Box sx={{ display: 'flex', float: 'right' }}>
+                                    <ThemeProvider
+                                        theme={createTheme({
+                                            components: {
+                                                MuiListItemButton: {
+                                                    defaultProps: {
+                                                        disableTouchRipple: true,
+                                                    },
+                                                },
                                             },
-                                        },
-                                    },
-                                    palette: {
-                                        mode: 'dark',
-                                        primary: { main: 'rgb(102, 157, 246)' },
-                                        background: { paper: 'rgb(5, 30, 52)' },
-                                    },
-                                })}
-                            >
-                                <Paper elevation={0} sx={{ maxWidth: 290 }}>
-                                    <FireNav component="nav" disablePadding aria-disabled="true">
-                                        <ListItemButton component="a">
-                                            <ListItemIcon sx={{ fontSize: 20 }}>🔥 Loyalty Type</ListItemIcon>
-                                            <ListItemText
-                                                sx={{ my: 0 }}
-                                                primary={userData.loyaltyProgram}
-                                                primaryTypographyProps={{
-                                                    fontSize: 20,
-                                                    fontWeight: 'medium',
-                                                    letterSpacing: 0,
-                                                }}
-                                            />
-                                        </ListItemButton>
-                                        <Divider />
-                                        <ListItem component="div" disablePadding>
-                                            <ListItemButton sx={{ height: 56 }}>
-                                                <ListItemIcon sx={{ fontSize: 20 }}>
-                                                    <FormatListNumberedIcon color="primary" />
-                                                     Loyalty Points
-                                                </ListItemIcon>
-                                                <ListItemText
-                                                    primary={userData.loyaltyPoints}
-                                                    primaryTypographyProps={{
-                                                        color: 'primary',
-                                                        fontSize: 20,
-                                                        fontWeight: 'medium',
-                                                        variant: 'body2',
-                                                    }}
-                                                />
-                                            </ListItemButton>
-
-                                        </ListItem>
-                                        <Divider />
-                                        {userData.userType.name === "ROLE_CLIENT" ? (
-                                            <ListItem component="div" disablePadding>
-                                                <ListItemButton sx={{ height: 56 }}>
-                                                    <ListItemIcon sx={{ fontSize: 20 }}>
-                                                        <FormatListNumberedIcon color="primary" />
-                                                        Penalties
-                                                    </ListItemIcon>
+                                            palette: {
+                                                mode: 'dark',
+                                                primary: { main: 'rgb(102, 157, 246)' },
+                                                background: { paper: 'rgb(5, 30, 52)' },
+                                            },
+                                        })}
+                                    >
+                                        <Paper elevation={0} sx={{ maxWidth: 290 }}>
+                                            <FireNav component="nav" disablePadding aria-disabled="true">
+                                                <ListItemButton component="a">
+                                                    <ListItemIcon sx={{ fontSize: 20 }}>🔥 Loyalty Type</ListItemIcon>
                                                     <ListItemText
-                                                        primary={userData.penalties}
+                                                        sx={{ my: 0 }}
+                                                        primary={userData.loyaltyProgram}
                                                         primaryTypographyProps={{
-                                                            color: 'primary',
                                                             fontSize: 20,
                                                             fontWeight: 'medium',
-                                                            variant: 'body2',
+                                                            letterSpacing: 0,
                                                         }}
                                                     />
                                                 </ListItemButton>
+                                                <Divider />
+                                                <ListItem component="div" disablePadding>
+                                                    <ListItemButton sx={{ height: 56 }}>
+                                                        <ListItemIcon sx={{ fontSize: 20 }}>
+                                                            <FormatListNumberedIcon color="primary" />
+                                                            Loyalty Points
+                                                        </ListItemIcon>
+                                                        <ListItemText
+                                                            primary={userData.loyaltyPoints}
+                                                            primaryTypographyProps={{
+                                                                color: 'primary',
+                                                                fontSize: 20,
+                                                                fontWeight: 'medium',
+                                                                variant: 'body2',
+                                                            }}
+                                                        />
+                                                    </ListItemButton>
 
-                                            </ListItem>
-                                        ) : (
-                                        <>
-                                            {(userData.userType.name === "ROLE_SHIP_OWNER" && userData.captain == true)? (
-                                                 <ListItem component="div" disablePadding>
-                                                 <ListItemButton sx={{ height: 56 }}>
-                                                    <img src={CaptainIcon}></img>
-                                                      
-                                                     <ListItemText
-                                                         primary={" Captain"}
-                                                         primaryTypographyProps={{
-                                                             color: 'primary',
-                                                             fontSize: 20,
-                                                             fontWeight: 'medium',
-                                                             variant: 'body2',
-                                                         }}
-                                                     />
-                                                 </ListItemButton>
- 
-                                             </ListItem>
-                                            ):(
-                                                <div></div>
-                                            )}
-                                        </>)}
-                                    </FireNav>
-                                </Paper>
-                            </ThemeProvider>
-                        </Box>
-                        </Grid>
-                    ) : (<div></div>)}
+                                                </ListItem>
+                                                <Divider />
+                                                {userData.userType.name === "ROLE_CLIENT" ? (
+                                                    <ListItem component="div" disablePadding>
+                                                        <ListItemButton sx={{ height: 56 }}>
+                                                            <ListItemIcon sx={{ fontSize: 20 }}>
+                                                                <FormatListNumberedIcon color="primary" />
+                                                                Penalties
+                                                            </ListItemIcon>
+                                                            <ListItemText
+                                                                primary={userData.penalties}
+                                                                primaryTypographyProps={{
+                                                                    color: 'primary',
+                                                                    fontSize: 20,
+                                                                    fontWeight: 'medium',
+                                                                    variant: 'body2',
+                                                                }}
+                                                            />
+                                                        </ListItemButton>
+
+                                                    </ListItem>
+                                                ) : (
+                                                    <>
+                                                        {(userData.userType.name === "ROLE_SHIP_OWNER" && userData.captain == true) ? (
+                                                            <ListItem component="div" disablePadding>
+                                                                <ListItemButton sx={{ height: 56 }}>
+                                                                    <img src={CaptainIcon}></img>
+
+                                                                    <ListItemText
+                                                                        primary={" Captain"}
+                                                                        primaryTypographyProps={{
+                                                                            color: 'primary',
+                                                                            fontSize: 20,
+                                                                            fontWeight: 'medium',
+                                                                            variant: 'body2',
+                                                                        }}
+                                                                    />
+                                                                </ListItemButton>
+
+                                                            </ListItem>
+                                                        ) : (
+                                                            <div></div>
+                                                        )}
+                                                    </>)}
+                                            </FireNav>
+                                        </Paper>
+                                    </ThemeProvider>
+                                </Box>
+                            </Grid>
+                        ) : (<div></div>)}
                     </Grid>
                 </div>
-                <div style={{margin:'0px auto', width:'30%'}}>
-                <UserInfoGrid userData={userData}/>
+                <div style={{ margin: '0px auto', width: '30%' }}>
+                    <UserInfoGrid userData={userData} />
                 </div>
 
             </div>

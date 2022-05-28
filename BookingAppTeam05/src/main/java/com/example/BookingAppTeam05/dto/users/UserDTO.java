@@ -55,7 +55,7 @@ public class UserDTO {
         this.loyaltyPoints = user.getLoyaltyPoints();
         this.accountAllowed = user.isNotYetActivated();
         this.userType = user.getRole();
-        this.loyaltyProgram = user.getLoyaltyProgram();
+        this.loyaltyProgram = user.getLoyaltyProgramEnum();
         setAdditionalFieldIfNeeded(user);
     }
 

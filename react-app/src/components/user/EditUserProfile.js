@@ -23,6 +23,8 @@ import CaptainIcon from '../../icons/captainOrange.png';
 import Checkbox from '@mui/material/Checkbox';
 import { DateRangeOutlined, Domain, Person, Phone, Place } from '@mui/icons-material';
 import { Calendar } from 'react-date-range';
+import LoyaltyProgramToolTip from "../loyaltyProgram/LoyaltyProgramsToolTip";
+import {getCurrentLoyaltyProgram} from '../../service/LoyaltyProgramService';
 
 function EditUserProfile(props) {
 
@@ -54,6 +56,9 @@ function EditUserProfile(props) {
     const [dateOfBirth,setDateOfBirth] = useState(new Date());
     const history = useHistory();
     const [checked, setChecked] = React.useState();
+    const [loyaltyProgram, setLoyaltyProgram] = useState(null);
+    const [isLoadingLoyaltyProgram, setIsLoadingLoyaltyProgram] = useState(true);
+  
 
     const handleChange = (event) => {
         setChecked(event.target.checked);
@@ -78,12 +83,16 @@ function EditUserProfile(props) {
                     console.log(res.data.captain);
                     setChecked(res.data.captain);
                 }
-            })
-    
+            });
+            getCurrentLoyaltyProgram().then(res => {
+                setLoyaltyProgram(res.data);
+                setIsLoadingLoyaltyProgram(false);
+            });
+            
             getAllPlaces().then(results =>{
                 setPlaces(results.data);
                 setLoading2(false);
-            })
+            });
         }
     }, []);
 
@@ -191,7 +200,7 @@ function EditUserProfile(props) {
     });
 
 
-    if (isLoading || isLoading2) { return <div className="App"><CircularProgress /></div> }
+    if (isLoading || isLoading2 || isLoadingLoyaltyProgram) { return <div className="App"><CircularProgress /></div> }
     return (
 
         <div className="App" key={state.key}>
@@ -231,8 +240,9 @@ function EditUserProfile(props) {
                         </Typography>
                     </Grid>
                 
-                {userData.userType.name !== "ROLE_ADMIN" ? (
+                {userData.userType.name !== "ROLE_ADMIN" && userData.userType.name !== "ROLE_SUPER_ADMIN"? (
                     <Grid item xs="auto">
+                        <LoyaltyProgramToolTip loyaltyProgram={loyaltyProgram}/>
                         <Box sx={{ display: 'flex', float: 'right' }}>
                             <ThemeProvider
                                 theme={createTheme({
