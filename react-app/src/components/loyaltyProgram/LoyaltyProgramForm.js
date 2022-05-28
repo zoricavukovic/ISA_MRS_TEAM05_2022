@@ -21,12 +21,17 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import { Typography } from "@mui/material";
 import { DialogActions } from "@material-ui/core";
 import Button from '@mui/material/Button';
+import { userLoggedInAsSuperAdminOrAdminWithResetedPassword } from "../../service/UserService";
+import { getCurrentLoyaltyProgram, saveNewLoyaltyProgram } from "../../service/LoyaltyProgramService";
 
 export default function LoyaltyProgramForm() {
 
 
     const history = useHistory();
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
+
+    const [loyaltyProgram, setLoyaltyProgram] = useState(null);
+    const [isLoadingLoyaltyProgram, setIsLoadingLoyaltyProgram] = useState(true);
 
     const bronzeProgramPoints = useRef({});
     bronzeProgramPoints.current = watch("bronzeLimit", 0);
@@ -50,6 +55,9 @@ export default function LoyaltyProgramForm() {
     goldOwner.current = watch("goldOwnerBonus", 0);
 
 
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
 
     const [open, setOpen] = React.useState(true);
     const handleClickOpen = () => {
@@ -60,13 +68,47 @@ export default function LoyaltyProgramForm() {
         history.push('/allRequestsCardsForAdmin');
     };
 
+    useEffect(() => {
+        if (userLoggedInAsSuperAdminOrAdminWithResetedPassword(history)) {
+            getCurrentLoyaltyProgram().then(res => {
+                setLoyaltyProgram(res.data);
+                setIsLoadingLoyaltyProgram(false);
+            })
+        }
+    }, []);
 
     const onFormSubmit = data => {
-        console.log("usaoooo");
-        console.log(data);
+        let obj = {
+            bronzeLimit: data.bronzeLimit,
+            silverLimit: data.silverLimit,
+            goldLimit: data.goldLimit,
+            clientBronzeDiscount: data.bronzeClientDiscount,
+            clientSilverDiscount: data.silverClientDiscount,
+            clientGoldDiscount: data.goldClientDiscount,
+            ownerBronzeBonus: data.bronzeOwnerBonus,
+            ownerSilverBonus: data.silverOwnerBonus,
+            ownerGoldBonus: data.goldOwnerBonus,
+            clientPointsPerReservation: data.clientPoints,
+            ownerPointsPerReservation: data.ownersPoints,
+        };
+
+        saveNewLoyaltyProgram(obj)
+            .then(res => {
+                setTypeAlert("success");
+                setAlertMessage("Successfully created new loyalty program");
+                setOpenAlert(true);
+            })
+            .catch(err => {
+                setTypeAlert("error");
+                setAlertMessage("Error happened on server. Please try again.");
+                setOpenAlert(true);
+            });
     }
 
 
+    if (isLoadingLoyaltyProgram) {
+        return <div>Loading...</div>
+    }
     return (
         <div>
             <Dialog
@@ -99,6 +141,7 @@ export default function LoyaltyProgramForm() {
                                         name="bronzeLimit"
                                         type="number"
                                         id="bronzeLimit"
+                                        defaultValue={loyaltyProgram.bronzeLimit}
                                         placeholder="Bronze limit"
                                         label="Bronze points"
                                         {...register("bronzeLimit", {
@@ -131,6 +174,7 @@ export default function LoyaltyProgramForm() {
                                         id="bronzeClientDiscount"
                                         name="bronzeClientDiscount"
                                         type="number"
+                                        defaultValue={loyaltyProgram.clientBronzeDiscount}
                                         placeholder="Clients Discount %"
                                         label="Clients Discount %"
                                         {...register("bronzeClientDiscount", {
@@ -163,6 +207,7 @@ export default function LoyaltyProgramForm() {
                                         name="bronzeOwnerBonus"
                                         type="number"
                                         placeholder="Owners Bonus %"
+                                        defaultValue={loyaltyProgram.ownerBronzeBonus}
                                         label="Owners Bonus %"
                                         {...register("bronzeOwnerBonus", {
                                             required: "Specify bronze bonus for owners",
@@ -196,6 +241,7 @@ export default function LoyaltyProgramForm() {
                                         name="silverLimit"
                                         type="number"
                                         id="silverLimit"
+                                        defaultValue={loyaltyProgram.silverLimit}
                                         placeholder="Silver limit"
                                         label="Silver points"
                                         {...register("silverLimit", {
@@ -228,6 +274,7 @@ export default function LoyaltyProgramForm() {
                                         name="silverClientDiscount"
                                         type="number"
                                         placeholder="Clients Discount %"
+                                        defaultValue={loyaltyProgram.clientSilverDiscount}
                                         label="Clients Discount %"
                                         {...register("silverClientDiscount", {
                                             required: "Specify silver discount for client",
@@ -258,6 +305,7 @@ export default function LoyaltyProgramForm() {
                                         id="silverOwnerBonus"
                                         name="silverOwnerBonus"
                                         type="number"
+                                        defaultValue={loyaltyProgram.ownerSilverBonus}
                                         placeholder="Owners Bonus %"
                                         label="Owners Bonus %"
                                         {...register("silverOwnerBonus", {
@@ -293,6 +341,7 @@ export default function LoyaltyProgramForm() {
                                         type="number"
                                         id="goldLimit"
                                         placeholder="Gold limit"
+                                        defaultValue={loyaltyProgram.goldLimit}
                                         label="Gold points"
                                         {...register("goldLimit", {
                                             required: "Specify gold limit",
@@ -323,6 +372,7 @@ export default function LoyaltyProgramForm() {
                                         id="goldClientDiscount"
                                         name="goldClientDiscount"
                                         type="number"
+                                        defaultValue={loyaltyProgram.clientGoldDiscount}
                                         placeholder="Clients Discount %"
                                         label="Clients Discount %"
                                         {...register("goldClientDiscount", {
@@ -355,6 +405,7 @@ export default function LoyaltyProgramForm() {
                                         name="goldOwnerBonus"
                                         type="number"
                                         placeholder="Owners Bonus %"
+                                        defaultValue={loyaltyProgram.ownerGoldBonus}
                                         label="Owners Bonus %"
                                         {...register("goldOwnerBonus", {
                                             required: "Specify gold bonus for owners",
@@ -387,6 +438,7 @@ export default function LoyaltyProgramForm() {
                                         size="small"
                                         name="clientPoints"
                                         type="number"
+                                        defaultValue={loyaltyProgram.clientPointsPerReservation}
                                         placeholder="Points for clients"
                                         label="Points for clients"
                                         {...register("clientPoints", {
@@ -412,6 +464,7 @@ export default function LoyaltyProgramForm() {
                                         name="ownersPoints"
                                         type="number"
                                         placeholder="Points for owners"
+                                        defaultValue={loyaltyProgram.ownerPointsPerReservation}
                                         label="Points for owners"
                                         {...register("ownersPoints", {
                                             required: "Specify points for owners",
@@ -429,6 +482,11 @@ export default function LoyaltyProgramForm() {
                                 {errors.ownersPoints && <p style={{ color: '#ED6663', fontSize: '12px' }}>{errors.ownersPoints.message}</p>}
                             </div>
                         </div>
+                        <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleClose}>
+                            <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
+                                {alertMessage}
+                            </Alert>
+                        </Snackbar>
                     </DialogContent>
                     <DialogActions>
                         <Button type="submit" onSubmit={handleSubmit(onFormSubmit)} variant="contained">Save</Button>
@@ -437,17 +495,17 @@ export default function LoyaltyProgramForm() {
                             onClick={() => {
                                 reset(
                                     {
-                                        bronzeClientDiscount: '',
-                                        bronzeLimit: '',
-                                        bronzeOwnerBonus: '',
-                                        clientPoints: '',
-                                        goldClientDiscount: '',
-                                        goldLimit: '',
-                                        goldOwnerBonus: '',
-                                        ownersPoints: '',
-                                        silverClientDiscount: '',
-                                        silverLimit: '',
-                                        silverOwnerBonus: ''
+                                        bronzeClientDiscount: loyaltyProgram.clientBronzeDiscount,
+                                        bronzeLimit: loyaltyProgram.bronzeLimit,
+                                        bronzeOwnerBonus: loyaltyProgram.ownerBronzeBonus,
+                                        clientPoints: loyaltyProgram.clientPointsPerReservation,
+                                        goldClientDiscount: loyaltyProgram.clientGoldDiscount,
+                                        goldLimit: loyaltyProgram.goldLimit,
+                                        goldOwnerBonus: loyaltyProgram.ownerGoldBonus,
+                                        ownersPoints: loyaltyProgram.ownerPointsPerReservation,
+                                        silverClientDiscount: loyaltyProgram.clientSilverDiscount,
+                                        silverLimit: loyaltyProgram.silverLimit,
+                                        silverOwnerBonus: loyaltyProgram.ownerSilverBonus
                                     }, {
                                     keepDefaultValues: false,
                                     keepErrors: false,
