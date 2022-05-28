@@ -1,10 +1,8 @@
 package com.example.BookingAppTeam05.model.users;
 
-import com.example.BookingAppTeam05.model.LoyaltyProgram;
+import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.Place;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -129,12 +127,12 @@ public abstract class User implements UserDetails {
    }
 
 
-   public LoyaltyProgram getLoyaltyProgram() {
+   public LoyaltyProgramEnum getLoyaltyProgram() {
       if (this.loyaltyPoints < 50)
-         return LoyaltyProgram.REGULAR;
+         return LoyaltyProgramEnum.REGULAR;
       if (this.loyaltyPoints > 50 && this.loyaltyPoints < 100)
-         return LoyaltyProgram.SILVER;
-      return LoyaltyProgram.GOLD;
+         return LoyaltyProgramEnum.SILVER;
+      return LoyaltyProgramEnum.GOLD;
    }
 
 

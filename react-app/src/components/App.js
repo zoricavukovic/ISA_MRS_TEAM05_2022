@@ -51,6 +51,7 @@ import ReviewDeleteAccountRequests from './admin/ReviewDeleteAccountRequests';
 import AllRequestsCards from './admin/AllRequests';
 import ReviewNewAccountRequests from './admin/ReviewNewAccountRequests';
 import AcceptedAccount from './user/AcceptedAccount';
+import LoyaltyProgramForm from './loyaltyProgram/LoyaltyProgramForm';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -130,6 +131,7 @@ function App() {
                     <Route path="/reviewDeleteAccountRequests" component={ReviewDeleteAccountRequests} />
                     <Route path="/allRequestsCardsForAdmin" component={AllRequestsCards} />
                     <Route path="/reviewNewAccountRequests" component={ReviewNewAccountRequests} />
+                    <Route path="/loyaltyProgram" component={LoyaltyProgramForm}/>
 
                     <Redirect to="/"></Redirect>
                 </Switch>

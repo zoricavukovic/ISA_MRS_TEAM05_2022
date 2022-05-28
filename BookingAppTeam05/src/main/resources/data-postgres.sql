@@ -423,3 +423,12 @@ INSERT INTO navigation_equipments(name, ship_id) VALUES ('RADAR', 7);
 INSERT INTO navigation_equipments(name, ship_id) VALUES ('VHF_RADIO', 8);
 INSERT INTO navigation_equipments(name, ship_id) VALUES ('VHF_RADIO', 9);
 INSERT INTO navigation_equipments(name, ship_id) VALUES ('RADAR', 8);
+
+
+INSERT INTO public.loyalty_programs(
+    client_points_per_reservation, owner_points_per_reservation,
+    bronze_limit, silver_limit, gold_limit,
+    client_bronze_discount,client_silver_discount, client_gold_discount,
+    owner_bronze_bonus, owner_silver_bonus,owner_gold_bonus, start_date)
+VALUES (1,2, 30,60,100, 1,5,10,2,6,11,'2022-03-04'),
+       (2,3, 40,80,120, 1,6,12,2,7,11,'2022-05-05');

@@ -64,7 +64,7 @@ export default function AddAdmin() {
     };
     const handleClose = () => {
         setOpen(false);
-        history.push('/showAdventures');
+        history.push('/allRequestsCardsForAdmin');
     };
     //----------------------------------------------------------------
     const [places, setPlaces] = React.useState([]);
