@@ -63,9 +63,9 @@ VALUES
 
 INSERT INTO clients (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id,penalties, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','bookingapp05mzr++jescieMullins@gmail.com','Jescie','Mullins',78,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',4,0, 'False', 2),
-(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','bookingapp05mzr++carolynGutie@gmail.com','Carolyn','Gutierrez',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-34-238-21',7,0, 'False', 2),
-(nextval('users_id_gen'), 'False','Ap #497-623 Interdum Road','2004-05-21','bookingapp05mzr++minaMinic@gmail.com','Mina','Minic',91,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',10,0, 'False', 2);
+(nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','bookingapp05mzr++jescieMullins@gmail.com','Jescie','Mullins',20,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',4,0, 'False', 2),
+(nextval('users_id_gen'), 'False','Ap #497-6239 Interdum Road','2004-05-21','bookingapp05mzr++carolynGutie@gmail.com','Carolyn','Gutierrez',1,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-34-238-21',7,0, 'False', 2),
+(nextval('users_id_gen'), 'False','Ap #497-623 Interdum Road','2004-05-21','bookingapp05mzr++minaMinic@gmail.com','Mina','Minic',90,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','083-342-238-21',10,0, 'False', 2);
 
 
 INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, password_changed)
@@ -77,9 +77,9 @@ VALUES
 
 INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++mika@gmail.com', 'Mika', 'Mikic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
-(nextval('users_id_gen'), 'False', 'adresa2', '1971-12-20', 'bookingapp05mzr++zika@gmail.com', 'Zika', 'Zikic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5,'False', 5),
-(nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'bookingapp05mzr++rika@gmail.com', 'Rika', 'Rikic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 6,'False', 5);
+(nextval('users_id_gen'), 'False', 'adresa1', '1971-12-20', 'bookingapp05mzr++mika@gmail.com', 'Mika', 'Mikic', null, 5, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'adresa2', '1971-12-20', 'bookingapp05mzr++zika@gmail.com', 'Zika', 'Zikic', null, 40, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5,'False', 5),
+(nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'bookingapp05mzr++rika@gmail.com', 'Rika', 'Rikic', null, 90, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 6,'False', 5);
 
 
 INSERT INTO cottages (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,cottage_owner_id, deleted)
@@ -113,11 +113,11 @@ VALUES
 
 INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
 VALUES
-(nextval('users_id_gen'), 'False','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++dzoni@gmail.com', 'Dzoni', 'Dzonic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++dzoni@gmail.com', 'Dzoni', 'Dzonic', null, 1, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
 (nextval('users_id_gen'), 'False', 'fdsaf ds f', '1971-12-20', 'bookingapp05mzr++roni@gmail.com', 'Roni', 'Ronic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
-(nextval('users_id_gen'), 'False', 'afddffd ', '1971-12-20', 'bookingapp05mzr++gogi@gmail.com', 'Gogi', 'Gogic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
-(nextval('users_id_gen'), 'False', 'miifds', '1971-12-20', 'bookingapp05mzr++moki@gmail.com', 'Moki', 'Mokic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
-(nextval('users_id_gen'), 'False', 'f dsafd s44', '1971-12-20', 'bookingapp05mzr+toki@gmail.com', 'Toki', 'Tokic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5);
+(nextval('users_id_gen'), 'False', 'afddffd ', '1971-12-20', 'bookingapp05mzr++gogi@gmail.com', 'Gogi', 'Gogic', null, 88, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'miifds', '1971-12-20', 'bookingapp05mzr++moki@gmail.com', 'Moki', 'Mokic', null, 2, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
+(nextval('users_id_gen'), 'False', 'f dsafd s44', '1971-12-20', 'bookingapp05mzr+toki@gmail.com', 'Toki', 'Tokic', null, 4, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5);
 
 
 ---------------zahtevi novih korisnika na cekanju----------------------------

@@ -9,7 +9,7 @@ import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDiss
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 
 const navbarDefaultList = [
   {
@@ -247,7 +247,7 @@ const reviewNewAccountRequests = {
 }
 
 const loyaltyProgram = {
-  icon: LocalOfferIcon,
+  icon: MilitaryTechIcon,
   desc: 'Loyalty program',
   secondDesc: '',
   badge: 0,
