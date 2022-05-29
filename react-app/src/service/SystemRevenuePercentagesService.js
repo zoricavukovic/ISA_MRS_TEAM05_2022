@@ -9,10 +9,7 @@ export function saveNewSystemRevenuePercentage(data) {
 }
 
 export function getSystemRevenueForPeriod(startDate, endDate) {
-    return api.get("/systemRevenuePercentages/revenueInPeriod", { params: { 
-        startDate: startDate,
-        endDate: endDate,
-    }});
+    return api.get("/systemRevenuePercentages/revenueInPeriod?startDate=" + startDate + "&endDate=" + endDate);
 }
 
 export function getSystemRevenueAll() {

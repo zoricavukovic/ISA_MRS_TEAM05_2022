@@ -7,20 +7,14 @@ public class SystemRevenueForPeriodDTO {
     private Double shipsRevenue;
     private Double adventuresRevenue;
     private Double cottagesRevenue;
-    private Double shipsPercentages;
-    private Double adventuresPercentages;
-    private Double cottagesPercentages;
 
     public SystemRevenueForPeriodDTO() {}
 
-    public SystemRevenueForPeriodDTO(Double total, Double shipsRevenue, Double adventuresRevenue, Double cottagesRevenue, Double shipsPercentages, Double adventuresPercentages, Double cottagesPercentages) {
+    public SystemRevenueForPeriodDTO(Double total, Double shipsRevenue, Double adventuresRevenue, Double cottagesRevenue) {
         this.total = total;
         this.shipsRevenue = shipsRevenue;
         this.adventuresRevenue = adventuresRevenue;
         this.cottagesRevenue = cottagesRevenue;
-        this.shipsPercentages = shipsPercentages;
-        this.adventuresPercentages = adventuresPercentages;
-        this.cottagesPercentages = cottagesPercentages;
     }
 
     public Double getTotal() {
@@ -53,29 +47,5 @@ public class SystemRevenueForPeriodDTO {
 
     public void setCottagesRevenue(Double cottagesRevenue) {
         this.cottagesRevenue = cottagesRevenue;
-    }
-
-    public Double getShipsPercentages() {
-        return shipsPercentages;
-    }
-
-    public void setShipsPercentages(Double shipsPercentages) {
-        this.shipsPercentages = shipsPercentages;
-    }
-
-    public Double getAdventuresPercentages() {
-        return adventuresPercentages;
-    }
-
-    public void setAdventuresPercentages(Double adventuresPercentages) {
-        this.adventuresPercentages = adventuresPercentages;
-    }
-
-    public Double getCottagesPercentages() {
-        return cottagesPercentages;
-    }
-
-    public void setCottagesPercentages(Double cottagesPercentages) {
-        this.cottagesPercentages = cottagesPercentages;
     }
 }

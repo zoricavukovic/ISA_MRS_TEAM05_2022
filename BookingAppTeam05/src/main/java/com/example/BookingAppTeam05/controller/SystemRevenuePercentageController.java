@@ -5,12 +5,14 @@ import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenuePercentageDTO
 import com.example.BookingAppTeam05.model.SystemRevenuePercentage;
 import com.example.BookingAppTeam05.service.SystemRevenuePercentageService;
 import org.springframework.boot.origin.SystemEnvironmentOrigin;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
@@ -41,15 +43,14 @@ public class SystemRevenuePercentageController {
     }
 
     @GetMapping(value="/revenueInPeriod")
-    public ResponseEntity<SystemRevenueForPeriodDTO> getRevenueForPeriod(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
-        //SystemRevenueForPeriodDTO s = systemRevenuePercentageService.getSystemRevenueDTOForPeriod(startDate, endDate);
-        SystemRevenueForPeriodDTO s = new SystemRevenueForPeriodDTO(50000.0, 30000.0, 2000.0, 5000.0, 10.0, 11.0, 50.0);
+    public ResponseEntity<SystemRevenueForPeriodDTO> getRevenueForPeriod(@RequestParam("startDate") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate , @RequestParam("endDate") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate) {
+        SystemRevenueForPeriodDTO s = systemRevenuePercentageService.getSystemRevenueDTOForPeriod(startDate, endDate);
         return new ResponseEntity<>(s, HttpStatus.OK);
     }
 
     @GetMapping(value="/allRevenue")
     public ResponseEntity<SystemRevenueForPeriodDTO> getAllRevenue() {
-        SystemRevenueForPeriodDTO s = new SystemRevenueForPeriodDTO(10000.0, 3000.0, 2000.0, 5000.0, 10.0, 11.0, 50.0);
+        SystemRevenueForPeriodDTO s = systemRevenuePercentageService.getSystemRevenueDTOForAll();
         return new ResponseEntity<>(s, HttpStatus.OK);
     }
 

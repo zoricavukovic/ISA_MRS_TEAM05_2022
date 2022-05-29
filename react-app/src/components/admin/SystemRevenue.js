@@ -134,9 +134,13 @@ export default function SystemRevenue() {
 
         const startDate = createFormatedDateFromString(startDatePicker.toLocaleDateString());
         const endDate = createFormatedDateFromString(endDatePicker.toLocaleDateString());
-        console.log("----------------------------");
-        console.log(startDate);
-        console.log(endDate);
+
+        setIsLoadingSystemRevenueInPeriod(true);
+        getSystemRevenueForPeriod(startDate, endDate).then(res => {
+            setSystemRevenueInPeriod(res.data);
+            setIsLoadingSystemRevenueInPeriod(false);
+        })
+
     }
 
 
@@ -289,8 +293,8 @@ export default function SystemRevenue() {
                             wrapperClassName={styles.datePicker}
                             id="startDatePicker"
                             selected={startDatePicker}
+                            maxDate={new Date()}
                             onChange={onStartDateChangeDatePicker}
-                            minDate={new Date()}
                             dateFormat='yyyy-MM-dd'
                         />
                         <p style={{ color: '#ED6663', fontSize: "11px", display: hiddenStartDateError }}>Please select start date.</p>
@@ -302,7 +306,7 @@ export default function SystemRevenue() {
                             wrapperClassName={styles.datePicker}
                             id="endDatePicker"
                             selected={endDatePicker}
-                            minDate={(startDatePicker) ? (new Date().setDate(new Date(startDatePicker).getDate() + 1)) : (new Date())}
+                            maxDate={new Date()}
                             onChange={onEndDateChangeDatePicker}
                             dateFormat='yyyy-MM-dd'
                         />
@@ -312,6 +316,9 @@ export default function SystemRevenue() {
                     &nbsp;&nbsp;
                     <Button variant="contained" onClick={searchRevenueInPeriod} style={{ color: 'rgb(5, 30, 52)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', borderRadius: '10px' }}>
                         Search
+                    </Button>
+                    <Button variant="contained" onClick={loadRevenueInTotal} style={{ color: 'rgb(5, 30, 52)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', borderRadius: '10px' }}>
+                        Alltime revenue
                     </Button>
                 </div>
                 <br />
