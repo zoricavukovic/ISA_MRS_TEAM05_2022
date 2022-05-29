@@ -246,49 +246,49 @@ VALUES
 
 
 --cotages res
-INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
 VALUES
-    ('2022-05-14 5:00 am',15,17,1,8,'False','False', 1, 255),
-    ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 780),
-    ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 120);
+    ('2022-05-14 5:00 am',15,17,1,8,'False','False', 1, 255, 5, 5, 50),
+    ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 780, 10, 10, 200),
+    ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 120, 5, 5, 60);
 
 
-INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
 VALUES
-    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 45),
-    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 66),
-    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 80),
+    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 45, 5, 5, 30),
+    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 66, 5, 5, 40),
+    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 80, 5, 5, 30),
 
 
-    ('2022-01-15 7:00 pm',1,3,12,8,'False','False',1,100),
-    ('2022-01-20 7:00 pm',4,3,12,7,'False','False',1,120),
+    ('2022-01-15 7:00 pm',1,3,12,8,'False','False',1,100, 5, 5, 30),
+    ('2022-01-20 7:00 pm',4,3,12,7,'False','False',1,120, 5, 5, 40),
 
-    ('2022-01-20 7:00 pm',2,1,13,8,'False','False',1,200),
-    ('2022-01-25 7:00 pm',4,3,13,7,'False','False',1,120),
+    ('2022-01-20 7:00 pm',2,1,13,8,'False','False',1,200, 5, 5, 30),
+    ('2022-01-25 7:00 pm',4,3,13,7,'False','False',1,120, 5, 5, 60),
 
-    ('2022-01-25 7:00 pm',1,3,14,8,'False','False',1,350),
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False',1,400),
+    ('2022-01-25 7:00 pm',1,3,14,8,'False','False',1,350, 5, 5, 100),
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False',1,400, 5, 5, 100),
 
-    ('2022-05-15 7:00 pm',2,3,11,9,'False','False',1,170),
-    ('2022-05-20 7:00 pm',1,3,11,8,'False','False',1,250),
-    ('2022-05-22 7:00 pm',2,3,11,7,'False','False',1,600),
-    ('2022-04-22 7:00 pm',2,3,11,9,'False','False',1,1500),
-    ('2022-05-25 8:00 pm',2,3,11,null,'True','False',1,400),
-    ('2022-05-28 9:00 pm',5,3,11,null,'True','False',1,85),
-    ('2022-04-25 10:00 pm',5,3,11,null,'True','False',1,33),
+    ('2022-05-15 7:00 pm',2,3,11,9,'False','False',1,170, 5, 5, 100),
+    ('2022-05-20 7:00 pm',1,3,11,8,'False','False',1,250, 5, 5, 100),
+    ('2022-05-22 7:00 pm',2,3,11,7,'False','False',1,600, 5, 5, 200),
+    ('2022-04-22 7:00 pm',2,3,11,9,'False','False',1,1500, 5, 5, 300),
+    ('2022-05-25 8:00 pm',2,3,11,null,'True','False',1,400, 5, 5, 100),
+    ('2022-05-28 9:00 pm',5,3,11,null,'True','False',1,85, 5, 5, 50),
+    ('2022-04-25 10:00 pm',5,3,11,null,'True','False',1,33, 5, 5, 20),
 
-    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 33),
-    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 99),
-    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 102),
+    ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 33, 5, 5, 20),
+    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 99, 5, 5, 20),
+    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 102, 5, 5, 20),
 
-    ('2022-01-15 7:00 pm',1,3,12,8,'False','False', 1, 345),
-    ('2022-01-20 7:00 pm',4,3,12,7,'False','False', 1, 245),
+    ('2022-01-15 7:00 pm',1,3,12,8,'False','False', 1, 345, 5, 5, 100),
+    ('2022-01-20 7:00 pm',4,3,12,7,'False','False', 1, 245, 5, 5, 100),
 
-    ('2022-01-20 7:00 pm',2,1,13,8,'False','False', 1, 230),
-    ('2022-01-25 7:00 pm',4,3,13,7,'False','False', 1, 333),
+    ('2022-01-20 7:00 pm',2,1,13,8,'False','False', 1, 230, 5, 5, 100),
+    ('2022-01-25 7:00 pm',4,3,13,7,'False','False', 1, 333, 5, 5, 100),
 
-    ('2022-01-25 7:00 pm',1,3,14,8,'False','False', 1, 222),
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 111);
+    ('2022-01-25 7:00 pm',1,3,14,8,'False','False', 1, 222, 5, 10, 100),
+    ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 111, 5, 5, 70);
 
 
 INSERT INTO public.reports(
@@ -342,11 +342,11 @@ VALUES
     ('2022-06-10 9:00 pm', '2022-06-15 9:00 pm', 11);
 
 --cotages res
-INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost)
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
 VALUES
-    ('2022-05-14 8:00 am',2,2,1,8,'True','False', 1, 1234),
-    ('2022-05-04 1:00 pm',12,3,1,7,'True','False', 1, 123),
-    ('2022-05-05 1:00 pm',4,3,3,7,'True','False', 1, 1098);
+    ('2022-05-14 8:00 am',2,2,1,8,'True','False', 1, 1234, 0, 0, 500),
+    ('2022-05-04 1:00 pm',12,3,1,7,'True','False', 1, 123, 5, 7, 60),
+    ('2022-05-05 1:00 pm',4,3,3,7,'True','False', 1, 1098, 0, 0, 400);
 
 INSERT INTO ratings (comment, value, reservation_id, approved, processed, review_date)
 VALUES
@@ -432,3 +432,7 @@ INSERT INTO public.loyalty_programs(
     owner_bronze_bonus, owner_silver_bonus,owner_gold_bonus, start_date)
 VALUES (1,2, 30,60,100, 1,5,10,2,6,11,'2022-03-04'),
        (2,3, 40,80,120, 1,6,12,2,7,11,'2022-05-05');
+
+INSERT INTO public.system_revenue_percentages(percentage, start_date)
+VALUES (10, '2022-03-04'),
+       (20, '2022-05-05');
