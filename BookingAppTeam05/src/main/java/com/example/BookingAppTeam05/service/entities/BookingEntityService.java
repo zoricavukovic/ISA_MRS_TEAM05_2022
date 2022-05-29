@@ -209,6 +209,31 @@ public class BookingEntityService {
         return entityDTO;
     }
 
+    public List<SearchedBookingEntityDTO> findTopRated(String type) {
+        List<BookingEntity> entities = null;
+        if(type.equals("cottage"))
+            entities = (List<BookingEntity>)(List<?>)cottageRepository.findAll();
+        else if(type.equals("ship"))
+            entities = (List<BookingEntity>)(List<?>)shipRepository.findAll();
+        else
+            entities = (List<BookingEntity>)(List<?>)adventureRepository.findAll();
+        List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
+        for (BookingEntity entity : entities) {
+            SearchedBookingEntityDTO s = getSearchedBookingEntityDTOByEntityId(entity.getId());
+            retVal.add(s);
+        }
+        Collections.sort(retVal, (o1, o2) -> {
+            if(o1.getAverageRating() > o2.getAverageRating())
+                return -1;
+            else if(o1.getAverageRating() < o2.getAverageRating())
+                return 1;
+            else
+                return 0;
+        });
+        retVal = retVal.stream().limit(3).collect(Collectors.toList());
+        return retVal;
+    }
+
     private void setAllUnavailableDates(BookingEntityDTO entityDTO){
         Set<LocalDateTime> unavailableDates = new HashSet<>();
         List<ReservationDTO> NotCanceledReservations = entityDTO.getReservations().stream().filter(e-> !e.isCanceled()).collect(Collectors.toList());

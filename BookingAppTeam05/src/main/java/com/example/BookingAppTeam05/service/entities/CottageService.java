@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service.entities;
 
+import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.model.Room;
 import com.example.BookingAppTeam05.model.RuleOfConduct;
@@ -10,10 +11,8 @@ import com.example.BookingAppTeam05.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CottageService {
@@ -27,7 +26,7 @@ public class CottageService {
     @Autowired
     public CottageService(CottageRepository cottageRepository, ReservationService reservationService,
                           PictureService pictureService, RoomService roomService, RuleOfConductService ruleOfConductService
-                            , SearchService searchService) {
+            , SearchService searchService) {
         this.cottageRepository = cottageRepository;
         this.reservationService = reservationService;
         this.pictureService = pictureService;
@@ -128,6 +127,4 @@ public class CottageService {
         Optional<Cottage> cottage = cottageRepository.findById(id);
         return cottage.orElse(null);
     }
-
-
 }

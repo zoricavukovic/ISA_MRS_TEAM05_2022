@@ -51,6 +51,7 @@ import ReviewDeleteAccountRequests from './admin/ReviewDeleteAccountRequests';
 import AllRequestsCards from './admin/AllRequests';
 import ReviewNewAccountRequests from './admin/ReviewNewAccountRequests';
 import AcceptedAccount from './user/AcceptedAccount';
+import Homepage from './Homepage';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -72,6 +73,7 @@ function App() {
             <Router>
                 <Sidebar curUser={currentUser} setCurUser={setNewUser} />
                 <Switch>
+                    <Route path="/homepage" component={Homepage} />
                     <Route path="/showBoats" component={ShowBoats} />
                     <Route path="/showCottages" component={ShowCottages} />
                     <Route path="/showAdventures" component={ShowAdventures} />
@@ -93,7 +95,7 @@ function App() {
                     <Route path="/addShip" component={AddShip} />
                     <Route path="/editShip" component={EditShip} />
 
-                    <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route>
+                    {/* <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route> */}
                     <Route path="/registration" ><Registration/></Route>
                     <Route path="/chooseAccType" ><ChooseAccType/></Route>
                     <Route path="/registrationForm" ><RegistrationForm/></Route>
@@ -131,7 +133,7 @@ function App() {
                     <Route path="/allRequestsCardsForAdmin" component={AllRequestsCards} />
                     <Route path="/reviewNewAccountRequests" component={ReviewNewAccountRequests} />
 
-                    <Redirect to="/"></Redirect>
+                    <Redirect to="/homepage"></Redirect>
                 </Switch>
             </Router>
         </>

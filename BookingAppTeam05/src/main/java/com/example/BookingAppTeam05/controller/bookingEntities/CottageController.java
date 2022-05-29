@@ -20,10 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cottages")
@@ -102,6 +100,12 @@ public class CottageController {
             SearchedBookingEntityDTO s = bookingEntityService.getSearchedBookingEntityDTOByEntityId(c.getId());
             retVal.add(s);
         }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/topRated", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getTopRatedCottagesForView() {
+        List<SearchedBookingEntityDTO> retVal = bookingEntityService.findTopRated("cottage");
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 

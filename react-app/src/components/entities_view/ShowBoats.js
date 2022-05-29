@@ -16,7 +16,6 @@ export default function ShowBoats() {
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
-        
     }, []);
 
     const getAllShips = () => {

@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service.entities;
 
+import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Ship;
@@ -12,9 +13,8 @@ import com.example.BookingAppTeam05.service.RuleOfConductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ShipService {

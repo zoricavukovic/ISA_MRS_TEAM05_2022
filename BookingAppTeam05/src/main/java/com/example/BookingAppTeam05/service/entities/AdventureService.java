@@ -15,10 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class AdventureService {
     private AdventureRepository adventureRepository;
@@ -170,4 +169,5 @@ public class AdventureService {
         Optional<Adventure> adventure = adventureRepository.findById(id);
         return adventure.orElse(null);
     }
+
 }

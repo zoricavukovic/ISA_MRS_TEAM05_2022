@@ -43,4 +43,5 @@ public interface CottageRepository extends JpaRepository<Cottage, Long> {
             "left join fetch c.rooms room left join fetch c.cottageOwner owner " +
             "where c.id=?1 and c.deleted = false ")
     Optional<Cottage> findById(Long id);
+
 }

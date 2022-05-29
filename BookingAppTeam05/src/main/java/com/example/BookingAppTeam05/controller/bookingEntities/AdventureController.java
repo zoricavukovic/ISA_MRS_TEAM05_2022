@@ -120,6 +120,12 @@ public class AdventureController {
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
+    @GetMapping(value="/topRated", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getTopRatedAdventuresForView() {
+        List<SearchedBookingEntityDTO> retVal = bookingEntityService.findTopRated("adventure");
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
 
     @PostMapping(value="/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedAdventures(@RequestBody SearchParamsForEntity searchParams) {
