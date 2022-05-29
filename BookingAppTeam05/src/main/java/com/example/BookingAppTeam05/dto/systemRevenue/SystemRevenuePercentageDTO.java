@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.dto;
+package com.example.BookingAppTeam05.dto.systemRevenue;
 
 import com.example.BookingAppTeam05.model.SystemRevenuePercentage;
 

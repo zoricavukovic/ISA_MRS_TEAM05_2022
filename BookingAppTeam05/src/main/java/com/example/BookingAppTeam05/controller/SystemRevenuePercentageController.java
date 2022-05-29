@@ -1,17 +1,17 @@
 package com.example.BookingAppTeam05.controller;
 
-import com.example.BookingAppTeam05.dto.LoyaltyProgramDTO;
-import com.example.BookingAppTeam05.dto.SystemRevenuePercentageDTO;
+import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenueForPeriodDTO;
+import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenuePercentageDTO;
 import com.example.BookingAppTeam05.model.SystemRevenuePercentage;
 import com.example.BookingAppTeam05.service.SystemRevenuePercentageService;
+import org.springframework.boot.origin.SystemEnvironmentOrigin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/systemRevenuePercentages")
@@ -39,4 +39,19 @@ public class SystemRevenuePercentageController {
         }
         return new ResponseEntity<>(created, HttpStatus.OK);
     }
+
+    @GetMapping(value="/revenueInPeriod")
+    public ResponseEntity<SystemRevenueForPeriodDTO> getRevenueForPeriod(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+        //SystemRevenueForPeriodDTO s = systemRevenuePercentageService.getSystemRevenueDTOForPeriod(startDate, endDate);
+        SystemRevenueForPeriodDTO s = new SystemRevenueForPeriodDTO(50000.0, 30000.0, 2000.0, 5000.0, 10.0, 11.0, 50.0);
+        return new ResponseEntity<>(s, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/allRevenue")
+    public ResponseEntity<SystemRevenueForPeriodDTO> getAllRevenue() {
+        SystemRevenueForPeriodDTO s = new SystemRevenueForPeriodDTO(10000.0, 3000.0, 2000.0, 5000.0, 10.0, 11.0, 50.0);
+        return new ResponseEntity<>(s, HttpStatus.OK);
+    }
+
+
 }

@@ -7,3 +7,14 @@ export function getCurrentSystemRevenuePercentage() {
 export function saveNewSystemRevenuePercentage(data) {
     return api.post("/systemRevenuePercentages/", data);
 }
+
+export function getSystemRevenueForPeriod(startDate, endDate) {
+    return api.get("/systemRevenuePercentages/revenueInPeriod", { params: { 
+        startDate: startDate,
+        endDate: endDate,
+    }});
+}
+
+export function getSystemRevenueAll() {
+    return api.get("/systemRevenuePercentages/allRevenue");
+}

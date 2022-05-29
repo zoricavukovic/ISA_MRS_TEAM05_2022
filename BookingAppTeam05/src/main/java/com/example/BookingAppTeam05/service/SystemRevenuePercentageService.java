@@ -1,15 +1,13 @@
 package com.example.BookingAppTeam05.service;
 
-import com.example.BookingAppTeam05.dto.LoyaltyProgramDTO;
-import com.example.BookingAppTeam05.dto.SystemRevenuePercentageDTO;
-import com.example.BookingAppTeam05.model.LoyaltyProgram;
+import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenueForPeriodDTO;
+import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenuePercentageDTO;
 import com.example.BookingAppTeam05.model.SystemRevenuePercentage;
 import com.example.BookingAppTeam05.model.repository.SystemRevenuePercentageRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class SystemRevenuePercentageService {
@@ -30,5 +28,9 @@ public class SystemRevenuePercentageService {
         SystemRevenuePercentageDTO retVal = new SystemRevenuePercentageDTO(systemRevenuePercentage);
         systemRevenuePercentageRepository.save(systemRevenuePercentage);
         return retVal;
+    }
+
+    public SystemRevenueForPeriodDTO getSystemRevenueDTOForPeriod(LocalDateTime startDate, LocalDateTime endDate) {
+        return null;
     }
 }
