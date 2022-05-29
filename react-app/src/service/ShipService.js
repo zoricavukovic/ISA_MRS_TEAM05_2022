@@ -9,6 +9,10 @@ export function getAllShipsView() {
     return api.get('/ships/view')
 }
 
+export function getTopRatedShips() {
+    return api.get('/ships/topRated')
+}
+
 export function getShipById(id) {
     return api.get('/ships/' + id);
 }

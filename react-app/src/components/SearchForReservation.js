@@ -40,16 +40,11 @@ export default function SearchForReservation({setSearchParams,setFilterParams, t
   
 
   useEffect(() => {
-    if (getCurrentUser() === null || getCurrentUser() === undefined) {
-        history.push('/login');
-    }
-    else {
-        getAllPlaces()
-            .then(res => {
-                setPlaces(res.data);
-                setLoadingPlace(false);
-            })
-    }
+      getAllPlaces()
+          .then(res => {
+              setPlaces(res.data);
+              setLoadingPlace(false);
+          })
   }, [])
 
   const onSearch = data => {

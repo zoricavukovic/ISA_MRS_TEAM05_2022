@@ -363,7 +363,7 @@ export default function Sidebar({curUser, setCurUser}) {
               }}
               >
                 <ListItemButton
-                      onClick={()=>goToPage('Login')}
+                      onClick={()=>goToPage('login')}
                       sx={{
                         margin: '6px 14px',
                         padding: '10px',
