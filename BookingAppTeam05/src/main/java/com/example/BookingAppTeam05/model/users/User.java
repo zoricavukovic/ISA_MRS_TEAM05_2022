@@ -1,12 +1,14 @@
 package com.example.BookingAppTeam05.model.users;
 
 import com.example.BookingAppTeam05.model.LoyaltyProgram;
+import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.Place;
+import com.example.BookingAppTeam05.service.LoyaltyProgramService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -52,6 +54,8 @@ public abstract class User implements UserDetails {
 
    @Column(name="loyaltyPoints")
    private int loyaltyPoints;
+
+   private LoyaltyProgramEnum loyaltyProgramEnum;
 
    @Column(name="notYetActivated", nullable = false)
    private boolean notYetActivated;
@@ -129,14 +133,13 @@ public abstract class User implements UserDetails {
    }
 
 
-   public LoyaltyProgram getLoyaltyProgram() {
-      if (this.loyaltyPoints < 50)
-         return LoyaltyProgram.REGULAR;
-      if (this.loyaltyPoints > 50 && this.loyaltyPoints < 100)
-         return LoyaltyProgram.SILVER;
-      return LoyaltyProgram.GOLD;
+   public void setLoyaltyProgramEnum(LoyaltyProgramEnum loyaltyProgramEnum) {
+      this.loyaltyProgramEnum = loyaltyProgramEnum;
    }
 
+   public LoyaltyProgramEnum getLoyaltyProgramEnum() {
+      return loyaltyProgramEnum;
+   }
 
    public void setPassword(String password) {
       Timestamp now = new Timestamp(new Date().getTime());

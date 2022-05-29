@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.dto.users;
 
-import com.example.BookingAppTeam05.model.LoyaltyProgram;
+import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.users.*;
 
@@ -38,8 +38,8 @@ public class UserDTO {
     private int penalties; // only for clients
     private boolean captain; // only for shipOwners
     private boolean passwordChanged; // only for admins
-    private LoyaltyProgram loyaltyProgram;
     private String reason; //only for owners
+    private LoyaltyProgramEnum loyaltyProgram;
 
     public UserDTO() {}
 
@@ -55,7 +55,7 @@ public class UserDTO {
         this.loyaltyPoints = user.getLoyaltyPoints();
         this.accountAllowed = user.isNotYetActivated();
         this.userType = user.getRole();
-        this.loyaltyProgram = user.getLoyaltyProgram();
+        this.loyaltyProgram = user.getLoyaltyProgramEnum();
         setAdditionalFieldIfNeeded(user);
     }
 
@@ -201,11 +201,11 @@ public class UserDTO {
         this.captain = captain;
     }
 
-    public LoyaltyProgram getLoyaltyProgram() {
+    public LoyaltyProgramEnum getLoyaltyProgram() {
         return loyaltyProgram;
     }
 
-    public void setLoyaltyProgram(LoyaltyProgram loyaltyProgram) {
+    public void setLoyaltyProgram(LoyaltyProgramEnum loyaltyProgram) {
         this.loyaltyProgram = loyaltyProgram;
     }
 

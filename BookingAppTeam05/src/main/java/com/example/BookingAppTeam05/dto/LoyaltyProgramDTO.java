@@ -1,72 +1,86 @@
-package com.example.BookingAppTeam05.model;
+package com.example.BookingAppTeam05.dto;
 
-import com.example.BookingAppTeam05.dto.LoyaltyProgramDTO;
+import com.example.BookingAppTeam05.model.LoyaltyProgram;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "loyaltyPrograms")
-public class LoyaltyProgram {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name="bronzeLimit")
+public class LoyaltyProgramDTO {
+    @NotNull
+    @Min(1)
+    @Max(1000)
     private Integer bronzeLimit;
 
-    @Column(name="silverLimit")
+    @NotNull
+    @Min(1)
+    @Max(1000)
     private Integer silverLimit;
 
-    @Column(name="goldLimit")
+    @NotNull
+    @Min(1)
+    @Max(1000)
     private Integer goldLimit;
 
-    @Column(name="clientBronzeDiscount")
+    @NotNull
+    @Min(0)
+    @Max(50)
     private Double clientBronzeDiscount;
 
-    @Column(name="clientSilverDiscount")
+    @NotNull
+    @Min(0)
+    @Max(50)
     private Double clientSilverDiscount;
 
-    @Column(name="clientGoldDiscount")
+    @NotNull
+    @Min(0)
+    @Max(50)
     private Double clientGoldDiscount;
 
-    @Column(name="ownerBronzeBonus")
+    @NotNull
+    @Min(0)
+    @Max(50)
     private Double ownerBronzeBonus;
 
-    @Column(name="ownerSilverBonus")
+    @NotNull
+    @Min(0)
+    @Max(50)
     private Double ownerSilverBonus;
 
-    @Column(name="ownerGoldBonus")
+    @NotNull
+    @Min(0)
+    @Max(50)
     private Double ownerGoldBonus;
 
-    @Column(name="clientPointsPerReservation")
+    @NotNull
+    @Min(1)
+    @Max(1000)
     private Integer clientPointsPerReservation;
 
-    @Column(name="ownerPointsPerReservation")
+    @NotNull
+    @Min(1)
+    @Max(1000)
     private Integer ownerPointsPerReservation;
 
-    @Column(name="startDate", nullable = false)
     private LocalDateTime startDate;
 
-    public LoyaltyProgram() {}
+    public LoyaltyProgramDTO() {}
 
-    public LoyaltyProgram(LoyaltyProgramDTO loyaltyProgramDTO) {
-        this.bronzeLimit = loyaltyProgramDTO.getBronzeLimit();
-        this.silverLimit = loyaltyProgramDTO.getSilverLimit();
-        this.goldLimit = loyaltyProgramDTO.getGoldLimit();
-        this.clientBronzeDiscount = loyaltyProgramDTO.getClientBronzeDiscount();
-        this.clientSilverDiscount = loyaltyProgramDTO.getClientSilverDiscount();
-        this.clientGoldDiscount = loyaltyProgramDTO.getClientGoldDiscount();
-        this.clientPointsPerReservation = loyaltyProgramDTO.getClientPointsPerReservation();
-        this.ownerPointsPerReservation = loyaltyProgramDTO.getOwnerPointsPerReservation();
-        this.ownerBronzeBonus = loyaltyProgramDTO.getOwnerBronzeBonus();
-        this.ownerSilverBonus = loyaltyProgramDTO.getOwnerSilverBonus();
-        this.ownerGoldBonus = loyaltyProgramDTO.getOwnerGoldBonus();
-        this.startDate = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
+    public LoyaltyProgramDTO(LoyaltyProgram loyaltyProgram) {
+        this.bronzeLimit = loyaltyProgram.getBronzeLimit();
+        this.silverLimit = loyaltyProgram.getSilverLimit();
+        this.goldLimit = loyaltyProgram.getGoldLimit();
+        this.clientBronzeDiscount = loyaltyProgram.getClientBronzeDiscount();
+        this.clientSilverDiscount = loyaltyProgram.getClientSilverDiscount();
+        this.clientGoldDiscount = loyaltyProgram.getClientGoldDiscount();
+        this.ownerBronzeBonus = loyaltyProgram.getOwnerBronzeBonus();
+        this.ownerSilverBonus = loyaltyProgram.getOwnerSilverBonus();
+        this.ownerGoldBonus = loyaltyProgram.getOwnerGoldBonus();
+        this.clientPointsPerReservation = loyaltyProgram.getClientPointsPerReservation();
+        this.ownerPointsPerReservation = loyaltyProgram.getOwnerPointsPerReservation();
+        this.startDate = loyaltyProgram.getStartDate();
     }
 
     public Integer getBronzeLimit() {

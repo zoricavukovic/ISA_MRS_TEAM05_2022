@@ -9,6 +9,7 @@ import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDiss
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 
 const navbarDefaultList = [
   {
@@ -245,6 +246,16 @@ const reviewNewAccountRequests = {
   url: '/reviewNewAccountRequests'
 }
 
+const loyaltyProgram = {
+  icon: MilitaryTechIcon,
+  desc: 'Loyalty program',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/loyaltyProgram'
+}
+
+
 const navbarSuperAdminList = [
   ...navbarDefaultList,
   {
@@ -260,7 +271,8 @@ const navbarSuperAdminList = [
   reviewComplaints,
   reviewDeleteAccountRequest,
   reviewNewAccountRequests,
-  allRequests
+  allRequests,
+  loyaltyProgram
 ]
 
 const navbarAdminList = [
@@ -271,4 +283,5 @@ const navbarAdminList = [
   reviewDeleteAccountRequest,
   reviewNewAccountRequests,
   allRequests,
+  loyaltyProgram
 ]

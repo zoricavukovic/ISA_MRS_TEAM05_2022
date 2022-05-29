@@ -3,10 +3,13 @@ package com.example.BookingAppTeam05.service.users;
 import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
+import com.example.BookingAppTeam05.model.LoyaltyProgram;
+import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.repository.users.UserRepository;
 import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.EmailService;
+import com.example.BookingAppTeam05.service.LoyaltyProgramService;
 import com.example.BookingAppTeam05.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,17 +33,22 @@ public class UserService {
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private EmailService emailService;
     private RoleService roleService;
+    private LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PlaceService placeService, EmailService emailService, RoleService roleService) {
+    public UserService(UserRepository userRepository, PlaceService placeService, EmailService emailService, RoleService roleService, LoyaltyProgramService loyaltyProgramService) {
         this.userRepository = userRepository;
         this.placeService = placeService;
         this.emailService = emailService;
         this.roleService = roleService;
+        this.loyaltyProgramService = loyaltyProgramService;
     }
 
     public User findUserById(Long id) {
-        return userRepository.findUserById(id);
+        User user = userRepository.findUserById(id);
+        LoyaltyProgramEnum loyaltyProgramType = loyaltyProgramService.getLoyaltyProgramTypeFromUserPoints(user.getLoyaltyPoints());
+        user.setLoyaltyProgramEnum(loyaltyProgramType);
+        return user;
     }
 
     public User updateUser(Long userId, UserDTO userDTO){
