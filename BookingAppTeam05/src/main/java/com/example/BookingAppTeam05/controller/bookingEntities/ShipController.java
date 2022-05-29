@@ -80,6 +80,12 @@ public class ShipController {
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
+    @GetMapping(value="/topRated", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getTopRatedShipsForView() {
+        List<SearchedBookingEntityDTO> retVal = bookingEntityService.findTopRated("ship");
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
     @GetMapping(value="/{id}")
     public ResponseEntity<ShipDTO> getShipById(@PathVariable Long id) {
         Ship ship = shipService.getShipById(id);
