@@ -36,7 +36,6 @@ public class LoyaltyProgramController {
     @PostMapping(value="/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoyaltyProgramDTO> setNewLoyaltyProgram(@Valid @RequestBody LoyaltyProgramDTO loyaltyProgramDTO) {
         LoyaltyProgramDTO created = loyaltyProgramService.createNewLoyaltyProgram(loyaltyProgramDTO);
-        System.out.println("usaoooo");
         if (created == null) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

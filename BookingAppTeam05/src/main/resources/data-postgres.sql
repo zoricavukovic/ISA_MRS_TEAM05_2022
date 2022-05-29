@@ -432,3 +432,7 @@ INSERT INTO public.loyalty_programs(
     owner_bronze_bonus, owner_silver_bonus,owner_gold_bonus, start_date)
 VALUES (1,2, 30,60,100, 1,5,10,2,6,11,'2022-03-04'),
        (2,3, 40,80,120, 1,6,12,2,7,11,'2022-05-05');
+
+INSERT INTO public.system_revenue_percentages(percentage, start_date)
+VALUES (10, '2022-03-04'),
+       (20, '2022-05-05');
