@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -99,4 +100,13 @@ public class BookingEntityController {
         return new ResponseEntity<>("Entity is deleted.", HttpStatus.CREATED);
     }
 
+    @GetMapping(value="/getAllForOwnerId/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookingEntityDTO>> getBookingEntitesForOwnerId(@PathVariable Long id) {
+        List<BookingEntity> bookingEntities = userService.getBookingEntitiesByOwnerId(id);
+        List<BookingEntityDTO> retVal = new ArrayList<>();
+        for (BookingEntity b : bookingEntities) {
+            retVal.add(new BookingEntityDTO(b));
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
 }

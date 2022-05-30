@@ -2,7 +2,6 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.AnalyticsDTO;
 import com.example.BookingAppTeam05.dto.calendar.CalendarEntryDTO;
-import com.example.BookingAppTeam05.model.Pricelist;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
@@ -11,9 +10,7 @@ import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.DateFormatter;
-import java.text.DateFormat;
-import java.time.LocalDate;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
@@ -35,12 +32,13 @@ public class CalendarService {
         this.userService = userService;
     }
 
+    @Transactional
     public List<CalendarEntryDTO> getCalendarEntriesDTOByEntityId(Long id) {
         List<CalendarEntryDTO> retVal = new ArrayList<>();
         BookingEntity bookingEntity = bookingEntityService.getBookingEntityWithUnavailableDatesById(id);
         fillResultWithUnavailableDates(retVal, bookingEntity.getUnavailableDates());
 
-        List<Reservation> reservations = reservationService.findAllReservationsWithClientsForEntityId(bookingEntity.getId());
+        List<Reservation> reservations = reservationService.findAllReservationsForEntityId(bookingEntity.getId());
         fillResultWithReservations(retVal, reservations);
 
         List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(bookingEntity.getId());
@@ -48,11 +46,12 @@ public class CalendarService {
         return retVal;
     }
 
+    @Transactional
     public List<CalendarEntryDTO> getCalendarEntriesDTOByOwnerId(Long id) {
         List<CalendarEntryDTO> retVal = new ArrayList<>();
         List<BookingEntity> bookingEntities = userService.getBookingEntitiesByOwnerId(id);
         for (BookingEntity b : bookingEntities) {
-            List<Reservation> reservations = reservationService.findAllReservationsWithClientsForEntityId(b.getId());
+            List<Reservation> reservations = reservationService.findAllReservationsForEntityId(b.getId());
             fillResultWithReservations(retVal, reservations);
 
             List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(b.getId());
@@ -64,9 +63,9 @@ public class CalendarService {
     private void fillResultWithFastReservations(List<CalendarEntryDTO> calendarEntryDTOS, List<Reservation> fastReservations) {
         for (Reservation r : fastReservations) {
             if (r.getEndDate().isBefore(LocalDateTime.now()))
-                calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "fast reservation", "Fast reservation expired"));
+                calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "fast reservation", "Fast reservation expired for " + r.getBookingEntity().getName()));
             else
-                calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "fast reservation", "Fast reservation"));
+                calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "fast reservation", "Fast reservation for " + r.getBookingEntity().getName()));
         }
     }
 
@@ -77,8 +76,8 @@ public class CalendarService {
     }
     private void fillResultWithReservations(List<CalendarEntryDTO> calendarEntryDTOS, List<Reservation> reservations) {
         for (Reservation r : reservations) {
-            String clientTitle = r.getClient().getFirstName() + " " + r.getClient().getLastName();
-            calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "regular reservation", clientTitle));
+            String title = r.getClient().getFirstName() + " " + r.getClient().getLastName() + ", Entity: " + r.getBookingEntity().getName();
+            calendarEntryDTOS.add(new CalendarEntryDTO(r.getStartDate(), r.getEndDate(), "regular reservation", title));
         }
     }
 
@@ -164,7 +163,7 @@ public class CalendarService {
     }
 
     private List<Reservation> getReservations(Long id) {
-        List<Reservation> reservations = reservationService.findAllReservationsWithClientsForEntityId(id);
+        List<Reservation> reservations = reservationService.findAllReservationsForEntityId(id);
         List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(id);
         reservations.addAll(fastReservations);
         return reservations;

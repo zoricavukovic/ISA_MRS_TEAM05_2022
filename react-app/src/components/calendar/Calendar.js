@@ -3,29 +3,15 @@ import Paper from '@mui/material/Paper';
 import { indigo, teal, red } from '@mui/material/colors';
 import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import { Grid, TextField, Typography } from "@mui/material";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
-import { getCalendarValuesByBookintEntityId } from "../../service/CalendarService";
-import { DateTimePicker } from "@mui/x-date-pickers";
-import { DialogContent, DialogTitle, Divider } from "@mui/material";
-import { Dialog } from "@mui/material";
-import { DialogContentText } from "@mui/material";
-import { DialogActions } from "@mui/material";
-import { useForm } from "react-hook-form";
-import styles from './datePickerStyle.module.css';
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
+import { getCalendarValuesForAllOwnerEntitiesById } from "../../service/CalendarService";
 import { useHistory } from "react-router-dom";
-import {userLoggedInAsOnwer} from "../../service/UserService";
+import { userLoggedInAsOwner } from "../../service/UserService";
+import { getCurrentUser } from "../../service/AuthService";
+import { makeStyles } from "@material-ui/core";
 
 
-import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
+import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
     Scheduler,
     MonthView,
@@ -40,6 +26,7 @@ import {
     AppointmentTooltip,
     CurrentTimeIndicator,
 } from '@devexpress/dx-react-scheduler-material-ui';
+import CalendarForEntityChooser from "./CalendarForEntityChooser";
 
 
 const resources = [{
@@ -52,19 +39,47 @@ const resources = [{
     ]
 }];
 
-export default function Calendar() {
 
+const useStyles = makeStyles({
+    timeTableCell: {
+        height: "300px"
+    }
+});
+
+const RowComponent = (props) => {
+    const classes = useStyles();
+    return (
+        <AllDayPanel.Row {...props} className={classes.timeTableCell} />
+    );
+}
+
+
+
+export default function Calendar() {
 
     const history = useHistory();
     const [data, setData] = useState();
     const [isLoadingData, setIsLoadingData] = useState(true);
 
+
+    const [open, setOpen] = React.useState(false);
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+
+
     useEffect(() => {
-        refreshPage();
+        if (userLoggedInAsOwner(history)) {
+            refreshPage();
+        }
     }, []);
 
+
     const refreshPage = () => {
-        getCalendarValuesByBookintEntityId(11)
+        getCalendarValuesForAllOwnerEntitiesById(getCurrentUser().id)
             .then(res => {
                 setData(res.data);
                 setIsLoadingData(false);
@@ -76,15 +91,22 @@ export default function Calendar() {
     }
     else {
         return (
-
             <Box
                 style={{ margin: "1% 9% 1% 15%" }}
                 alignItems="center"
                 justifyContent="center"
             >
+                <div style={{justifyContent:"right", display:"flex", flexDirection:"row"}}>
+                    <Button onClick={handleDrawerOpen} edge="end" sx={{ ...(open && { display: 'none' }) }}  variant="contained" style={{ color: 'rgb(5, 30, 52)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '10%' }}>
+                        Entity calendar
+                    </Button>
+                </div>
+                <br/>
+                <br/>
+
+                <CalendarForEntityChooser handleDrawerClose={handleDrawerClose} open={open} />
 
                 <Paper>
-                    {console.log(data)}
                     <Scheduler
                         data={data}
                     >
@@ -96,7 +118,9 @@ export default function Calendar() {
                             endDayHour={21}
                         />
                         <MonthView />
-                        <AllDayPanel />
+                        <AllDayPanel
+                            rowComponent={RowComponent}
+                        />
                         <Toolbar />
                         <ViewSwitcher />
                         <DateNavigator />

@@ -62,10 +62,10 @@ export function userLoggedInAsCottageOwner(history) {
 export function userLoggedInAsShipOwner(history) {
     return userLoggedInWithRole(history, "ROLE_SHIP_OWNER");
 }
-export function userLoggedInAsOnwer(history) {
+export function userLoggedInAsOwner(history) {
     if (!userLoggedIn(history))
         return false;
-    if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR" || getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER", getCurrentUser().userType.name === "ROLE_SHIP_OWNER" )
+    if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR" || getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER" || getCurrentUser().userType.name === "ROLE_SHIP_OWNER" )
         return true;
     return false;
 }
