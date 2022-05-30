@@ -290,4 +290,15 @@ public class ReservationService {
         //clients = reservationRepository.findAllClientsWithActiveReservations(bookingEntityId);
         return clients;
     }
+
+    public List<Reservation> getAllFinishedReservations() {
+        List<Reservation> all = reservationRepository.getAllFinishedReservations();
+        List<Reservation> retVal = new ArrayList<Reservation>();
+        for (Reservation r : all) {
+            if (r.isFinished())
+                retVal.add(r);
+        }
+        return retVal;
+    }
+
 }

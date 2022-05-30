@@ -47,7 +47,17 @@ public class Reservation {
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "client_id")
    private Client client;
-   
+
+   @Column(name="clientDiscountValue")
+   private double clientDiscountValue;
+
+   @Column(name="ownerBonus")
+   private double ownerBonus;
+
+   @Column(name="systemTakes")
+   private double systemTakes;
+
+
    public Reservation() {}
 
    public Reservation(LocalDateTime startDate, int numOfDays, double cost, int numOfPersons, Set<AdditionalService> additionalServices, boolean fastReservation, BookingEntity entity, boolean canceled, Client client) {
@@ -60,6 +70,30 @@ public class Reservation {
       this.client = client;
       this.numOfDays = numOfDays;
       this.cost = cost;
+   }
+
+   public double getClientDiscountValue() {
+      return clientDiscountValue;
+   }
+
+   public void setClientDiscountValue(double clientDiscountValue) {
+      this.clientDiscountValue = clientDiscountValue;
+   }
+
+   public double getOwnerBonus() {
+      return ownerBonus;
+   }
+
+   public void setOwnerBonus(double ownerBonus) {
+      this.ownerBonus = ownerBonus;
+   }
+
+   public double getSystemTakes() {
+      return systemTakes;
+   }
+
+   public void setSystemTakes(double systemTakes) {
+      this.systemTakes = systemTakes;
    }
 
    public Long getId() {
