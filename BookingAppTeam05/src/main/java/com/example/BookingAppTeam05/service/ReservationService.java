@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.OptimisticLockException;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -160,8 +161,8 @@ public class ReservationService {
 
     public List<Reservation> getReservationsByEntityId(Long cottageId){return reservationRepository.getReservationsByEntityId(cottageId);}
 
-    public List<Reservation> findAllReservationsWithClientsForEntityId(Long id) {
-        return this.reservationRepository.findAllReservationsWithClientsForEntityId(id);
+    public List<Reservation> findAllReservationsForEntityId(Long id) {
+        return this.reservationRepository.findAllReservationsForEntityId(id);
     }
 
     public List<Reservation> findAllFastReservationsForEntityid(Long id) {

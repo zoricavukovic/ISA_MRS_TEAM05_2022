@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ShipOwnerRepository extends JpaRepository<ShipOwner, Long> {
-    @Query("select u from ShipOwner u join fetch u.place p join fetch u.role r join fetch u.ships where u.id=?1")
-    public User getUserById(Long id);
+    @Query("select u from ShipOwner u left join fetch u.place p left join fetch u.role r left join fetch u.ships s where u.id=?1")
+    ShipOwner getShipOwnerWithShipsById(Long id);
 }

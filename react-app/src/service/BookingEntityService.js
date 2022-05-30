@@ -24,3 +24,7 @@ export function logicalDeleteBookingEntityById(id, confirmPass) {
 export function getBookingEntityById(id) {
     return api.get('/bookingEntities/byId/' + id);
 }
+
+export function getBookingEntitiesFromOwnerId(id) {
+    return api.get('/bookingEntities/getAllForOwnerId' + id);
+}

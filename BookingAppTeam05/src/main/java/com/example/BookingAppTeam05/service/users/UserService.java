@@ -1,16 +1,23 @@
 package com.example.BookingAppTeam05.service.users;
 
+import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
 import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.Place;
+import com.example.BookingAppTeam05.model.entities.Adventure;
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
+import com.example.BookingAppTeam05.model.entities.Cottage;
+import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.repository.users.UserRepository;
 import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.EmailService;
 import com.example.BookingAppTeam05.service.LoyaltyProgramService;
 import com.example.BookingAppTeam05.service.PlaceService;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
+import com.example.BookingAppTeam05.service.entities.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,13 +42,21 @@ public class UserService {
     private RoleService roleService;
     private LoyaltyProgramService loyaltyProgramService;
 
+    private InstructorService instructorService;
+    private CottageOwnerService cottageOwnerService;
+    private ShipOwnerService shipOwnerService;
+
+
     @Autowired
-    public UserService(UserRepository userRepository, PlaceService placeService, EmailService emailService, RoleService roleService, LoyaltyProgramService loyaltyProgramService) {
+    public UserService(UserRepository userRepository, PlaceService placeService, EmailService emailService, RoleService roleService, LoyaltyProgramService loyaltyProgramService, InstructorService instructorService, ShipOwnerService shipOwnerService, CottageOwnerService cottageOwnerService) {
         this.userRepository = userRepository;
         this.placeService = placeService;
         this.emailService = emailService;
         this.roleService = roleService;
         this.loyaltyProgramService = loyaltyProgramService;
+        this.instructorService = instructorService;
+        this.shipOwnerService = shipOwnerService;
+        this.cottageOwnerService = cottageOwnerService;
     }
 
     public User findUserById(Long id) {
@@ -189,6 +204,33 @@ public class UserService {
             return new ResponseEntity<>("Account is activated.", HttpStatus.OK);
         } catch (Exception ex){
             return new ResponseEntity<>("Account not activated.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public List<BookingEntity> getBookingEntitiesByOwnerId(Long id) {
+        User owner = this.findUserById(id);
+        switch (owner.getRole().getName()) {
+            case "ROLE_COTTAGE_OWNER": {
+                CottageOwner cottageOwner = cottageOwnerService.getCottageOwnerWithCottagesById(id);
+                if (cottageOwner.getCottages() == null || cottageOwner.getCottages().size() == 0)
+                    return new ArrayList<>();
+                return new ArrayList<>(cottageOwner.getCottages());
+            }
+            case "ROLE_SHIP_OWNER": {
+                ShipOwner shipOwner = shipOwnerService.getShipOwnerWithShipsById(id);
+                if (shipOwner.getShips() == null || shipOwner.getShips().size() == 0)
+                    return new ArrayList<>();
+                return new ArrayList<>(shipOwner.getShips());
+            }
+            case "ROLE_INSTRUCTOR": {
+                Instructor instructor = instructorService.getInstructorWithAdventuresById(id);
+                if (instructor.getAdventures() == null || instructor.getAdventures().size() == 0)
+                    return new ArrayList<>();
+                return new ArrayList<>(instructor.getAdventures());
+            }
+            default: {
+                return null;
+            }
         }
     }
 }

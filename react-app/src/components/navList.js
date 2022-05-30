@@ -11,6 +11,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import EuroIcon from '@mui/icons-material/Euro';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const navbarDefaultList = [
   {
@@ -79,7 +80,7 @@ const navbarClientList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/myReservations'
+    url: '/myReservations'
   }
 ]
 
@@ -107,7 +108,7 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   },
   {
     icon: InsightsIcon,
@@ -115,7 +116,15 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/analytics'
+    url: '/analytics'
+  },
+  {
+    icon: CalendarMonthIcon,
+    desc: 'Calendar',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url: '/calendar'
   }
 ]
 
@@ -143,7 +152,7 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   },
   {
     icon: InsightsIcon,
@@ -151,7 +160,15 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/analytics'
+    url: '/analytics'
+  },
+  {
+    icon: CalendarMonthIcon,
+    desc: 'Calendar',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url: '/calendar'
   }
 ]
 
@@ -179,7 +196,7 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   },
   {
     icon: InsightsIcon,
@@ -187,20 +204,17 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/analytics'
+    url: '/analytics'
+  },
+  {
+    icon: CalendarMonthIcon,
+    desc: 'Calendar',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url: '/calendar'
   }
 ]
-
-
-
-const reviewReservationReports = {
-  icon: ReviewsIcon,
-  desc: 'Reservation reports',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewReservationReportsAdmin'
-}
 
 const allRequests = {
   icon: FormatListBulletedIcon,
@@ -209,42 +223,6 @@ const allRequests = {
   badge: 0,
   subList: [],
   url: '/allRequestsCardsForAdmin'
-}
-
-const reviewRatingsFromClients = {
-  icon: StarHalfIcon,
-  desc: 'Review ratings',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewRatingsAdmin'
-}
-
-const reviewComplaints = {
-  icon: SentimentVeryDissatisfiedIcon,
-  desc: 'Review complaints',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewComplaintsAdmin'
-}
-
-const reviewDeleteAccountRequest = {
-  icon: PersonRemoveIcon,
-  desc: 'Delete account requests',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewDeleteAccountRequests'
-}
-
-const reviewNewAccountRequests = {
-  icon: PersonAddAlt1Icon,
-  desc: 'New account requests',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewNewAccountRequests'
 }
 
 const loyaltyProgram = {
@@ -276,23 +254,13 @@ const navbarSuperAdminList = [
     subList: [],
     url: '/addAdmin'
   },
-  reviewReservationReports,
-  reviewRatingsFromClients,
-  reviewComplaints,
-  reviewDeleteAccountRequest,
-  reviewNewAccountRequests,
   allRequests,
   loyaltyProgram,
   systemRevenue
 ]
 
 const navbarAdminList = [
-  ...navbarDefaultList,
-  reviewReservationReports,
-  reviewRatingsFromClients,
-  reviewComplaints,
-  reviewDeleteAccountRequest,
-  reviewNewAccountRequests,
+  ...navbarDefaultList,  
   allRequests,
   loyaltyProgram,
   systemRevenue
