@@ -31,6 +31,12 @@ public class CalendarController {
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
+    @GetMapping(value="/allForOwner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CalendarEntryDTO>> getCalendarEntriesForOwner(@PathVariable  Long id) {
+        List<CalendarEntryDTO> retVal = calendarService.getCalendarEntriesDTOByOwnerId(id);
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
     @GetMapping(value="/week/entity/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AnalyticsDTO>> getAnalyticsWeekForBookingEntity(@PathVariable  Long id) {
         List<AnalyticsDTO> retVal = calendarService.getAnalyticsWeekDTOByEntityId(id);

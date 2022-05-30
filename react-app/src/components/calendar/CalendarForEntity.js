@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import styles from './datePickerStyle.module.css';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import { useHistory } from "react-router-dom";
 
 
 
@@ -37,6 +38,8 @@ import {
     CurrentTimeIndicator,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { addNewUnavailableDate, checkOverlapForUnavailableDate, setUnavailablePeriodAsAvailable } from "../../service/UnavailablePeriodService";
+import { userLoggedInAsOwner } from "../../service/UserService";
+import { propsLocationStateFound } from "../forbiddenNotFound/notFoundChecker";
 
 
 const resources = [{
@@ -49,11 +52,12 @@ const resources = [{
     ]
 }];
 
-export default function CalendarForEntity() {
+export default function CalendarForEntity(props) {
 
 
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
 
+    const history = useHistory();
     const [data, setData] = useState();
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
@@ -91,7 +95,7 @@ export default function CalendarForEntity() {
 
     const sendUnavailableDateToServer = () => {
         let newPeriod = {
-            "entityId": 11,
+            "entityId": props.location.state.bookingEntityId,
             "startDate": createFormatedDateFromString(startDatePicker.toLocaleDateString()),
             "endDate": createFormatedDateFromString(endDatePicker.toLocaleDateString())
         };
@@ -171,7 +175,7 @@ export default function CalendarForEntity() {
 
 
         let newPeriod = {
-            "entityId": 11,
+            "entityId": props.location.state.bookingEntityId,
             "startDate": createFormatedDateFromString(startDatePicker.toLocaleDateString()),
             "endDate": createFormatedDateFromString(endDatePicker.toLocaleDateString())
         };
@@ -191,7 +195,6 @@ export default function CalendarForEntity() {
 
     }
 
-    // ===================================================== for adding =============================
     const [openModifyDialog, setOpenModifyDialog] = useState(false);
     const handleOnCloseModifyDialog = () => {
         setOpenModifyDialog(false);
@@ -199,7 +202,6 @@ export default function CalendarForEntity() {
     const handleOnOpenModifyDialog = () => {
         setOpenModifyDialog(true);
     }
-
 
 
     useEffect(() => {
@@ -217,11 +219,12 @@ export default function CalendarForEntity() {
     }
 
     useEffect(() => {
-        refreshPage();
+        if (userLoggedInAsOwner(history) && propsLocationStateFound(props, history))
+            refreshPage();
     }, []);
 
     const refreshPage = () => {
-        getCalendarValuesByBookintEntityId(11)
+        getCalendarValuesByBookintEntityId(props.location.state.bookingEntityId)
             .then(res => {
                 setData(res.data);
                 setIsLoadingData(false);
@@ -230,12 +233,10 @@ export default function CalendarForEntity() {
 
     const handleSetAvailableDate = (item) => {
         let obj = {
-            "entityId": 11,
+            "entityId": props.location.state.bookingEntityId,
             "startDate": item.startDate,
             "endDate": item.endDate
         };
-        console.log("ovo slajeeeeemmmm")
-        console.log(obj);
         setUnavailablePeriodAsAvailable(obj)
             .then(res => {
                 setTypeAlert("success");

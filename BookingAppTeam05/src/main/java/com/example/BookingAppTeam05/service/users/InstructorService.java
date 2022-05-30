@@ -21,4 +21,8 @@ public class InstructorService {
         Optional<Instructor> instructorResult =  instructorRepository.findById(id);
         return instructorResult.orElse(null);
     }
+
+    public Instructor getInstructorWithAdventuresById(Long id) {
+        return this.instructorRepository.getInstructorWithAdventuresById(id);
+    }
 }

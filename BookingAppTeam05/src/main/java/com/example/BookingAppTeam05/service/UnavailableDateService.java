@@ -82,7 +82,6 @@ public class UnavailableDateService {
 
     public UnavailableDateDTO addNewUnavailableDateForEntityId(UnavailableDateDTO newPeriod) {
         List<UnavailableDateDTO> all = getActiveUnavailableDateDTOsForEntityId(newPeriod.getEntityId());
-        if (all.size() == 0) return null;
 
         LocalDateTime npStart = newPeriod.getStartDate();
         LocalDateTime npEnd = newPeriod.getEndDate();
