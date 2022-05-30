@@ -102,14 +102,14 @@ export default function MyReservations() {
         }
         
         
-        getReservationsByClientId(getCurrentUser().id).then(res => {
-            let allRes = res.data.sort((a,b)=>new Date(b.startDate) - new Date(a.startDate));
+        getReservationsByClientId(getCurrentUser().id).then(result => {
+            let allRes = result.data.sort((a,b)=>new Date(b.startDate) - new Date(a.startDate));
             console.log(allRes);
             setReservations(allRes);
             setFilteredReservations(allRes);
             
             let newOpts = [];
-            for (let res of res.data){
+            for (let res of result.data){
                 let found = false;
                 for (let added of newOpts){
                     if (added === res.bookingEntity.name){

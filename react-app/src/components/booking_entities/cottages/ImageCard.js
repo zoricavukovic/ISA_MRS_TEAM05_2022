@@ -51,6 +51,7 @@ import { Paper, TextField, Link, ListItemText, InputAdornment, FormControl, Form
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import CreateReservationForClient from '../../reservations/CreateReservationForClient';
+import { findAllClientsWithActiveReservations} from '../../../service/ReservationService';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -127,7 +128,17 @@ export default function CardIm(props) {
     };
 
     function createReservationForClient() {
-       setOpenDialogCreate(true);
+        findAllClientsWithActiveReservations(props.cottageId).then(res => {
+            console.log(res.data);
+            if (res.data.length !== 0){
+                setOpenDialogCreate(true);
+            }
+            else{
+                setMessage("Don't have clients with active reservations.");
+                handleClick();
+            }
+        });
+       
     };
 
     function CottageAdditionalInfo(props) {

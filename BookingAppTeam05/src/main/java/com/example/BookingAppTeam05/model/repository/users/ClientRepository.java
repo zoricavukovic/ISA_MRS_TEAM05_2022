@@ -10,4 +10,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Override
     @Query("select u from Client u join fetch u.place p join fetch u.role r join fetch u.reservations join fetch u.watchedEntities where u.id=?1")
     Optional<Client> findById(Long aLong);
+
+    @Query("select u from Client u join fetch u.place p join fetch u.role r where u.id=?1")
+    Client findByIdWithoutReservationsAndWatchedEntities(Long id);
 }

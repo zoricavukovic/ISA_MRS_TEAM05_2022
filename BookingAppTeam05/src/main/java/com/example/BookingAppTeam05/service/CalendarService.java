@@ -97,13 +97,13 @@ public class CalendarService {
                 if (inSameCalendarWeek(reservation.getStartDate(), analyticsDTO.getStartDate())) {
                     found = true;
                     analyticsDTO.setNumOfReservationPerWeek(analyticsDTO.getNumOfReservationPerWeek() + 1);
-                    analyticsDTO.setSumCost(analyticsDTO.getSumCost() + reservation.getCost());
+                    analyticsDTO.setSumCost(analyticsDTO.getSumCost() + reservation.getCost() + reservation.getOwnerBonus());
                 }
             }
             if (!found){
                 retVal.add(new AnalyticsDTO(reservation.getStartDate(), reservation.getEndDate(),
                         customFormatter.format(reservation.getStartDate()),1, 0, 0,
-                        reservation.getCost()));
+                        reservation.getCost() + reservation.getOwnerBonus()));
             }
         }
         return retVal;
@@ -116,13 +116,13 @@ public class CalendarService {
                 if (reservation.getStartDate().getMonth().equals(analyticsDTO.getStartDate().getMonth())) {
                     found = true;
                     analyticsDTO.setNumOfReservationPerMonth(analyticsDTO.getNumOfReservationPerMonth() + 1);
-                    analyticsDTO.setSumCost(analyticsDTO.getSumCost() + reservation.getCost());
+                    analyticsDTO.setSumCost(analyticsDTO.getSumCost() + reservation.getCost() + reservation.getOwnerBonus());
                 }
             }
             if (!found){
                 retVal.add(new AnalyticsDTO(reservation.getStartDate(), reservation.getEndDate(),
                         reservation.getStartDate().getMonth().toString(),0,
-                        1, 0, reservation.getCost()));
+                        1, 0, reservation.getCost() + reservation.getOwnerBonus()));
             }
         }
         return retVal;
@@ -136,12 +136,12 @@ public class CalendarService {
                 if (reservation.getStartDate().getYear() == analyticsDTO.getStartDate().getYear()) {
                     found = true;
                     analyticsDTO.setNumOfReservationPerYear(analyticsDTO.getNumOfReservationPerYear() + 1);
-                    analyticsDTO.setSumCost(analyticsDTO.getSumCost() + reservation.getCost());
+                    analyticsDTO.setSumCost(analyticsDTO.getSumCost() + reservation.getCost() + reservation.getOwnerBonus());
                 }
             }
             if (!found){
                 retVal.add(new AnalyticsDTO(reservation.getStartDate(), reservation.getEndDate(), Integer.toString(reservation.getStartDate().getYear()),
-                        0, 0, 1, reservation.getCost()));
+                        0, 0, 1, reservation.getCost() + reservation.getOwnerBonus()));
             }
         }
         return retVal;

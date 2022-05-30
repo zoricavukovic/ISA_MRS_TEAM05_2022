@@ -92,10 +92,10 @@ function ShowReservationsOwner() {
         else if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR"){
             type = "ADVENTURE";
         }
-        getReservationsByOwnerId(getCurrentUser().id, type).then(res => {
-            setReservations(res.data);
+        getReservationsByOwnerId(getCurrentUser().id, type).then(result => {
+          
             let newOpts = [];
-            for (let res of res.data){
+            for (let res of result.data){
                 let found = false;
                 for (let added of newOpts){
                     if (added === res.bookingEntity.name){
@@ -105,6 +105,7 @@ function ShowReservationsOwner() {
                 }
                 if (found === false) {newOpts.push(res.bookingEntity.name);}
             }
+            setReservations(result.data);
             setLoading(false);
             setOptions(newOpts);
         })
@@ -135,7 +136,7 @@ function ShowReservationsOwner() {
     
     const displayReservations = reservations
     .map(res=> {
-        console.log(res);
+        
         return <ReservationBasicCard reservation={res} reservationId={res.id} details="true"></ReservationBasicCard>
     })
 

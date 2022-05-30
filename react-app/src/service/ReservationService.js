@@ -20,6 +20,10 @@ export function addReservation(reservationDTO){
     return api.post('reservations/addReservation', reservationDTO);
 }
 
+export function addReservationForClient(reservationDTO){
+    return api.post('reservations/addReservationForClient', reservationDTO);
+}
+
 export function getReservationsByClientId(id){
     return api.get('reservations/client/'+id);
 }
@@ -28,3 +32,6 @@ export function cancelReservationById(reservationId){
     return api.post('reservations/cancel/'+reservationId);
 }
 
+export function findAllClientsWithActiveReservations(bookingEntityId) {
+    return api.get('reservations/bookingEntity/' + bookingEntityId);
+}

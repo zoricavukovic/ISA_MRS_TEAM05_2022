@@ -250,6 +250,7 @@ INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client
 VALUES
     ('2022-05-14 5:00 am',15,17,1,8,'False','False', 1, 255, 5, 5, 50),
     ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 780, 10, 10, 200),
+    ('2022-05-29 7:00 pm',5,3,1,9,'False','False', 1, 80, 5, 5, 30),
     ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 120, 5, 5, 60);
 
 
@@ -436,3 +437,10 @@ VALUES (1,2, 30,60,100, 1,5,10,2,6,11,'2022-03-04'),
 INSERT INTO public.system_revenue_percentages(percentage, start_date)
 VALUES (10, '2022-03-04'),
        (20, '2022-05-05');
+
+
+
+--cotages res
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
+VALUES
+    ('2022-05-29 7:00 pm',5,3,1,9,'False','False', 1, 80, 5, 5, 30);

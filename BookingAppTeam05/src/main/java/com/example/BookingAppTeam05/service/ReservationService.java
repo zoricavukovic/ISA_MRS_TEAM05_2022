@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service;
 
+import com.example.BookingAppTeam05.dto.ReservationForClientDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.dto.users.ClientDTO;
@@ -198,8 +199,8 @@ public class ReservationService {
             List<Long> subscribersIds = subscriberRepository.findAllSubscribersForEntityId(res.getBookingEntity().getId());
             List<Client> subscribers = new ArrayList<>();
             for (Long s: subscribersIds){
-                Client client = (Client) userRepository.findUserById(s);
-                subscribers.add(client);
+                Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(s);
+                if (client != null) subscribers.add(client);
             }
             if (sendMail(res, subscribers).equals("error")) return null;
             return res;
@@ -255,9 +256,43 @@ public class ReservationService {
             if (entity == null) return null;
             res.setBookingEntity(entity);
             res.setVersion(1);
-            Client client = clientRepository.findById(reservationDTO.getClient().getId()).orElse(null);
+            Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
             res.setClient(client);
             reservationRepository.save(res);
+            return res;
+        }catch (OptimisticLockException e){
+            System.out.println("EXCEPTION HAS HAPPENED!!!!");
+        }
+        return null;
+    }
+
+    public Reservation addReservationForClient(ReservationForClientDTO reservationDTO) {
+        try{
+            Reservation res = new Reservation();
+
+            res.setStartDate(reservationDTO.getStartDate());
+            res.setCost(reservationDTO.getCost());
+            res.setCanceled(false);
+            res.setFastReservation(false);
+            res.setNumOfDays(reservationDTO.getNumOfDays());
+            res.setNumOfPersons(reservationDTO.getNumOfPersons());
+            Set<AdditionalService> aServices = new HashSet<>();
+            for (AdditionalService as:reservationDTO.getAdditionalServices()) {
+                aServices.add(additionalServiceRepository.findById(as.getId()).orElse(null));
+            }
+            res.setAdditionalServices(aServices);
+            BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
+            if (entityDTO == null) return null;
+            BookingEntity entity = bookingEntityRepository.getEntityById(entityDTO.getId());
+            if (entity == null) return null;
+            res.setBookingEntity(entity);
+            res.setVersion(1);
+            String[] tokens = reservationDTO.getClient().split(" ");
+            Long clientId = Long.parseLong(tokens[2].substring(1, tokens[2].length()-1));
+            Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(clientId);
+            res.setClient(client);
+            reservationRepository.save(res);
+            emailService.sendNotificationAboutResToClient(client, res);
             return res;
         }catch (OptimisticLockException e){
             System.out.println("EXCEPTION HAS HAPPENED!!!!");
@@ -286,8 +321,13 @@ public class ReservationService {
     }
 
     public List<String> findAllClientsWithActiveReservations(Long bookingEntityId) {
+        List<Reservation> reservations = new ArrayList<>();
+        reservations = reservationRepository.findAllRegularAndFastReservationsForEntityIdWithClient(bookingEntityId);
         List<String> clients = new ArrayList<>();
-        //clients = reservationRepository.findAllClientsWithActiveReservations(bookingEntityId);
+        for (Reservation r : reservations) {
+            if (r.getStartDate().isBefore(LocalDateTime.now()) && r.getEndDate().isAfter(LocalDateTime.now()))
+                clients.add(r.getClient().getFirstName() + " " + r.getClient().getLastName() + " (" + r.getClient().getId() + ")");
+        }
         return clients;
     }
 

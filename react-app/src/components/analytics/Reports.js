@@ -93,6 +93,7 @@ export default function Reports() {
                   let numOfReservation = [];
                   let sum = [];
                   for (let res of reservations.data){
+                    console.log(res);
                       cat.push(res.textValue);
                       numOfReservation.push(res.numOfReservationPerWeek);
                       sum.push(res.sumCost);
