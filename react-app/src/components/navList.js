@@ -11,6 +11,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import EuroIcon from '@mui/icons-material/Euro';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const navbarDefaultList = [
   {
@@ -79,7 +80,7 @@ const navbarClientList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/myReservations'
+    url: '/myReservations'
   }
 ]
 
@@ -107,7 +108,7 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   },
   {
     icon: InsightsIcon,
@@ -115,7 +116,15 @@ const navbarCotOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/analytics'
+    url: '/analytics'
+  },
+  {
+    icon: CalendarMonthIcon,
+    desc: 'Calendar',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url: '/calendar'
   }
 ]
 
@@ -143,7 +152,7 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   },
   {
     icon: InsightsIcon,
@@ -151,7 +160,15 @@ const navbarShipOwnList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/analytics'
+    url: '/analytics'
+  },
+  {
+    icon: CalendarMonthIcon,
+    desc: 'Calendar',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url: '/calendar'
   }
 ]
 
@@ -179,7 +196,7 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/showReservationsOwner'
+    url: '/showReservationsOwner'
   },
   {
     icon: InsightsIcon,
@@ -187,7 +204,15 @@ const navbarInstList = [
     secondDesc: '',
     badge: 0,
     subList: [],
-    url:'/analytics'
+    url: '/analytics'
+  },
+  {
+    icon: CalendarMonthIcon,
+    desc: 'Calendar',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url: '/calendar'
   }
 ]
 
@@ -254,6 +279,15 @@ const loyaltyProgram = {
   badge: 0,
   subList: [],
   url: '/loyaltyProgram'
+}
+
+const calendar = {
+  icon: CalendarMonthIcon,
+  desc: 'Calendar',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/calendar'
 }
 
 

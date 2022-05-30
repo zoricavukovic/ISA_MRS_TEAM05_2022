@@ -7,6 +7,7 @@ import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
+import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,14 @@ public class CalendarService {
     private BookingEntityService bookingEntityService;
     private ReservationService reservationService;
     private PricelistService pricelistService;
+    private UserService userService;
 
     @Autowired
-    public CalendarService(BookingEntityService bookingEntityService, ReservationService reservationService, PricelistService pricelistService) {
+    public CalendarService(BookingEntityService bookingEntityService, ReservationService reservationService, PricelistService pricelistService, UserService userService) {
         this.bookingEntityService = bookingEntityService;
         this.reservationService = reservationService;
         this.pricelistService = pricelistService;
+        this.userService = userService;
     }
 
     public List<CalendarEntryDTO> getCalendarEntriesDTOByEntityId(Long id) {
@@ -42,6 +45,19 @@ public class CalendarService {
 
         List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(bookingEntity.getId());
         fillResultWithFastReservations(retVal, fastReservations);
+        return retVal;
+    }
+
+    public List<CalendarEntryDTO> getCalendarEntriesDTOByOwnerId(Long id) {
+        List<CalendarEntryDTO> retVal = new ArrayList<>();
+        List<BookingEntity> bookingEntities = userService.getBookingEntitiesByOwnerId(id);
+        for (BookingEntity b : bookingEntities) {
+            List<Reservation> reservations = reservationService.findAllReservationsWithClientsForEntityId(b.getId());
+            fillResultWithReservations(retVal, reservations);
+
+            List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(b.getId());
+            fillResultWithFastReservations(retVal, fastReservations);
+        }
         return retVal;
     }
 
