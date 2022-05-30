@@ -250,23 +250,7 @@ INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client
 VALUES
     ('2022-04-20 5:00 am',8,17,1,8,'False','False', 1, 255, 5, 5, 50),
     ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 780, 10, 10, 200),
-    ('2022-05-29 7:00 pm',1,5,1,7,'False','False', 1, 120, 5, 5, 60),
-
-    ('2022-06-03 8:00 pm',2,3,1,7,'False','False', 1, 120, 5, 5, 60),
-    ('2022-06-07 9:00 pm',4,4,1,8,'False','False', 1, 120, 5, 5, 60),
-    ('2022-06-28 5:00 pm',7,2,1,9,'False','False', 1, 120, 5, 5, 60),
-
-    ('2022-05-20 9:00 pm',2,5,2,7,'False','False', 1, 120, 5, 5, 60),
-    ('2022-05-24 9:00 pm',4,1,2,8,'False','False', 1, 120, 5, 5, 60),
-    ('2022-06-01 5:00 pm',10,2,2,8,'False','False', 1, 120, 5, 5, 60),
-    ('2022-06-12 7:00 am',1,5,2,9,'False','False', 1, 120, 5, 5, 60),
-    ('2022-06-20 7:00 am',2,7,2,9,'False','False', 1, 120, 5, 5, 60),
-
-    ('2022-05-20 8:00 am',1,2,3,7,'False','False', 1, 120, 5, 5, 60),
-    ('2022-05-22 8:00 am',2,1,3,8,'False','False', 1, 120, 5, 5, 60),
-    ('2022-05-28 8:00 am',15,4,3,9,'False','False', 1, 120, 5, 5, 60),
-    ('2022-06-25 9:00 am',5,2,3,8,'False','False', 1, 120, 5, 5, 60);
-
+    ('2022-05-29 7:00 pm',1,5,1,7,'False','False', 1, 120, 5, 5, 60);
 
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
 VALUES
@@ -376,6 +360,33 @@ VALUES
     ('commen5', 1.0, 8, false, false, '2022-05-14 8:00 am'),
     ('commen6', 0.5, 9, true, true,'2022-05-14 8:00 am'),
     ('commen7', 5.0, 10, false, false,'2022-05-14 8:00 am');
+
+
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
+VALUES
+('2022-06-03 8:00 pm',2,3,1,7,'False','False', 1, 120, 5, 5, 60),
+('2022-06-07 9:00 pm',4,4,1,8,'False','False', 1, 120, 5, 5, 60),
+('2022-06-28 5:00 pm',7,2,1,9,'False','False', 1, 120, 5, 5, 60),
+
+('2022-05-20 9:00 pm',2,5,2,7,'False','False', 1, 120, 5, 5, 60),
+('2022-05-24 9:00 pm',4,1,2,8,'False','False', 1, 120, 5, 5, 60),
+('2022-06-01 5:00 pm',10,2,2,8,'False','False', 1, 120, 5, 5, 60),
+('2022-06-12 7:00 am',1,5,2,9,'False','False', 1, 120, 5, 5, 60),
+('2022-06-20 7:00 am',2,7,2,9,'False','False', 1, 120, 5, 5, 60),
+
+('2022-05-20 8:00 am',1,2,3,7,'False','False', 1, 120, 5, 5, 60),
+('2022-05-22 8:00 am',2,1,3,8,'False','False', 1, 120, 5, 5, 60),
+('2022-05-28 8:00 am',15,4,3,9,'False','False', 1, 120, 5, 5, 60),
+('2022-06-25 9:00 am',5,2,3,8,'False','False', 1, 120, 5, 5, 60),
+
+('2021-12-12 8:00 am',5,2,3,7,'False','False', 1, 120, 5, 5, 60),
+('2021-12-30 8:00 am',7,1,3,8,'False','False', 1, 120, 5, 5, 60),
+('2021-12-25 8:00 am',15,4,3,9,'False','False', 2, 120, 5, 5, 60),
+('2021-12-10 9:00 am',5,2,3,8,'False','False', 2, 120, 5, 5, 60),
+('2022-12-20 9:00 am',20,2,3,8,'False','False', 2, 120, 5, 5, 60);
+
+
+
 
 INSERT INTO reservation_additional_service(reservation_id, additional_service_id)
 VALUES

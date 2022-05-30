@@ -216,17 +216,6 @@ const navbarInstList = [
   }
 ]
 
-
-
-const reviewReservationReports = {
-  icon: ReviewsIcon,
-  desc: 'Reservation reports',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewReservationReportsAdmin'
-}
-
 const allRequests = {
   icon: FormatListBulletedIcon,
   desc: 'All requests',
@@ -236,42 +225,6 @@ const allRequests = {
   url: '/allRequestsCardsForAdmin'
 }
 
-const reviewRatingsFromClients = {
-  icon: StarHalfIcon,
-  desc: 'Review ratings',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewRatingsAdmin'
-}
-
-const reviewComplaints = {
-  icon: SentimentVeryDissatisfiedIcon,
-  desc: 'Review complaints',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewComplaintsAdmin'
-}
-
-const reviewDeleteAccountRequest = {
-  icon: PersonRemoveIcon,
-  desc: 'Delete account requests',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewDeleteAccountRequests'
-}
-
-const reviewNewAccountRequests = {
-  icon: PersonAddAlt1Icon,
-  desc: 'New account requests',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/reviewNewAccountRequests'
-}
-
 const loyaltyProgram = {
   icon: MilitaryTechIcon,
   desc: 'Loyalty program',
@@ -279,15 +232,6 @@ const loyaltyProgram = {
   badge: 0,
   subList: [],
   url: '/loyaltyProgram'
-}
-
-const calendar = {
-  icon: CalendarMonthIcon,
-  desc: 'Calendar',
-  secondDesc: '',
-  badge: 0,
-  subList: [],
-  url: '/calendar'
 }
 
 
@@ -310,23 +254,13 @@ const navbarSuperAdminList = [
     subList: [],
     url: '/addAdmin'
   },
-  reviewReservationReports,
-  reviewRatingsFromClients,
-  reviewComplaints,
-  reviewDeleteAccountRequest,
-  reviewNewAccountRequests,
   allRequests,
   loyaltyProgram,
   systemRevenue
 ]
 
 const navbarAdminList = [
-  ...navbarDefaultList,
-  reviewReservationReports,
-  reviewRatingsFromClients,
-  reviewComplaints,
-  reviewDeleteAccountRequest,
-  reviewNewAccountRequests,
+  ...navbarDefaultList,  
   allRequests,
   loyaltyProgram,
   systemRevenue
