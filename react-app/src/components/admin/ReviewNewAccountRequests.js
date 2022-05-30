@@ -117,6 +117,24 @@ function ReviewDialog(props) {
                     </div>
                     <UserInfoGrid userData={props.newRequest.user} />
                     <br />
+                    <div>
+                        <h3 style={{ color: 'rgb(5, 30, 52)' }}>User reason for creating acount</h3>
+                        <Box style={{ width: '100%', display: "flex", gap: '4px', flexDirection: "row", color: 'white', backgroundColor: 'rgba(17,16,29,255)', borderTopRightRadius: '10px', borderBottomRightRadius: '10px', borderTopLeftRadius: '20px' }}>
+                            <Avatar sx={{ color: 'white', bgcolor: 'green' }}>{props.newRequest.user.firstName[0]}</Avatar>
+                            <Typography variant="subtitle1">
+                                {props.newRequest.user.firstName + ' ' + props.newRequest.user.lastName}
+                            </Typography>
+                        </Box>
+                        <TextareaAutosize
+                            aria-label="minimum height"
+                            minRows={3}
+                            value={props.newRequest.user.reason}
+                            name="reason"
+                            style={{ width: '98%' }}
+                            disabled
+                            readOnly
+                        />
+                    </div>
                     <Divider sx={{ borderBottomWidth: 5 }} />
                     <br />
                     <Typography>Check the box if you want to accept this request</Typography>

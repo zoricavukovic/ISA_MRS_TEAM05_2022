@@ -121,20 +121,20 @@ VALUES
 
 
 ---------------zahtevi novih korisnika na cekanju----------------------------
-INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
+INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, reason)
 VALUES
-(nextval('users_id_gen'), 'True','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++noviInst1@gmail.com', 'Baki', 'Bakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
-(nextval('users_id_gen'), 'True', 'fdsaf ds f', '1971-12-20', 'bookingapp05mzr++noviInst2@gmail.com', 'Daki', 'Dakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5);
+(nextval('users_id_gen'), 'True','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++noviInst1@gmail.com', 'Baki', 'Bakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5, 'i want to create account1'),
+(nextval('users_id_gen'), 'True', 'fdsaf ds f', '1971-12-20', 'bookingapp05mzr++noviInst2@gmail.com', 'Daki', 'Dakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5, 'i want to create account2');
 
-INSERT INTO ship_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id, deleted, role_id, captain)
+INSERT INTO ship_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id, deleted, role_id, captain, reason)
 VALUES
-(nextval('users_id_gen'), 'True','Ap #392-5411 Ac, St.','2005-03-15','bookingapp05mzr++noviShipOwner1@gmail.com','Dana','Danic',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',1, 'False', 4, true),
-(nextval('users_id_gen'), 'True','3598 Ut, St.','1994-12-09','bookingapp05mzr++noviShipOwner2@gmail.com','Ratko','Rakic',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',2, 'False', 4, false);
+(nextval('users_id_gen'), 'True','Ap #392-5411 Ac, St.','2005-03-15','bookingapp05mzr++noviShipOwner1@gmail.com','Dana','Danic',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',1, 'False', 4, true, 'i want to create account3'),
+(nextval('users_id_gen'), 'True','3598 Ut, St.','1994-12-09','bookingapp05mzr++noviShipOwner2@gmail.com','Ratko','Rakic',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',2, 'False', 4, false, 'i want to create account4');
 
-INSERT INTO cottage_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number, place_id, deleted, role_id)
+INSERT INTO cottage_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number, place_id, deleted, role_id, reason)
 VALUES
-(nextval('users_id_gen'), 'True','Ap #225-738 At, Rd.','1979-03-13','bookingapp05mzr++noviCottageOwner1@gmail.com','Bagi','Bagic',65,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','052-38-778-82',1, 'False', 3),
-(nextval('users_id_gen'), 'True','4502 Semper Ave','2001-01-22','bookingapp05mzr++noviCottageOwner2@gmail.com','Dari','Daric',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',5, 'False', 3);
+(nextval('users_id_gen'), 'True','Ap #225-738 At, Rd.','1979-03-13','bookingapp05mzr++noviCottageOwner1@gmail.com','Bagi','Bagic',65,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','052-38-778-82',1, 'False', 3, 'i want to create account5'),
+(nextval('users_id_gen'), 'True','4502 Semper Ave','2001-01-22','bookingapp05mzr++noviCottageOwner2@gmail.com','Dari','Daric',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',5, 'False', 3, 'i want to create account6');
 ------------------------------------------------------------------------------------
 
 

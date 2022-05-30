@@ -212,14 +212,20 @@ public class UserService {
         switch (owner.getRole().getName()) {
             case "ROLE_COTTAGE_OWNER": {
                 CottageOwner cottageOwner = cottageOwnerService.getCottageOwnerWithCottagesById(id);
+                if (cottageOwner.getCottages() == null || cottageOwner.getCottages().size() == 0)
+                    return new ArrayList<>();
                 return new ArrayList<>(cottageOwner.getCottages());
             }
             case "ROLE_SHIP_OWNER": {
                 ShipOwner shipOwner = shipOwnerService.getShipOwnerWithShipsById(id);
+                if (shipOwner.getShips() == null || shipOwner.getShips().size() == 0)
+                    return new ArrayList<>();
                 return new ArrayList<>(shipOwner.getShips());
             }
             case "ROLE_INSTRUCTOR": {
                 Instructor instructor = instructorService.getInstructorWithAdventuresById(id);
+                if (instructor.getAdventures() == null || instructor.getAdventures().size() == 0)
+                    return new ArrayList<>();
                 return new ArrayList<>(instructor.getAdventures());
             }
             default: {

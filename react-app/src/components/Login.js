@@ -19,6 +19,10 @@ export default function Login({setCurrentUser}) {
         }));
     }
 
+    const goToRegistration = () => {
+        history.push('/registration');
+    }
+
     const submit = (event) => {
         event.preventDefault()
         console.log(formData);
@@ -113,9 +117,11 @@ export default function Login({setCurrentUser}) {
                     </Link>
                     </Typography> */}
                     <Typography > Do you have an account?&nbsp;
-                        <Link href="registration" color='rgb(5, 30, 52)'>
-                            Register
-                        </Link>
+                        <Button onClick={goToRegistration}>
+                            <Link color='rgb(5, 30, 52)'>
+                                Register
+                            </Link>    
+                        </Button>
                     </Typography>
                     
                 </Paper>
