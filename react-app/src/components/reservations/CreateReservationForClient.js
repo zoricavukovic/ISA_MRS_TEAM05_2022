@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Grid, Paper, Avatar, TextField, Button, Typography, Link, Checkbox, FormControlLabel, ListItemText, InputAdornment, FormControl, FormLabel, FormGroup, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ListItem } from '@mui/material'
+import { Grid, Paper, Avatar, TextField, Button, Typography, Link, Checkbox, FormControlLabel, ListItemText, InputAdornment, FormControl, FormLabel, FormGroup, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ListItem, Autocomplete } from '@mui/material'
 import { useHistory } from 'react-router-dom';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -7,12 +7,13 @@ import { format } from "date-fns";
 import { DateRange,Calendar } from 'react-date-range';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined } from '@mui/icons-material';
+import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined} from '@mui/icons-material';
 import { getBookingEntityById } from '../../service/BookingEntityService';
 import { addReservation } from '../../service/ReservationService';
 import { getCurrentUser } from '../../service/AuthService';
+import { Person } from '@mui/icons-material';
 
-export default function NewReservationPage(props) {
+export default function CreateReservationForClient(props) {
     const [type, setType] = useState("");
     const [openDate,setOpenDate] = useState(false);
     const [personNumber,setPersonNumber] = useState(1);
@@ -29,6 +30,12 @@ export default function NewReservationPage(props) {
     const [maxNumOfPersons, setMaxNumOfPersons] = useState(10);
     const history = useHistory();
     const [reservationDTO,setReservationDTO] = useState({});
+
+    const [openDialogCreate, setOpenDialogCreate] = React.useState(props.openDialog);
+
+    const handleCloseDialogCreate = () => {
+        setOpenDialogCreate(false);
+    };
 
     var availableTimes = [{
         text:"9 AM",
@@ -58,10 +65,19 @@ export default function NewReservationPage(props) {
         key: 'selection',
       });
 
+    const [selectedClientId, setSelectedClientId] = useState();
+    const clientOnChange = (event, newValue) => {
+        event.preventDefault();
+        console.log(newValue);
+        if (newValue != null && newValue != undefined && newValue != '') {
+            setSelectedClientId(newValue.id);
+        } else {
+            setSelectedClientId(null);
+        }
+    }
+
     useEffect(() => {
-        const entityId = props.history.location.state.bookingEntityId;
-        console.log(entityId);
-        getBookingEntityById(entityId).then(res => {
+        getBookingEntityById(props.bookingEntityId).then(res => {
             console.log("+++++++++ ENTITY+++++++");
             console.log(res.data);
             res.data.pricelists.sort(function (a, b) {
@@ -87,36 +103,12 @@ export default function NewReservationPage(props) {
                 unaDates.push(new Date(unDate[0],unDate[1]-1,unDate[2],unDate[3],unDate[4]));
             setUnavailableDates(unaDates);
             //findUnavailableDates(res.data);
-            let searchParams = null;
-            if(props.history.location.state != null || props.history.location.state.searchParams != null)
-                 searchParams = props.history.location.state.searchParams;
             
-            if(Object.keys(searchParams).length === 0){
-                if(res.data.entityType === "ADVENTURE")
-                    findNextAvailableDate(unaDates);
-                else
-                    findNextAvailableDateRange(unaDates);
-            }
-            else
-                setFieldsWithSearchedParams(searchParams);
             setLoaded(true);
             setPrice(res.data.pricelists[0].entityPricePerPerson);
             setType(res.data.entityType);
         });
     }, []);
-
-    const setFieldsWithSearchedParams =(searchParams)=> {
-        if (searchParams.endDate == null)
-            setStartDate(searchParams.startDate);
-        else
-            setSelectionRange({
-                startDate: searchParams.startDate,
-                endDate: searchParams.endDate,
-                key: 'selection'
-            });
-        if (!isNaN(searchParams.numOfPersons) && searchParams.numOfPersons != null)
-            setPersonNumber(searchParams.numOfPersons);
-    }
 
     const findUnavailableDates = (bookEntity)=>{
         var uDates = [];
@@ -384,15 +376,21 @@ export default function NewReservationPage(props) {
 
 
     return (
-        <div className='App'>
+        <Dialog
+        open={props.openDialog}
+        onClose={handleCloseDialogCreate}
+        style={{ margin: '1% auto 1% auto', padding: '1%', width: '50%', borderRadius: '10px' }}
+        fullWidth
+        maxWidth="sm"
+    >
             <Grid >
                 <Paper elevation={10} style={paperStyle}>
                     <Grid style={{margin:'10px 10px'}} align='left'>
                         {/* <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar> */}
-                        <h2>Reservation</h2>
+                        <h2>Create Reservation For Client</h2>
                     </Grid>
                     <Dialog open={openDialog} onClose={handleCloseDialog}>
-                        <DialogTitle>Please Confirm Reservation</DialogTitle>
+                        <DialogTitle>Please Confirm Reservation For Client</DialogTitle>
                         <DialogContent>
                             {isLoaded &&
                             <DialogContentText>
@@ -444,6 +442,26 @@ export default function NewReservationPage(props) {
                                      </div>}
                         </>
                         }
+                         <Autocomplete
+                            disablePortal
+                            id="client"
+                            options={[]}
+                            style={{margin:"2%", marginRight:'15%'}}
+                            onChange={clientOnChange}
+                            renderInput={(params) => <TextField {...params} label="Client" 
+                                                        placeholder="Client"
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <Person />
+                                                                </InputAdornment>
+                                                            )
+                                                        }}
+                                                    />}
+                            required
+                            isOptionEqualToValue={(option, value) => option.label === value.label}
+                        />
                         <div style={{zIndex:1}}>
                             <Grid>
                                 <RemoveCircleOutlined style={{marginTop:'30px', width:32, height:32}} onClick={()=>personNumber > 1 && setPersonNumber(personNumber-1)}/>
@@ -464,7 +482,7 @@ export default function NewReservationPage(props) {
                                 {
                                     isLoaded &&
                                     <RadioGroup
-                                    style={{margin:"10px 20px"}}
+                                    style={{margin:"10px 10px"}}
                                     defaultValue={checkedTime.value}
                                     row
                                     onChange={radioButtonChanged}
@@ -497,6 +515,6 @@ export default function NewReservationPage(props) {
                     
                 </Paper>
             </Grid>
-        </div>
+        </Dialog>
     )
 }

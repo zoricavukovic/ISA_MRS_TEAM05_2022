@@ -35,6 +35,22 @@ import { URL_PICTURE_PATH } from '../../../service/PictureService';
 import { propsLocationStateFound } from '../../forbiddenNotFound/notFoundChecker';
 import { checkIfCanEditEntityById } from '../../../service/BookingEntityService';
 import RenderImageSlider from '../../image_slider/RenderImageSlider';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import Avatar from '@mui/material/Avatar';
+import Dialog from '@mui/material/Dialog';
+import { Person } from '@mui/icons-material';
+import { format } from "date-fns";
+import { DateRange,Calendar } from 'react-date-range';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined } from '@mui/icons-material';
+import { getBookingEntityById } from '../../../service/BookingEntityService';
+import { addReservation } from '../../../service/ReservationService';
+import { getCurrentUser } from '../../../service/AuthService';
+import { Paper, TextField, Link, ListItemText, InputAdornment, FormControl, FormLabel, FormGroup, DialogTitle, DialogContent, DialogContentText, DialogActions, ListItem, Autocomplete } from '@mui/material';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import CreateReservationForClient from '../../reservations/CreateReservationForClient';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -110,6 +126,10 @@ export default function CardIm(props) {
 
     };
 
+    function createReservationForClient() {
+       setOpenDialogCreate(true);
+    };
+
     function CottageAdditionalInfo(props) {
         return (
             <CardContent>
@@ -140,6 +160,11 @@ export default function CardIm(props) {
         )
     }
 
+    //============================= DIALOG =====================================
+    //----------------------------------------------------
+    const [openDialogCreate, setOpenDialogCreate] = React.useState(false);
+
+    //=======================================================================================
 
     function RenderRulesOfConduct(props) {
         return (
@@ -185,6 +210,8 @@ export default function CardIm(props) {
     if (isLoadingCottage || isLoadingPricelist) { return <div className="App">Loading...</div> }
     return (
         <Card style={{ margin: "1% 9% 1% 9%" }} sx={{}}>
+            <CreateReservationForClient bookingEntityId={props.cottageId} openDialog={openDialogCreate}/>
+        
             <RenderImageSlider pictures={cottageBasicData.pictures}/>
             <CardHeader
 
@@ -209,6 +236,9 @@ export default function CardIm(props) {
                 </IconButton>
                 <IconButton value="module" aria-label="module" onClick={showFastReservations}>
                     <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
+                </IconButton>
+                <IconButton value="module" aria-label="module" onClick={createReservationForClient}>
+                    <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
                 </IconButton>
 
                 <ExpandMore

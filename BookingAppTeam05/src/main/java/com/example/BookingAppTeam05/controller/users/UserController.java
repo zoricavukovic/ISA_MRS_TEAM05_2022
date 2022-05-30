@@ -94,7 +94,7 @@ public class UserController {
 
     @GetMapping(value="/checkIfEmailAlreadyExist/{email}")
     public ResponseEntity<String> checkIfCanEdit(@PathVariable String email) {
-        User user = userService.findUserByUsername(email);
+        User user = userService.findUserByEmail(email);
         if (user != null)
             return new ResponseEntity<String>("This email is already taken.", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>("Email is unique.", HttpStatus.OK);

@@ -20,6 +20,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u join fetch u.place p join fetch u.role r where u.email=?1 and u.deleted=false")
     public User findByEmailAndNotYetActivated(String email);
 
+    @Query("select u from User u join fetch u.place p join fetch u.role r where u.email=?1")
+    User findByEmailAllUser(String email);
+
     @Query(value = "update User u SET u.deleted = true where u.id = ?1")
     @Modifying
     void logicalDeleteUserById(Long id);

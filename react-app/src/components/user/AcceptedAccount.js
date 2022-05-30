@@ -11,6 +11,7 @@ export default function AcceptedAccount() {
     const {email} = useParams();
     const history = useHistory();
     const [isLoading, setLoading] = useState(true);
+    const [status, setStatus] = useState();
 
     const paperStyle = { padding: 20, height: '70vh', width: 400, margin: "5% auto" }
  
@@ -25,10 +26,12 @@ export default function AcceptedAccount() {
         }
         activateAccount(email)
         .then(res => {
-           setLoading(false);
+            setStatus(1);
+            setLoading(false);
         })
         .catch(res => {
-            return;
+            setStatus(0);
+            setLoading(false);
         });
       }, []);
 
@@ -37,6 +40,7 @@ export default function AcceptedAccount() {
     }
     return (
         <div className='App'>
+        {status === 1 ? ( 
             <Grid >
                 <Paper elevation={10} style={paperStyle}>
                     <Grid align='center'>
@@ -62,6 +66,18 @@ export default function AcceptedAccount() {
                     </Grid>
                 </Paper>
             </Grid>
+        ):(
+            <Grid>
+                 <Paper elevation={10} style={paperStyle}>
+                    <Grid align='center'>
+                        
+                        <h2>This email is already activated or not exist.</h2>
+                    
+                    </Grid>
+                    
+                </Paper>
+            </Grid>
+        )}
         </div>
     )
 }

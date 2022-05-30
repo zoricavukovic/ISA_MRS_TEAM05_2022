@@ -70,8 +70,11 @@ public class UserService {
 
     public User save(User user){return userRepository.save(user);}
 
-    public User findUserByUsername(String username) throws UsernameNotFoundException {
+    public User findUserByEmail(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username);
+    }
+    public User findUserByEmailCanBeDeletedAndNotYetActivated(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmailAllUser(username);
     }
 
     public boolean passwordIsCorrect(User user, String checkPass) {
@@ -104,7 +107,7 @@ public class UserService {
         Place place = placeService.getPlaceById(userDTO.getPlace().getId());
         if (place == null)
             return "Can't find place with id: " + userDTO.getPlace().getId();
-        if (findUserByUsername("bookingapp05mzr++" + userDTO.getEmail()) != null)
+        if (findUserByEmailCanBeDeletedAndNotYetActivated("bookingapp05mzr++" + userDTO.getEmail()) != null)
             return "User with email address: " + userDTO.getEmail() + " already exist.";
 
         String password = getHashedNewUserPassword(userDTO.getPassword());

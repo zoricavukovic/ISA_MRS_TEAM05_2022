@@ -82,6 +82,14 @@ public class ReservationController {
         return reservationDTOs;
     }
 
+    @GetMapping(value="/bookingEntity/{bookingEntityId}")
+    public ResponseEntity<List<String>> filterReservationsByOwnerId(@PathVariable Long bookingEntityId) {
+
+        List<String> clients = reservationService.findAllClientsWithActiveReservations(bookingEntityId);
+
+        return ResponseEntity.ok(clients);
+    }
+
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")

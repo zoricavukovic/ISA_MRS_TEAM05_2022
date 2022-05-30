@@ -62,7 +62,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<User> addUser(@RequestBody UserRequestDTO userRequest) {
 
-        User existUser = this.userService.findUserByUsername(userRequest.getUsername());
+        User existUser = this.userService.findUserByEmail(userRequest.getUsername());
 
         if (existUser != null) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
