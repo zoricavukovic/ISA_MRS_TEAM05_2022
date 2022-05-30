@@ -284,4 +284,10 @@ public class ReservationService {
             reservationRepository.save(res);
         }
     }
+
+    public List<String> findAllClientsWithActiveReservations(Long bookingEntityId) {
+        List<String> clients = new ArrayList<>();
+        //clients = reservationRepository.findAllClientsWithActiveReservations(bookingEntityId);
+        return clients;
+    }
 }

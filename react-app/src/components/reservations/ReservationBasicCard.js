@@ -127,9 +127,15 @@ export default function ReservationBasicCard(props) {
 
     };
     
+    const [reservationStatus, setReservationStatus] = useState('');
+
     useEffect(() => {
         console.log(props.reservation);
         let end = new Date(props.reservation.startDate);
+        let currDate = new Date();
+        if(new Date(props.reservation.startDate).getTime() <= currDate.getTime() &&  currDate.getTime()< end.getTime())
+            setReservationStatus('Started');
+
         end.setDate(end.getDate() + props.reservation.numOfDays);
         setDates({
             startDate: new Date(props.reservation.startDate),
@@ -457,7 +463,14 @@ export default function ReservationBasicCard(props) {
               
                   )} </div>
               )}
-   </div>
+              {/* {reservationStatus !== '' ? (<div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row" }}> 
+                <Button size="small" onClick={showReport}><InfoIcon fontSize="medium" style={{margin:"5px"}}/> Report</Button>
+              
+              </div>):(
+                <></>
+              )} */}
+            
+          </div>
            
           ):(<div>
             {additionalServices.length === 0 ? (
