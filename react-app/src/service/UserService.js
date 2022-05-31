@@ -106,3 +106,8 @@ export function getAllNewAccountRequests() {
 export function giveResponseForNewAccountRequest(response) {
     return api.put('/users/giveResponseForNewAccountRequest', response);
 }
+
+
+export function logicalDeleteUserById(userId, adminId, confirmPass) {
+    return api.delete('/users/' + userId + '/' + adminId, {data : confirmPass});
+}

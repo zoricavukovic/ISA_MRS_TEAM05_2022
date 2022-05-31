@@ -9,6 +9,10 @@ export function getAllCottagesView() {
     return api.get('/cottages/view')
 }
 
+export function getAllCottagesViewForOwnerId(ownerId) {
+    return api.get('/cottages/view/forOwnerId/' + ownerId);
+}
+
 export function getTopRatedCottages() {
     return api.get('/cottages/topRated')
 }

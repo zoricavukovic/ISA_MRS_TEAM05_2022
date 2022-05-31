@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { getCurrentUser } from '../../service/AuthService';
 import { getAllSubscribedEntities } from '../../service/BookingEntityService';
 import { getAllShipsView, getSearchedShips } from '../../service/ShipService';
+import { getAllShipsViewForOwnerId } from '../../service/ShipService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
 
-export default function ShowBoats() {
+export default function ShowBoats(props) {
 
     const [ships, setShips] = useState([]);
     const [subscribedEntities, setSubscribedEntities] = useState([]);
@@ -19,19 +20,33 @@ export default function ShowBoats() {
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
-        getAllSubscribedEntities(getCurrentUser().id).then(res => {
-            setSubscribedEntities(res.data);
-            console.log(res.data);
-        });
+        if (getCurrentUser() !== null && getCurrentUser() !== undefined) {
+            if (getCurrentUser().userType.name === "ROLE_CLIENT") {
+                getAllSubscribedEntities(getCurrentUser().id).then(res => {
+                    setSubscribedEntities(res.data);
+                    console.log(res.data);
+                });    
+            }
+        }
     }, []);
 
     const getAllShips = () => {
-        getAllShipsView().then(res => {
-            setShips(res.data);
-            setDefaultShips(res.data);
-            console.log(res.data);
-            setSortSelected('');
-        });
+        if (props.location.state !== null && props.location.state !== undefined) {
+            getAllShipsViewForOwnerId(props.location.state.ownerId).then(res => {
+                setShips(res.data);
+                setDefaultShips(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });    
+        } 
+        else {
+            getAllShipsView().then(res => {
+                setShips(res.data);
+                setDefaultShips(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });
+        } 
     };
 
 
@@ -134,7 +149,7 @@ export default function ShowBoats() {
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {ships.length === 0 && <h3>No results found.</h3>}
                     {ships.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams} subscribedEntities={subscribedEntities}/>
+                        <EntityBasicCard onlyTypeForDeleteVisible={"SHIPS"} bookingEntity={item} key={index} subscribedEntities={subscribedEntities}  searchParams={searchParams}  />
                     ))}
                 </div>
             </div>

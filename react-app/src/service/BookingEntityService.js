@@ -17,8 +17,8 @@ export function checkIfCanEditEntityById(id) {
     return api.get('/bookingEntities/checkIfCanEdit/' + id)
 }
 
-export function logicalDeleteBookingEntityById(id, confirmPass) {
-    return api.delete('/bookingEntities/' + id, {data : confirmPass});
+export function logicalDeleteBookingEntityById(entityId, ownerId, confirmPass) {
+    return api.delete('/bookingEntities/' + entityId + '/' + ownerId, {data : confirmPass});
 }
 
 export function getBookingEntityById(id) {

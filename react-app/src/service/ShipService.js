@@ -9,6 +9,10 @@ export function getAllShipsView() {
     return api.get('/ships/view')
 }
 
+export function getAllShipsViewForOwnerId(ownerId) {
+    return api.get('/ships/view/forOwnerId/' + ownerId);
+}
+
 export function getTopRatedShips() {
     return api.get('/ships/topRated')
 }

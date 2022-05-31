@@ -15,9 +15,11 @@ import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.EmailService;
 import com.example.BookingAppTeam05.service.LoyaltyProgramService;
 import com.example.BookingAppTeam05.service.PlaceService;
+import com.example.BookingAppTeam05.service.ReservationService;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.entities.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,6 +41,8 @@ public class UserService {
     private EmailService emailService;
     private RoleService roleService;
     private LoyaltyProgramService loyaltyProgramService;
+    private BookingEntityService bookingEntityService;
+    private ReservationService reservationService;
 
     private InstructorService instructorService;
     private CottageOwnerService cottageOwnerService;
@@ -46,8 +50,7 @@ public class UserService {
 
 
     @Autowired
-    public UserService(UserRepository userRepository, ClientService clientService, PlaceService placeService, EmailService emailService, RoleService roleService, LoyaltyProgramService loyaltyProgramService, InstructorService instructorService, ShipOwnerService shipOwnerService, CottageOwnerService cottageOwnerService) {
-
+    public UserService(UserRepository userRepository, ClientService clientService, PlaceService placeService, EmailService emailService, RoleService roleService, LoyaltyProgramService loyaltyProgramService, InstructorService instructorService, ShipOwnerService shipOwnerService, CottageOwnerService cottageOwnerService, @Lazy BookingEntityService bookingEntityService, ReservationService reservationService) {
         this.userRepository = userRepository;
         this.placeService = placeService;
         this.clientService = clientService;
@@ -57,6 +60,8 @@ public class UserService {
         this.instructorService = instructorService;
         this.shipOwnerService = shipOwnerService;
         this.cottageOwnerService = cottageOwnerService;
+        this.bookingEntityService = bookingEntityService;
+        this.reservationService = reservationService;
     }
 
     public User findUserById(Long id) {
@@ -231,6 +236,59 @@ public class UserService {
             default: {
                 return null;
             }
+        }
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.getAllUsers();
+    }
+
+    private boolean checkIfOwnerHaveActiveReservationsForOneOfHisEntities(Long userId) {
+        List<BookingEntity> bookingEntities = this.getBookingEntitiesByOwnerId(userId);
+        for (BookingEntity b : bookingEntities) {
+            if (bookingEntityService.checkExistActiveReservationForEntityId(b.getId()))
+                return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    public String tryToLogicalDeleteUserAndReturnErrorCode(Long userId, Long adminId, String confirmPass) {
+        User admin = this.findUserById(adminId);
+        if (admin == null) {
+            return "Admin with id: " + adminId + " is not found";
+        }
+
+        User userToDeleted = this.findUserById(userId);
+        if (userToDeleted == null) {
+            return "Can't find user for deleting. User id: " + userId;
+        }
+
+        if (userToDeleted.getRole().getName().equals("ROLE_ADMIN") || userToDeleted.getRole().getName().equals("ROLE_SUPER_ADMIN")) {
+            return "Not allowed to delete other admins";
+        }
+
+        if (!admin.getRole().getName().equals("ROLE_ADMIN") && !admin.getRole().getName().equals("ROLE_SUPER_ADMIN")) {
+            return "You don't have permisson of deleting other users";
+        }
+
+        if (!this.passwordIsCorrect(admin, confirmPass))
+            return "Confirmation password is incorrect.";
+
+        if (userToDeleted.getRole().getName().equals("ROLE_CLIENT")) {
+            if (reservationService.getAllActiveOrFutureReservationsForClientId(userId).size() > 0) {
+                return "Can't delete client with id: " + userId + " because client has active or future reservations";
+            } else {
+                userRepository.logicalDeleteUserById(userId);
+                return null;
+            }
+        }
+
+        if (checkIfOwnerHaveActiveReservationsForOneOfHisEntities(userId)) {
+            return "Can't delete owner with id: " + userId + " because he still has some active reservations";
+        } else {
+            userRepository.logicalDeleteUserById(userId);
+            return null;
         }
     }
 }

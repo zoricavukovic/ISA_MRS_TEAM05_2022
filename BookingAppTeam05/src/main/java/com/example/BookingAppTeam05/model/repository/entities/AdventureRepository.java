@@ -25,7 +25,7 @@ public interface AdventureRepository extends JpaRepository<Adventure, Long> {
     @Query("select distinct a from Adventure a left join fetch a.place p left join fetch a.pictures s where a.instructor.id=?1 and a.deleted = false")
     List<Adventure> getAdventuresForOwnerId(Long id);
 
-    @Query(value="select distinct c from Adventure c left join fetch c.rulesOfConduct r left join fetch c.place p " +
+    @Query(value="select distinct c from Adventure c left join fetch c.instructor i left join fetch c.rulesOfConduct r left join fetch c.place p " +
             "left join fetch c.pictures s left join fetch c.reservations res left join fetch c.unavailableDates una " +
             "where c.deleted = false")
     List<Adventure> findAll();

@@ -55,6 +55,16 @@ public class AdventureService {
         return this.adventureRepository.findAll();
     }
 
+    public List<Adventure> findAllForOwnerId(Long id) {
+        List<Adventure> all = findAll();
+        List<Adventure> retVal = new ArrayList<>();
+        for (Adventure a : all) {
+            if (a.getInstructor().getId().equals(id))
+                retVal.add(a);
+        }
+        return retVal;
+    }
+
     public List<Adventure> getAdventuresByOwnerId(Long id) {
         return this.adventureRepository.getAdventuresForOwnerId(id);
     }
