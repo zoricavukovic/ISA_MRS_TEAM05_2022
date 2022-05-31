@@ -2,11 +2,11 @@ import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 import { Box, Button, ButtonGroup, Grid } from '@mui/material';
 import * as React from 'react';
 import { useEffect, useState } from "react";
-import { getAllShipsView, getSearchedShips } from '../../service/ShipService';
+import { getAllShipsView, getAllShipsViewForOwnerId, getSearchedShips } from '../../service/ShipService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
 
-export default function ShowBoats() {
+export default function ShowBoats(props) {
 
     const [ships, setShips] = useState([]);
     const [defaultShips, setDefaultShips] = useState([]);
@@ -19,12 +19,22 @@ export default function ShowBoats() {
     }, []);
 
     const getAllShips = () => {
-        getAllShipsView().then(res => {
-            setShips(res.data);
-            setDefaultShips(res.data);
-            console.log(res.data);
-            setSortSelected('');
-        });
+        if (props.location.state.ownerId !== null && props.location.state.ownerId !== undefined) {
+            getAllShipsViewForOwnerId(props.location.state.ownerId).then(res => {
+                setShips(res.data);
+                setDefaultShips(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });    
+        } 
+        else {
+            getAllShipsView().then(res => {
+                setShips(res.data);
+                setDefaultShips(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });
+        } 
     };
 
 

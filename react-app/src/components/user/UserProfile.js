@@ -28,6 +28,8 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import Dialog from '@mui/material/Dialog';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LoyaltyProgramToolTip from "../loyaltyProgram/LoyaltyProgramsToolTip";
+import { propsLocationStateFound } from "../forbiddenNotFound/notFoundChecker";
+
 
 export default function UserProfile(props) {
 
@@ -64,8 +66,8 @@ export default function UserProfile(props) {
     />
 
     useEffect(() => {
-        if (userLoggedIn(history)) {
-            getUserById(getCurrentUser().id).then(res => {
+        if (propsLocationStateFound(props, history)) {
+            getUserById(props.location.state.userId).then(res => {
                 setUserData(res.data);
                 setLoading(false);
             });

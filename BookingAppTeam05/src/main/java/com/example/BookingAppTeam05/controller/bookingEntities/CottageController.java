@@ -95,13 +95,24 @@ public class CottageController {
     @GetMapping(value="/view", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getCottagesForView() {
         List<Cottage> cottages = cottageService.findAll();
+        return new ResponseEntity<>(getSearchBookingEntitiesFromCottages(cottages), HttpStatus.OK);
+    }
+
+    private List<SearchedBookingEntityDTO> getSearchBookingEntitiesFromCottages(List<Cottage> cottages) {
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         for (Cottage c : cottages) {
             SearchedBookingEntityDTO s = bookingEntityService.getSearchedBookingEntityDTOByEntityId(c.getId());
             retVal.add(s);
         }
-        return new ResponseEntity<>(retVal, HttpStatus.OK);
+        return retVal;
     }
+
+    @GetMapping(value="/view/forOwnerId/{ownerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getCottagesForView(@PathVariable Long ownerId) {
+        List<Cottage> cottages = cottageService.findAllByOwnerId(ownerId);
+        return new ResponseEntity<>(getSearchBookingEntitiesFromCottages(cottages), HttpStatus.OK);
+    }
+
 
     @GetMapping(value="/topRated", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getTopRatedCottagesForView() {

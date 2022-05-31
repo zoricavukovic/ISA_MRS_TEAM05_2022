@@ -49,6 +49,16 @@ public class CottageService {
 
     public List<Cottage> findAll() { return cottageRepository.findAll();    }
 
+    public List<Cottage> findAllByOwnerId(Long id) {
+        List<Cottage> all = findAll();
+        List<Cottage> retVal = new ArrayList<>();
+        for (Cottage c : all) {
+            if (c.getCottageOwner().getId().equals(id))
+                retVal.add(c);
+        }
+        return retVal;
+    }
+
     public Cottage save(Cottage cottage) {
         return cottageRepository.save(cottage);
     }

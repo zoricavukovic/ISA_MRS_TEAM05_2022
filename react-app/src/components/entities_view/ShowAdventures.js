@@ -2,11 +2,11 @@ import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 import { Box, Button, ButtonGroup, Grid } from '@mui/material';
 import * as React from 'react';
 import { useEffect, useState } from "react";
-import { getAllAdventuresView, getSearchedAdventures } from '../../service/AdventureService';
+import { getAllAdventuresView, getAllAdventuresViewForOwnerId, getSearchedAdventures } from '../../service/AdventureService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
 
-export default function ShowAdventures() {
+export default function ShowAdventures(props) {
 
     const [adventures, setAdventures] = useState([]);
     const [defaultAdventures, setDefaultAdventures] = useState([]);
@@ -20,12 +20,21 @@ export default function ShowAdventures() {
     }, []);
 
     const getAllAdventures = () => {
-        getAllAdventuresView().then(res => {
-            setAdventures(res.data);
-            setDefaultAdventures(res.data);
-            console.log(res.data);
-            setSortSelected('');
-        })
+        if (props.location.state.ownerId !== null && props.location.state.ownerId !== undefined) {
+            getAllAdventuresViewForOwnerId(props.location.state.ownerId).then(res => {
+                setAdventures(res.data);
+                setDefaultAdventures(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });    
+        } else {
+            getAllAdventuresView().then(res => {
+                setAdventures(res.data);
+                setDefaultAdventures(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });    
+        }
     };
 
     useEffect(() => {

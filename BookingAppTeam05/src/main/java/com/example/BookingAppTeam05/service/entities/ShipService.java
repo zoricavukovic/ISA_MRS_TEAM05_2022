@@ -142,4 +142,14 @@ public class ShipService {
             }
         }
     }
+
+    public List<Ship> findAllByOwnerId(Long id) {
+        List<Ship> all = findAll();
+        List<Ship> retVal = new ArrayList<>();
+        for (Ship s : all) {
+            if (s.getShipOwner().getId().equals(id))
+                retVal.add(s);
+        }
+        return retVal;
+    }
 }

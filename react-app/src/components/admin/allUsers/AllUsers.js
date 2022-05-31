@@ -1,32 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Divider } from "@mui/material";
-import { Dialog } from "@mui/material";
-import { DialogActions } from "@mui/material";
-import Alert from '@mui/material/Alert';
-import { getAllNewAccountRequests, getAllUsers, giveResponseForNewAccountRequest, logicalDeleteUserById, userLoggedInAsSuperAdminOrAdminWithResetedPassword } from "../../../service/UserService";
-import { DataGrid } from "@mui/x-data-grid";
-import { Checkbox, TextareaAutosize } from "@mui/material";
-import { Snackbar } from "@mui/material";
-import Avatar from '@mui/material/Avatar';
-import { deepOrange } from '@mui/material/colors';
+import { getAllUsers, userLoggedInAsSuperAdminOrAdminWithResetedPassword } from "../../../service/UserService";
 import { useHistory } from "react-router-dom";
-import { Typography } from "@mui/material";
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-
-import ShipOwner from "../../../icons/shipOwner.png";
-import CottageOwner from "../../../icons/cottageOwner.png";
-import Instructor from "../../../icons/instructor.png";
-import UserInfoGrid from "../../user/UserInfoGrid";
-
-import PersonIcon from '@mui/icons-material/Person';
-import BackspaceIcon from '@mui/icons-material/Backspace';
-import { TextField } from "@mui/material";
-import { DialogContentText } from "@mui/material";
-import { getCurrentUser } from "../../../service/AuthService";
 import UsersDataGrid from "./UsersDataGrid";
 import ConfirmPassDialog from "./ConfirmPassDialog";
-
 
 let rows = [];
 
@@ -56,13 +34,43 @@ export default function ReviewAllUsers() {
         handleClickOpenConfirmPassDialog();
     }
 
+    const findUserByIndex = (index) => {
+        for (let u of allUsers) {
+            if (u.id === index) return u;
+        }
+    }
+
+
+    const showEntitiesForOwner = (id) => {
+        let user = findUserByIndex(id);
+        let locationUrl = ''; 
+        if (user.userType.name === "ROLE_INSTRUCTOR") {
+            locationUrl = "/showAdventures"; 
+        } else if (user.userType.name === "ROLE_COTTAGE_OWNER") {
+            locationUrl = "/showCottages";
+        } else if (user.userType.name === "ROLE_SHIP_OWNER") {
+            locationUrl = "/showBoats";
+        }
+        history.push({
+            pathname: locationUrl,
+            state: {ownerId: id},
+        });
+    }
+
+    const showUserProfile = (id) => {
+        history.push({
+            pathname:'/userProfile',
+            state: {userId: id}
+        });
+    }
+
     const handleOnCellClick = (params) => {
         if (params.field === "Profile") {
-            console.log("todo..");
+            showUserProfile(params.id);
         } else if (params.field === "Delete") {
             deleteUserById(params.id);
         } else if (params.field === 'Entities') {
-            console.log("entities clicked");
+            showEntitiesForOwner(params.id);
         }
     }
 

@@ -4,6 +4,7 @@ import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.*;
+import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.ShipOwner;
@@ -72,13 +73,24 @@ public class ShipController {
     @GetMapping(value="/view", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getShipsForView() {
         List<Ship> ships = shipService.findAll();
+        return new ResponseEntity<>(getSearchedBookingEntitesFromShips(ships), HttpStatus.OK);
+    }
+
+    private List<SearchedBookingEntityDTO> getSearchedBookingEntitesFromShips(List<Ship> ships) {
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         for (Ship ship : ships) {
             SearchedBookingEntityDTO s = bookingEntityService.getSearchedBookingEntityDTOByEntityId(ship.getId());
             retVal.add(s);
         }
-        return new ResponseEntity<>(retVal, HttpStatus.OK);
+        return retVal;
     }
+
+    @GetMapping(value="/view/forOwnerId/{ownerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getShipsForView(@PathVariable Long ownerId) {
+        List<Ship> ships = shipService.findAllByOwnerId(ownerId);
+        return new ResponseEntity<>(getSearchedBookingEntitesFromShips(ships), HttpStatus.OK);
+    }
+
 
     @GetMapping(value="/topRated", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getTopRatedShipsForView() {

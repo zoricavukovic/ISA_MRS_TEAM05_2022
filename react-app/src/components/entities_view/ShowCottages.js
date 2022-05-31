@@ -2,11 +2,11 @@ import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 import { Box, Button, ButtonGroup, Grid } from '@mui/material';
 import * as React from 'react';
 import { useEffect, useState } from "react";
-import { getAllCottagesView, getSearchedCottages } from '../../service/CottageService';
+import { getAllCottagesView, getAllCottagesViewForOwnerId, getSearchedCottages } from '../../service/CottageService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
 
-export default function ShowCottages() {
+export default function ShowCottages(props) {
 
     const [cottages, setCottages] = useState([]);
     const [defaultCottages, setDefaultCottages] = useState([]);
@@ -20,12 +20,22 @@ export default function ShowCottages() {
     }, []);
 
     const getAllCottages = () => {
-        getAllCottagesView().then(res => {
-            setCottages(res.data);
-            setDefaultCottages(res.data);
-            console.log(res.data);
-            setSortSelected('');
-        });
+        if (props.location.state.ownerId !== null && props.location.state.ownerId !== undefined) {
+            getAllCottagesViewForOwnerId(props.location.state.ownerId).then(res => {
+                setCottages(res.data);
+                setDefaultCottages(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });
+        }
+        else {
+            getAllCottagesView().then(res => {
+                setCottages(res.data);
+                setDefaultCottages(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });    
+        }
     };
 
 
