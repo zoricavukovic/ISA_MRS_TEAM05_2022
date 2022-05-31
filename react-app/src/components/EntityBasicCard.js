@@ -22,6 +22,8 @@ import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import ImageSlider from "./image_slider/ImageSlider";
+import { Favorite, FavoriteBorder, Unsubscribe } from "@mui/icons-material";
+import { subscribeClientWithEntity, unsubscribeClientWithEntity } from "../service/UserService";
 
 export default function EntityBasicCard(props) {
 
@@ -33,6 +35,12 @@ export default function EntityBasicCard(props) {
     const [password, setPassword] = React.useState("");
     const [message, setMessage] = React.useState("");
     const [typeAlert, setTypeAlert] = React.useState("");
+    const [isSubsribed, setIsSubscribed] = React.useState([]);
+
+    React.useEffect(() => {
+        let subsc = props.subscribedEntities.some(e=>e.id === props.bookingEntity.id)
+        setIsSubscribed(subsc);
+    }, []);
 
     const handleClick = () => {
         setOpen(true);
@@ -101,6 +109,27 @@ export default function EntityBasicCard(props) {
                 searchParams: props.searchParams
             }
         })
+    }
+
+    const subscribe =()=>{
+        subscribeClientWithEntity(getCurrentUser().id, props.bookingEntity.id).then(res=>{
+            console.log("Uspesno sub");
+            console.log(res.data);
+            if(typeof(props.setSubscribedEntities) !== "undefined" )
+                props.setSubscribedEntities(res.data);
+            else
+                setIsSubscribed(true);
+        });
+    }
+    const unsubscribe =()=>{
+        unsubscribeClientWithEntity(getCurrentUser().id, props.bookingEntity.id).then(res=>{
+            console.log("Uspesno unsub");
+            console.log(res.data);
+            if(typeof(props.setSubscribedEntities) !== "undefined" )
+                props.setSubscribedEntities(res.data);
+            else
+            setIsSubscribed(false);
+        });
     }
 
 
@@ -191,7 +220,13 @@ export default function EntityBasicCard(props) {
                     <span>
                         {getCurrentUser().userType.name === "ROLE_CLIENT" ?
                             (
-                                <Button size="small" onClick={reserveBookingEntity}><ReadMoreIcon fontSize="large" style={{ margin: "5px" }} /> Reserve</Button>
+                                <span style={{display:'flex'}}>
+                                <Button size="small" style={{marginLeft:'5px', padding:'0px'}} onClick={reserveBookingEntity}><ReadMoreIcon fontSize="large" style={{ margin: "5px" }} /> Reserve</Button>
+                                {isSubsribed?
+                                    <Button size="small" style={{marginLeft:'5px', padding:'0px'}} onClick={unsubscribe}><FavoriteBorder fontSize="large" style={{ margin: "5px", padding:'0px' }} />Unsubscribe</Button>:
+                                    <Button size="small" onClick={subscribe}><Favorite fontSize="large" style={{ margin: "5px" }} />Subscribe</Button>
+                                    }
+                                </span>
                             ) :
                             (
 

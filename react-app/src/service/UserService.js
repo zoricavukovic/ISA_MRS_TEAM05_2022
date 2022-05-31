@@ -43,6 +43,14 @@ export function activateAccount(email) {
     return api.get('/users/activateAccount/'+ email);
 }
 
+export function subscribeClientWithEntity(clientId, entityId) {
+    return api.post('/users/subscribe/'+clientId+"/"+entityId);
+}
+
+export function unsubscribeClientWithEntity(clientId, entityId) {
+    return api.post('/users/unsubscribe/'+clientId+"/"+entityId);
+}
+
 function userLoggedInWithRole(history, role) {
     if (userLoggedIn(history)) {
         if (getCurrentUser().userType.name !== role) {

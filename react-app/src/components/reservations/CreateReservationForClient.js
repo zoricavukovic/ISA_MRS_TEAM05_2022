@@ -206,7 +206,9 @@ export default function CreateReservationForClient(props) {
         console.log(availableTimes);
         setTimes(availableTimes);
     }, [selectionRange]);
-
+    
+    
+    const [startDate, setStartDate] = useState(new Date());
     useEffect(() => {
         if(Object.keys(bookingEntity).length !== 0)
             for(var unavailableDate of bookingEntity.allUnavailableDates)
@@ -343,8 +345,6 @@ export default function CreateReservationForClient(props) {
     const avatarStyle = { backgroundColor: 'rgb(244, 177, 77)' }
     let btnstyle = { margin: '10px 30px', backgroundColor:'rgb(244, 177, 77)' }
     let btn2style = { margin: '10px 30px', backgroundColor:'rgb(5, 30, 52)' }
-
-    const [startDate, setStartDate] = useState(new Date());
 
     const datePicker = <><TextField style={{margin:'10px 10px' }} onClick={()=>setOpenDate(!openDate)} label='Date picker' placeholder={`${format(startDate, "dd.MM.yyyy.")}`} 
                             value={`${format(startDate, "dd.MM.yyyy.")}`}

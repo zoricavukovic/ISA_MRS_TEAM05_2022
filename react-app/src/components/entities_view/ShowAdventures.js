@@ -3,12 +3,15 @@ import { Box, Button, ButtonGroup, Grid } from '@mui/material';
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import { getAllAdventuresView, getSearchedAdventures } from '../../service/AdventureService';
+import { getCurrentUser } from '../../service/AuthService';
+import { getAllSubscribedEntities } from '../../service/BookingEntityService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
 
 export default function ShowAdventures() {
 
     const [adventures, setAdventures] = useState([]);
+    const [subscribedEntities, setSubscribedEntities] = useState([]);
     const [defaultAdventures, setDefaultAdventures] = useState([]);
     const [searchParams, setSearchParams] = useState({});
     const [filterParams, setFilterParams] = useState({});
@@ -16,7 +19,10 @@ export default function ShowAdventures() {
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
-        
+        getAllSubscribedEntities(getCurrentUser().id).then(res => {
+            setSubscribedEntities(res.data);
+            console.log(res.data);
+        });
     }, []);
 
     const getAllAdventures = () => {
@@ -124,7 +130,7 @@ export default function ShowAdventures() {
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {adventures.length === 0 && <h3>No results found.</h3>}
                     {adventures.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams}/>
+                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams} subscribedEntities={subscribedEntities}/>
                     ))}
                 </div>
             </div>

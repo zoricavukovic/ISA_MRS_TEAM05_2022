@@ -54,6 +54,7 @@ import AcceptedAccount from './user/AcceptedAccount';
 import Homepage from './Homepage';
 import LoyaltyProgramForm from './loyaltyProgram/LoyaltyProgramForm';
 import SystemRevenue from './admin/SystemRevenue';
+import LikedEntities from './LikedEntities';
 
 function App() {
     const [currentUser, setCurrentUser] = useState({});
@@ -96,6 +97,8 @@ function App() {
                     <Route path="/showShipProfile" component={ShowShipProfile} />
                     <Route path="/addShip" component={AddShip} />
                     <Route path="/editShip" component={EditShip} />
+                    <Route path="/likedEntites" component={LikedEntities} />
+
 
                     {/* <Route path="/login" ><Login setCurrentUser={setCurrentUser}/></Route> */}
                     <Route path="/registration" ><Registration/></Route>

@@ -3,9 +3,9 @@ package com.example.BookingAppTeam05.service.users;
 import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
-import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.Place;
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.repository.users.UserRepository;
 import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.EmailService;
@@ -19,9 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.RollbackException;
 import javax.transaction.Transactional;
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +28,17 @@ public class UserService {
 
     private UserRepository userRepository;
     private PlaceService placeService;
+    private ClientService clientService;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private EmailService emailService;
     private RoleService roleService;
     private LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PlaceService placeService, EmailService emailService, RoleService roleService, LoyaltyProgramService loyaltyProgramService) {
+    public UserService(UserRepository userRepository, PlaceService placeService, ClientService clientService, EmailService emailService, RoleService roleService, LoyaltyProgramService loyaltyProgramService) {
         this.userRepository = userRepository;
         this.placeService = placeService;
+        this.clientService = clientService;
         this.emailService = emailService;
         this.roleService = roleService;
         this.loyaltyProgramService = loyaltyProgramService;

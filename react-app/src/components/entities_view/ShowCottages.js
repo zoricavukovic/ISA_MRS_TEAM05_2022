@@ -2,6 +2,8 @@ import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 import { Box, Button, ButtonGroup, Grid } from '@mui/material';
 import * as React from 'react';
 import { useEffect, useState } from "react";
+import { getCurrentUser } from '../../service/AuthService';
+import { getAllSubscribedEntities } from '../../service/BookingEntityService';
 import { getAllCottagesView, getSearchedCottages } from '../../service/CottageService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
@@ -9,6 +11,7 @@ import SearchForReservation from '../SearchForReservation';
 export default function ShowCottages() {
 
     const [cottages, setCottages] = useState([]);
+    const [subscribedEntities, setSubscribedEntities] = useState([]);
     const [defaultCottages, setDefaultCottages] = useState([]);
     const [searchParams, setSearchParams] = useState({});
     const [filterParams, setFilterParams] = useState({});
@@ -16,7 +19,10 @@ export default function ShowCottages() {
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
-        //getAllCottages();
+        getAllSubscribedEntities(getCurrentUser().id).then(res => {
+            setSubscribedEntities(res.data);
+            console.log(res.data);
+        });
     }, []);
 
     const getAllCottages = () => {
@@ -127,7 +133,7 @@ export default function ShowCottages() {
                     {cottages.length === 0 && <h3>No results found.</h3>}
                     {
                     cottages.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams}/>
+                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams}  subscribedEntities={subscribedEntities}/>
                     ))}
                 </div>
             </div>
