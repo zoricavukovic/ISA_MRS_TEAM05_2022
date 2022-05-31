@@ -55,6 +55,7 @@ import Homepage from './Homepage';
 import LoyaltyProgramForm from './loyaltyProgram/LoyaltyProgramForm';
 import SystemRevenue from './admin/SystemRevenue';
 import Calendar from "./calendar/Calendar";
+import ReviewAllUsers from "./admin/allUsers/AllUsers";
 
 
 function App() {
@@ -139,6 +140,7 @@ function App() {
                     <Route path="/loyaltyProgram" component={LoyaltyProgramForm}/>
                     <Route path="/systemRevenue" component={SystemRevenue} />
                     <Route path="/calendar" component={Calendar} />
+                    <Route path="/allUsers" component={ReviewAllUsers} />
                     <Redirect to="/homepage"></Redirect>
                 </Switch>
             </Router>

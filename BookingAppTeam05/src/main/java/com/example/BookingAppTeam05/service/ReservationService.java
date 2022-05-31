@@ -313,6 +313,16 @@ public class ReservationService {
         return reservationDTOS;
     }
 
+    public List<Reservation> getAllActiveOrFutureReservationsForClientId(Long clientId) {
+        List<Reservation> reservations = reservationRepository.getReservationsByClientId(clientId);
+        List<Reservation> retVal = new ArrayList<>();
+        for (Reservation r : reservations) {
+            if (!r.isFinished())
+                retVal.add(r);
+        }
+        return retVal;
+    }
+
     public void cancelReservation(Long id) {
         Reservation res = reservationRepository.findById(id).orElse(null);
         if(res != null){

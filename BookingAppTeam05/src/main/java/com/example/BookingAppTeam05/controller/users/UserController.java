@@ -12,9 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -30,6 +32,17 @@ public class UserController {
 
         this.userService = userService;
         this.placeService = placeService;
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        List<UserDTO> retVal = new ArrayList<>();
+        for (User u : users) {
+            retVal.add(new UserDTO(u));
+        }
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @GetMapping(value="/{id}")
@@ -113,5 +126,16 @@ public class UserController {
             return new ResponseEntity<>(errorCode, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>("sve ok", HttpStatus.OK);
     }
+
+    @DeleteMapping(value="/{userId}/{adminId}")
+    //@PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
+    public ResponseEntity<String> logicalDeleteUserById(@PathVariable Long userId, @PathVariable  Long adminId, @RequestBody String confirmPass){
+        String errorMassage = userService.tryToLogicalDeleteUserAndReturnErrorCode(userId, adminId, confirmPass);
+        if (errorMassage == null)
+            return new ResponseEntity<>("User successfully deleted.", HttpStatus.OK);
+        return new ResponseEntity<>(errorMassage, HttpStatus.BAD_REQUEST);
+    }
+
+
 }
 
