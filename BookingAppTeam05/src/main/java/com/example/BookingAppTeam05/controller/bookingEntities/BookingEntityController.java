@@ -83,21 +83,13 @@ public class BookingEntityController {
         return new ResponseEntity<>("Entity can edit.", HttpStatus.OK);
     }
 
-    @DeleteMapping(value="/{entityId}")
-    @Transactional
+    @DeleteMapping(value="/{entityId}/{ownerId}")
     //@PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
-    public ResponseEntity<String> logicalDeleteEntityById(@PathVariable Long entityId, @RequestBody String confirmPass){
-        BookingEntity bookingEntity = bookingEntityService.getEntityById(entityId);
-        if (bookingEntity == null)
-            return new ResponseEntity<String>("Entity for deleting is not found.", HttpStatus.BAD_REQUEST);
-        User user = bookingEntityService.getOwnerOfEntityId(entityId);
-        if (!userService.passwordIsCorrect(user, confirmPass))
-            return new ResponseEntity<String>("Confirmation password is incorrect.", HttpStatus.BAD_REQUEST);
-
-        if (!bookingEntityService.logicalDeleteBookingEntityById(entityId)){
-            return new ResponseEntity<String>("Entity cant be deleted  cause has reservations.", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Entity is deleted.", HttpStatus.CREATED);
+    public ResponseEntity<String> logicalDeleteEntityById(@PathVariable Long entityId, @PathVariable  Long ownerId, @RequestBody String confirmPass){
+        String errorMassage = bookingEntityService.tryToLogicalDeleteBookingEntityAndReturnErrorCode(entityId, ownerId, confirmPass);
+        if (errorMassage == null)
+            return new ResponseEntity<>("Entity successfully deleted.", HttpStatus.OK);
+        return new ResponseEntity<>(errorMassage, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value="/getAllForOwnerId/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

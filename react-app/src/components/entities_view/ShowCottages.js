@@ -127,7 +127,7 @@ export default function ShowCottages() {
                     {cottages.length === 0 && <h3>No results found.</h3>}
                     {
                     cottages.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams}/>
+                        <EntityBasicCard onlyTypeForDeleteVisible={"COTTAGES"} bookingEntity={item} key={index} searchParams={searchParams}/>
                     ))}
                 </div>
             </div>

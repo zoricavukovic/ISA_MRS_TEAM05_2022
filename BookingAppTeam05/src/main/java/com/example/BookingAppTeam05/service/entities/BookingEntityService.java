@@ -19,7 +19,10 @@ import com.example.BookingAppTeam05.model.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -136,13 +139,6 @@ public class BookingEntityService {
             }
         }
         return false;
-    }
-
-    public boolean logicalDeleteBookingEntityById(Long id) {
-        if (checkExistActiveReservationForEntityId(id))
-            return false;
-        bookingEntityRepository.logicalDeleteBookingEntityById(id);
-        return true;
     }
 
     public BookingEntity getEntityById(Long id) {
@@ -342,4 +338,34 @@ public class BookingEntityService {
         }
     }
 
+    private boolean userWithIdOwnsEntityWithId(Long ownerId, Long entityId) {
+        User user = this.getOwnerOfEntityId(entityId);
+        return user.getId().equals(ownerId);
+    }
+
+    @Transactional
+    public String tryToLogicalDeleteBookingEntityAndReturnErrorCode(Long entityId, Long userId, String confirmPass) {
+        BookingEntity bookingEntity = this.getEntityById(entityId);
+        if (bookingEntity == null)
+            return "Entity for deleting is not found. Entity id requested: " + entityId;
+
+        User user = userService.findUserById(userId);
+        if (!user.getRole().getName().equals("ROLE_ADMIN") && !user.getRole().getName().equals("ROLE_SUPER_ADMIN")) {
+            if (!this.userWithIdOwnsEntityWithId(userId, entityId)) {
+                return "Invalid delete request. User with id: " + userId + " does not owns entity with id: " + entityId;
+            }
+        }
+        if (user.getRole().getName().equals("ROLE_CLIENT")) {
+            return "It seems like you dont have permission to delete this entity. Please try again, or login with another account";
+        }
+
+        if (!userService.passwordIsCorrect(user, confirmPass))
+            return "Confirmation password is incorrect.";
+
+        if (checkExistActiveReservationForEntityId(entityId))
+            return "Entity cant be deleted  cause has reservations.";
+
+        bookingEntityRepository.logicalDeleteBookingEntityById(entityId);
+        return null;
+    }
 }

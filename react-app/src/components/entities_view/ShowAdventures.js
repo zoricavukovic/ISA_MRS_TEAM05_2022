@@ -124,7 +124,7 @@ export default function ShowAdventures() {
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {adventures.length === 0 && <h3>No results found.</h3>}
                     {adventures.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams}/>
+                        <EntityBasicCard bookingEntity={item} onlyTypeForDeleteVisible={"ADVENTURES"}  key={index} searchParams={searchParams}/>
                     ))}
                 </div>
             </div>

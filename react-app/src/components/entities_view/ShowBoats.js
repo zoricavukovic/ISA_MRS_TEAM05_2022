@@ -127,7 +127,7 @@ export default function ShowBoats() {
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {ships.length === 0 && <h3>No results found.</h3>}
                     {ships.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams}  />
+                        <EntityBasicCard onlyTypeForDeleteVisible={"SHIPS"} bookingEntity={item} key={index} searchParams={searchParams}  />
                     ))}
                 </div>
             </div>
