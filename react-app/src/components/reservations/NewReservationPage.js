@@ -234,7 +234,7 @@ export default function NewReservationPage(props) {
         }
         console.log(availableTimes);
         setTimes(availableTimes);
-    }, [startDate]);
+    }, [selectionRange]);
 
     useEffect(() => {
         if(Object.keys(bookingEntity).length !== 0)

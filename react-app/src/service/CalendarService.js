@@ -16,3 +16,7 @@ export function getAnalysisMonthByBookintEntityId(id) {
 export function getAnalysisYearByBookintEntityId(id) {
     return api.get('/calendar/year/entity/' + id);
 }
+
+export function getCalendarValuesForAllOwnerEntitiesById(id) {
+    return api.get('/calendar/allForOwner/' + id);
+}

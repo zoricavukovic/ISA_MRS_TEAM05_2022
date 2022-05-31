@@ -24,6 +24,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import InfoIcon from '@mui/icons-material/Info';
 import RecommendIcon from '@mui/icons-material/Recommend';
 
+
 export default function ReservationBasicCard(props) {
     const history = useHistory();
     const [open, setOpen] = React.useState(false);
@@ -130,6 +131,7 @@ export default function ReservationBasicCard(props) {
     const [reservationStatus, setReservationStatus] = useState('');
 
     useEffect(() => {
+        console.log("doslo");
         console.log(props.reservation);
         let end = new Date(props.reservation.startDate);
         let currDate = new Date();

@@ -28,3 +28,7 @@ export function getBookingEntityById(id) {
 export function getAllSubscribedEntities(clientId){
     return api.get('/bookingEntities/subscribedEntities/' + clientId);
 }
+
+export function getBookingEntitiesFromOwnerId(id) {
+    return api.get('/bookingEntities/getAllForOwnerId' + id);
+}

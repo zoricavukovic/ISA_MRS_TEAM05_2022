@@ -1,9 +1,11 @@
 package com.example.BookingAppTeam05.controller;
 
+import com.example.BookingAppTeam05.dto.ReservationForClientDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.users.ClientDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.model.Reservation;
+import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.entities.CottageService;
 import com.example.BookingAppTeam05.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,12 +85,11 @@ public class ReservationController {
     }
 
     @GetMapping(value="/bookingEntity/{bookingEntityId}")
-    public ResponseEntity<List<String>> filterReservationsByOwnerId(@PathVariable Long bookingEntityId) {
-
+    public ResponseEntity<List<String>> findAllClientsWithActiveReservations(@PathVariable Long bookingEntityId) {
         List<String> clients = reservationService.findAllClientsWithActiveReservations(bookingEntityId);
-
         return ResponseEntity.ok(clients);
     }
+
 
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -106,6 +107,16 @@ public class ReservationController {
     @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
     public ResponseEntity<String> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
         Reservation tempReservation = reservationService.addReservation(reservationDTO);
+        if (tempReservation == null)
+            return new ResponseEntity<>("Cannot create temporary reservation.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(tempReservation.getId().toString(), HttpStatus.CREATED);
+    }
+
+    @Transactional
+    @PostMapping(value = "/addReservationForClient", consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
+    public ResponseEntity<String> createReservationForClient(@Valid @RequestBody ReservationForClientDTO reservationDTO) {
+        Reservation tempReservation = reservationService.addReservationForClient(reservationDTO);
         if (tempReservation == null)
             return new ResponseEntity<>("Cannot create temporary reservation.", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(tempReservation.getId().toString(), HttpStatus.CREATED);

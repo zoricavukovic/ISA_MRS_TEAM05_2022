@@ -70,8 +70,17 @@ export function userLoggedInAsCottageOwner(history) {
 export function userLoggedInAsShipOwner(history) {
     return userLoggedInWithRole(history, "ROLE_SHIP_OWNER");
 }
+export function userLoggedInAsOwner(history) {
+    if (!userLoggedIn(history))
+        return false;
+    if (getCurrentUser().userType.name === "ROLE_INSTRUCTOR" || getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER" || getCurrentUser().userType.name === "ROLE_SHIP_OWNER" )
+        return true;
+    return false;
+}
 
 export function userLoggedInAsSuperAdminOrAdminWithResetedPassword(history) {
+    if (!userLoggedIn(history))
+        return false;
     if (getCurrentUser().userType.name === "ROLE_SUPER_ADMIN")
         return true;
     if (!userLoggedInWithRole(history, "ROLE_ADMIN"))

@@ -121,20 +121,20 @@ VALUES
 
 
 ---------------zahtevi novih korisnika na cekanju----------------------------
-INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id)
+INSERT INTO instructors(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, reason)
 VALUES
-(nextval('users_id_gen'), 'True','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++noviInst1@gmail.com', 'Baki', 'Bakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5),
-(nextval('users_id_gen'), 'True', 'fdsaf ds f', '1971-12-20', 'bookingapp05mzr++noviInst2@gmail.com', 'Daki', 'Dakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5);
+(nextval('users_id_gen'), 'True','fdgvfdb gf fd', '1971-12-20', 'bookingapp05mzr++noviInst1@gmail.com', 'Baki', 'Bakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5, 'i want to create account1'),
+(nextval('users_id_gen'), 'True', 'fdsaf ds f', '1971-12-20', 'bookingapp05mzr++noviInst2@gmail.com', 'Daki', 'Dakic', null, 0, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 5, 'False', 5, 'i want to create account2');
 
-INSERT INTO ship_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id, deleted, role_id, captain)
+INSERT INTO ship_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id, deleted, role_id, captain, reason)
 VALUES
-(nextval('users_id_gen'), 'True','Ap #392-5411 Ac, St.','2005-03-15','bookingapp05mzr++noviShipOwner1@gmail.com','Dana','Danic',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',1, 'False', 4, true),
-(nextval('users_id_gen'), 'True','3598 Ut, St.','1994-12-09','bookingapp05mzr++noviShipOwner2@gmail.com','Ratko','Rakic',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',2, 'False', 4, false);
+(nextval('users_id_gen'), 'True','Ap #392-5411 Ac, St.','2005-03-15','bookingapp05mzr++noviShipOwner1@gmail.com','Dana','Danic',8,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','057-62-242-87',1, 'False', 4, true, 'i want to create account3'),
+(nextval('users_id_gen'), 'True','3598 Ut, St.','1994-12-09','bookingapp05mzr++noviShipOwner2@gmail.com','Ratko','Rakic',37,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','035-98-372-38',2, 'False', 4, false, 'i want to create account4');
 
-INSERT INTO cottage_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number, place_id, deleted, role_id)
+INSERT INTO cottage_owners (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number, place_id, deleted, role_id, reason)
 VALUES
-(nextval('users_id_gen'), 'True','Ap #225-738 At, Rd.','1979-03-13','bookingapp05mzr++noviCottageOwner1@gmail.com','Bagi','Bagic',65,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','052-38-778-82',1, 'False', 3),
-(nextval('users_id_gen'), 'True','4502 Semper Ave','2001-01-22','bookingapp05mzr++noviCottageOwner2@gmail.com','Dari','Daric',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',5, 'False', 3);
+(nextval('users_id_gen'), 'True','Ap #225-738 At, Rd.','1979-03-13','bookingapp05mzr++noviCottageOwner1@gmail.com','Bagi','Bagic',65,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','052-38-778-82',1, 'False', 3, 'i want to create account5'),
+(nextval('users_id_gen'), 'True','4502 Semper Ave','2001-01-22','bookingapp05mzr++noviCottageOwner2@gmail.com','Dari','Daric',2,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','088-26-823-77',5, 'False', 3, 'i want to create account6');
 ------------------------------------------------------------------------------------
 
 
@@ -248,34 +248,33 @@ VALUES
 --cotages res
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
 VALUES
-    ('2022-05-14 5:00 am',15,17,1,8,'False','False', 1, 255, 5, 5, 50),
+    ('2022-04-20 5:00 am',8,17,1,8,'False','False', 1, 255, 5, 5, 50),
     ('2022-05-01 7:00 pm',26,3,1,7,'False','True', 1, 780, 10, 10, 200),
-    ('2022-04-19 7:00 pm',4,3,1,7,'False','False', 1, 120, 5, 5, 60);
-
+    ('2022-05-29 7:00 pm',1,5,1,7,'False','False', 1, 120, 5, 5, 60);
 
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
 VALUES
     ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 45, 5, 5, 30),
-    ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 66, 5, 5, 40),
-    ('2022-04-19 7:00 pm',2,3,11,9,'False','False', 1, 80, 5, 5, 30),
+    ('2022-03-03 7:00 am',2,3,11,7,'False','True', 1, 66, 5, 5, 40),
+    ('2022-04-19 7:00 am',2,3,11,9,'False','False', 1, 80, 5, 5, 30),
 
 
-    ('2022-01-15 7:00 pm',1,3,12,8,'False','False',1,100, 5, 5, 30),
-    ('2022-01-20 7:00 pm',4,3,12,7,'False','False',1,120, 5, 5, 40),
+    ('2022-01-15 7:00 am',1,3,12,8,'False','False',1,100, 5, 5, 30),
+    ('2022-01-20 7:00 am',4,3,12,7,'False','False',1,120, 5, 5, 40),
 
-    ('2022-01-20 7:00 pm',2,1,13,8,'False','False',1,200, 5, 5, 30),
-    ('2022-01-25 7:00 pm',4,3,13,7,'False','False',1,120, 5, 5, 60),
+    ('2022-01-20 7:00 am',2,1,13,8,'False','False',1,200, 5, 5, 30),
+    ('2022-01-25 7:00 am',4,3,13,7,'False','False',1,120, 5, 5, 60),
 
-    ('2022-01-25 7:00 pm',1,3,14,8,'False','False',1,350, 5, 5, 100),
-    ('2022-02-10 7:00 pm',4,1,14,7,'False','False',1,400, 5, 5, 100),
+    ('2022-01-25 7:00 am',1,3,14,8,'False','False',1,350, 5, 5, 100),
+    ('2022-02-10 7:00 am',4,1,14,7,'False','False',1,400, 5, 5, 100),
 
-    ('2022-05-15 7:00 pm',2,3,11,9,'False','False',1,170, 5, 5, 100),
-    ('2022-05-20 7:00 pm',1,3,11,8,'False','False',1,250, 5, 5, 100),
-    ('2022-05-22 7:00 pm',2,3,11,7,'False','False',1,600, 5, 5, 200),
-    ('2022-04-22 7:00 pm',2,3,11,9,'False','False',1,1500, 5, 5, 300),
-    ('2022-05-25 8:00 pm',2,3,11,null,'True','False',1,400, 5, 5, 100),
-    ('2022-05-28 9:00 pm',5,3,11,null,'True','False',1,85, 5, 5, 50),
-    ('2022-04-25 10:00 pm',5,3,11,null,'True','False',1,33, 5, 5, 20),
+    ('2022-05-15 7:00 am',2,3,11,9,'False','False',1,170, 5, 5, 100),
+    ('2022-05-20 7:00 am',1,3,11,8,'False','False',1,250, 5, 5, 100),
+    ('2022-05-22 7:00 am',2,3,11,7,'False','False',1,600, 5, 5, 200),
+    ('2022-04-22 7:00 am',2,3,11,9,'False','False',1,1500, 5, 5, 300),
+    ('2022-05-25 8:00 am',2,3,11,null,'True','False',1,400, 5, 5, 100),
+    ('2022-05-28 9:00 am',5,3,11,null,'True','False',1,85, 5, 5, 50),
+    ('2022-04-25 9:00 am',5,3,11,null,'True','False',1,33, 5, 5, 20),
 
     ('2022-01-10 5:00 am',2,2,11,8,'False','False', 1, 33, 5, 5, 20),
     ('2022-03-03 7:00 pm',2,3,11,7,'False','True', 1, 99, 5, 5, 20),
@@ -291,7 +290,7 @@ VALUES
     ('2022-02-10 7:00 pm',4,1,14,7,'False','False', 1, 111, 5, 5, 70);
 
 
-INSERT INTO public.reports(
+INSERT INTO reports(
     admin_response, come_client, comment, penalize_client, processed, reservation_id, admin_penalize_client)
 VALUES
     (null, true, 'commen1 fds fds fdsfdf d fdsfds fds fsd f ds fdfdf d', true, false, 1, false),
@@ -313,7 +312,7 @@ VALUES
     (null, true, 'commen15', true, false, 22, false);
 
 
-INSERT INTO public.complaints(description, admin_response, processed, reservation_id)
+INSERT INTO complaints(description, admin_response, processed, reservation_id)
 VALUES
        ('complaint1',null, false, 1),
        ('complaint2',null, false, 4),
@@ -326,7 +325,7 @@ VALUES
        ('complaint9','444 response4', true, 9),
        ('complaint10','555 response5', true, 10);
 
-INSERT INTO public.deleted_accounts(
+INSERT INTO deleted_accounts(
     accepted, admin_response, processed, reason, user_id)
 VALUES
        (false, null, false, 'tako eto',17),
@@ -339,7 +338,11 @@ VALUES
 INSERT INTO unavailable_dates (start_time, end_time, entity_id)
 VALUES
     ('2022-06-04 9:00 pm', '2022-06-06 9:00 pm', 11),
-    ('2022-06-10 9:00 pm', '2022-06-15 9:00 pm', 11);
+    ('2022-06-10 9:00 pm', '2022-06-15 9:00 pm', 11),
+
+    ('2022-06-15 6:00 am', '2022-06-25 6:00 am', 1),
+    ('2022-06-01 9:00 pm', '2022-06-02 9:00 pm', 1);
+
 
 --cotages res
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
@@ -357,6 +360,33 @@ VALUES
     ('commen5', 1.0, 8, false, false, '2022-05-14 8:00 am'),
     ('commen6', 0.5, 9, true, true,'2022-05-14 8:00 am'),
     ('commen7', 5.0, 10, false, false,'2022-05-14 8:00 am');
+
+
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
+VALUES
+('2022-06-03 8:00 pm',2,3,1,7,'False','False', 1, 120, 5, 5, 60),
+('2022-06-07 9:00 pm',4,4,1,8,'False','False', 1, 120, 5, 5, 60),
+('2022-06-28 5:00 pm',7,2,1,9,'False','False', 1, 120, 5, 5, 60),
+
+('2022-05-20 9:00 pm',2,5,2,7,'False','False', 1, 120, 5, 5, 60),
+('2022-05-24 9:00 pm',4,1,2,8,'False','False', 1, 120, 5, 5, 60),
+('2022-06-01 5:00 pm',10,2,2,8,'False','False', 1, 120, 5, 5, 60),
+('2022-06-12 7:00 am',1,5,2,9,'False','False', 1, 120, 5, 5, 60),
+('2022-06-20 7:00 am',2,7,2,9,'False','False', 1, 120, 5, 5, 60),
+
+('2022-05-20 8:00 am',1,2,3,7,'False','False', 1, 120, 5, 5, 60),
+('2022-05-22 8:00 am',2,1,3,8,'False','False', 1, 120, 5, 5, 60),
+('2022-05-28 8:00 am',15,4,3,9,'False','False', 1, 120, 5, 5, 60),
+('2022-06-25 9:00 am',5,2,3,8,'False','False', 1, 120, 5, 5, 60),
+
+('2021-12-12 8:00 am',5,2,3,7,'False','False', 1, 120, 5, 5, 60),
+('2021-12-30 8:00 am',7,1,3,8,'False','False', 1, 120, 5, 5, 60),
+('2021-12-25 8:00 am',15,4,3,9,'False','False', 2, 120, 5, 5, 60),
+('2021-12-10 9:00 am',5,2,3,8,'False','False', 2, 120, 5, 5, 60),
+('2022-12-20 9:00 am',20,2,3,8,'False','False', 2, 120, 5, 5, 60);
+
+
+
 
 INSERT INTO reservation_additional_service(reservation_id, additional_service_id)
 VALUES
@@ -425,7 +455,7 @@ INSERT INTO navigation_equipments(name, ship_id) VALUES ('VHF_RADIO', 9);
 INSERT INTO navigation_equipments(name, ship_id) VALUES ('RADAR', 8);
 
 
-INSERT INTO public.loyalty_programs(
+INSERT INTO loyalty_programs(
     client_points_per_reservation, owner_points_per_reservation,
     bronze_limit, silver_limit, gold_limit,
     client_bronze_discount,client_silver_discount, client_gold_discount,
@@ -433,6 +463,13 @@ INSERT INTO public.loyalty_programs(
 VALUES (1,2, 30,60,100, 1,5,10,2,6,11,'2022-03-04'),
        (2,3, 40,80,120, 1,6,12,2,7,11,'2022-05-05');
 
-INSERT INTO public.system_revenue_percentages(percentage, start_date)
+INSERT INTO system_revenue_percentages(percentage, start_date)
 VALUES (10, '2022-03-04'),
        (20, '2022-05-05');
+
+
+
+--cotages res
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
+VALUES
+    ('2022-05-29 7:00 pm',5,3,1,9,'False','False', 1, 80, 5, 5, 30);

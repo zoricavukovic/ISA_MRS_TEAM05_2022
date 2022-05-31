@@ -20,8 +20,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query(value="select distinct r from Reservation r left join fetch r.bookingEntity b left join fetch r.client c where r.id=?1")
     Reservation getReservationById(Long id);
 
-    @Query(value="select distinct r from Reservation  r left join fetch r.client c where r.bookingEntity.id=?1 and r.canceled=false and r.fastReservation=false")
-    List<Reservation> findAllReservationsWithClientsForEntityId(Long id);
+    @Query(value="select distinct r from Reservation r left join fetch r.client c left join fetch r.bookingEntity b where r.bookingEntity.id=?1 and r.canceled=false and r.fastReservation=false")
+    List<Reservation> findAllReservationsForEntityId(Long id);
 
     @Query(value="select distinct r from Reservation  r where r.bookingEntity.id=?1 and r.canceled=false")
     List<Reservation> findAllRegularAndFastReservationsForEntityId(Long id);
@@ -39,5 +39,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query(value="select distinct r from Reservation r left join fetch r.bookingEntity b left join fetch r.client c where r.canceled = false and r.fastReservation = false")
     List<Reservation> getAllFinishedReservations();
+
+    @Query(value="select distinct r from Reservation  r left join fetch r.client c where r.bookingEntity.id=?1 and r.canceled=false")
+    List<Reservation> findAllRegularAndFastReservationsForEntityIdWithClient(Long id);
 
 }

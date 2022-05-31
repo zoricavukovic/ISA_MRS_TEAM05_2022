@@ -9,9 +9,10 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined} from '@mui/icons-material';
 import { getBookingEntityById } from '../../service/BookingEntityService';
-import { addReservation } from '../../service/ReservationService';
+import { addReservationForClient } from '../../service/ReservationService';
 import { getCurrentUser } from '../../service/AuthService';
 import { Person } from '@mui/icons-material';
+import { findAllClientsWithActiveReservations} from '../../service/ReservationService';
 
 export default function CreateReservationForClient(props) {
     const [type, setType] = useState("");
@@ -66,11 +67,13 @@ export default function CreateReservationForClient(props) {
       });
 
     const [selectedClientId, setSelectedClientId] = useState();
+    const [optionsClient, setOptionsClient] = useState([]);
+    const [isOptionClientLoading, setOptionsClientLoading] = useState(true);
     const clientOnChange = (event, newValue) => {
         event.preventDefault();
         console.log(newValue);
         if (newValue != null && newValue != undefined && newValue != '') {
-            setSelectedClientId(newValue.id);
+            setSelectedClientId(newValue);
         } else {
             setSelectedClientId(null);
         }
@@ -107,6 +110,10 @@ export default function CreateReservationForClient(props) {
             setLoaded(true);
             setPrice(res.data.pricelists[0].entityPricePerPerson);
             setType(res.data.entityType);
+        });
+        findAllClientsWithActiveReservations(props.bookingEntityId).then(res => {
+            setOptionsClient(res.data);
+            setOptionsClientLoading(false);
         });
     }, []);
 
@@ -228,7 +235,7 @@ export default function CreateReservationForClient(props) {
         }
         console.log(availableTimes);
         setTimes(availableTimes);
-    }, [startDate]);
+    }, [selectionRange.startDate]);
 
     useEffect(() => {
         if(Object.keys(bookingEntity).length !== 0)
@@ -237,6 +244,7 @@ export default function CreateReservationForClient(props) {
 
     const reserve = (event) => {
         event.preventDefault()
+        console.log(selectionRange);
         var startDateTime = selectionRange.startDate;
         var endDateTime = selectionRange.endDate;
         startDateTime.setHours(0);
@@ -255,18 +263,36 @@ export default function CreateReservationForClient(props) {
             if(additionalServices.some(service=>{return service.id === serv.id}))
                 addServ.push(serv);
         }
-        var resDTO={
-            startDate:`${format(startDateTime, "yyyy-MM-dd HH:mm")}`,
-            numOfDays:days,
-            numOfPersons:personNumber,
-            additionalServices:addServ,
-            fastReservation:false,
-            bookingEntity:bookingEntity,
-            canceled:false,
-            cost:price,
-            version:1,
-            client:getCurrentUser()
-        };
+        console.log(selectedClientId);
+        if (selectedClientId === undefined){
+            setSelectedClientId(optionsClient[0]);
+            var resDTO={
+                startDate:`${format(startDateTime, "yyyy-MM-dd HH:mm")}`,
+                numOfDays:days,
+                numOfPersons:personNumber,
+                additionalServices:addServ,
+                fastReservation:false,
+                bookingEntity:bookingEntity,
+                canceled:false,
+                cost:price,
+                version:1,
+                client:optionsClient[0]
+            };
+        }
+        else{
+            var resDTO={
+                startDate:`${format(startDateTime, "yyyy-MM-dd HH:mm")}`,
+                numOfDays:days,
+                numOfPersons:personNumber,
+                additionalServices:addServ,
+                fastReservation:false,
+                bookingEntity:bookingEntity,
+                canceled:false,
+                cost:price,
+                version:1,
+                client:selectedClientId
+            };
+        }
         setReservationDTO(resDTO);
         
         setOpenDialog(true);
@@ -292,7 +318,7 @@ export default function CreateReservationForClient(props) {
 
     const confirmReservation = ()=>{
         console.log(reservationDTO);
-        addReservation(reservationDTO).then(res=>{
+        addReservationForClient(reservationDTO).then(res=>{
             console.log("Adding temp res success");
             console.log(res.data);
 
@@ -374,7 +400,7 @@ export default function CreateReservationForClient(props) {
                                 }
                         </>
 
-
+    if (isOptionClientLoading) { return <div></div>}
     return (
         <Dialog
         open={props.openDialog}
@@ -396,6 +422,7 @@ export default function CreateReservationForClient(props) {
                             <DialogContentText>
                                 Reservation type:<b>{String(bookingEntity.entityType).toLowerCase()}</b> <br></br>
                                 Name: <b>{bookingEntity.name} </b>             <br></br>
+                                Client: <b>{selectedClientId} </b>             <br></br>
                                 Place: <b>{bookingEntity.place.cityName+", "+bookingEntity.place.stateName}</b>    <br></br>
                                 Date range: <b>{`${format(selectionRange.startDate, "dd.MM.yyyy.")}`} to {`${format(selectionRange.endDate, "dd.MM.yyyy.")}`}</b><br></br>
                                 Number of persons: <b>{personNumber}</b><br></br>
@@ -445,7 +472,8 @@ export default function CreateReservationForClient(props) {
                          <Autocomplete
                             disablePortal
                             id="client"
-                            options={[]}
+                            options={optionsClient}
+                            defaultValue={optionsClient[0]}
                             style={{margin:"2%", marginRight:'15%'}}
                             onChange={clientOnChange}
                             renderInput={(params) => <TextField {...params} label="Client" 

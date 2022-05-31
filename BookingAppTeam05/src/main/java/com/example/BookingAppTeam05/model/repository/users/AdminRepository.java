@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     @Override
-    @Query("select u from Admin u join fetch u.place p join fetch u.role r where u.id=?1")
+    @Query("select u from Admin u left join fetch u.place p left join fetch u.role r where u.id=?1")
     Optional<Admin> findById(Long aLong);
 }
