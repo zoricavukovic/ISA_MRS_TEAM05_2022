@@ -112,9 +112,7 @@ public class CottageController {
     @GetMapping
     public ResponseEntity<List<CottageDTO>> getCottages() {
         List<Cottage> cottages = cottageService.findAll();
-
         List<CottageDTO> cottageDTOs = new ArrayList<>();
-
         for (Cottage cottage:cottages) {
             CottageDTO cDTO = new CottageDTO(cottage);
             cDTO.setPlace(cottage.getPlace());

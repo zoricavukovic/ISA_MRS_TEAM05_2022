@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.model.repository.users;
 
+import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.model.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -33,6 +34,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "delete from User u where u.id=?1")
     void physicalDeleteUserById(Long id);
-
 }
 

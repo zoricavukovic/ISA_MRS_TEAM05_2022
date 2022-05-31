@@ -8,6 +8,7 @@ import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.model.Picture;
 import com.example.BookingAppTeam05.model.Pricelist;
 import com.example.BookingAppTeam05.model.Reservation;
+import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.RatingService;
 import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.example.BookingAppTeam05.model.entities.*;
@@ -17,6 +18,7 @@ import com.example.BookingAppTeam05.model.repository.entities.BookingEntityRepos
 import com.example.BookingAppTeam05.model.repository.entities.CottageRepository;
 import com.example.BookingAppTeam05.model.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.service.*;
+import com.example.BookingAppTeam05.service.users.ClientService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class BookingEntityService {
     private BookingEntityRepository bookingEntityRepository;
     private CottageRepository cottageRepository;
     private UserService userService;
+    private ClientService clientService;
     private AdventureService adventureService;
     private CottageService cottageService;
     private ShipService shipService;
@@ -44,12 +47,13 @@ public class BookingEntityService {
 
     @Autowired
     public BookingEntityService(BookingEntityRepository bookingEntityRepository, UserService userService,
-                                CottageService cottageService, AdventureService adventureService, ShipService shipService,
+                                ClientService clientService, CottageService cottageService, AdventureService adventureService, ShipService shipService,
                                 SearchService searchService, RatingService ratingService, PricelistService pricelistService,
                                 ReservationService reservationService, PictureService pictureService,
-                                CottageRepository cottageRepository, ShipRepository shipRepository,AdventureRepository adventureRepository ) {
+                                CottageRepository cottageRepository, ShipRepository shipRepository, AdventureRepository adventureRepository) {
         this.bookingEntityRepository = bookingEntityRepository;
         this.userService = userService;
+        this.clientService = clientService;
         this.adventureService = adventureService;
         this.cottageService = cottageService;
         this.shipService = shipService;
@@ -340,5 +344,56 @@ public class BookingEntityService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public List<SearchedBookingEntityDTO> getSubscribedEntitiesForClient(Long clientId) {
+        List<Long> subsEntitiesIds = clientService.findSubscribedEntitiesByClientId(clientId);
+        return convertToSearchBookingEntitiyDTOList(subsEntitiesIds);
+    }
+
+    public List<SearchedBookingEntityDTO> convertToSearchBookingEntitiyDTOList(List<Long> entitiesIds){
+        List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
+        for (Long entityId: entitiesIds) {
+            retVal.add(getSearchedBookingEntityDTOByEntityId(entityId));
+        }
+        return retVal;
+    }
+
+    public List<SearchedBookingEntityDTO> subscribeClientWithEntity(Long clientId, Long entityId) {
+        Client client = clientService.findById(clientId);
+        BookingEntity bookingEntity = bookingEntityRepository.findById(entityId).orElse(null);
+        Set<BookingEntity> watched = client.getWatchedEntities();
+        if(watched.stream().filter(entity -> entity.getId() == bookingEntity.getId()).collect(Collectors.toList()).size() == 0) {
+            watched.add(bookingEntity);
+            client.setWatchedEntities(watched);
+            clientService.save(client);
+        }
+        Set<Client> clients = bookingEntity.getSubscribedClients();
+        clients.add(client);
+        bookingEntity.setSubscribedClients(clients);
+        bookingEntityRepository.save(bookingEntity);
+        List<Long> entityIds = new ArrayList<>();
+        for (BookingEntity entity : watched) {
+            entityIds.add(entity.getId());
+        }
+        return convertToSearchBookingEntitiyDTOList(entityIds);
+    }
+
+    public List<SearchedBookingEntityDTO> unsubscribeClientWithEntity(Long clientId, Long entityId) {
+        Client client = clientService.findById(clientId);
+        BookingEntity bookingEntity = bookingEntityRepository.findById(entityId).orElse(null);
+        Set<Client> clients = bookingEntity.getSubscribedClients();
+        clients.removeIf(client1 -> client1.getId() == clientId);
+        bookingEntity.setSubscribedClients(clients);
+        Set<BookingEntity> watched = client.getWatchedEntities();
+        watched.removeIf(entity -> Objects.equals(entity.getId(), entityId));
+        client.setWatchedEntities(watched);
+        clientService.save(client);
+        bookingEntityRepository.save(bookingEntity);
+        List<Long> entityIds = new ArrayList<>();
+        for (BookingEntity entity : watched) {
+            entityIds.add(entity.getId());
+        }
+        return convertToSearchBookingEntitiyDTOList(entityIds);
     }
 }

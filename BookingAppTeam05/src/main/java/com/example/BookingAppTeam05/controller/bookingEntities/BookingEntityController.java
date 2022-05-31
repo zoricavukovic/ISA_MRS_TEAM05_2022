@@ -56,6 +56,15 @@ public class BookingEntityController {
     }
 
 
+    @GetMapping(value = "/subscribedEntities/{clientId}")
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getSubsribedBookingEntityForClient(@PathVariable Long clientId) {
+        List<SearchedBookingEntityDTO> retVal = bookingEntityService.getSubscribedEntitiesForClient(clientId);
+        if (retVal == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+
     @PostMapping(value="/simpleSearch", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedBookingEntitiesForOwner(@RequestBody SimpleSearchForBookingEntityOwnerDTO s) {
         try {

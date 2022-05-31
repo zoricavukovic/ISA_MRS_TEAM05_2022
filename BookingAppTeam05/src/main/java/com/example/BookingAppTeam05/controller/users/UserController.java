@@ -2,10 +2,9 @@ package com.example.BookingAppTeam05.controller.users;
 
 import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.dto.users.*;
-import com.example.BookingAppTeam05.model.*;
-import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.PlaceService;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +22,14 @@ import java.util.List;
 public class UserController {
 
     private UserService userService;
+    private BookingEntityService bookingEntityService;
     private PlaceService placeService;
 
     @Autowired
-    public UserController(UserService userService, PlaceService placeService) {
+    public UserController(UserService userService, BookingEntityService bookingEntityService, PlaceService placeService) {
 
         this.userService = userService;
+        this.bookingEntityService = bookingEntityService;
         this.placeService = placeService;
     }
 
@@ -112,6 +113,24 @@ public class UserController {
         if (errorCode != null)
             return new ResponseEntity<>(errorCode, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>("sve ok", HttpStatus.OK);
+    }
+
+    @PostMapping("/subscribe/{clientId}/{entityId}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
+    public ResponseEntity<List<SearchedBookingEntityDTO>> subscribeClientWithEntity(@PathVariable(value = "clientId") Long clientId, @PathVariable(value = "entityId") Long entityId)  {
+        List<SearchedBookingEntityDTO> retVal = bookingEntityService.subscribeClientWithEntity(clientId, entityId);
+        if(retVal == null)
+            return (ResponseEntity<List<SearchedBookingEntityDTO>>) ResponseEntity.badRequest();
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+    @PostMapping("/unsubscribe/{clientId}/{entityId}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
+    public ResponseEntity<List<SearchedBookingEntityDTO>> unsubscribeClientWithEntity(@PathVariable(value = "clientId") Long clientId, @PathVariable(value = "entityId") Long entityId)  {
+        List<SearchedBookingEntityDTO> retVal  = bookingEntityService.unsubscribeClientWithEntity(clientId, entityId);
+        if(retVal == null)
+            return (ResponseEntity<List<SearchedBookingEntityDTO>>) ResponseEntity.badRequest();
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 }
 

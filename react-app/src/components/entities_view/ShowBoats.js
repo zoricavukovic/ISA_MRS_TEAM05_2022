@@ -2,6 +2,8 @@ import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 import { Box, Button, ButtonGroup, Grid } from '@mui/material';
 import * as React from 'react';
 import { useEffect, useState } from "react";
+import { getCurrentUser } from '../../service/AuthService';
+import { getAllSubscribedEntities } from '../../service/BookingEntityService';
 import { getAllShipsView, getSearchedShips } from '../../service/ShipService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
@@ -9,6 +11,7 @@ import SearchForReservation from '../SearchForReservation';
 export default function ShowBoats() {
 
     const [ships, setShips] = useState([]);
+    const [subscribedEntities, setSubscribedEntities] = useState([]);
     const [defaultShips, setDefaultShips] = useState([]);
     const [searchParams, setSearchParams] = useState({});
     const [filterParams, setFilterParams] = useState({});
@@ -16,6 +19,10 @@ export default function ShowBoats() {
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
+        getAllSubscribedEntities(getCurrentUser().id).then(res => {
+            setSubscribedEntities(res.data);
+            console.log(res.data);
+        });
     }, []);
 
     const getAllShips = () => {
@@ -127,7 +134,7 @@ export default function ShowBoats() {
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {ships.length === 0 && <h3>No results found.</h3>}
                     {ships.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams}  />
+                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams} subscribedEntities={subscribedEntities}/>
                     ))}
                 </div>
             </div>

@@ -11,6 +11,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import EuroIcon from '@mui/icons-material/Euro';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const navbarDefaultList = [
   {
@@ -80,6 +81,14 @@ const navbarClientList = [
     badge: 0,
     subList: [],
     url:'/myReservations'
+  },
+  {
+    icon: FavoriteIcon,
+    desc: 'Subscribed Entities',
+    secondDesc: '',
+    badge: 0,
+    subList: [],
+    url:'/likedEntites'
   }
 ]
 

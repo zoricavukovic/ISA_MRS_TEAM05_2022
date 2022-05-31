@@ -91,7 +91,6 @@ export default function MyReservations() {
             setDisplayEntityType("none");
             setEntityTypeChoosen("ALL");
         }
-        
     }
 
 
@@ -109,15 +108,15 @@ export default function MyReservations() {
             setFilteredReservations(allRes);
             
             let newOpts = [];
-            for (let res of res.data){
+            for (let reservation of res.data){
                 let found = false;
                 for (let added of newOpts){
-                    if (added === res.bookingEntity.name){
+                    if (added === reservation.bookingEntity.name){
                         found = true;
                         break;
                     }
                 }
-                if (found === false) {newOpts.push(res.bookingEntity.name);}
+                if (found === false) {newOpts.push(reservation.bookingEntity.name);}
             }
             setLoading(false);
             setOptions(newOpts);
