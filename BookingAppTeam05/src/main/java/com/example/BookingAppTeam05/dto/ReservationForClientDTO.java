@@ -31,7 +31,7 @@ public class ReservationForClientDTO {
     @Min(1)
     @Max(30)
     private int numOfPersons;
-    private Set<AdditionalService> additionalServices = new HashSet<>();
+    private Set<NewAdditionalServiceDTO> additionalServices = new HashSet<>();
     private boolean fastReservation;
     private BookingEntityDTO bookingEntity;
     private boolean canceled;
@@ -84,11 +84,11 @@ public class ReservationForClientDTO {
         this.numOfPersons = numOfPersons;
     }
 
-    public Set<AdditionalService> getAdditionalServices() {
+    public Set<NewAdditionalServiceDTO> getAdditionalServices() {
         return additionalServices;
     }
 
-    public void setAdditionalServices(Set<AdditionalService> additionalServices) {
+    public void setAdditionalServices(Set<NewAdditionalServiceDTO> additionalServices) {
         this.additionalServices = additionalServices;
     }
 

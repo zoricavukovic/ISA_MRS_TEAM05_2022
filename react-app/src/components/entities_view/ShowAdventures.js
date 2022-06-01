@@ -27,7 +27,14 @@ export default function ShowAdventures(props) {
                     console.log(res.data);
                 });    
             }
+            else 
+                setIsLoaded(true);
+            
+            
         }
+        else 
+            setIsLoaded(true);
+        
     }, []);
 
     useEffect(() => {

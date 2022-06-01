@@ -29,6 +29,8 @@ public class UnavailableDateDTO {
     @NotNull
     private LocalDateTime endDate;
 
+    public UnavailableDateDTO(){}
+
     public UnavailableDateDTO(UnavailableDate unavailableDate) {
         this.endDate = unavailableDate.getEndTime();
         this.startDate = unavailableDate.getStartTime();

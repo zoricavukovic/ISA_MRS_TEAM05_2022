@@ -164,7 +164,6 @@ export default function SearchForReservation({setSearchParams,setFilterParams, t
                                           backgroundColor:"white",
                                           border:"1px solid rgb(5, 30, 52)"
                                       }}
-                                      onBlur={()=>setOpenDate(!openDate)}
                                       >
                                       <DateRange
                                         onBlur={()=>setOpenDate(!openDate)}

@@ -29,7 +29,12 @@ export default function ShowBoats(props) {
 
                 });    
             }
+            else 
+                setIsLoaded(true);
         }
+        else 
+            setIsLoaded(true);
+        
     }, []);
 
     useEffect(() => {

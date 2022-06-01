@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service;
 
+import com.example.BookingAppTeam05.dto.NewAdditionalServiceDTO;
 import com.example.BookingAppTeam05.dto.ReservationForClientDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
@@ -278,7 +279,7 @@ public class ReservationService {
             res.setNumOfDays(reservationDTO.getNumOfDays());
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
             Set<AdditionalService> aServices = new HashSet<>();
-            for (AdditionalService as:reservationDTO.getAdditionalServices()) {
+            for (NewAdditionalServiceDTO as:reservationDTO.getAdditionalServices()) {
                 aServices.add(additionalServiceRepository.findById(as.getId()).orElse(null));
             }
             res.setAdditionalServices(aServices);

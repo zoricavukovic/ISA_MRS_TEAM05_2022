@@ -105,6 +105,8 @@ export default function ReservationBasicCard(props) {
     };
 
     function handleCreateReport(){
+      console.log("report");
+      console.log(props.reservation.id);
         let report = {
           "clientCome": checkedCome,
           "comment": reason,
@@ -190,7 +192,7 @@ export default function ReservationBasicCard(props) {
             <table style={{whiteSpace: "nowrap"}}>
                 <tr>
                     <th><h4>{props.reservation.bookingEntity.name}</h4></th>
-                    <th style={{paddingLeft:"3%"}}>€ {reservationCost} / {props.reservation.numOfDays} nights</th>
+                    <th style={{paddingLeft:"3%"}}>€ {props.reservation.cost} / {props.reservation.numOfDays} nights</th>
                 </tr>
                 
             </table>
@@ -285,7 +287,7 @@ export default function ReservationBasicCard(props) {
             <table style={{whiteSpace: "nowrap"}}>
                 <tr>
                     <th><h4>{props.reservation.bookingEntity.name}</h4></th>
-                    <th style={{paddingLeft:"3%"}}>€ {reservationCost} / {props.reservation.numOfDays} nights</th>
+                    <th style={{paddingLeft:"3%"}}>€ {props.reservation.cost} / {props.reservation.numOfDays} nights</th>
                 </tr>
                 
             </table>
