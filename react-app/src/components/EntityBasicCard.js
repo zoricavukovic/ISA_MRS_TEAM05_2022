@@ -38,8 +38,16 @@ export default function EntityBasicCard(props) {
     const [isSubsribed, setIsSubscribed] = React.useState([]);
 
     React.useEffect(() => {
-        let subsc = props.subscribedEntities.some(e=>e.id === props.bookingEntity.id)
-        setIsSubscribed(subsc);
+        if (getCurrentUser() !== null && getCurrentUser() !== undefined) {
+            if (getCurrentUser().userType.name === "ROLE_CLIENT") {
+                let subsc = [];
+                console.log(props.subscribedEntities);
+                if(props.subscribedEntities != null && props.subscribedEntities != "undefined" && props.subscribedEntities.length > 0)
+                    subsc = props.subscribedEntities.some(e=>e.id === props.bookingEntity.id)
+                console.log(subsc);
+                setIsSubscribed(subsc);        
+            }
+        }
     }, []);
 
     const handleClick = () => {
@@ -62,7 +70,7 @@ export default function EntityBasicCard(props) {
     };
 
     const logicDeleteBookingEntity = (event) => {
-        logicalDeleteBookingEntityById(props.bookingEntity.id, password).then(res => {
+        logicalDeleteBookingEntityById(props.bookingEntity.id, getCurrentUser().id, password).then(res => {
             setPassword("");
             handleClick();
             setTypeAlert("success");
@@ -175,11 +183,11 @@ export default function EntityBasicCard(props) {
                                 <CardMedia>
                                     <ImageSlider imageHeight="25vh" slides={props.bookingEntity.pictures.map((im) => ({ 'image': URL_PICTURE_PATH + im }))} />
                                 </CardMedia>
-                            ) : 
+                            ) :
                             (
                                 <CardMedia
                                     component="img"
-                                    style={{height:"26vh"}}
+                                    style={{ height: "26vh" }}
                                     alt="No Images"
                                     image={URL_PICTURE_PATH + props.bookingEntity.pictures[0]}
                                 >
@@ -218,7 +226,8 @@ export default function EntityBasicCard(props) {
                 <Button size="small" onClick={showBookingEntity}><ReadMoreIcon fontSize="large" style={{ margin: "5px" }} /> Details</Button>
                 {getCurrentUser() !== null &&
                     <span>
-                        {getCurrentUser().userType.name === "ROLE_CLIENT" ?
+                        {getCurrentUser().userType.name === "ROLE_CLIENT"
+                            ?
                             (
                                 <span style={{display:'flex'}}>
                                 <Button size="small" style={{marginLeft:'5px', padding:'0px'}} onClick={reserveBookingEntity}><ReadMoreIcon fontSize="large" style={{ margin: "5px" }} /> Reserve</Button>
@@ -229,14 +238,25 @@ export default function EntityBasicCard(props) {
                                 </span>
                             ) :
                             (
-
                                 <span>
-                                    <Button size="small" onClick={handleClickOpen}><DeleteIcon />Delete</Button>
-                                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                                        <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
-                                            {message}
-                                        </Alert>
-                                    </Snackbar>
+                                    {((props.onlyTypeForDeleteVisible === "ADVENTURES" && (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER" || getCurrentUser().userType.name === "ROLE_SHIP_OWNER")) ||
+                                        (props.onlyTypeForDeleteVisible === "COTTAGES" && (getCurrentUser().userType.name === "ROLE_INSTRUCTOR" || getCurrentUser().userType.name === "ROLE_SHIP_OWNER")) ||
+                                        (props.onlyTypeForDeleteVisible === "SHIPS" && (getCurrentUser().userType.name === "ROLE_INSTRUCTOR" || getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER")))  
+                                        ?
+                                    (
+                                    <span>
+                                    </span>
+                                    )
+                                    :
+                                    ( <span>
+                                        <Button size="small" onClick={handleClickOpen}><DeleteIcon />Delete</Button>
+                                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                            <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
+                                                {message}
+                                            </Alert>
+                                        </Snackbar>
+                                    </span>)
+                                    }
                                 </span>
                             )
                         }

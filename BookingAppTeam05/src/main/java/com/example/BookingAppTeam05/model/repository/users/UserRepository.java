@@ -34,5 +34,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "delete from User u where u.id=?1")
     void physicalDeleteUserById(Long id);
+
+    @Query("select distinct u from User u left join fetch u.role r where u.notYetActivated = false and u.deleted = false")
+    List<User> getAllUsers();
 }
 

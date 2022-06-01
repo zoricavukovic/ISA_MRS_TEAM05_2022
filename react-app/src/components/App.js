@@ -40,7 +40,6 @@ import NewReservation from './reservations/NewReservationPage';
 import ChangePassword from './ChangePassword';
 import searchForReservation from './SearchForReservation';
 import AddAdmin from './admin/AddAdmin';
-import AdminHomePage from './admin/AdminHomePage';
 import MyReservations from './reservations/MyReservations';
 import ShowReservationsDetailsForClient from './reservations/ReservationDetailsForClient';
 import Reports from './analytics/Reports';
@@ -56,6 +55,7 @@ import LoyaltyProgramForm from './loyaltyProgram/LoyaltyProgramForm';
 import SystemRevenue from './admin/SystemRevenue';
 import LikedEntities from './LikedEntities';
 import Calendar from "./calendar/Calendar";
+import ReviewAllUsers from "./admin/allUsers/AllUsers";
 
 
 function App() {
@@ -132,7 +132,7 @@ function App() {
 
                     <Route path="/changePassword" component={ChangePassword} />
                     <Route path="/addAdmin" component={AddAdmin} />
-                    <Route path="/adminHomePage" component={AdminHomePage} />
+                    <Route path="/adminHomePage" component={AllRequestsCards} />
                     <Route path="/reviewReservationReportsAdmin" component={ReviewReservationReport} />
                     <Route path="/reviewRatingsAdmin" component={ReviewRatingsAdmin} />
                     <Route path="/reviewComplaintsAdmin" component={ReviewComplaints} />
@@ -142,6 +142,7 @@ function App() {
                     <Route path="/loyaltyProgram" component={LoyaltyProgramForm}/>
                     <Route path="/systemRevenue" component={SystemRevenue} />
                     <Route path="/calendar" component={Calendar} />
+                    <Route path="/allUsers" component={ReviewAllUsers} />
                     <Redirect to="/homepage"></Redirect>
                 </Switch>
             </Router>

@@ -2,13 +2,13 @@ import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 import { Box, Button, ButtonGroup, Grid } from '@mui/material';
 import * as React from 'react';
 import { useEffect, useState } from "react";
-import { getAllAdventuresView, getSearchedAdventures } from '../../service/AdventureService';
 import { getCurrentUser } from '../../service/AuthService';
 import { getAllSubscribedEntities } from '../../service/BookingEntityService';
+import { getAllAdventuresView, getAllAdventuresViewForOwnerId, getSearchedAdventures } from '../../service/AdventureService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
 
-export default function ShowAdventures() {
+export default function ShowAdventures(props) {
 
     const [adventures, setAdventures] = useState([]);
     const [subscribedEntities, setSubscribedEntities] = useState([]);
@@ -16,22 +16,41 @@ export default function ShowAdventures() {
     const [searchParams, setSearchParams] = useState({});
     const [filterParams, setFilterParams] = useState({});
     const [sortSelected, setSortSelected] = useState('');
+    const [isLoaded, setIsLoaded] = useState(false);
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
-        getAllSubscribedEntities(getCurrentUser().id).then(res => {
-            setSubscribedEntities(res.data);
-            console.log(res.data);
-        });
+        if (getCurrentUser() !== null && getCurrentUser() !== undefined) {
+            if (getCurrentUser().userType.name === "ROLE_CLIENT") {
+                getAllSubscribedEntities(getCurrentUser().id).then(res => {
+                    setSubscribedEntities(res.data);
+                    console.log(res.data);
+                });    
+            }
+        }
     }, []);
 
+    useEffect(() => {
+        if(subscribedEntities.length > 0)
+            setIsLoaded(true);
+    }, [subscribedEntities]);
+
     const getAllAdventures = () => {
-        getAllAdventuresView().then(res => {
-            setAdventures(res.data);
-            setDefaultAdventures(res.data);
-            console.log(res.data);
-            setSortSelected('');
-        })
+        if (props.location.state !== null && props.location.state !== undefined) {
+            getAllAdventuresViewForOwnerId(props.location.state.ownerId).then(res => {
+                setAdventures(res.data);
+                setDefaultAdventures(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });    
+        } else {
+            getAllAdventuresView().then(res => {
+                setAdventures(res.data);
+                setDefaultAdventures(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });    
+        }
     };
 
     useEffect(() => {
@@ -129,8 +148,8 @@ export default function ShowAdventures() {
             <div style={{ margin: '1% 9% 1% 9%' }} className="App">
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {adventures.length === 0 && <h3>No results found.</h3>}
-                    {adventures.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams} subscribedEntities={subscribedEntities}/>
+                    {isLoaded && adventures.map((item, index) => (
+                        <EntityBasicCard bookingEntity={item} onlyTypeForDeleteVisible={"ADVENTURES"} subscribedEntities={subscribedEntities} key={index} searchParams={searchParams}/>
                     ))}
                 </div>
             </div>

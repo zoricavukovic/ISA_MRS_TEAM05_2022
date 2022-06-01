@@ -26,6 +26,8 @@ public class AdditionalService {
         this.serviceName = serviceName;
     }
 
+    public void setId(Long id){this.id =id;}
+
     public Long getId() {
         return id;
     }

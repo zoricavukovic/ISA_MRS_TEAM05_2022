@@ -13,6 +13,7 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import EuroIcon from '@mui/icons-material/Euro';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 const navbarDefaultList = [
   {
@@ -253,8 +254,18 @@ const systemRevenue = {
   url: '/systemRevenue'
 }
 
+const allUsers = {
+  icon: PeopleAltIcon,
+  desc: 'All users',
+  secondDesc: '',
+  badge: 0,
+  subList: [],
+  url: '/allUsers'
+}
+
 const navbarSuperAdminList = [
   ...navbarDefaultList,
+  allUsers,
   {
     icon: AddCircle,
     desc: 'Add New Admin',
@@ -270,6 +281,7 @@ const navbarSuperAdminList = [
 
 const navbarAdminList = [
   ...navbarDefaultList,  
+  allUsers,
   allRequests,
   loyaltyProgram,
   systemRevenue

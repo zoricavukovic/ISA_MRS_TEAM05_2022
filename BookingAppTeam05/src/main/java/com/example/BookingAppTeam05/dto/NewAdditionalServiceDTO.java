@@ -1,5 +1,7 @@
 package com.example.BookingAppTeam05.dto;
 
+import com.example.BookingAppTeam05.model.AdditionalService;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -21,6 +23,12 @@ public class NewAdditionalServiceDTO {
         this.id = id;
         this.serviceName = serviceName;
         this.price = price;
+    }
+
+    public NewAdditionalServiceDTO(AdditionalService additionalService) {
+        this.id = additionalService.getId();
+        this.serviceName = additionalService.getServiceName();
+        this.price = additionalService.getPrice();
     }
 
     public Long getId() {

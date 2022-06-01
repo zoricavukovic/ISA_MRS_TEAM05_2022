@@ -1,6 +1,7 @@
 package com.example.BookingAppTeam05.service.entities;
 
 import com.example.BookingAppTeam05.dto.*;
+import com.example.BookingAppTeam05.dto.calendar.UnavailableDateDTO;
 import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
@@ -21,7 +22,10 @@ import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.ClientService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -142,13 +146,6 @@ public class BookingEntityService {
         return false;
     }
 
-    public boolean logicalDeleteBookingEntityById(Long id) {
-        if (checkExistActiveReservationForEntityId(id))
-            return false;
-        bookingEntityRepository.logicalDeleteBookingEntityById(id);
-        return true;
-    }
-
     public BookingEntity getEntityById(Long id) {
         return bookingEntityRepository.getEntityById(id);
     }
@@ -163,6 +160,7 @@ public class BookingEntityService {
         }
     }
 
+    @Transactional
     public BookingEntityDTO findById(Long id) {
         Optional<EntityType> entityType = bookingEntityRepository.findEntityTypeById(id);
         if (!entityType.isPresent())
@@ -269,10 +267,10 @@ public class BookingEntityService {
             else
                 lastDates.add(reservation.getStartDate().plusDays(reservation.getNumOfDays()));
         }
-        for(UnavailableDate unavailableDate:entityDTO.getUnavailableDates()){
+        for(UnavailableDateDTO unavailableDate:entityDTO.getUnavailableDates()){
             int days = 0;
-            LocalDateTime date = unavailableDate.getStartTime();
-            while(date.isBefore(unavailableDate.getEndTime())){
+            LocalDateTime date = unavailableDate.getStartDate();
+            while(date.isBefore(unavailableDate.getEndDate())){
                 allUnavailableDates.add(date);
                 days++;
                 date = date.plusDays(days);
@@ -354,7 +352,9 @@ public class BookingEntityService {
     public List<SearchedBookingEntityDTO> convertToSearchBookingEntitiyDTOList(List<Long> entitiesIds){
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         for (Long entityId: entitiesIds) {
-            retVal.add(getSearchedBookingEntityDTOByEntityId(entityId));
+            SearchedBookingEntityDTO item = getSearchedBookingEntityDTOByEntityId(entityId);
+            if(item != null)
+                retVal.add(getSearchedBookingEntityDTOByEntityId(entityId));
         }
         return retVal;
     }
@@ -395,5 +395,36 @@ public class BookingEntityService {
             entityIds.add(entity.getId());
         }
         return convertToSearchBookingEntitiyDTOList(entityIds);
+    }
+
+    private boolean userWithIdOwnsEntityWithId(Long ownerId, Long entityId) {
+        User user = this.getOwnerOfEntityId(entityId);
+        return user.getId().equals(ownerId);
+    }
+
+    @Transactional
+    public String tryToLogicalDeleteBookingEntityAndReturnErrorCode(Long entityId, Long userId, String confirmPass) {
+        BookingEntity bookingEntity = this.getEntityById(entityId);
+        if (bookingEntity == null)
+            return "Entity for deleting is not found. Entity id requested: " + entityId;
+
+        User user = userService.findUserById(userId);
+        if (!user.getRole().getName().equals("ROLE_ADMIN") && !user.getRole().getName().equals("ROLE_SUPER_ADMIN")) {
+            if (!this.userWithIdOwnsEntityWithId(userId, entityId)) {
+                return "Invalid delete request. User with id: " + userId + " does not owns entity with id: " + entityId;
+            }
+        }
+        if (user.getRole().getName().equals("ROLE_CLIENT")) {
+            return "It seems like you dont have permission to delete this entity. Please try again, or login with another account";
+        }
+
+        if (!userService.passwordIsCorrect(user, confirmPass))
+            return "Confirmation password is incorrect.";
+
+        if (checkExistActiveReservationForEntityId(entityId))
+            return "Entity cant be deleted  cause has reservations.";
+
+        bookingEntityRepository.logicalDeleteBookingEntityById(entityId);
+        return null;
     }
 }

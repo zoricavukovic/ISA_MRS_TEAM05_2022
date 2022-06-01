@@ -9,6 +9,10 @@ export function getAllAdventuresView() {
     return api.get('/adventures/view')
 }
 
+export function getAllAdventuresViewForOwnerId(ownerId) {
+    return api.get('/adventures/view/forOwnerId/' + ownerId);
+}
+
 export function getTopRatedAdventures() {
     return api.get('/adventures/topRated')
 }

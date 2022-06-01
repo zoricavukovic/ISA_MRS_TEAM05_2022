@@ -112,12 +112,23 @@ public class AdventureController {
     @GetMapping(value="/view", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getAdventuresForView() {
         List<Adventure> adventures = adventureService.findAll();
+        return new ResponseEntity<>(getSearchedBookingEntitesFromAdventures(adventures), HttpStatus.OK);
+    }
+
+    private List<SearchedBookingEntityDTO> getSearchedBookingEntitesFromAdventures(List<Adventure> adventures) {
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         for (Adventure adventure : adventures) {
             SearchedBookingEntityDTO s = bookingEntityService.getSearchedBookingEntityDTOByEntityId(adventure.getId());
             retVal.add(s);
         }
-        return new ResponseEntity<>(retVal, HttpStatus.OK);
+        return retVal;
+    }
+
+
+    @GetMapping(value="/view/forOwnerId/{ownerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getAdventuresForViewByOwnerId(@PathVariable Long ownerId) {
+        List<Adventure> adventures = adventureService.findAllForOwnerId(ownerId);
+        return new ResponseEntity<>(getSearchedBookingEntitesFromAdventures(adventures), HttpStatus.OK);
     }
 
     @GetMapping(value="/topRated", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -4,11 +4,12 @@ import * as React from 'react';
 import { useEffect, useState } from "react";
 import { getCurrentUser } from '../../service/AuthService';
 import { getAllSubscribedEntities } from '../../service/BookingEntityService';
-import { getAllCottagesView, getSearchedCottages } from '../../service/CottageService';
+import { getAllCottagesView } from '../../service/CottageService';
+import { getAllCottagesViewForOwnerId, getSearchedCottages } from '../../service/CottageService';
 import EntityBasicCard from '../EntityBasicCard';
 import SearchForReservation from '../SearchForReservation';
 
-export default function ShowCottages() {
+export default function ShowCottages(props) {
 
     const [cottages, setCottages] = useState([]);
     const [subscribedEntities, setSubscribedEntities] = useState([]);
@@ -16,22 +17,42 @@ export default function ShowCottages() {
     const [searchParams, setSearchParams] = useState({});
     const [filterParams, setFilterParams] = useState({});
     const [sortSelected, setSortSelected] = useState('');
+    const [isLoaded, setIsLoaded] = useState(false);
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
-        getAllSubscribedEntities(getCurrentUser().id).then(res => {
-            setSubscribedEntities(res.data);
-            console.log(res.data);
-        });
+        if (getCurrentUser() !== null && getCurrentUser() !== undefined) {
+            if (getCurrentUser().userType.name === "ROLE_CLIENT") {
+                getAllSubscribedEntities(getCurrentUser().id).then(res => {
+                    setSubscribedEntities(res.data);
+                    console.log(res.data);
+                });
+            }
+        }
     }, []);
 
+    useEffect(() => {
+        if(subscribedEntities.length > 0)
+            setIsLoaded(true);
+    }, [subscribedEntities]);
+
     const getAllCottages = () => {
-        getAllCottagesView().then(res => {
-            setCottages(res.data);
-            setDefaultCottages(res.data);
-            console.log(res.data);
-            setSortSelected('');
-        });
+        if (props.location.state !== null && props.location.state !== undefined) {
+            getAllCottagesViewForOwnerId(props.location.state.ownerId).then(res => {
+                setCottages(res.data);
+                setDefaultCottages(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });
+        }
+        else {
+            getAllCottagesView().then(res => {
+                setCottages(res.data);
+                setDefaultCottages(res.data);
+                console.log(res.data);
+                setSortSelected('');
+            });    
+        }
     };
 
 
@@ -131,9 +152,9 @@ export default function ShowCottages() {
             <div style={{ margin: '1% 9% 1% 9%' }} className="App">
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {cottages.length === 0 && <h3>No results found.</h3>}
-                    {
+                    {isLoaded && 
                     cottages.map((item, index) => (
-                        <EntityBasicCard bookingEntity={item} key={index} searchParams={searchParams}  subscribedEntities={subscribedEntities}/>
+                        <EntityBasicCard onlyTypeForDeleteVisible={"COTTAGES"} bookingEntity={item} key={index} searchParams={searchParams} subscribedEntities={subscribedEntities}/>
                     ))}
                 </div>
             </div>

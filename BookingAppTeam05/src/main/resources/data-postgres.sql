@@ -441,7 +441,7 @@ INSERT INTO pictures (picture_path, entity_id) VALUES ('ship2d.jpg', 7);
 --subsribers for cottage
 INSERT INTO subscribers (booking_entity_id, client_id) VALUES (1, 7);
 INSERT INTO subscribers (booking_entity_id, client_id) VALUES (1, 8);
-INSERT INTO subscribers (booking_entity_id, client_id) VALUES (2, 7);
+INSERT INTO subscribers (booking_entity_id, client_id) VALUES (3, 7);
 
 
 
@@ -471,5 +471,4 @@ VALUES (10, '2022-03-04'),
 
 --cotages res
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
-VALUES
-    ('2022-05-29 7:00 pm',5,3,1,9,'False','False', 1, 80, 5, 5, 30);
+VALUES ('2022-05-29 7:00 pm',5,3,1,9,'False','False', 1, 80, 5, 5, 30);
