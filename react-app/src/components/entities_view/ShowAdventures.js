@@ -16,6 +16,7 @@ export default function ShowAdventures(props) {
     const [searchParams, setSearchParams] = useState({});
     const [filterParams, setFilterParams] = useState({});
     const [sortSelected, setSortSelected] = useState('');
+    const [isLoaded, setIsLoaded] = useState(false);
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
@@ -28,6 +29,11 @@ export default function ShowAdventures(props) {
             }
         }
     }, []);
+
+    useEffect(() => {
+        if(subscribedEntities.length > 0)
+            setIsLoaded(true);
+    }, [subscribedEntities]);
 
     const getAllAdventures = () => {
         if (props.location.state !== null && props.location.state !== undefined) {
@@ -142,7 +148,7 @@ export default function ShowAdventures(props) {
             <div style={{ margin: '1% 9% 1% 9%' }} className="App">
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {adventures.length === 0 && <h3>No results found.</h3>}
-                    {adventures.map((item, index) => (
+                    {isLoaded && adventures.map((item, index) => (
                         <EntityBasicCard bookingEntity={item} onlyTypeForDeleteVisible={"ADVENTURES"} subscribedEntities={subscribedEntities} key={index} searchParams={searchParams}/>
                     ))}
                 </div>

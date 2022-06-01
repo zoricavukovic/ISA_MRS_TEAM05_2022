@@ -1,6 +1,7 @@
 package com.example.BookingAppTeam05.service.entities;
 
 import com.example.BookingAppTeam05.dto.*;
+import com.example.BookingAppTeam05.dto.calendar.UnavailableDateDTO;
 import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
@@ -159,6 +160,7 @@ public class BookingEntityService {
         }
     }
 
+    @Transactional
     public BookingEntityDTO findById(Long id) {
         Optional<EntityType> entityType = bookingEntityRepository.findEntityTypeById(id);
         if (!entityType.isPresent())
@@ -265,10 +267,10 @@ public class BookingEntityService {
             else
                 lastDates.add(reservation.getStartDate().plusDays(reservation.getNumOfDays()));
         }
-        for(UnavailableDate unavailableDate:entityDTO.getUnavailableDates()){
+        for(UnavailableDateDTO unavailableDate:entityDTO.getUnavailableDates()){
             int days = 0;
-            LocalDateTime date = unavailableDate.getStartTime();
-            while(date.isBefore(unavailableDate.getEndTime())){
+            LocalDateTime date = unavailableDate.getStartDate();
+            while(date.isBefore(unavailableDate.getEndDate())){
                 allUnavailableDates.add(date);
                 days++;
                 date = date.plusDays(days);
@@ -350,7 +352,9 @@ public class BookingEntityService {
     public List<SearchedBookingEntityDTO> convertToSearchBookingEntitiyDTOList(List<Long> entitiesIds){
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         for (Long entityId: entitiesIds) {
-            retVal.add(getSearchedBookingEntityDTOByEntityId(entityId));
+            SearchedBookingEntityDTO item = getSearchedBookingEntityDTOByEntityId(entityId);
+            if(item != null)
+                retVal.add(getSearchedBookingEntityDTOByEntityId(entityId));
         }
         return retVal;
     }

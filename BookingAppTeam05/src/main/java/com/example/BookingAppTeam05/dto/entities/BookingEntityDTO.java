@@ -2,6 +2,7 @@ package com.example.BookingAppTeam05.dto.entities;
 
 import com.example.BookingAppTeam05.dto.PricelistDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
+import com.example.BookingAppTeam05.dto.calendar.UnavailableDateDTO;
 import com.example.BookingAppTeam05.dto.users.ClientDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
@@ -38,7 +39,7 @@ public class BookingEntityDTO {
     private Set<ReservationDTO> reservations;
     public Set<RuleOfConduct> rulesOfConduct;
     public Set<ClientDTO> subscribedClients;
-    private Set<UnavailableDate> unavailableDates;
+    private Set<UnavailableDateDTO> unavailableDates;
     public Set<PricelistDTO> pricelists;
     private Set<Picture> pictures;
     private Set<LocalDateTime> allUnavailableDates;
@@ -63,7 +64,10 @@ public class BookingEntityDTO {
         this.subscribedClients = new HashSet<>();
         for(Client client: entity.getSubscribedClients())
             this.subscribedClients.add(new ClientDTO(client));
-        this.unavailableDates = entity.getUnavailableDates();
+        this.unavailableDates = new HashSet<>();
+        for(UnavailableDate unavailableDate: entity.getUnavailableDates()){
+            this.unavailableDates.add(new UnavailableDateDTO(unavailableDate));
+        }
         this.pricelists = new HashSet<>();
         for (Pricelist pricelist: entity.getPricelists()) {
             PricelistDTO pricelistDTO = new PricelistDTO(pricelist);
@@ -158,11 +162,11 @@ public class BookingEntityDTO {
         this.subscribedClients = subscribedClients;
     }
 
-    public Set<UnavailableDate> getUnavailableDates() {
+    public Set<UnavailableDateDTO> getUnavailableDates() {
         return unavailableDates;
     }
 
-    public void setUnavailableDates(Set<UnavailableDate> unavailableDates) {
+    public void setUnavailableDates(Set<UnavailableDateDTO> unavailableDates) {
         this.unavailableDates = unavailableDates;
     }
 

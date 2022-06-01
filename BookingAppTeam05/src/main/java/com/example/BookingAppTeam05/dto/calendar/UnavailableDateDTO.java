@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.dto.calendar;
 
+import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -28,7 +29,12 @@ public class UnavailableDateDTO {
     @NotNull
     private LocalDateTime endDate;
 
-    public UnavailableDateDTO() {}
+    public UnavailableDateDTO(UnavailableDate unavailableDate) {
+        this.endDate = unavailableDate.getEndTime();
+        this.startDate = unavailableDate.getStartTime();
+        this.id = unavailableDate.getId();
+        this.entityId = unavailableDate.getBookingEntity().getId();
+    }
 
     public UnavailableDateDTO(Long id, LocalDateTime startDate, LocalDateTime endDate) {
         this.entityId = id;

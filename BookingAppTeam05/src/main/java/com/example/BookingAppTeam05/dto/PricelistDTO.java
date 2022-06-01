@@ -7,6 +7,7 @@ import com.example.BookingAppTeam05.model.Pricelist;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 public class PricelistDTO {
@@ -15,7 +16,7 @@ public class PricelistDTO {
     @Max(100000)
     private double entityPricePerPerson;
     private LocalDateTime startDate;
-    private Set<AdditionalService> additionalServices;
+    private Set<NewAdditionalServiceDTO> additionalServices = new HashSet<>();
     private BookingEntity bookingEntity;
 
     public PricelistDTO() {
@@ -27,7 +28,8 @@ public class PricelistDTO {
     }
 
     public void setFetchedProperties(Pricelist pricelist){
-        this.additionalServices = pricelist.getAdditionalServices();
+        for(AdditionalService ad:pricelist.getAdditionalServices())
+            this.additionalServices.add(new NewAdditionalServiceDTO(ad));
         // this.bookingEntity = pricelist.getBookingEntity();
     }
 
@@ -51,11 +53,11 @@ public class PricelistDTO {
         this.startDate = startDate;
     }
 
-    public Set<AdditionalService> getAdditionalServices() {
+    public Set<NewAdditionalServiceDTO> getAdditionalServices() {
         return additionalServices;
     }
 
-    public void setAdditionalServices(Set<AdditionalService> additionalServices) {
+    public void setAdditionalServices(Set<NewAdditionalServiceDTO> additionalServices) {
         this.additionalServices = additionalServices;
     }
 

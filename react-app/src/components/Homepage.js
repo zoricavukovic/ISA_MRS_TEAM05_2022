@@ -147,7 +147,7 @@ export default function Homepage() {
 
     return (
         <div className="App">
-            <div style={{margin:'50px auto',marginBottom:'0px', width:'60%', backgroundColor:'rgb(5, 30, 52)', padding:'2%', borderRadius:'8px'}}>
+            <div style={{margin:'50px auto',marginBottom:'0px', width:'80%', backgroundColor:'rgb(5, 30, 52)', padding:'2%', borderRadius:'8px'}}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <h1 style={{ color:'white'}}>Explore new places and gain new experiences with us.</h1>
@@ -163,7 +163,7 @@ export default function Homepage() {
                 }
             </Grid>
             </div>
-            <div style={{margin:'10px auto', width:'60%', backgroundColor:'white', borderRadius:'8px'}}>
+            <div style={{margin:'10px auto', width:'80%', backgroundColor:'white', borderRadius:'8px'}}>
                 <h2 style={{padding:'1%'}}>Browse by entity type</h2>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, width: '100%', margin:'0px auto' }}>
                 {images.map((image) => (
@@ -197,9 +197,9 @@ export default function Homepage() {
                 ))}
                 </Box>
             </div>
-            <div style={{margin:'10px auto', width:'62%', backgroundColor:'white', borderRadius:'8px'}} >
+            <div style={{margin:'10px auto', width:'80%', backgroundColor:'white', borderRadius:'8px'}} >
                 <h2 style={{padding:'1%', paddingLeft:'2.6%', paddingBottom:'0px'}}>Hot cottages</h2>
-                <div style={{ display: "flex", /*flexWrap: 'wrap',*/ flexDirection: "row", justifyContent: "center", padding:'0px' }}>
+                <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center", padding:'0px' }}>
                     {hotCottages.length === 0 && <h3>No results found.</h3>}
                     {
                     hotCottages.map((item, index) => (
@@ -207,9 +207,9 @@ export default function Homepage() {
                     ))}
                 </div>
             </div>
-            <div style={{margin:'10px auto', width:'62%', backgroundColor:'white', borderRadius:'8px'}}>
+            <div style={{margin:'10px auto', width:'80%', backgroundColor:'white', borderRadius:'8px'}}>
                 <h2 style={{padding:'1%', paddingLeft:'2.6%', paddingBottom:'0px'}}>Hot boats</h2>
-                <div style={{ display: "flex", /*flexWrap: 'wrap',*/ flexDirection: "row", justifyContent: "center" }}>
+                <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {hotBoats.length === 0 && <h3>No results found.</h3>}
                     {
                     hotBoats.map((item, index) => (
@@ -217,9 +217,9 @@ export default function Homepage() {
                     ))}
                 </div>
             </div>
-            <div style={{margin:'10px auto', width:'62%', backgroundColor:'white', borderRadius:'8px'}}>
+            <div style={{margin:'10px auto', width:'80%', backgroundColor:'white', borderRadius:'8px'}}>
                 <h2 style={{padding:'1%', paddingLeft:'2.6%', paddingBottom:'0px'}}>Hot adventures</h2>
-                <div style={{ display: "flex",/* flexWrap: 'wrap',*/ flexDirection: "row", justifyContent: "center" }}>
+                <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {hotAdventures.length === 0 && <h3>No results found.</h3>}
                     {
                     hotAdventures.map((item, index) => (

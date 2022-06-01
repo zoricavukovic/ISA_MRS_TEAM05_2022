@@ -17,6 +17,7 @@ export default function ShowCottages(props) {
     const [searchParams, setSearchParams] = useState({});
     const [filterParams, setFilterParams] = useState({});
     const [sortSelected, setSortSelected] = useState('');
+    const [isLoaded, setIsLoaded] = useState(false);
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
@@ -29,6 +30,11 @@ export default function ShowCottages(props) {
             }
         }
     }, []);
+
+    useEffect(() => {
+        if(subscribedEntities.length > 0)
+            setIsLoaded(true);
+    }, [subscribedEntities]);
 
     const getAllCottages = () => {
         if (props.location.state !== null && props.location.state !== undefined) {
@@ -146,7 +152,7 @@ export default function ShowCottages(props) {
             <div style={{ margin: '1% 9% 1% 9%' }} className="App">
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {cottages.length === 0 && <h3>No results found.</h3>}
-                    {
+                    {isLoaded && 
                     cottages.map((item, index) => (
                         <EntityBasicCard onlyTypeForDeleteVisible={"COTTAGES"} bookingEntity={item} key={index} searchParams={searchParams} subscribedEntities={subscribedEntities}/>
                     ))}

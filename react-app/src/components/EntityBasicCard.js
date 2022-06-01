@@ -40,7 +40,11 @@ export default function EntityBasicCard(props) {
     React.useEffect(() => {
         if (getCurrentUser() !== null && getCurrentUser() !== undefined) {
             if (getCurrentUser().userType.name === "ROLE_CLIENT") {
-                let subsc = props.subscribedEntities.some(e=>e.id === props.bookingEntity.id)
+                let subsc = [];
+                console.log(props.subscribedEntities);
+                if(props.subscribedEntities != null && props.subscribedEntities != "undefined" && props.subscribedEntities.length > 0)
+                    subsc = props.subscribedEntities.some(e=>e.id === props.bookingEntity.id)
+                console.log(subsc);
                 setIsSubscribed(subsc);        
             }
         }

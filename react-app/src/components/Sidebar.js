@@ -102,13 +102,16 @@ export default function Sidebar({curUser, setCurUser}) {
           borderBottom: '1px solid lightgray',
           alignItems: 'flex-end',
         }}
+        
       >
+        
         <Box
           sx={{
             flexShrink: 0,
             display: open ? 'none' : { xs: 'none', sm: 'initial' },
             marginBottom: '9px',
           }}
+          onClick={()=>goToPage('/homepage',false)}
         >
           <Logo />
         </Box>
@@ -125,10 +128,10 @@ export default function Sidebar({curUser, setCurUser}) {
             marginLeft: open ? '0px' : '8px',
             paddingBottom: '3px',
           }}
+          onClick={()=>goToPage('/homepage',false)}
         >
           NatureBooking
         </Typography>
-
         <Button
           onClick={toogleOpen}
           sx={{

@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/pricelists")
@@ -37,7 +39,10 @@ public class PricelistController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Pricelist p = pricelistList.get(0);
         PricelistDTO pricelistDTO = new PricelistDTO(p);
-        pricelistDTO.setAdditionalServices(p.getAdditionalServices());
+        Set<NewAdditionalServiceDTO> newAs = new HashSet<>();
+        for(AdditionalService as:p.getAdditionalServices())
+            newAs.add(new NewAdditionalServiceDTO(as));
+        pricelistDTO.setAdditionalServices(newAs);
         return new ResponseEntity<>(pricelistDTO, HttpStatus.OK);
     }
 
@@ -49,7 +54,16 @@ public class PricelistController {
 
         pricelist.setBookingEntity(bookingEntityService.getBookingEntityById(idBookingEntity));
         pricelist.setStartDate(LocalDateTime.now());
-        pricelist.setAdditionalServices(pricelistDTO.getAdditionalServices());
+        Set<AdditionalService> additionalServices= new HashSet<>();
+        for(NewAdditionalServiceDTO newAs: pricelistDTO.getAdditionalServices())
+        {
+            AdditionalService as = new AdditionalService();
+            as.setPrice(newAs.getPrice());
+            as.setServiceName(newAs.getServiceName());
+            as.setId(newAs.getId());
+            additionalServices.add(as);
+        }
+        pricelist.setAdditionalServices(additionalServices);
         pricelist = pricelistService.save(pricelist);
 
         return new ResponseEntity<>(new PricelistDTO(pricelist), HttpStatus.CREATED);

@@ -17,6 +17,7 @@ export default function ShowBoats(props) {
     const [searchParams, setSearchParams] = useState({});
     const [filterParams, setFilterParams] = useState({});
     const [sortSelected, setSortSelected] = useState('');
+    const [isLoaded, setIsLoaded] = useState(false);
     const [ascOrder, setAscOrder] = useState(true);
 
     useEffect(() => {
@@ -25,10 +26,16 @@ export default function ShowBoats(props) {
                 getAllSubscribedEntities(getCurrentUser().id).then(res => {
                     setSubscribedEntities(res.data);
                     console.log(res.data);
+
                 });    
             }
         }
     }, []);
+
+    useEffect(() => {
+        if(subscribedEntities.length > 0)
+            setIsLoaded(true);
+    }, [subscribedEntities]);
 
     const getAllShips = () => {
         if (props.location.state !== null && props.location.state !== undefined) {
@@ -148,7 +155,7 @@ export default function ShowBoats(props) {
             <div style={{ margin: '1% 9% 1% 9%' }} className="App">
                 <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center" }}>
                     {ships.length === 0 && <h3>No results found.</h3>}
-                    {ships.map((item, index) => (
+                    {isLoaded && ships.map((item, index) => (
                         <EntityBasicCard onlyTypeForDeleteVisible={"SHIPS"} bookingEntity={item} key={index} subscribedEntities={subscribedEntities}  searchParams={searchParams}  />
                     ))}
                 </div>
