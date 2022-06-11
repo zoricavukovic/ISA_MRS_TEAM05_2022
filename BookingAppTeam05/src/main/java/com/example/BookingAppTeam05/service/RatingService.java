@@ -108,4 +108,13 @@ public class RatingService {
         }
         return null;
     }
+
+    public List<RatingReviewDTO> getProcessedRatingsForEntity(Long id) {
+        List<Rating> ratings = ratingRepository.findByEntityId(id);
+        List<RatingReviewDTO> ratingReviewDTOS = new ArrayList<>();
+        for (Rating rating : ratings) {
+            ratingReviewDTOS.add(new RatingReviewDTO(rating, new ReservationDTO(rating.getReservation()), new ClientDTO(rating.getReservation().getClient())) );
+        }
+        return ratingReviewDTOS;
+    }
 }

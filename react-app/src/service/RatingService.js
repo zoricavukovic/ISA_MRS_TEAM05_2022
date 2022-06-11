@@ -7,6 +7,11 @@ export function getRatingByReservationId(id) {
 export function createRating(ratingDTO) {
     return api.post('/ratings/createRating', ratingDTO);
 }
+
+export function getRatingsByEntityId(bookingEntityId) {
+    return api.get('/ratings/ProcessedByEntityId/' + bookingEntityId);
+}
+
 export function getAllRatingsForViewByType(type) {
     return api.get('/ratings/all/' + type);
 }

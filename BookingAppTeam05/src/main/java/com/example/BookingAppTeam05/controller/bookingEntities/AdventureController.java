@@ -2,6 +2,7 @@ package com.example.BookingAppTeam05.controller.bookingEntities;
 
 import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
+import com.example.BookingAppTeam05.dto.users.InstructorDTO;
 import com.example.BookingAppTeam05.dto.users.NewAdventureDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.model.entities.Adventure;
@@ -62,6 +63,7 @@ public class AdventureController {
         adventureDTO.setRulesOfConduct((adventure.getRulesOfConduct()));
         adventureDTO.setFishingEquipment(adventure.getFishingEquipment());
         adventureDTO.setPictures(adventure.getPictures());
+        adventureDTO.setInstructor(new InstructorDTO(adventure.getInstructor()));
         return new ResponseEntity<>(adventureDTO, HttpStatus.OK);
     }
 

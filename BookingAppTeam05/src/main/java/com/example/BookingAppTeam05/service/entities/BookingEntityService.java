@@ -361,11 +361,12 @@ public class BookingEntityService {
 
     public List<SearchedBookingEntityDTO> subscribeClientWithEntity(Long clientId, Long entityId) {
         Client client = clientService.findById(clientId);
-        BookingEntity bookingEntity = bookingEntityRepository.findById(entityId).orElse(null);
+       // BookingEntity bookingEntity = bookingEntityRepository.findById(entityId).orElse(null);
+        BookingEntity bookingEntity = bookingEntityRepository.findByIdWithoutParams(entityId).orElse(null);
         Set<BookingEntity> watched = client.getWatchedEntities();
         if(watched.stream().filter(entity -> entity.getId() == bookingEntity.getId()).collect(Collectors.toList()).size() == 0) {
             watched.add(bookingEntity);
-            client.setWatchedEntities(watched);
+            //client.setWatchedEntities(watched);
             clientService.save(client);
         }
         Set<Client> clients = bookingEntity.getSubscribedClients();

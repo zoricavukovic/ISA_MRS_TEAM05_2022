@@ -35,7 +35,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-export default function StyledAvatar() {
+export default function StyledAvatar(props) {
   return (
     <Box>
       <StyledBadge
@@ -44,7 +44,7 @@ export default function StyledAvatar() {
         variant="dot"
       >
         <Avatar alt="Remy Sharp" sx={{ width: '32px', height: '32px' }}>
-          {getCurrentUser().firstName[0]+""+getCurrentUser().lastName[0]}
+          {props.user.firstName[0]+""+props.user.lastName[0]}
         </Avatar>
       </StyledBadge>
     </Box>

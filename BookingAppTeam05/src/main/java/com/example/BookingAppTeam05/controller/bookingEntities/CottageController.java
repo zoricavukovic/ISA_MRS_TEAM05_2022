@@ -3,6 +3,7 @@ package com.example.BookingAppTeam05.controller.bookingEntities;
 import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
+import com.example.BookingAppTeam05.dto.users.CottageOwnerDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
@@ -72,6 +73,10 @@ public class CottageController {
         if (cottage.getRooms() != null){
             cottageDTO.setRooms(cottage.getRooms());
         }
+        if(cottage.getCottageOwner() != null){
+            cottageDTO.setCottageOwnerDTO(new CottageOwnerDTO(cottage.getCottageOwner()));
+        }
+
         cottageDTO.setPictures(cottage.getPictures());
         return new ResponseEntity<>(cottageDTO, HttpStatus.OK);
     }

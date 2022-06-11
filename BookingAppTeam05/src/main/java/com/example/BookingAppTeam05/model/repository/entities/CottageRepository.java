@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CottageRepository extends JpaRepository<Cottage, Long> {
-    @Query(value="select c from Cottage c left join fetch c.place p left join fetch c.rooms room left join fetch c.rulesOfConduct d left join fetch c.pictures s where c.id=?1 and c.deleted = false")
+    @Query(value="select c from Cottage c left join fetch c.place p left join fetch c.rooms room left join fetch c.rulesOfConduct d left join fetch c.pictures s left join fetch c.cottageOwner where c.id=?1 and c.deleted = false")
     Cottage getCottageById(Long id);
 
     @Query(value="select c from Cottage c left join fetch c.place p left join fetch c.rooms room left join fetch c.rulesOfConduct d left join fetch c.pictures s where c.id=?1")

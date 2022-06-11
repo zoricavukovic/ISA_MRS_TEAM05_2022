@@ -26,38 +26,24 @@ import Checkbox from '@mui/material/Checkbox';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RatingEntity from '../../Rating';
 import Snackbar from '@mui/material/Snackbar';
-import { editCottageById, getCottageById } from '../../../service/CottageService';
+import { editShipById, getShipById } from '../../../service/ShipService';
 import { getPricelistByEntityId } from '../../../service/PricelistService';
 import Chip from '@mui/material/Chip';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import Home from "../../map/GoogleMap";
-import { URL_PICTURE_PATH } from '../../../service/PictureService';
-import { propsLocationStateFound } from '../../forbiddenNotFound/notFoundChecker';
-import { checkIfCanEditEntityById } from '../../../service/BookingEntityService';
-import RenderImageSlider from '../../image_slider/RenderImageSlider';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import Avatar from '@mui/material/Avatar';
-import Dialog from '@mui/material/Dialog';
-import { Euro, Favorite, FavoriteBorder, Person } from '@mui/icons-material';
-import { format } from "date-fns";
-import { DateRange,Calendar } from 'react-date-range';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined } from '@mui/icons-material';
-import { getBookingEntityById } from '../../../service/BookingEntityService';
-import { addReservation, getAvailableFastReservationsByBookingEntityId, reserveFastReservation } from '../../../service/ReservationService';
-import { getCurrentUser } from '../../../service/AuthService';
-import { Paper, TextField, Link, ListItemText, InputAdornment, FormControl, FormLabel, FormGroup, DialogTitle, DialogContent, DialogContentText, DialogActions, ListItem, Autocomplete, Rating, ButtonBase, List, Tooltip } from '@mui/material';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import CreateReservationForClient from '../../reservations/CreateReservationForClient';
-import { findAllClientsWithActiveReservations} from '../../../service/ReservationService';
+import ShipSpecificationCard from "./ShipSpecificationCard";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import { getReportsByEntityId } from '../../../service/ReportService';
+import { checkIfCanEditEntityById } from '../../../service/BookingEntityService';
+import { URL_PICTURE_PATH } from '../../../service/PictureService';
+import RenderImageSlider from '../../image_slider/RenderImageSlider';
+import { getAvailableFastReservationsByBookingEntityId, reserveFastReservation } from '../../../service/ReservationService';
 import { getRatingsByEntityId } from '../../../service/RatingService';
-import StyledAvatar from '../../StyledAvatar';
 import { subscribeClientWithEntity, unsubscribeClientWithEntity } from '../../../service/UserService';
+import { getCurrentUser } from '../../../service/AuthService';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, Tooltip } from '@mui/material';
+import { DateRangeOutlined, DirectionsBoat, Favorite, FavoriteBorder } from '@mui/icons-material';
+import StyledAvatar from '../../StyledAvatar';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -70,14 +56,14 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export default function ImageCard(props) {
+export default function ImageCardForShip(props) {
 
     const [expanded, setExpanded] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [message, setMessage] = React.useState("");
-    const [cottageBasicData, setCottageBasicData] = useState({});
+    const [shipBasicData, setShipBasicData] = useState({});
     const [pricelistData, setPricelistData] = useState({});
-    const [isLoadingCottage, setLoadingCottage] = useState(true);
+    const [isLoadingShip, setLoadingShip] = useState(true);
     const [isLoadingPricelist, setLoadingPricelist] = useState(true);
     const [hasAuthority, setHasAuthority] = useState(false);
     const [fastReservations, setFastReservations] = useState([]);
@@ -102,16 +88,14 @@ export default function ImageCard(props) {
         setExpanded(!expanded);
     };
 
-
-
-    const editCottage = (event) => {
+    const editShip = (event) => {
         event.preventDefault();
-        
-        checkIfCanEditEntityById(props.cottageId)
+
+        checkIfCanEditEntityById(props.shipId)
             .then(res => {
                 history.push({
-                    pathname: "/editCottage",
-                    state: { cottageId: props.cottageId }
+                    pathname: "/editShip",
+                    state: { shipId: props.shipId }
                 });
             })
             .catch(res => {
@@ -119,13 +103,15 @@ export default function ImageCard(props) {
                 handleClick();
                 return;
             });
+
     };
+
 
     const showCalendarForEntity = (event) => {
         event.preventDefault();
         history.push({
             pathname: "/calendarForEntity",
-            state: { bookingEntityId: props.cottageId }
+            state: { bookingEntityId: props.shipId }
         })
     }
 
@@ -134,26 +120,12 @@ export default function ImageCard(props) {
         event.preventDefault();
         history.push({
             pathname: "./showFastReservations",
-            state: { bookingEntityId: props.cottageId }
+            state: { bookingEntityId: props.shipId }
         })
 
     };
 
-    function createReservationForClient() {
-        findAllClientsWithActiveReservations(props.cottageId).then(res => {
-            console.log(res.data);
-            if (res.data.length !== 0){
-                setOpenDialogCreate(true);
-            }
-            else{
-                setMessage("Don't have clients with active reservations.");
-                handleClick();
-            }
-        });
-       
-    };
-
-    function CottageAdditionalInfo(props) {
+    function ShipAdditionalInfo(props) {
         return (
             <CardContent>
                 <Box sx={{ width: '100%', maxWidth: 350, bgcolor: 'background.paper' }}>
@@ -183,11 +155,6 @@ export default function ImageCard(props) {
         )
     }
 
-    //============================= DIALOG =====================================
-    //----------------------------------------------------
-    const [openDialogCreate, setOpenDialogCreate] = React.useState(false);
-
-    //=======================================================================================
 
     function RenderRulesOfConduct(props) {
         return (
@@ -208,11 +175,22 @@ export default function ImageCard(props) {
             ))
         )
     }
-    function RenderRoom(props) {
+
+    function RenderFishingEquipment(props) {
         return (
-            props.rooms.map((e) => (
+            props.fishingEquipment.map((e) => (
                 <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={e.equipmentName}>
-                    <Typography textAlign="center">{"Room Num " + e.roomNum + "/Num of beds " + e.numOfBeds}</Typography>
+                    <Typography textAlign="center">{e.equipmentName}</Typography>
+                </Button>
+            ))
+        )
+    }
+
+    function RenderNavigationalEquipment(props) {
+        return (
+            props.navigationalEquipment.map((e) => (
+                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={e.equipmentName}>
+                    <Typography textAlign="center">{e.name}</Typography>
                 </Button>
             ))
         )
@@ -242,18 +220,18 @@ export default function ImageCard(props) {
 
     const reserveBookingEntity = () => {
         console.log("Evo me");
-        console.log(props.cottageId);
+        console.log(props.searchParams);
         history.push({
             pathname: "/newReservation",
             state: {
-                bookingEntityId: props.cottageId,
+                bookingEntityId: props.shipId,
                 searchParams: {}
             }
         })
     }
 
     const subscribe =()=>{
-        subscribeClientWithEntity(getCurrentUser().id, cottageBasicData.id).then(res=>{
+        subscribeClientWithEntity(getCurrentUser().id, shipBasicData.id).then(res=>{
             console.log("Uspesno sub");
             console.log(res.data);
             if(typeof(props.setSubscribedEntities) !== "undefined" )
@@ -263,7 +241,7 @@ export default function ImageCard(props) {
         });
     }
     const unsubscribe =()=>{
-        unsubscribeClientWithEntity(getCurrentUser().id, cottageBasicData.id).then(res=>{
+        unsubscribeClientWithEntity(getCurrentUser().id, shipBasicData.id).then(res=>{
             console.log("Uspesno unsub");
             console.log(res.data);
             if(typeof(props.setSubscribedEntities) !== "undefined" )
@@ -273,51 +251,52 @@ export default function ImageCard(props) {
         });
     }
 
-
     useEffect(() => {
-        
         setIsSubscribed(props.subscribed);
-        console.log(props.subscribed);
-        console.log(props.rating);
 
-        getCottageById(props.cottageId).then(res => {
-            setCottageBasicData(res.data);
-            if(getCurrentUser().id == res.data.cottageOwnerDTO.id)
+        getShipById(props.shipId).then(res => {
+            setShipBasicData(res.data);
+            console.log(res.data);
+            if(getCurrentUser().id == res.data.shipOwner.id)
                 setHasAuthority(true);
-            setLoadingCottage(false);
+            setLoadingShip(false);
+        }).catch(res=>{
+            console.log("Desila se greska");
+
         });
-        getPricelistByEntityId(props.cottageId).then(res => {
+        getPricelistByEntityId(props.shipId).then(res => {
             setPricelistData(res.data);
             setLoadingPricelist(false);
         });
 
-        getAvailableFastReservationsByBookingEntityId(props.cottageId).then(res=>{
+        getAvailableFastReservationsByBookingEntityId(props.shipId).then(res=>{
             console.log(res.data);
             setFastReservations(res.data);
 
         });
 
-        getRatingsByEntityId(props.cottageId).then(res=>{
+        getRatingsByEntityId(props.shipId).then(res=>{
             console.log(res.data);
             setClientReviews(res.data);
 
         })
     }, []);
-    if (isLoadingCottage || isLoadingPricelist) { return <div className="App">Loading...</div> }
+
+    if (isLoadingShip || isLoadingPricelist) { return <div className="App">Loading...</div> }
     return (
         <Card style={{ margin: "1% 9% 1% 9%" }} sx={{}}>
-            <CreateReservationForClient bookingEntityId={props.cottageId} openDialog={openDialogCreate}/>
-        
-            <RenderImageSlider pictures={cottageBasicData.pictures}/>
+            <RenderImageSlider pictures={shipBasicData.pictures}/>
             <CardHeader
                 style={{marginTop:'20px'}}
-                title={<div style={{display:'flex'}}><h2>{cottageBasicData.name}</h2>
+                title={<div style={{display:'flex'}}><h2>{shipBasicData.name+": "}</h2>
                         <div style={{marginLeft:'30px', marginTop:'8px'}}>
                             <RatingEntity value={props.rating} text={false} size="large"/>
                         </div>
                         </div>}
-                subheader={<h3><LocationOnIcon/>{cottageBasicData.address + ", " + cottageBasicData.place.cityName + ", " + cottageBasicData.place.zipCode + ", " + cottageBasicData.place.stateName}</h3>}
-                
+                subheader={<div><h3><DirectionsBoat/>{" "+shipBasicData.shipType}</h3>
+                            <h3><LocationOnIcon/>{shipBasicData.address + ", " + shipBasicData.place.cityName + ", " + shipBasicData.place.zipCode + ", " + shipBasicData.place.stateName}</h3>
+                            </div>}
+
                 action={
                     <>
                     {getCurrentUser().userType.name == "ROLE_CLIENT"?(
@@ -327,30 +306,29 @@ export default function ImageCard(props) {
                     </Button>
                      {isSubscribed?
                                     <Button  size="large" style={{marginLeft:'5px', padding:'0px'}} onClick={unsubscribe}><Tooltip title="Unsubscribe"><Favorite fontSize="large" style={{ margin: "5px" }} /></Tooltip></Button>:
-                                    <Button size="large" onClick={subscribe}><Tooltip title="Subscribe"><FavoriteBorder fontSize="large" style={{ margin: "5px", padding:'0px' }} /></Tooltip></Button>
+                                    <Button size="large" style={{ margin: "5px", padding:'0px' }} onClick={subscribe}><Tooltip title="Subscribe"><FavoriteBorder fontSize="large"  /></Tooltip></Button>
                      }
                     </>):(<></>)}
                     </>
                     
                 }
+            
             />
-        {hasAuthority &&
+            {hasAuthority &&
             <CardActions disableSpacing>
-                <IconButton onClick={showCalendarForEntity} >
+                <IconButton onClick={showCalendarForEntity}>
                     <Chip icon={<CalendarMonthIcon />} label="Calendar" />
                 </IconButton>
 
-                <IconButton value="module" aria-label="module" onClick={editCottage}>
-                    <Chip icon={<EditIcon />} label="Edit Cottage" />
+                <IconButton value="module" aria-label="module" onClick={editShip}>
+                    <Chip icon={<EditIcon />} label="Edit Ship" />
                 </IconButton>
                 <IconButton value="module" aria-label="module" onClick={showFastReservations}>
                     <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
                 </IconButton>
-                <IconButton value="module" aria-label="module" onClick={createReservationForClient}>
-                    <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
-                </IconButton>
             </CardActions>
             }
+
             <hr></hr>
             {fastReservations.length > 0 && 
                 <>
@@ -409,14 +387,15 @@ export default function ImageCard(props) {
                 <hr></hr>
                 </>
             }
+
             <Dialog open={openDialog} onClose={()=>setOpenDialog(false)}>
                 <DialogTitle>Please Confirm Reservation</DialogTitle>
                 <DialogContent>
                     {Object.keys(selectedFastReservation).length > 0 &&
                     <DialogContentText>
-                        Reservation type:<b>{String(cottageBasicData.entityType).toLowerCase()}</b> <br></br>
-                        Name: <b>{cottageBasicData.name} </b>             <br></br>
-                        Place: <b>{cottageBasicData.place.cityName+", "+cottageBasicData.place.stateName}</b>    <br></br>
+                        Reservation type:<b>{String(shipBasicData.entityType).toLowerCase()}</b> <br></br>
+                        Name: <b>{shipBasicData.name} </b>             <br></br>
+                        Place: <b>{shipBasicData.place.cityName+", "+shipBasicData.place.stateName}</b>    <br></br>
                         Start date and time: <b>{selectedFastReservation.startDate}</b><br></br>
                         Days: <b>{selectedFastReservation.numOfDays}</b><br></br>
                         Number of persons: <b>{selectedFastReservation.numOfPersons}</b><br></br>
@@ -432,48 +411,52 @@ export default function ImageCard(props) {
                     <Button onClick={confirmReservation}>Confirm</Button>
                 </DialogActions>
             </Dialog>
-            
 
-            <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
-                <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
-                    <h4>Promo Description: </h4><h3>{cottageBasicData.promoDescription} </h3>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap', marginTop:'10px' }}>
+                <ShipSpecificationCard ship={shipBasicData} />
+                <Typography variant="body2" style={{ width: '25%', minWidth: "200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+                    <Typography variant="body2" color="text.secondary" style={{ width: '100%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
+                        <h4>Promo Description: </h4><h3>{shipBasicData.promoDescription} </h3>
+                    </Typography>
                 </Typography>
-                <Grid item xs={12} sm={4}>
-                        <CottageAdditionalInfo
+                <Grid item xs={12} sm={4} minWidth="300px">
+                        <ShipAdditionalInfo
                             header="Rules of conduct"
-                            additionalData={<RenderRulesOfConduct rulesOfConduct={cottageBasicData.rulesOfConduct} />}
+                            additionalData={<RenderRulesOfConduct rulesOfConduct={shipBasicData.rulesOfConduct} />}
                         />
                     </Grid>
-                <Grid item xs={12} sm={4} minWidth="300px">
-                    <CottageAdditionalInfo
-                        header="Additional services"
-                        additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                    <CottageAdditionalInfo
-                        header="Rooms"
-                        additionalData={<RenderRoom rooms={cottageBasicData.rooms} />}
-                    />
-                </Grid>
-                    <CardContent>
-
-                    </CardContent>
-                
+                    <Grid item xs={12} sm={4} minWidth="300px">
+                        <ShipAdditionalInfo
+                            header="Additional services"
+                            additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={4} minWidth="300px">
+                        <ShipAdditionalInfo
+                            header="Fishing equipment"
+                            additionalData={<RenderFishingEquipment fishingEquipment={shipBasicData.fishingEquipment} />}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={4} minWidth="350px">
+                        <ShipAdditionalInfo
+                            header="Navigational equipment"
+                            additionalData={<RenderNavigationalEquipment navigationalEquipment={shipBasicData.navigationalEquipment} />}
+                        />
+                    </Grid>
             </div >
             <hr></hr>
                 <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'20px', marginLeft:'40px'}}>
                     <Grid item xs={'auto'} md={4} lg={4} style={{ overflow:'auto'}}>
                         <h3>Location on map:</h3>
                         <Typography variant="body2" style={{ width: '50%', minWidth: "400px", borderRadius: '10px', paddingBottom: '0.2%', paddingTop: '0.2%', marginTop:'10px' }}>
-                        <Home long={cottageBasicData.place.longitude} lat={cottageBasicData.place.lat}></Home>
+                        <Home long={shipBasicData.place.longitude} lat={shipBasicData.place.lat}></Home>
 
                         </Typography>
                     </Grid >
                     <Grid item xs={6} style={{marginBottom:'50px', height:'100%', marginLeft:'40px'}}>
                         <h3 >Reviews from clients:</h3>
                         <Typography style={{ borderRadius: '10px', marginRight: '2%', marginTop:'10px', overflow:'auto', height:'100%' }}>
-                            {clientReviews.length > 0 ? (clientReviews.map((review, index)=>(
+                            {clientReviews.length > 0 ? clientReviews.map((review, index)=>(
                                 <Card variant="outlined" style={{width:'100%'}}>
                                     <React.Fragment>
                                         <CardContent>
@@ -489,7 +472,7 @@ export default function ImageCard(props) {
                                         </Typography>
                                         </CardContent>
                                     </React.Fragment>
-                                </Card>)
+                                </Card>
                             )):<h4>Not yet reviewed</h4>}
                         </Typography>
                     </Grid>
@@ -498,8 +481,6 @@ export default function ImageCard(props) {
                 <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
                     {message}
                 </Alert>
-
-
             </Snackbar>
         </Card>
 

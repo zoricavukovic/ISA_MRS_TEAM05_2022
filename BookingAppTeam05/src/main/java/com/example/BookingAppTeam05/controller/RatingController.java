@@ -25,7 +25,7 @@ public class RatingController {
     }
 
     @GetMapping("/byReservationId/{id}")
-    public ResponseEntity<RatingDTO> getReservationsByOwnerId(@PathVariable Long id) {
+    public ResponseEntity<RatingDTO> getRatingByOwnerId(@PathVariable Long id) {
         RatingDTO ratingDTO = ratingService.findByReservationId(id);
         if(ratingDTO == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -46,6 +46,14 @@ public class RatingController {
             retVal = ratingService.getAllProcessedRatingReviewDTOs();
         else if (type.equals("unprocessed"))
             retVal = ratingService.getAllUnprocessedRatingReviewDTOs();
+        if (retVal == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/ProcessedByEntityId/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<RatingReviewDTO>> ProcessedByEntityId(@PathVariable Long id) {
+        List<RatingReviewDTO> retVal = ratingService.getProcessedRatingsForEntity(id);
         if (retVal == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(retVal, HttpStatus.OK);

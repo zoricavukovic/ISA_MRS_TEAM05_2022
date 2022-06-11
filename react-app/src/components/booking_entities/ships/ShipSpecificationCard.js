@@ -42,7 +42,7 @@ export default function ShipSpecificationCard(props) {
         <Typography gutterBottom sx={{ marginLeft: '2.5%', mt: '5%'}} style={{fontWeight:"bold"}} color='rgb(5, 30, 52)'>
           SPECIFICATION
         </Typography>
-        <Typography style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }} container alignItems="left" display="flex" flexDirection="row" justifyContent="left" gutterBottom sx={{ marginLeft: '2.5%', mt: '5%'}} style={{fontWeight:"bold"}} color='rgb(5, 30, 52)'>
+        <Typography style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap',fontWeight:"bold" }} container alignItems="left" display="flex" flexDirection="row" justifyContent="left" gutterBottom sx={{ marginLeft: '2.5%', mt: '5%'}} color='rgb(5, 30, 52)'>
             <table >
                 <tr>
                     <th style={{fontSize:"12px", fontWeight:"normal"}} color='rgb(5, 30, 52)'>LENGTH</th>
@@ -55,10 +55,10 @@ export default function ShipSpecificationCard(props) {
             </table>
             
         </Typography>
-        <Typography style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }} container alignItems="left" display="flex" flexDirection="row" justifyContent="left" gutterBottom sx={{ marginLeft: '2.5%', mt: '5%'}} style={{fontWeight:"bold"}} color='rgb(5, 30, 52)'>
+        <Typography style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap', fontWeight:"bold" }} container alignItems="left" display="flex" flexDirection="row" justifyContent="left" gutterBottom sx={{ marginLeft: '2.5%', mt: '5%'}}  color='rgb(5, 30, 52)'>
             <table >
                 <tr>
-                    <th style={{width:"100%"}} justifyContent="left" style={{fontSize:"12px", fontWeight:"normal"}} color='rgb(5, 30, 52)'>MAX SPEED</th>
+                    <th justifyContent="left" style={{fontSize:"12px", fontWeight:"normal", width:"100%"}} color='rgb(5, 30, 52)'>MAX SPEED</th>
                 </tr>
             </table>
             <table style={{width:"100%"}}>
@@ -68,7 +68,7 @@ export default function ShipSpecificationCard(props) {
             </table>
             
         </Typography>
-        <Typography style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }} container alignItems="left" display="flex" flexDirection="row" justifyContent="left" gutterBottom sx={{ marginLeft: '2.5%', mt: '5%'}} style={{fontWeight:"bold"}} color='rgb(5, 30, 52)'>
+        <Typography style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap', fontWeight:"bold" }} container alignItems="left" display="flex" flexDirection="row" justifyContent="left" gutterBottom sx={{ marginLeft: '2.5%', mt: '5%'}} color='rgb(5, 30, 52)'>
             <table >
                 <tr>
                     <th style={{fontSize:"12px", fontWeight:"normal"}} color='rgb(5, 30, 52)'>ENGINE</th>

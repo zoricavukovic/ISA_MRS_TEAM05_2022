@@ -24,4 +24,7 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     @Query(value = "update Rating r SET r.processed = true where r.id = ?1")
     @Modifying
     void setRatingForPublication(Long id);
+
+    @Query(value="select distinct r from Rating r left join fetch r.reservation s left join fetch s.bookingEntity b left join fetch s.client c where r.processed=true and b.id=?1")
+    List<Rating> findByEntityId(Long id);
 }

@@ -3,6 +3,7 @@ package com.example.BookingAppTeam05.controller.bookingEntities;
 import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
+import com.example.BookingAppTeam05.dto.users.ShipOwnerDTO;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.EntityType;
@@ -126,6 +127,10 @@ public class ShipController {
         if (ship.getNavigationalEquipment() != null){
             shipDTO.setNavigationalEquipment(ship.getNavigationalEquipment());
         }
+        if(ship.getShipOwner() != null){
+            shipDTO.setShipOwner(new ShipOwnerDTO(ship.getShipOwner()));
+        }
+
         return new ResponseEntity<>(shipDTO, HttpStatus.OK);
     }
 
