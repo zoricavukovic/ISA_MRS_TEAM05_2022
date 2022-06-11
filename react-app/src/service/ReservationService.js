@@ -8,12 +8,20 @@ export function getFastReservationsByBookingEntityId(bookingEntityId) {
     return api.get('reservations/fast/' + bookingEntityId);
 }
 
+export function getAvailableFastReservationsByBookingEntityId(bookingEntityId) {
+    return api.get('reservations/fastAvailable/' + bookingEntityId);
+}
+
 export function getReservationsByOwnerIdAndFilter(ownerId, name, time, type) {
     return api.get('reservations/owner/' + ownerId + "/" + type + "/filter/name/" + name + "/time/" + time);
 }
 
 export function addNewFastReservation(newFastReservation){
     return api.post('reservations', newFastReservation);
+}
+
+export function reserveFastReservation(fastReservation){
+    return api.post('reservations/reserveFastReservation', fastReservation);
 }
 
 export function addReservation(reservationDTO){

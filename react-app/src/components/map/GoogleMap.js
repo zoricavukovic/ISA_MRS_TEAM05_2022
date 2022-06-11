@@ -23,9 +23,9 @@ export default function Home(props){
     }
     
 if (isLoading) return <div className="App"><CircularProgress /></div>
-    return <YMaps width="200px" style={{borderRadius:"10px"}} query={{ lang: 'en_RU' }}>
+    return <YMaps style={{borderRadius:"10px"}} query={{ lang: 'en_RU' }}>
         <div>
-            <Map onClick={alertic} defaultState={{
+            <Map onClick={alertic} width={'500px'} height='500px' defaultState={{
                     center:[latitude, longitude],
                     zoom:6,
             }}>

@@ -306,7 +306,7 @@ export default function Sidebar({curUser, setCurUser}) {
                   alignContent: 'center',
                 }}
               >
-                <StyledAvatar />
+                <StyledAvatar user={getCurrentUser()} />
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
                 <><Typography

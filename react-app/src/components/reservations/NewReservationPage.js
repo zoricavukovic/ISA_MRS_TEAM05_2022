@@ -65,8 +65,8 @@ export default function NewReservationPage(props) {
             console.log("+++++++++ ENTITY+++++++");
             console.log(res.data);
             res.data.pricelists.sort(function (a, b) {
-                var key1 = a.startDate;
-                var key2 = b.startDate;
+                var key1 = new Date(a.startDate[0], a.startDate[1]-1, a.startDate[2], a.startDate[3],a.startDate[4]);
+                var key2 = new Date(b.startDate[0], b.startDate[1]-1, b.startDate[2], b.startDate[3],b.startDate[4]);
             
                 if (key1 < key2) {
                     return 1;
@@ -76,6 +76,7 @@ export default function NewReservationPage(props) {
                     return -1;
                 }
             });
+            console.log("prosao");
             if(String(res.data.entityType) !== "COTTAGE")
                 setMaxNumOfPersons(res.data.maxNumOfPersons);
             else    
@@ -86,12 +87,13 @@ export default function NewReservationPage(props) {
             for(let unDate of res.data.allUnavailableDates)
                 unaDates.push(new Date(unDate[0],unDate[1]-1,unDate[2],unDate[3],unDate[4]));
             setUnavailableDates(unaDates);
+            console.log("prosao");
             //findUnavailableDates(res.data);
             let searchParams = null;
             if(props.history.location.state != null || props.history.location.state.searchParams != null)
                  searchParams = props.history.location.state.searchParams;
             
-            if(Object.keys(searchParams).length === 0){
+            if(searchParams == null || Object.keys(searchParams).length === 0){
                 if(res.data.entityType === "ADVENTURE")
                     findNextAvailableDate(unaDates);
                 else
@@ -102,6 +104,7 @@ export default function NewReservationPage(props) {
             setLoaded(true);
             setPrice(res.data.pricelists[0].entityPricePerPerson);
             setType(res.data.entityType);
+            console.log("prosao");
         });
     }, []);
 
@@ -185,12 +188,14 @@ export default function NewReservationPage(props) {
     const findNextAvailableDate=(unavDates)=>{
         var nextAvailableDate = new Date();
         var foundRange = false;
-        while(!foundRange){
-            if(isDateUnavailable(nextAvailableDate,unavDates)){
-                nextAvailableDate = new Date(nextAvailableDate.getTime()+oneDay);
-                foundRange = true;
+        console.log(unavDates);
+        if(unavDates.length > 0)
+            while(!foundRange){
+                if(isDateUnavailable(nextAvailableDate,unavDates)){
+                    nextAvailableDate = new Date(nextAvailableDate.getTime()+oneDay);
+                    foundRange = true;
+                }
             }
-        }
         setStartDate(nextAvailableDate);
     }
 
@@ -348,7 +353,6 @@ export default function NewReservationPage(props) {
     
 
     const paperStyle = { padding: 20, height: '70vh', width: 400, margin: "5% auto" }
-    const avatarStyle = { backgroundColor: 'rgb(244, 177, 77)' }
     let btnstyle = { margin: '10px 30px', backgroundColor:'rgb(244, 177, 77)' }
     let btn2style = { margin: '10px 30px', backgroundColor:'rgb(5, 30, 52)' }
 
@@ -454,9 +458,11 @@ export default function NewReservationPage(props) {
                                 <FormLabel>Additional services:</FormLabel>
                                 
                                 <FormGroup>
+                                    <Grid container style={{maxHeight:'85px', overflow:'auto'}}>
                                 {(isLoaded && Object.keys(pricelistData.additionalServices).length !== 0) ? pricelistData.additionalServices.map((service,index)=>{
-                                        return <div display="inline-block"><FormControlLabel control={<Checkbox />} onChange={(event)=>additionalServiceChecked(event, service)} label={service.serviceName+" -"} /><b>{service.price}$</b></div>
+                                        return <Grid item xs={6}><FormControlLabel control={<Checkbox />} onChange={(event)=>additionalServiceChecked(event, service)} label={service.serviceName+" -"} /><b>{service.price}$</b></Grid>
                                     }):<h4>No additional services to choose</h4>}
+                                    </Grid>
                                 </FormGroup>
                             </FormControl>
                             <FormControl>

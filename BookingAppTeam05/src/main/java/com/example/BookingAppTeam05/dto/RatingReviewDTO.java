@@ -44,6 +44,7 @@ public class RatingReviewDTO {
         this.owner = owner;
     }
 
+
     public LocalDateTime getReviewDate() {
         return reviewDate;
     }

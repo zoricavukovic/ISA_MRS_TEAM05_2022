@@ -31,7 +31,7 @@ public class ReservationDTO {
     @Min(1)
     @Max(30)
     private int numOfPersons;
-    private Set<AdditionalService> additionalServices = new HashSet<>();
+    private Set<NewAdditionalServiceDTO> additionalServices = new HashSet<>();
     private boolean fastReservation;
     private BookingEntityDTO bookingEntity;
     private boolean canceled;
@@ -54,6 +54,18 @@ public class ReservationDTO {
         this.canceled = reservation.isCanceled();
         this.version = reservation.getVersion();
         this.cost = reservation.getCost();
+    }
+
+    public void setFetchedProperties(Reservation r) {
+        this.additionalServices = new HashSet<>();
+        for (AdditionalService as:r.getAdditionalServices()) {
+            this.additionalServices.add(new NewAdditionalServiceDTO(as));
+        }
+        this.bookingEntity = new BookingEntityDTO(r.getBookingEntity());
+        if(r.getClient() == null)
+            this.client = null;
+        else
+            this.client = new ClientDTO(r.getClient());
     }
 
     public Long getId() {
@@ -84,11 +96,11 @@ public class ReservationDTO {
         this.numOfPersons = numOfPersons;
     }
 
-    public Set<AdditionalService> getAdditionalServices() {
+    public Set<NewAdditionalServiceDTO> getAdditionalServices() {
         return additionalServices;
     }
 
-    public void setAdditionalServices(Set<AdditionalService> additionalServices) {
+    public void setAdditionalServices(Set<NewAdditionalServiceDTO> additionalServices) {
         this.additionalServices = additionalServices;
     }
 
@@ -139,4 +151,6 @@ public class ReservationDTO {
     public void setCost(double cost) {
         this.cost = cost;
     }
+
+
 }

@@ -22,7 +22,8 @@ import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import ImageSlider from "./image_slider/ImageSlider";
-import { Favorite, FavoriteBorder, Unsubscribe } from "@mui/icons-material";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { Euro, Favorite, FavoriteBorder, Unsubscribe } from "@mui/icons-material";
 import { subscribeClientWithEntity, unsubscribeClientWithEntity } from "../service/UserService";
 
 export default function EntityBasicCard(props) {
@@ -35,7 +36,7 @@ export default function EntityBasicCard(props) {
     const [password, setPassword] = React.useState("");
     const [message, setMessage] = React.useState("");
     const [typeAlert, setTypeAlert] = React.useState("");
-    const [isSubsribed, setIsSubscribed] = React.useState([]);
+    const [isSubsribed, setIsSubscribed] = React.useState(false);
 
     React.useEffect(() => {
         if (getCurrentUser() !== null && getCurrentUser() !== undefined) {
@@ -44,7 +45,7 @@ export default function EntityBasicCard(props) {
                 console.log(props.subscribedEntities);
                 if(props.subscribedEntities != null && props.subscribedEntities != "undefined" && props.subscribedEntities.length > 0)
                     subsc = props.subscribedEntities.some(e=>e.id === props.bookingEntity.id)
-                console.log(subsc);
+                console.log("IS SUBSRCIBED:"+subsc);
                 setIsSubscribed(subsc);        
             }
         }
@@ -70,6 +71,7 @@ export default function EntityBasicCard(props) {
     };
 
     const logicDeleteBookingEntity = (event) => {
+        event.stopPropagation();
         logicalDeleteBookingEntityById(props.bookingEntity.id, getCurrentUser().id, password).then(res => {
             setPassword("");
             handleClick();
@@ -89,25 +91,35 @@ export default function EntityBasicCard(props) {
     ///////////////////////////////////////////////////////////////////////////////////
 
 
-    const showBookingEntity = () => {
+    const showBookingEntity = (event) => {
+        event.stopPropagation();
         if (props.bookingEntity.entityType === "COTTAGE") {
             history.push({
                 pathname: "/showCottageProfile",
-                state: { bookingEntityId: props.bookingEntity.id }
+                state: { bookingEntityId: props.bookingEntity.id,
+                            rating:Math.floor(props.bookingEntity.averageRating * 2) / 2,
+                            subscribed:isSubsribed    
+                }
             })
         } else if (props.bookingEntity.entityType === "ADVENTURE") {
             history.push({
                 pathname: "/showAdventureProfile",
-                state: { bookingEntityId: props.bookingEntity.id }
+                state: { bookingEntityId: props.bookingEntity.id,
+                         rating:Math.floor(props.bookingEntity.averageRating * 2) / 2 ,
+                         subscribed:isSubsribed     }
             })
         } else if (props.bookingEntity.entityType === "SHIP")
             history.push({
                 pathname: "/showShipProfile",
-                state: { bookingEntityId: props.bookingEntity.id }
+                state: { bookingEntityId: props.bookingEntity.id,
+                         rating:Math.floor(props.bookingEntity.averageRating * 2) / 2 ,
+                         subscribed:isSubsribed     
+                        }
             })
     };
 
-    const reserveBookingEntity = () => {
+    const reserveBookingEntity = (event) => {
+        event.stopPropagation();
         console.log("Evo me");
         console.log(props.searchParams);
         history.push({
@@ -119,7 +131,8 @@ export default function EntityBasicCard(props) {
         })
     }
 
-    const subscribe =()=>{
+    const subscribe =(event)=>{
+        event.stopPropagation();
         subscribeClientWithEntity(getCurrentUser().id, props.bookingEntity.id).then(res=>{
             console.log("Uspesno sub");
             console.log(res.data);
@@ -129,7 +142,8 @@ export default function EntityBasicCard(props) {
                 setIsSubscribed(true);
         });
     }
-    const unsubscribe =()=>{
+    const unsubscribe =(event)=>{
+        event.stopPropagation();
         unsubscribeClientWithEntity(getCurrentUser().id, props.bookingEntity.id).then(res=>{
             console.log("Uspesno unsub");
             console.log(res.data);
@@ -142,7 +156,7 @@ export default function EntityBasicCard(props) {
 
 
     return (
-        <Card style={{ margin: "2%" }} sx={{ maxWidth: 345 }}>
+        <Card style={{ margin: "2%" }} sx={{ maxWidth: 345 }} onClick={showBookingEntity}>
             <Dialog open={openDialog} onClose={handleCloseDialog}>
                 <DialogTitle>Confirm Deleting</DialogTitle>
                 <DialogContent>
@@ -198,20 +212,27 @@ export default function EntityBasicCard(props) {
             )}
             <CardContent>
                 <Typography style={{ textAlign: "left" }} gutterBottom variant="h5" component="div">
-                    {props.bookingEntity.name}
+                    <div style={{display:'flex'}}>
+                        <h3>{props.bookingEntity.name}
+                        {isSubsribed?
+                                    <Button size="small" style={{marginLeft:'5px', padding:'0px'}} onClick={unsubscribe}><Favorite fontSize="large" style={{ margin: "5px" }} /></Button>:
+                                    <Button size="small" style={{ margin: "5px", padding:'0px' }} onClick={subscribe}><FavoriteBorder fontSize="large"  /></Button>
+                                    }
+                                    </h3>
+                    </div>
                 </Typography>
                 <Typography style={{ textAlign: "left" }} gutterBottom variant="h7" component="div">
-                    <text style={{ backgroundColor: "aliceblue" }}>Location:</text> {props.bookingEntity.address}, {props.bookingEntity.place.cityName} {props.bookingEntity.place.zipCode}, {props.bookingEntity.place.stateName}
+                   <p><LocationOnIcon size='small'/> {props.bookingEntity.address}, {props.bookingEntity.place.cityName} {props.bookingEntity.place.zipCode}, {props.bookingEntity.place.stateName}</p>
                 </Typography>
 
                 <Typography style={{ textAlign: "left" }} gutterBottom variant="h7" component="div">
                     {props.bookingEntity.entityType === "COTTAGE" ? (
                         <div>
-                            <text style={{ backgroundColor: "aliceblue" }}>Cost Per Night:</text> {props.bookingEntity.entityPricePerPerson} €
+                            <text style={{ fontWeight:'bold'  }}>Cost Per Night:</text><Euro></Euro> {props.bookingEntity.entityPricePerPerson} €
                         </div>
 
                     ) : (<div>
-                        <text style={{ backgroundColor: "aliceblue" }}>Cost Per Person:</text> {props.bookingEntity.entityPricePerPerson} €
+                        <text style={{ fontWeight:'bold'  }}>Cost Per Person:</text> <b>{props.bookingEntity.entityPricePerPerson} €</b>
 
                     </div>)}
                 </Typography>
@@ -223,19 +244,13 @@ export default function EntityBasicCard(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={showBookingEntity}><ReadMoreIcon fontSize="large" style={{ margin: "5px" }} /> Details</Button>
+                {/* <Button size="small" onClick={showBookingEntity}><ReadMoreIcon fontSize="large" style={{ margin: "5px" }} /> Details</Button> */}
                 {getCurrentUser() !== null &&
                     <span>
                         {getCurrentUser().userType.name === "ROLE_CLIENT"
                             ?
                             (
-                                <span style={{display:'flex'}}>
-                                <Button size="small" style={{marginLeft:'5px', padding:'0px'}} onClick={reserveBookingEntity}><ReadMoreIcon fontSize="large" style={{ margin: "5px" }} /> Reserve</Button>
-                                {isSubsribed?
-                                    <Button size="small" style={{marginLeft:'5px', padding:'0px'}} onClick={unsubscribe}><FavoriteBorder fontSize="large" style={{ margin: "5px", padding:'0px' }} />Unsubscribe</Button>:
-                                    <Button size="small" onClick={subscribe}><Favorite fontSize="large" style={{ margin: "5px" }} />Subscribe</Button>
-                                    }
-                                </span>
+                                <Button size="large" style={{marginLeft:'5px'}} disabled={getCurrentUser().penalties>2?true:false} onClick={reserveBookingEntity} variant='contained'>Reserve</Button>
                             ) :
                             (
                                 <span>

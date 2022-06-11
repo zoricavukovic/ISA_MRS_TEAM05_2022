@@ -66,6 +66,8 @@ public class ReservationService {
         this.additionalServiceRepository = additionalServiceRepository;
     }
 
+
+
     public List<Reservation> findAllActiveReservationsForEntity(Long entityId){return reservationRepository.findAllActiveReservationsForBookingEntity(entityId);}
 
     public List<Reservation> getReservationsByOwnerId(Long ownerId, String type) {
@@ -169,6 +171,8 @@ public class ReservationService {
     public List<Reservation> findAllFastReservationsForEntityid(Long id) {
         return this.reservationRepository.findAllFastReservationsForEntityId(id);
     }
+
+
     public List<Reservation> getFastReservationsByBookingEntityId(Long bookingEntityId) {
         List<Reservation> allFastRes = reservationRepository.getFastReservationsByBookingEntityId(bookingEntityId);
         //System.out.println("caocao" + " " + allFastRes.size());
@@ -176,6 +180,22 @@ public class ReservationService {
         for (Reservation r : allFastRes){
             System.out.println(allFastRes.size());
             if ((r.getStartDate()).isAfter(LocalDateTime.now())) activeFastRes.add(r);
+        }
+        return activeFastRes;
+    }
+
+    public List<ReservationDTO> getFastAvailableReservationsDTO(Long bookingEntityId) {
+        List<Reservation> allFastRes = reservationRepository.getFastReservationsByBookingEntityId(bookingEntityId);
+        //System.out.println("caocao" + " " + allFastRes.size());
+        List<ReservationDTO> activeFastRes = new ArrayList<>();
+        for (Reservation r : allFastRes){
+            System.out.println(allFastRes.size());
+            if ((r.getStartDate()).isAfter(LocalDateTime.now()) && r.getClient() == null)
+            {
+                ReservationDTO reservationDTO = new ReservationDTO(r);
+                reservationDTO.setFetchedProperties(r);
+                activeFastRes.add(reservationDTO);
+            }
         }
         return activeFastRes;
     }
@@ -190,7 +210,12 @@ public class ReservationService {
             res.setFastReservation(true);
             res.setNumOfDays(reservationDTO.getNumOfDays());
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
-            res.setAdditionalServices(reservationDTO.getAdditionalServices());
+            Set<AdditionalService> additionalServices = new HashSet<>();
+            for (NewAdditionalServiceDTO nas: reservationDTO.getAdditionalServices()) {
+                AdditionalService as = additionalServiceRepository.findById(nas.getId()).orElse(null);
+                additionalServices.add(as);
+            }
+            res.setAdditionalServices(additionalServices);
             BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
             if (entityDTO == null) return null;
             BookingEntity entity = bookingEntityRepository.getEntityById(entityDTO.getId());
@@ -248,7 +273,7 @@ public class ReservationService {
             res.setNumOfDays(reservationDTO.getNumOfDays());
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
             Set<AdditionalService> aServices = new HashSet<>();
-            for (AdditionalService as:reservationDTO.getAdditionalServices()) {
+            for (NewAdditionalServiceDTO as:reservationDTO.getAdditionalServices()) {
                 aServices.add(additionalServiceRepository.findById(as.getId()).orElse(null));
             }
             res.setAdditionalServices(aServices);
@@ -353,4 +378,17 @@ public class ReservationService {
         return retVal;
     }
 
+    public Reservation reserveFastReservation(ReservationDTO reservationDTO) {
+        try{
+            Reservation res = reservationRepository.findById(reservationDTO.getId()).orElse(null);
+            Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
+            res.setClient(client);
+            reservationRepository.save(res);
+            emailService.sendNotificationAboutResToClient(client, res);
+            return res;
+        }catch (OptimisticLockException e){
+            System.out.println("EXCEPTION HAS HAPPENED!!!!");
+        }
+        return null;
+    }
 }

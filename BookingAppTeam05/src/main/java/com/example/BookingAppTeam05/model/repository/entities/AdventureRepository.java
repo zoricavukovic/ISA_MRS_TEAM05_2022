@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface AdventureRepository extends JpaRepository<Adventure, Long> {
 
     @Query("select a from Adventure a left join fetch a.place p left join fetch a.fishingEquipment f " +
-            "left join fetch a.rulesOfConduct r left join fetch a.pictures s left join fetch a.reservations res " +
+            "left join fetch a.rulesOfConduct r left join fetch a.pictures s left join fetch a.reservations res left join fetch a.instructor " +
             "where a.id=?1 and a.deleted = false")
     Adventure getAdventureById(Long id);
 

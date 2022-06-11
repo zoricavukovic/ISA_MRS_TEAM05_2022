@@ -1,5 +1,5 @@
 import React from 'react';
-import ImageCard from "./ImageCard";
+import ImageCardForShip from "./ImageCardForShip";
 import { useEffect } from "react";
 import { propsLocationStateFound } from '../../forbiddenNotFound/notFoundChecker';
 import { useHistory } from 'react-router-dom';
@@ -13,7 +13,7 @@ function ShowShipProfile(props) {
     }, [])
     return (
         <div>
-            <ImageCard shipId = {props.location.state.bookingEntityId}/>
+            <ImageCardForShip shipId = {props.location.state.bookingEntityId} rating={props.location.state.rating} subscribed={props.location.state.subscribed}/>
         </div>
     );
 }

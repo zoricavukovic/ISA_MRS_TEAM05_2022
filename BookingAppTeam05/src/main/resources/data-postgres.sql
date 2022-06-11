@@ -359,6 +359,9 @@ VALUES
     ('commen4', 4.5, 7, true, true, '2022-05-14 8:00 am'),
     ('commen5', 1.0, 8, false, false, '2022-05-14 8:00 am'),
     ('commen6', 0.5, 9, true, true,'2022-05-14 8:00 am'),
+    ('commenA', 4.0, 1, true, true,'2022-05-14 8:00 am'),
+    ('commenB', 3.5, 2, true, true,'2022-05-14 8:00 am'),
+    ('commenC', 4.5, 3, true, true,'2022-05-14 8:00 am'),
     ('commen7', 5.0, 10, false, false,'2022-05-14 8:00 am');
 
 
@@ -473,3 +476,10 @@ VALUES (10, '2022-03-04'),
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
 VALUES ('2022-05-29 7:00 pm',5,3,1,9,'False','False', 1, 290, 5, 5, 30),
        ('2022-06-05 7:00 pm',5,3,1,7,'False','False', 1, 359, 5, 5, 30);
+
+--fast cotages res
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
+VALUES ('2022-07-29 7:00 pm',5,3,1,null,'True','False', 1, 290, 5, 5, 30),
+       ('2022-07-05 7:00 pm',3,4,1,null,'True','False', 1, 359, 5, 5, 30),
+       ('2022-07-15 7:00 pm',2,2,1,null,'True','False', 1, 425, 5, 5, 30),
+       ('2022-08-05 7:00 pm',10,5,1,null,'True','False', 1, 440, 5, 5, 30);

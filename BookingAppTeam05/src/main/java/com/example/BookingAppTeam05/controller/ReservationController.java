@@ -52,6 +52,12 @@ public class ReservationController {
         return ResponseEntity.ok(reservationDTOs);
     }
 
+    @GetMapping(value="/fastAvailable/{bookingEntityId}")
+    public ResponseEntity<List<ReservationDTO>> getFastAvailableReservationsByBookingEntityId(@PathVariable Long bookingEntityId) {
+        List<ReservationDTO> reservationDTOs = reservationService.getFastAvailableReservationsDTO(bookingEntityId);
+        return ResponseEntity.ok(reservationDTOs);
+    }
+
     @GetMapping(value="/owner/{ownerId}/{type}/filter/name/{name}/time/{time}")
     public ResponseEntity<List<ReservationDTO>> filterReservationsByOwnerId(@PathVariable Long ownerId, @PathVariable String type, @PathVariable String name, @PathVariable String time) {
 
@@ -101,6 +107,16 @@ public class ReservationController {
         }
         return new ResponseEntity<>(reservation.getId().toString(), HttpStatus.CREATED);
     }
+    @Transactional
+    @PostMapping(value = "/reserveFastReservation", consumes = "application/json")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
+    public ResponseEntity<String> reserveFastReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
+        Reservation tempReservation = reservationService.reserveFastReservation(reservationDTO);
+        if (tempReservation == null)
+            return new ResponseEntity<>("Cannot create temporary reservation.", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(tempReservation.getId().toString(), HttpStatus.CREATED);
+    }
+
 
     @Transactional
     @PostMapping(value = "/addReservation", consumes = "application/json")

@@ -22,6 +22,10 @@ function getLabelText(value) {
 
 
 export default function RatingEntity(prop) {
+  let text = false
+  if(prop.text == "undefined" || prop.text == true)
+    text = true;
+  if(prop.size != "undefined")
 
   return (
 
@@ -36,13 +40,15 @@ export default function RatingEntity(prop) {
         name="text-feedback"
         value={prop.value}
         readOnly
+        size={prop.size != "undefined"?prop.size:''}
         precision={0.5}
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
       />
-      <Box sx={{ ml: 2 }}><h3>{labels[prop.value]}</h3></Box>
+      {text && <Box sx={{ ml: 2 }}><h3>{labels[prop.value]}</h3></Box>}
     </Box>
   );
 }
+
 
 export function ControlledRating(prop) {
   return (

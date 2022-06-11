@@ -13,7 +13,7 @@ function ShowCottageProfile(props) {
     }, [])
     return (
         <div>
-            <ImageCard cottageId = {props.location.state.bookingEntityId}/>
+            <ImageCard cottageId = {props.location.state.bookingEntityId} rating={props.location.state.rating} subscribed={props.location.state.subscribed}/>
         </div>
     );
 }

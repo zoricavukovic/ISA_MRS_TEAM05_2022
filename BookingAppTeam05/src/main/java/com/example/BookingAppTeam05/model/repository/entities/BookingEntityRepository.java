@@ -33,4 +33,7 @@ public interface BookingEntityRepository extends JpaRepository<BookingEntity, Lo
     @Query("select b from BookingEntity b left join fetch b.place p left join fetch b.pictures c left join fetch b.subscribedClients subc where b.id =?1 and b.deleted = false")
     Optional<BookingEntity> findById(Long id);
 
+    @Query("select b from BookingEntity b left join fetch b.subscribedClients subc where b.id =?1 and b.deleted = false")
+    Optional<BookingEntity> findByIdWithoutParams(Long id);
+
 }
