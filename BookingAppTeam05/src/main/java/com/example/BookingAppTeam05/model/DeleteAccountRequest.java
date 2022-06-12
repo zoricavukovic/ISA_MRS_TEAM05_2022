@@ -27,6 +27,10 @@ public class DeleteAccountRequest {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Version
+    @Column(name="version", unique=false, nullable=false)
+    private Long version;
+
     public DeleteAccountRequest() {}
 
     public boolean isAccepted() {
@@ -43,6 +47,14 @@ public class DeleteAccountRequest {
         this.processed = processed;
         this.adminResponse = adminResponse;
         this.user = user;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     public Long getId() {

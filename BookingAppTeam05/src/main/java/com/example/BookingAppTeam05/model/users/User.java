@@ -73,6 +73,10 @@ public abstract class User implements UserDetails {
    @Column(name="deleted", nullable = false)
    private boolean deleted;
 
+   @Version
+   @Column(name="version", unique=false, nullable=false)
+   private Long version;
+
    public User() {
    }
 
@@ -98,6 +102,14 @@ public abstract class User implements UserDetails {
       this.place = place;
       this.role = role;
       this.dateOfBirth = dateOfBirth;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 
    @Override

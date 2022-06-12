@@ -5,9 +5,12 @@ import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.model.DeleteAccountRequest;
 import com.example.BookingAppTeam05.model.repository.DeleteAccountRepository;
 import com.example.BookingAppTeam05.service.users.UserService;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,25 +40,41 @@ public class DeleteAccountService {
         return retVal;
     }
 
+    public DeleteAccountRequest save(DeleteAccountRequest deleteAccountRequest) {
+        return this.deleteAccountRepository.save(deleteAccountRequest);
+    }
+
+    public DeleteAccountRequest findById(Long id) {
+        return this.deleteAccountRepository.findById(id).orElse(null);
+    }
+
     @Transactional
     public String giveResponse(DeleteAccountRequestDTO d) {
-        DeleteAccountRequest deleteAccountRequest = deleteAccountRepository.findById(d.getId()).orElse(null);
-        if (deleteAccountRequest == null)
-            return "Can't find delete account request with id: " + d.getId();
-
-        deleteAccountRequest.setProcessed(true);
-        deleteAccountRequest.setAccepted(d.isAccepted());
-        deleteAccountRepository.delete(deleteAccountRequest);
-
-        if (d.isAccepted()) {
-            userService.logicalDeleteUserById(d.getUser().getId());
-        }
-
         try {
-            emailService.sendEmailAsAdminResponseFromDeleteAccountRequest(d);
-        } catch (Exception e) {
-            return "Error happened while sending email about deleting account to user";
+            DeleteAccountRequest deleteAccountRequest = deleteAccountRepository.findById(d.getId()).orElse(null);
+            if (deleteAccountRequest == null)
+                return "Can't find delete account request with id: " + d.getId();
+
+            if (deleteAccountRequest.isProcessed())
+                return "This request is already processed";
+
+            deleteAccountRequest.setProcessed(true);
+            deleteAccountRequest.setAccepted(d.isAccepted());
+            deleteAccountRepository.delete(deleteAccountRequest);
+
+            if (d.isAccepted()) {
+                userService.logicalDeleteUserById(d.getUser().getId());
+            }
+
+            try {
+                emailService.sendEmailAsAdminResponseFromDeleteAccountRequest(d);
+            } catch (Exception e) {
+                return "Error happened while sending email about deleting account to user";
+            }
+            return null;
         }
-        return null;
+        catch (ObjectOptimisticLockingFailureException e) {
+            return "Conflict seems to have occurred, another admin has reviewed this request before you. Please refresh page and try again";
+        }
     }
 }

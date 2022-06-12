@@ -14,6 +14,7 @@ import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.ClientService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -38,11 +39,20 @@ public class ReportService {
         this.emailService = emailService;
     }
 
+    public Report findById(Long id) {
+        return this.reportRepository.findById(id).orElse(null);
+    }
+
+    public Report save(Report report) {
+        return this.reportRepository.save(report);
+    }
+
     @Transactional
     public Report addReportAndNotifyClientIfHeDidNotCome(ReportDTO reportDTO) {
         Reservation reservation = reservationRepository.getReservationById(reportDTO.getReservationId());
         if (reservation == null) return null;
         Report report = new Report(reportDTO.getComment(), reportDTO.isPenalizeClient(),!reportDTO.isClientCome() , reportDTO.isClientCome(), reservation);
+        report.setVersion(0L);
         reportRepository.save(report);
 
         if (!report.isComeClient()) {
@@ -54,7 +64,6 @@ public class ReportService {
             }
             if (errMessage != null) return null;
         }
-
         return report;
     }
 
@@ -96,23 +105,30 @@ public class ReportService {
 
     @Transactional
     public String giveResponse(CreatedReportReviewDTO c) {
-        Report report = reportRepository.findById(c.getId()).orElse(null);
-        if (report == null)
-            return "Cant' find report with id: " + c.getId();
-        report.setAdminResponse(c.getAdminResponse());
-        report.setProcessed(true);
-        report.setAdminPenalizeClient(c.isAdminPenalizeClient());
-        report = reportRepository.save(report);
-
-        if (c.isAdminPenalizeClient()) {
-            String err = clientService.penalizeClientFromReportAndReturnErrorMessage(report);
-            if (err != null) return err;
-        }
         try {
-            emailService.sendEmailAsAdminResponseFromReport(c);
-        } catch (Exception e) {
-            return "Error happened while sending email to owner and client";
+            Report report = reportRepository.findById(c.getId()).orElse(null);
+            if (report == null)
+                return "Cant' find report with id: " + c.getId();
+            if (report.isProcessed())
+                return "This report is already processed";
+
+            report.setAdminResponse(c.getAdminResponse());
+            report.setProcessed(true);
+            report.setAdminPenalizeClient(c.isAdminPenalizeClient());
+            report = reportRepository.save(report);
+
+            if (c.isAdminPenalizeClient()) {
+                String err = clientService.penalizeClientFromReportAndReturnErrorMessage(report);
+                if (err != null) return err;
+            }
+            try {
+                emailService.sendEmailAsAdminResponseFromReport(c);
+            } catch (Exception e) {
+                return "Error happened while sending email to owner and client";
+            }
+            return null;
+        } catch (ObjectOptimisticLockingFailureException e) {
+            return "Conflict seems to have occurred, another admin has reviewed this report before you. Please refresh page and try again";
         }
-        return null;
     }
 }

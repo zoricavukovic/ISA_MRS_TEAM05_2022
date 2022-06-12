@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -157,6 +158,7 @@ public class UserService {
         }
         try {
             assert false;
+            u.setVersion(0L);
             userRepository.save(u);
             if (userDTO.getUserTypeValue().equals("ROLE_CLIENT")){
                 emailService.sendActivationMessage(u);
@@ -180,25 +182,29 @@ public class UserService {
 
     @Transactional
     public String giveResponseForNewAccountRequest(NewAccountRequestDTO d) {
-        User user = userRepository.findUserById(d.getUser().getId());
-        if (user == null)
-            return "Cant find user with id " + d.getUser().getId();
-        if (!user.isNotYetActivated())
-            return "This user account is already approved.";
-
-        if (d.isAccepted()) {
-            user.setNotYetActivated(false);
-            userRepository.save(user);
-        } else {
-            userRepository.physicalDeleteUserById(d.getUser().getId());
-        }
         try {
-            emailService.sendEmailAsAdminResponseFromNewAccountRequest(d);
-        } catch (Exception e) {
-            return "Error happened while sending email about new account request to user";
-        }
-        return null;
+            User user = userRepository.findUserById(d.getUser().getId());
+            if (user == null)
+                return "Cant find user with id " + d.getUser().getId();
+            if (!user.isNotYetActivated())
+                return "This user account is already approved.";
 
+            if (d.isAccepted()) {
+                user.setNotYetActivated(false);
+                userRepository.save(user);
+            } else {
+                userRepository.physicalDeleteUserById(d.getUser().getId());
+            }
+            try {
+                emailService.sendEmailAsAdminResponseFromNewAccountRequest(d);
+            } catch (Exception e) {
+                return "Error happened while sending email about new account request to user";
+            }
+            return null;
+        }
+        catch (ObjectOptimisticLockingFailureException e) {
+            return "Conflict seems to have occurred, another admin has reviewed this request before you. Please refresh page and try again";
+        }
     }
 
     public ResponseEntity<String> activateAccount(String email) {

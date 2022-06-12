@@ -61,6 +61,12 @@ public abstract class BookingEntity {
     @Column(name="deleted")
     private boolean deleted = false;
 
+    @Version
+    @Column(name="version", unique=false, nullable=false)
+    private int version;
+
+    @Column(name="locked", unique = false, nullable = false)
+    private boolean locked;
 
     public BookingEntity() {
     }
@@ -87,6 +93,21 @@ public abstract class BookingEntity {
         this.entityType = entityType;
     }
 
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public void addPriceList(Pricelist pricelist) {
         pricelists.add(pricelist);

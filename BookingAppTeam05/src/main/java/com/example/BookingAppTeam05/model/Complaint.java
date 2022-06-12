@@ -22,11 +22,23 @@ public class Complaint {
    @Column(name="adminResponse", length = 1024)
    private String adminResponse;
 
+   @Version
+   @Column(name="version", unique=false, nullable=false)
+   private Long version;
+
    public Complaint() {}
 
    public Complaint(String description, Reservation reservation) {
       this.description = description;
       this.reservation = reservation;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
    }
 
    public String getAdminResponse() {

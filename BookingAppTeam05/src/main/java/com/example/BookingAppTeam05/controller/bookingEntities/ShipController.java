@@ -229,6 +229,9 @@ public class ShipController {
         System.out.println("CAOOOO NAV");
         ship.setFishingEquipment(shipDTO.getFishingEquipment());
         System.out.println(" CAOOOO fishing");
+
+        ship.setVersion(0);
+        ship.setLocked(false);
         ship = shipService.save(ship);
 
         return new ResponseEntity<>(ship.getId().toString(), HttpStatus.CREATED);
