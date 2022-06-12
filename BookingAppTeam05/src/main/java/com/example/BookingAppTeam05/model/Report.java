@@ -30,6 +30,10 @@ public class Report {
    @OneToOne(fetch = FetchType.LAZY)
    public Reservation reservation;
 
+   @Version
+   @Column(name="version", unique=false, nullable=false)
+   private Long version;
+
    public Report(String comment, boolean penalizeClient, boolean processed, boolean comeClient, Reservation reservation) {
       this.comment = comment;
       this.penalizeClient = penalizeClient;
@@ -39,6 +43,18 @@ public class Report {
    }
 
    public Report(){ }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
+   }
 
    public boolean isAdminPenalizeClient() {
       return adminPenalizeClient;

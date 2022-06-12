@@ -11,6 +11,8 @@ import com.example.BookingAppTeam05.dto.users.ClientDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -36,12 +38,21 @@ public class ComplaintService {
     public ComplaintDTO getComplaintByReservationId(Long id) {
         return complaintRepository.findByReservationId(id).orElse(null);
     }
+    
+    public Complaint findById(Long id) {
+        return this.complaintRepository.findById(id).orElse(null);
+    }
+
+    public Complaint save(Complaint complaint) {
+        return this.complaintRepository.save(complaint);
+    }
 
     public Complaint createComplaint(ComplaintDTO complaintDTO) {
         Complaint complaint = new Complaint();
         complaint.setDescription(complaintDTO.getDescription());
         Reservation res = reservationRepository.findById(complaintDTO.getReservation().getId()).orElse(null);
         complaint.setReservation(res);
+        complaint.setVersion(0L);
         this.complaintRepository.save(complaint);
         return complaint;
     }
@@ -71,18 +82,23 @@ public class ComplaintService {
 
     @Transactional
     public String giveResponse(ComplaintReviewDTO c) {
-        Complaint complaint = complaintRepository.findById(c.getId()).orElse(null);
-        if (complaint == null)
-            return "Cant' find complaint with id: " + c.getId();
-        complaint.setAdminResponse(c.getAdminResponse());
-        complaint.setProcessed(true);
-        complaint = complaintRepository.save(complaint);
-
         try {
-            emailService.sendEmailAsAdminResponseFromComplaint(c);
-        } catch (Exception e) {
-            return "Error happened while sending email to owner and client";
+            Complaint complaint = complaintRepository.findById(c.getId()).orElse(null);
+            if (complaint == null)
+                return "Cant' find complaint with id: " + c.getId();
+            complaint.setAdminResponse(c.getAdminResponse());
+            complaint.setProcessed(true);
+            complaint = complaintRepository.save(complaint);
+
+            try {
+                emailService.sendEmailAsAdminResponseFromComplaint(c);
+            } catch (Exception e) {
+                return "Error happened while sending email to owner and client";
+            }
+            return null;
         }
-        return null;
+        catch (ObjectOptimisticLockingFailureException e) {
+            return "Conflict seems to have occurred, another admin has reviewed this complaint before you. Please refresh page and try again";
+        }
     }
 }

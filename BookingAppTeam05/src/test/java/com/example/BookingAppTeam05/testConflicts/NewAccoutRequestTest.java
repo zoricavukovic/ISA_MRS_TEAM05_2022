@@ -1,7 +1,11 @@
 package com.example.BookingAppTeam05.testConflicts;
 
-import com.example.BookingAppTeam05.model.DeleteAccountRequest;
-import com.example.BookingAppTeam05.service.DeleteAccountService;
+import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
+import com.example.BookingAppTeam05.dto.users.UserDTO;
+import com.example.BookingAppTeam05.model.Complaint;
+import com.example.BookingAppTeam05.model.users.User;
+import com.example.BookingAppTeam05.service.ComplaintService;
+import com.example.BookingAppTeam05.service.users.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +22,10 @@ import java.util.concurrent.Future;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DeleteRequestsTest {
+public class NewAccoutRequestTest {
 
     @Autowired
-    private DeleteAccountService deleteAccountService;
+    private UserService userService;
 
     @Transactional
     @Rollback(true)
@@ -33,10 +37,10 @@ public class DeleteRequestsTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 1");
-                DeleteAccountRequest request = deleteAccountService.findById(1L);
-                request.setProcessed(true);
+                User user = userService.findUserById(22L);
+                user.setNotYetActivated(false);
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
-                deleteAccountService.save(request);
+                userService.save(user);
             }
         });
         executor.submit(new Runnable() {
@@ -44,9 +48,9 @@ public class DeleteRequestsTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 2");
-                DeleteAccountRequest request = deleteAccountService.findById(1L);
-                request.setProcessed(true);
-                deleteAccountService.save(request);
+                User user = userService.findUserById(22L);
+                user.setNotYetActivated(false);
+                userService.save(user);
             }
         });
         try {
