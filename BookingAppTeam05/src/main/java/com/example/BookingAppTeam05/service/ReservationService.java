@@ -46,6 +46,8 @@ public class ReservationService {
     private UserRepository userRepository;
     private AdditionalServiceRepository additionalServiceRepository;
 
+    private LoyaltyProgramService loyaltyProgramService;
+
 
     @Autowired
     public ReservationService(ReservationRepository reservationRepository, CottageRepository cottageRepository,
@@ -282,16 +284,25 @@ public class ReservationService {
             BookingEntity entity = bookingEntityRepository.getEntityById(entityDTO.getId());
             if (entity == null) return null;
             res.setBookingEntity(entity);
-            res.setVersion(1);
+            res.setVersion(0);
             Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
+
+
+            entity.setLocked(true);
+            bookingEntityRepository.save(entity);
             res.setClient(client);
             reservationRepository.save(res);
+            entity.setLocked(false);
+            bookingEntityRepository.save(entity);
+
             return res;
         }catch (OptimisticLockException e){
-            System.out.println("EXCEPTION HAS HAPPENED!!!!");
+            System.out.println("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again\";");
         }
         return null;
     }
+
+    private void setFinancialFieldsForReservation()
 
     public Reservation addReservationForClient(ReservationForClientDTO reservationDTO) {
         try{
@@ -387,7 +398,7 @@ public class ReservationService {
             emailService.sendNotificationAboutResToClient(client, res);
             return res;
         }catch (OptimisticLockException e){
-            System.out.println("EXCEPTION HAS HAPPENED!!!!");
+            System.out.println("Conflict seems to have occurred, another user reserved this entity before you. Please refresh page and try again\"");
         }
         return null;
     }

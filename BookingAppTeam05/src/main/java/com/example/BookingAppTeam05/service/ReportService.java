@@ -109,6 +109,9 @@ public class ReportService {
             Report report = reportRepository.findById(c.getId()).orElse(null);
             if (report == null)
                 return "Cant' find report with id: " + c.getId();
+            if (report.isProcessed())
+                return "This report is already processed";
+
             report.setAdminResponse(c.getAdminResponse());
             report.setProcessed(true);
             report.setAdminPenalizeClient(c.isAdminPenalizeClient());

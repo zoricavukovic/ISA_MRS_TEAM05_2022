@@ -28,12 +28,24 @@ public class Rating {
     @Column(name="reviewDate", nullable = false)
     private LocalDateTime reviewDate;
 
+    @Version
+    @Column(name="version", unique=false, nullable=false)
+    private Long version;
+
     public Rating() {}
 
     public Rating(float value, String comment, boolean approved) {
         this.value = value;
         this.comment = comment;
         this.approved = approved;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     public LocalDateTime getReviewDate() {

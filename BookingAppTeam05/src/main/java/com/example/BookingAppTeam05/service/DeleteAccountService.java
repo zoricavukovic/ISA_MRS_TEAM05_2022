@@ -55,6 +55,9 @@ public class DeleteAccountService {
             if (deleteAccountRequest == null)
                 return "Can't find delete account request with id: " + d.getId();
 
+            if (deleteAccountRequest.isProcessed())
+                return "This request is already processed";
+
             deleteAccountRequest.setProcessed(true);
             deleteAccountRequest.setAccepted(d.isAccepted());
             deleteAccountRepository.delete(deleteAccountRequest);

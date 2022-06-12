@@ -82,30 +82,30 @@ VALUES
 (nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'bookingapp05mzr++rika@gmail.com', 'Rika', 'Rikic', null, 90, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 6,'False', 5, 0);
 
 
-INSERT INTO cottages (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,cottage_owner_id, deleted)
+INSERT INTO cottages (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,cottage_owner_id, deleted, version)
 VALUES
-(nextval('entities_id_gen'), 'Ap #977-2514 Sed Street',19,'COTTAGE','Ultrices Limited','est, mollis non, cursus non, egestas a,',1,1, false),
-(nextval('entities_id_gen'), '4369 Mauris St.',45,'COTTAGE','Sollicitudin Commodo Ipsum Limited','lacus. Mauris non dui',1,1, true),
-(nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',1,1, false),
-(nextval('entities_id_gen'), 'Ap #119-6987 Sed St.',33,'COTTAGE','Nunc Pulvinar Corporation','congue, elit sed consequat auctor, nunc',2,1, false),
-(nextval('entities_id_gen'), '411-1777 Nunc Av.',45,'COTTAGE','Parturient Montes Nascetur LLP','mauris. Suspendisse aliquet molestie tellus.',5,2, false);
+(nextval('entities_id_gen'), 'Ap #977-2514 Sed Street',19,'COTTAGE','Ultrices Limited','est, mollis non, cursus non, egestas a,',1,1, false, 0),
+(nextval('entities_id_gen'), '4369 Mauris St.',45,'COTTAGE','Sollicitudin Commodo Ipsum Limited','lacus. Mauris non dui',1,1, true, 0),
+(nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',1,1, false, 0),
+(nextval('entities_id_gen'), 'Ap #119-6987 Sed St.',33,'COTTAGE','Nunc Pulvinar Corporation','congue, elit sed consequat auctor, nunc',2,1, false, 0),
+(nextval('entities_id_gen'), '411-1777 Nunc Av.',45,'COTTAGE','Parturient Montes Nascetur LLP','mauris. Suspendisse aliquet molestie tellus.',5,2, false, 0);
 
 
-INSERT INTO ships (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,engine_num,engine_power,length,max_num_of_persons,max_speed,ship_type,ship_owner_id, deleted)
+INSERT INTO ships (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,engine_num,engine_power,length,max_num_of_persons,max_speed,ship_type,ship_owner_id, deleted, version)
 VALUES
-(nextval('entities_id_gen'), 'Ap #379-679 Enim, St.',26,'SHIP','Gretchen','Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum',7,'N1N 1F5',2002,24,10,51,'BAY_BOAT',4, false), --6
-(nextval('entities_id_gen'), '368-5360 In Ave',47,'SHIP','Molly','Nulla aliquet. Proin',16,'U5F 2U3',1806,30,14,24,'BAY_BOAT',4, false), --7
-(nextval('entities_id_gen'), '3885 Lacus Road',44,'SHIP','Yeo','magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt',18,'U9K 1M2',1171,8,12,45,'INFLATABLE_BOAT',4, false),
-(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',17,'W4T 5A6',469,23,19,88,'FLAT_BOAT',5, false),
-(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',23,'W4T 5A6',469,23,19,88,'FLAT_BOAT',6, false);
+(nextval('entities_id_gen'), 'Ap #379-679 Enim, St.',26,'SHIP','Gretchen','Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum',7,'N1N 1F5',2002,24,10,51,'BAY_BOAT',4, false, 0),
+(nextval('entities_id_gen'), '368-5360 In Ave',47,'SHIP','Molly','Nulla aliquet. Proin',16,'U5F 2U3',1806,30,14,24,'BAY_BOAT',4, false, 0),
+(nextval('entities_id_gen'), '3885 Lacus Road',44,'SHIP','Yeo','magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt',18,'U9K 1M2',1171,8,12,45,'INFLATABLE_BOAT',4, false, 0),
+(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',17,'W4T 5A6',469,23,19,88,'FLAT_BOAT',5, false, 0),
+(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',23,'W4T 5A6',469,23,19,88,'FLAT_BOAT',6, false, 0);
 
-INSERT INTO adventures(id, address, entity_cancelation_rate, entity_type, name, promo_description, place_id, max_num_of_persons, short_bio, instructor_id, deleted)
+INSERT INTO adventures(id, address, entity_cancelation_rate, entity_type, name, promo_description, place_id, max_num_of_persons, short_bio, instructor_id, deleted, version)
 VALUES
-(nextval('entities_id_gen'), 'adresa adv 1', 20, 'ADVENTURE', 'fishing adventure1', 'promo desc adv 1', 24, 3, 'short bio adv 1', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 2', 20, 'ADVENTURE', 'fishing adventure2', 'promo desc adv 2', 24, 4, 'short bio adv 2', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 3', 20, 'ADVENTURE', 'fishing adventure3', 'promo desc adv 3', 24, 2, 'short bio adv 3', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 4', 20, 'ADVENTURE', 'fishing adventure4', 'promo desc adv 4', 25, 2, 'short bio adv 4', 13, false),
-(nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 9, 2, 'short bio adv 5', 13, false);
+(nextval('entities_id_gen'), 'adresa adv 1', 20, 'ADVENTURE', 'fishing adventure1', 'promo desc adv 1', 24, 3, 'short bio adv 1', 13, false, 0),
+(nextval('entities_id_gen'), 'adresa adv 2', 20, 'ADVENTURE', 'fishing adventure2', 'promo desc adv 2', 24, 4, 'short bio adv 2', 13, false, 0),
+(nextval('entities_id_gen'), 'adresa adv 3', 20, 'ADVENTURE', 'fishing adventure3', 'promo desc adv 3', 24, 2, 'short bio adv 3', 13, false, 0),
+(nextval('entities_id_gen'), 'adresa adv 4', 20, 'ADVENTURE', 'fishing adventure4', 'promo desc adv 4', 25, 2, 'short bio adv 4', 13, false, 0),
+(nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 9, 2, 'short bio adv 5', 13, false, 0);
 
 INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, password_changed, version)
 VALUES
@@ -351,18 +351,18 @@ VALUES
 ('2022-05-04 1:00 pm',12,3,1,7,'True','False', 1, 123, 5, 7, 60),
 ('2022-05-05 1:00 pm',4,3,3,7,'True','False', 1, 1098, 0, 0, 400);
 
-INSERT INTO ratings (comment, value, reservation_id, approved, processed, review_date)
+INSERT INTO ratings (comment, value, reservation_id, approved, processed, review_date, version)
 VALUES
-('commen1', 3.0, 4, true, true, '2022-05-14 8:00 am'),
-('commen2', 2.5, 5, true, true, '2022-05-14 8:00 am'),
-('commen3', 4.0, 6, false, false, '2022-05-14 8:00 am'),
-('commen4', 4.5, 7, true, true, '2022-05-14 8:00 am'),
-('commen5', 1.0, 8, false, false, '2022-05-14 8:00 am'),
-('commen6', 0.5, 9, true, true,'2022-05-14 8:00 am'),
-('commenA', 4.0, 1, true, true,'2022-05-14 8:00 am'),
-('commenB', 3.5, 2, true, true,'2022-05-14 8:00 am'),
-('commenC', 4.5, 3, true, true,'2022-05-14 8:00 am'),
-('commen7', 5.0, 10, false, false,'2022-05-14 8:00 am');
+('commen1', 3.0, 4, true, true, '2022-05-14 8:00 am', 0),
+('commen2', 2.5, 5, true, true, '2022-05-14 8:00 am', 0),
+('commen3', 4.0, 6, false, false, '2022-05-14 8:00 am', 0),
+('commen4', 4.5, 7, true, true, '2022-05-14 8:00 am', 0),
+('commen5', 1.0, 8, false, false, '2022-05-14 8:00 am', 0),
+('commen6', 0.5, 9, true, true,'2022-05-14 8:00 am', 0),
+('commenA', 4.0, 1, true, true,'2022-05-14 8:00 am', 0),
+('commenB', 3.5, 2, true, true,'2022-05-14 8:00 am', 0),
+('commenC', 4.5, 3, true, true,'2022-05-14 8:00 am', 0),
+('commen7', 5.0, 10, false, false,'2022-05-14 8:00 am', 0);
 
 
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)

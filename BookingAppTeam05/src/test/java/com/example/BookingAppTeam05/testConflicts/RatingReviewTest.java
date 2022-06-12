@@ -1,9 +1,9 @@
 package com.example.BookingAppTeam05.testConflicts;
 
+import com.example.BookingAppTeam05.model.Rating;
 import com.example.BookingAppTeam05.model.Report;
-import com.example.BookingAppTeam05.model.users.User;
+import com.example.BookingAppTeam05.service.RatingService;
 import com.example.BookingAppTeam05.service.ReportService;
-import com.example.BookingAppTeam05.service.users.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,10 @@ import java.util.concurrent.Future;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-
-public class ReportReviewTest {
-
+public class RatingReviewTest {
 
     @Autowired
-    private ReportService reportService;
+    private RatingService ratingService;
 
     @Transactional
     @Rollback(true)
@@ -37,10 +35,10 @@ public class ReportReviewTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 1");
-                Report report = reportService.findById(1L);
-                report.setProcessed(true);
+                Rating rating = ratingService.findById(3L);
+                rating.setProcessed(true);
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
-                reportService.save(report);
+                ratingService.save(rating);
             }
         });
         executor.submit(new Runnable() {
@@ -48,9 +46,9 @@ public class ReportReviewTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 2");
-                Report report = reportService.findById(1L);
-                report.setProcessed(true);
-                reportService.save(report);
+                Rating rating = ratingService.findById(3L);
+                rating.setProcessed(true);
+                ratingService.save(rating);
             }
         });
         try {

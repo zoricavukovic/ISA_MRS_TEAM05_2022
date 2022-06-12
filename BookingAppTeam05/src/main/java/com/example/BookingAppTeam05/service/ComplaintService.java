@@ -86,6 +86,9 @@ public class ComplaintService {
             Complaint complaint = complaintRepository.findById(c.getId()).orElse(null);
             if (complaint == null)
                 return "Cant' find complaint with id: " + c.getId();
+            if (complaint.isProcessed())
+                return "This complaint is already processed.";
+
             complaint.setAdminResponse(c.getAdminResponse());
             complaint.setProcessed(true);
             complaint = complaintRepository.save(complaint);

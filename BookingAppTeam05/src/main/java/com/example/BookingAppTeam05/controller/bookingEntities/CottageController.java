@@ -167,6 +167,8 @@ public class CottageController {
             Set<Picture> createdPictures = pictureService.createPicturesFromDTO(cottageDTO.getImages());
             cottage.setPictures(createdPictures);
         }
+        cottage.setVersion(0);
+        cottage.setLocked(false);
         cottage = cottageService.save(cottage);
 
         return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.CREATED);

@@ -89,6 +89,8 @@ public class AdventureService {
 
         Pricelist createNewPricelist = pricelistService.createPrilistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
         adventure.addPriceList(createNewPricelist);
+        adventure.setVersion(0);
+        adventure.setLocked(false);
         adventure = adventureRepository.save(adventure);
         return adventure;
     }

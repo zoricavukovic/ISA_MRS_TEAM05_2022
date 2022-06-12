@@ -12,6 +12,7 @@ import com.example.BookingAppTeam05.model.repository.ReservationRepository;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -54,6 +55,7 @@ public class RatingService {
         rating.setApproved(false);
         Reservation res = reservationRepository.findById(ratingDTO.getReservation().getId()).orElse(null);
         rating.setReservation(res);
+        rating.setVersion(0L);
         ratingRepository.save(rating);
         return rating;
     }
@@ -87,12 +89,19 @@ public class RatingService {
 
     @Transactional
     public String setRatingForPublicationAndNotifyOwner(RatingReviewDTO rating) {
-        this.ratingRepository.setRatingForPublication(rating.getId());
         try {
-            emailService.notifyOwnerAboutApprovedReviewOnHisEntity(rating);
-            return null;
-        } catch (Exception e) {
-            return "Error happened while sending email to owner";
+            this.ratingRepository.setRatingForPublication(rating.getId());
+            if (rating.isProcessed())
+                return "This rating is already processed.";
+            try {
+                emailService.notifyOwnerAboutApprovedReviewOnHisEntity(rating);
+                return null;
+            } catch (Exception e) {
+                return "Error happened while sending email to owner";
+            }
+        }
+        catch (ObjectOptimisticLockingFailureException e) {
+            return "Conflict seems to have occurred, another admin has reviewed this rating before you. Please refresh page and try again";
         }
     }
 
@@ -117,4 +126,9 @@ public class RatingService {
         }
         return ratingReviewDTOS;
     }
+
+    public Rating save(Rating rating) {
+        return this.ratingRepository.save(rating);
+    }
+
 }
