@@ -302,7 +302,6 @@ public class ReservationService {
         return null;
     }
 
-    private void setFinancialFieldsForReservation()
 
     public Reservation addReservationForClient(ReservationForClientDTO reservationDTO) {
         try{

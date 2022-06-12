@@ -82,30 +82,30 @@ VALUES
 (nextval('users_id_gen'), 'False', 'adresa3', '1971-12-20', 'bookingapp05mzr++rika@gmail.com', 'Rika', 'Rikic', null, 90, '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', '043-42-432-23', 6,'False', 5, 0);
 
 
-INSERT INTO cottages (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,cottage_owner_id, deleted, version)
+INSERT INTO cottages (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,cottage_owner_id, deleted, version, locked)
 VALUES
-(nextval('entities_id_gen'), 'Ap #977-2514 Sed Street',19,'COTTAGE','Ultrices Limited','est, mollis non, cursus non, egestas a,',1,1, false, 0),
-(nextval('entities_id_gen'), '4369 Mauris St.',45,'COTTAGE','Sollicitudin Commodo Ipsum Limited','lacus. Mauris non dui',1,1, true, 0),
-(nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',1,1, false, 0),
-(nextval('entities_id_gen'), 'Ap #119-6987 Sed St.',33,'COTTAGE','Nunc Pulvinar Corporation','congue, elit sed consequat auctor, nunc',2,1, false, 0),
-(nextval('entities_id_gen'), '411-1777 Nunc Av.',45,'COTTAGE','Parturient Montes Nascetur LLP','mauris. Suspendisse aliquet molestie tellus.',5,2, false, 0);
+(nextval('entities_id_gen'), 'Ap #977-2514 Sed Street',19,'COTTAGE','Ultrices Limited','est, mollis non, cursus non, egestas a,',1,1, false, 0, false),
+(nextval('entities_id_gen'), '4369 Mauris St.',45,'COTTAGE','Sollicitudin Commodo Ipsum Limited','lacus. Mauris non dui',1,1, true, 0, false),
+(nextval('entities_id_gen'), 'P.O. Box 469, 2916 Consectetuer Street',6,'COTTAGE','Dis Parturient PC','non quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames',1,1, false, 0, false),
+(nextval('entities_id_gen'), 'Ap #119-6987 Sed St.',33,'COTTAGE','Nunc Pulvinar Corporation','congue, elit sed consequat auctor, nunc',2,1, false, 0, false),
+(nextval('entities_id_gen'), '411-1777 Nunc Av.',45,'COTTAGE','Parturient Montes Nascetur LLP','mauris. Suspendisse aliquet molestie tellus.',5,2, false, 0, false);
 
 
-INSERT INTO ships (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,engine_num,engine_power,length,max_num_of_persons,max_speed,ship_type,ship_owner_id, deleted, version)
+INSERT INTO ships (id, address,entity_cancelation_rate,entity_type,name,promo_description,place_id,engine_num,engine_power,length,max_num_of_persons,max_speed,ship_type,ship_owner_id, deleted, version, locked)
 VALUES
-(nextval('entities_id_gen'), 'Ap #379-679 Enim, St.',26,'SHIP','Gretchen','Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum',7,'N1N 1F5',2002,24,10,51,'BAY_BOAT',4, false, 0),
-(nextval('entities_id_gen'), '368-5360 In Ave',47,'SHIP','Molly','Nulla aliquet. Proin',16,'U5F 2U3',1806,30,14,24,'BAY_BOAT',4, false, 0),
-(nextval('entities_id_gen'), '3885 Lacus Road',44,'SHIP','Yeo','magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt',18,'U9K 1M2',1171,8,12,45,'INFLATABLE_BOAT',4, false, 0),
-(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',17,'W4T 5A6',469,23,19,88,'FLAT_BOAT',5, false, 0),
-(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',23,'W4T 5A6',469,23,19,88,'FLAT_BOAT',6, false, 0);
+(nextval('entities_id_gen'), 'Ap #379-679 Enim, St.',26,'SHIP','Gretchen','Sed neque. Sed eget lacus. Mauris non dui nec urna suscipit nonummy. Fusce fermentum',7,'N1N 1F5',2002,24,10,51,'BAY_BOAT',4, false, 0, false),
+(nextval('entities_id_gen'), '368-5360 In Ave',47,'SHIP','Molly','Nulla aliquet. Proin',16,'U5F 2U3',1806,30,14,24,'BAY_BOAT',4, false, 0, false),
+(nextval('entities_id_gen'), '3885 Lacus Road',44,'SHIP','Yeo','magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt',18,'U9K 1M2',1171,8,12,45,'INFLATABLE_BOAT',4, false, 0, false),
+(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',17,'W4T 5A6',469,23,19,88,'FLAT_BOAT',5, false, 0, false),
+(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',23,'W4T 5A6',469,23,19,88,'FLAT_BOAT',6, false, 0, false);
 
-INSERT INTO adventures(id, address, entity_cancelation_rate, entity_type, name, promo_description, place_id, max_num_of_persons, short_bio, instructor_id, deleted, version)
+INSERT INTO adventures(id, address, entity_cancelation_rate, entity_type, name, promo_description, place_id, max_num_of_persons, short_bio, instructor_id, deleted, version, locked)
 VALUES
-(nextval('entities_id_gen'), 'adresa adv 1', 20, 'ADVENTURE', 'fishing adventure1', 'promo desc adv 1', 24, 3, 'short bio adv 1', 13, false, 0),
-(nextval('entities_id_gen'), 'adresa adv 2', 20, 'ADVENTURE', 'fishing adventure2', 'promo desc adv 2', 24, 4, 'short bio adv 2', 13, false, 0),
-(nextval('entities_id_gen'), 'adresa adv 3', 20, 'ADVENTURE', 'fishing adventure3', 'promo desc adv 3', 24, 2, 'short bio adv 3', 13, false, 0),
-(nextval('entities_id_gen'), 'adresa adv 4', 20, 'ADVENTURE', 'fishing adventure4', 'promo desc adv 4', 25, 2, 'short bio adv 4', 13, false, 0),
-(nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 9, 2, 'short bio adv 5', 13, false, 0);
+(nextval('entities_id_gen'), 'adresa adv 1', 20, 'ADVENTURE', 'fishing adventure1', 'promo desc adv 1', 24, 3, 'short bio adv 1', 13, false, 0, false),
+(nextval('entities_id_gen'), 'adresa adv 2', 20, 'ADVENTURE', 'fishing adventure2', 'promo desc adv 2', 24, 4, 'short bio adv 2', 13, false, 0, false),
+(nextval('entities_id_gen'), 'adresa adv 3', 20, 'ADVENTURE', 'fishing adventure3', 'promo desc adv 3', 24, 2, 'short bio adv 3', 13, false, 0, false),
+(nextval('entities_id_gen'), 'adresa adv 4', 20, 'ADVENTURE', 'fishing adventure4', 'promo desc adv 4', 25, 2, 'short bio adv 4', 13, false, 0, false),
+(nextval('entities_id_gen'), 'adresa adv 5', 20, 'ADVENTURE', 'fishing adventure5', 'promo desc adv 5', 9, 2, 'short bio adv 5', 13, false, 0, false);
 
 INSERT INTO admins(id, not_yet_activated, address, date_of_birth, email, first_name, last_name, last_password_reset_date, loyalty_points, password, phone_number, place_id, deleted, role_id, password_changed, version)
 VALUES
