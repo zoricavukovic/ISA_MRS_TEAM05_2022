@@ -27,6 +27,10 @@ public class DeleteAccountRequest {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Version
+    @Column(name="version", unique=false, nullable=false)
+    private Long version;
+
     public DeleteAccountRequest() {}
 
     public boolean isAccepted() {
