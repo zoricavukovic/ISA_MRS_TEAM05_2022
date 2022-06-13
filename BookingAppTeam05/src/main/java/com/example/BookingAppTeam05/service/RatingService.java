@@ -90,9 +90,15 @@ public class RatingService {
     @Transactional
     public String setRatingForPublicationAndNotifyOwner(RatingReviewDTO rating) {
         try {
-            this.ratingRepository.setRatingForPublication(rating.getId());
-            if (rating.isProcessed())
+            Rating r = findById(rating.getId());
+            if (r == null)
+                return "Can't find rating with id: " + rating.getId();
+            if (r.isProcessed())
                 return "This rating is already processed.";
+
+            r.setProcessed(true);
+            this.ratingRepository.save(r);
+
             try {
                 emailService.notifyOwnerAboutApprovedReviewOnHisEntity(rating);
                 return null;

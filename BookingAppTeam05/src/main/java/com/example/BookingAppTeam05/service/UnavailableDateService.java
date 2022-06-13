@@ -25,7 +25,7 @@ public class UnavailableDateService {
         this.bookingEntityService = bookingEntityService;
     }
 
-    private List<UnavailableDateDTO> getActiveUnavailableDateDTOsForEntityId(Long id) {
+    public List<UnavailableDateDTO> getActiveUnavailableDateDTOsForEntityId(Long id) {
         List<UnavailableDate> all = unavailableDateRepository.findAllSortedUnavailableDatesForEntityId(id);
         List<UnavailableDateDTO> retVal = new ArrayList<>();
         for (UnavailableDate u : all) {

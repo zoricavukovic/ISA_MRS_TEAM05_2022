@@ -68,6 +68,21 @@ public class LoyaltyProgramDTO {
 
     public LoyaltyProgramDTO() {}
 
+    public LoyaltyProgramDTO(@NotNull @Min(1) @Max(1000) Integer bronzeLimit, @NotNull @Min(1) @Max(1000) Integer silverLimit, @NotNull @Min(1) @Max(1000) Integer goldLimit, @NotNull @Min(0) @Max(50) Double clientBronzeDiscount, @NotNull @Min(0) @Max(50) Double clientSilverDiscount, @NotNull @Min(0) @Max(50) Double clientGoldDiscount, @NotNull @Min(0) @Max(50) Double ownerBronzeBonus, @NotNull @Min(0) @Max(50) Double ownerSilverBonus, @NotNull @Min(0) @Max(50) Double ownerGoldBonus, @NotNull @Min(1) @Max(1000) Integer clientPointsPerReservation, @NotNull @Min(1) @Max(1000) Integer ownerPointsPerReservation, LocalDateTime startDate) {
+        this.bronzeLimit = bronzeLimit;
+        this.silverLimit = silverLimit;
+        this.goldLimit = goldLimit;
+        this.clientBronzeDiscount = clientBronzeDiscount;
+        this.clientSilverDiscount = clientSilverDiscount;
+        this.clientGoldDiscount = clientGoldDiscount;
+        this.ownerBronzeBonus = ownerBronzeBonus;
+        this.ownerSilverBonus = ownerSilverBonus;
+        this.ownerGoldBonus = ownerGoldBonus;
+        this.clientPointsPerReservation = clientPointsPerReservation;
+        this.ownerPointsPerReservation = ownerPointsPerReservation;
+        this.startDate = startDate;
+    }
+
     public LoyaltyProgramDTO(LoyaltyProgram loyaltyProgram) {
         this.bronzeLimit = loyaltyProgram.getBronzeLimit();
         this.silverLimit = loyaltyProgram.getSilverLimit();

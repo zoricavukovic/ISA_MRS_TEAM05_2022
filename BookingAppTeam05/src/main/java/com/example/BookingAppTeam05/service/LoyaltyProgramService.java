@@ -20,6 +20,8 @@ public class LoyaltyProgramService {
         this.loyaltyProgramRepository = loyaltyProgramRepository;
     }
 
+    public LoyaltyProgramService() {}
+
     public LoyaltyProgram getCurrentLoyaltyProgram() {
         List<LoyaltyProgram> all = loyaltyProgramRepository.getAllSortedByTime();
         if (all == null || all.size() == 0)
