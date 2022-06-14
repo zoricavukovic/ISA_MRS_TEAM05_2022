@@ -58,6 +58,8 @@ import { getReportsByEntityId } from '../../../service/ReportService';
 import { getRatingsByEntityId } from '../../../service/RatingService';
 import StyledAvatar from '../../StyledAvatar';
 import { subscribeClientWithEntity, unsubscribeClientWithEntity } from '../../../service/UserService';
+import Approved from "../../../icons/approval.png";
+import NotApproved from "../../../icons/notApprowed.png"
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -192,8 +194,12 @@ export default function ImageCard(props) {
     function RenderRulesOfConduct(props) {
         return (
             props.rulesOfConduct.map((page) => (
-                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
-                    <FormControlLabel disabled control={<Checkbox size="small" checked={page.allowed} />} />
+                <Button disabled style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
+                 
+                    {page.allowed == true ? (
+                        <img src={Approved}></img>):(
+                        <img src={NotApproved}></img>  
+                    )}
                     <Typography textAlign="center">{page.ruleName}</Typography>
                 </Button>
             ))
@@ -396,9 +402,11 @@ export default function ImageCard(props) {
                                         <Typography variant="subtitle1" component="div">
                                             {res.cost*res.numOfDays*res.numOfPersons}€
                                         </Typography>
+                                            {getCurrentUser().userType.name == "ROLE_CLIENT"?(
                                             <Button onClick={() =>FastReserve(res)} disabled={getCurrentUser().penalties>2?true:false} variant='contained' style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}>
                                                 Reserve Now
-                                            </Button>
+                                            </Button>):(<div>
+                                            </div>)}
                                         </Grid>
                                         </Grid>
                                     </Grid>
@@ -423,7 +431,8 @@ export default function ImageCard(props) {
                         Additional services selected:<b>{selectedFastReservation.additionalServices.length!=0? selectedFastReservation.additionalServices.map(service=>{
                             return service.serviceName + " "+service.price+"€, ";
                         }):<p>None</p>}</b><br></br>
-                        Price: <b>{selectedFastReservation.cost+"€"}</b>
+                        
+                        Price: <b>{selectedFastReservation.cost*selectedFastReservation.numOfDays*selectedFastReservation.numOfPersons + "€"}</b>
                     </DialogContentText>
                     }
                 </DialogContent>

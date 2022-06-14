@@ -224,14 +224,21 @@ public class ReservationService {
             if (entity == null) return null;
             res.setBookingEntity(entity);
             res.setVersion(1);
+            //resavanje konfliktne situacije student 2.
+            entity.setLocked(true);
+            bookingEntityRepository.save(entity);
+            res.setVersion(1);
             reservationRepository.save(res);
+            entity.setLocked(false);
+            bookingEntityRepository.save(entity);
+
             List<Long> subscribersIds = subscriberRepository.findAllSubscribersForEntityId(res.getBookingEntity().getId());
             List<Client> subscribers = new ArrayList<>();
             for (Long s: subscribersIds){
                 Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(s);
                 if (client != null) subscribers.add(client);
             }
-            if (sendMail(res, subscribers).equals("error")) return null;
+            //if (sendMail(res, subscribers).equals("error")) return null;
             return res;
         }catch (OptimisticLockException e){
             System.out.println("EXCEPTION HAS HAPPENED!!!!");
@@ -327,12 +334,24 @@ public class ReservationService {
             String[] tokens = reservationDTO.getClient().split(" ");
             Long clientId = Long.parseLong(tokens[2].substring(1, tokens[2].length()-1));
             Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(clientId);
+
+            if (entity.isLocked()){
+                System.out.println("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again\";");
+                return null;
+            }
+            //resavanje konfliktne situacije student 2.
+            entity.setLocked(true);
+            bookingEntityRepository.save(entity);
             res.setClient(client);
             reservationRepository.save(res);
-            emailService.sendNotificationAboutResToClient(client, res);
+            entity.setLocked(false);
+            bookingEntityRepository.save(entity);
+
+            //emailService.sendNotificationAboutResToClient(client, res);
             return res;
         }catch (OptimisticLockException e){
-            System.out.println("EXCEPTION HAS HAPPENED!!!!");
+            System.out.println("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again\";");
+
         }
         return null;
     }

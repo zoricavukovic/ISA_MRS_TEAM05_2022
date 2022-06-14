@@ -161,7 +161,7 @@ export default function EditShip(props) {
   const onFormSubmit = data => {
     const shipRate = shipBasicData.entityCancelationRate;
     const costPerPerson = pricelistData.entityPricePerPerson;
-    console.log(costPerPerson);
+    console.log(shipBasicData.version);
     let zip = shipBasicData.place.zipCode;
     if (selectedPlaceZip != null && selectedPlaceZip != undefined && selectedPlaceZip != '') {
       zip = selectedPlaceZip;
@@ -177,6 +177,7 @@ export default function EditShip(props) {
         cityName: "",
         zipCode: zip
       },
+      version: shipBasicData.version,
       engineNum: data.engineNum,
       shipType: data.shipType,
       length: shipBasicData.length,
@@ -208,13 +209,13 @@ export default function EditShip(props) {
         })
       }).catch(resError => {
         console.log("Greska!!");
-        setMessage(resError.response.data);
+        setMessage(resError.response.data.message);
         handleClick();
         return;
       })
     }).catch(resError => {
-      console.log("Greska U PRVOM!!");
-      setMessage(resError.response.data);
+      //console.log(resError.response.data.message);
+      setMessage(resError.response.data.message);
       handleClick();
       return;
     })
@@ -223,6 +224,7 @@ export default function EditShip(props) {
   useEffect(() => {
     if (propsLocationStateFound(props, history) && userLoggedInAsShipOwner(history)) {
       getShipById(props.location.state.shipId).then(res => {
+        console.log(res.data.version);
         setShipBasicData(res.data);
         _setInitialFishingEquipment(res.data.fishingEquipment, setFishingEquipment);
         _setInitialNavigationalEquipment(res.data.navigationalEquipment, setNavigationalEquipment);

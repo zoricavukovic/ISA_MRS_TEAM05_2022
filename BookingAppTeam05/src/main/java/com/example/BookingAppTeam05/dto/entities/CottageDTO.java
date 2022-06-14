@@ -14,22 +14,30 @@ import java.util.Set;
 
 public class CottageDTO extends BookingEntityDTO {
     private Set<Room> rooms = new HashSet<>();
-    @Valid
     private List<NewImageDTO> images = new ArrayList<>();
     private CottageOwnerDTO cottageOwnerDTO;
+    private int version;
 
     public CottageDTO() {
     }
 
     public CottageDTO(Cottage cottage) {
         super(cottage);
-
+        this.version = cottage.getVersion();
     }
 
     public void setFetchedProperties(Cottage cottage){
         super.setFetchedProperties(cottage);
         this.rooms = cottage.getRooms();
         this.cottageOwnerDTO = new CottageOwnerDTO(cottage.getCottageOwner());
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public Set<Room> getRooms() {

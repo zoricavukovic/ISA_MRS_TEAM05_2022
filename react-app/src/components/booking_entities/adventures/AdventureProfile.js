@@ -38,7 +38,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import StyledAvatar from "../../StyledAvatar";
 import { subscribeClientWithEntity, unsubscribeClientWithEntity } from "../../../service/UserService";
-
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -159,7 +159,9 @@ function AdventureActions(props) {
             <IconButton value="module" aria-label="module" onClick={showFastReservations}>
                 <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
             </IconButton>
-
+            <IconButton value="module" aria-label="module">
+                    <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
+                </IconButton>
             <ExpandMore
                 expand={props.expanded}
                 onClick={props.handleExpandClick}

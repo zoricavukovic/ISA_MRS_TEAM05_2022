@@ -59,6 +59,20 @@ public class NewAdventureDTO {
     @NotNull
     private List<NewImageDTO> images;
 
+    private int version;
+
+    public void setEntityCancelationRate(Float entityCancelationRate) {
+        this.entityCancelationRate = entityCancelationRate;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public NewAdventureDTO() {}
 
     public String getName() {

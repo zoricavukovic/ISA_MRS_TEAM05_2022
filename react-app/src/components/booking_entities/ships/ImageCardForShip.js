@@ -44,6 +44,9 @@ import { getCurrentUser } from '../../../service/AuthService';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, Tooltip } from '@mui/material';
 import { DateRangeOutlined, DirectionsBoat, Favorite, FavoriteBorder } from '@mui/icons-material';
 import StyledAvatar from '../../StyledAvatar';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import CreateReservationForClient from '../../reservations/CreateReservationForClient';
+import { findAllClientsWithActiveReservations} from '../../../service/ReservationService';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -123,6 +126,25 @@ export default function ImageCardForShip(props) {
             state: { bookingEntityId: props.shipId }
         })
 
+    };
+    //============================= DIALOG =====================================
+    //----------------------------------------------------
+    const [openDialogCreate, setOpenDialogCreate] = React.useState(false);
+
+    //=======================================================================================
+
+    function createReservationForClient() {
+        findAllClientsWithActiveReservations(props.shipId).then(res => {
+            console.log(res.data);
+            if (res.data.length !== 0){
+                setOpenDialogCreate(true);
+            }
+            else{
+                setMessage("Don't have clients with active reservations.");
+                handleClick();
+            }
+        });
+       
     };
 
     function ShipAdditionalInfo(props) {
@@ -285,6 +307,8 @@ export default function ImageCardForShip(props) {
     if (isLoadingShip || isLoadingPricelist) { return <div className="App">Loading...</div> }
     return (
         <Card style={{ margin: "1% 9% 1% 9%" }} sx={{}}>
+            <CreateReservationForClient bookingEntityId={props.cottageId} openDialog={openDialogCreate}/>
+        
             <RenderImageSlider pictures={shipBasicData.pictures}/>
             <CardHeader
                 style={{marginTop:'20px'}}
@@ -325,6 +349,9 @@ export default function ImageCardForShip(props) {
                 </IconButton>
                 <IconButton value="module" aria-label="module" onClick={showFastReservations}>
                     <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
+                </IconButton>
+                <IconButton value="module" aria-label="module" onClick={createReservationForClient}>
+                    <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
                 </IconButton>
             </CardActions>
             }

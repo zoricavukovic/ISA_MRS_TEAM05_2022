@@ -289,36 +289,36 @@ public class BookingEntityService {
 
     }
 
-    public void setNewImagesForBookingEntity(BookingEntity bookingEntity, List<NewImageDTO> images) {
-        Set<Picture> pictures = new HashSet<>();
-
-        for (Picture currentPicture : bookingEntity.getPictures()) {
-            boolean found = false;
-            for (NewImageDTO newImage : images) {
-                if (newImage.getImageName().equals(currentPicture.getPicturePath())) {
-                    found = true;
-                    pictures.add(currentPicture);
-                    break;
-                }
-            }
-            if (!found) {
-                pictureService.deletePictureByName(currentPicture.getPicturePath());
-            }
-        }
-        for (NewImageDTO newImage : images) {
-            boolean found = false;
-            for (Picture picture : pictures) {
-                if (picture.getPicturePath().equals(newImage.getImageName())) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                pictureService.tryToSaveNewPictureAndAddToOtherPictures(pictures, newImage);
-            }
-        }
-        bookingEntity.setPictures(pictures);
-    }
+//    public void setNewImagesForBookingEntity(BookingEntity bookingEntity, List<NewImageDTO> images) {
+//        Set<Picture> pictures = new HashSet<>();
+//
+//        for (Picture currentPicture : bookingEntity.getPictures()) {
+//            boolean found = false;
+//            for (NewImageDTO newImage : images) {
+//                if (newImage.getImageName().equals(currentPicture.getPicturePath())) {
+//                    found = true;
+//                    pictures.add(currentPicture);
+//                    break;
+//                }
+//            }
+//            if (!found) {
+//                pictureService.deletePictureByName(currentPicture.getPicturePath());
+//            }
+//        }
+//        for (NewImageDTO newImage : images) {
+//            boolean found = false;
+//            for (Picture picture : pictures) {
+//                if (picture.getPicturePath().equals(newImage.getImageName())) {
+//                    found = true;
+//                    break;
+//                }
+//            }
+//            if (!found) {
+//                pictureService.tryToSaveNewPictureAndAddToOtherPictures(pictures, newImage);
+//            }
+//        }
+//        bookingEntity.setPictures(pictures);
+//    }
 
     public List<SearchedBookingEntityDTO> getSearchedBookingEntities(SearchParamsForEntity searchParams, String type) {
         try {
@@ -425,7 +425,13 @@ public class BookingEntityService {
         if (checkExistActiveReservationForEntityId(entityId))
             return "Entity cant be deleted  cause has reservations.";
 
+        //resavanje konfliktne situacije student 2.
+        bookingEntity.setLocked(true);
+        bookingEntityRepository.save(bookingEntity);
         bookingEntityRepository.logicalDeleteBookingEntityById(entityId);
+        bookingEntity.setLocked(false);
+        bookingEntityRepository.save(bookingEntity);
+
         return null;
     }
 }
