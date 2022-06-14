@@ -4,6 +4,8 @@ import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
 import com.example.BookingAppTeam05.dto.users.ShipOwnerDTO;
+import com.example.BookingAppTeam05.exception.ApiExceptionHandler;
+import com.example.BookingAppTeam05.exception.ApiRequestException;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.EntityType;
@@ -150,91 +152,26 @@ public class ShipController {
     }
 
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Transactional
-    public ResponseEntity<String> updateCottage(@RequestBody ShipDTO shipDTO, @PathVariable Long id) {
-        if (bookingEntityService.checkExistActiveReservationForEntityId(id))
-            return new ResponseEntity<>("Cant update ship because there exist active reservations", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Boolean> updateShip(@RequestBody ShipDTO shipDTO, @PathVariable Long id) {
+        String retVal = shipService.updateShip(shipDTO, id);
+        if (retVal.isEmpty()) return new ResponseEntity<>(HttpStatus.CREATED);
+        throw new ApiRequestException(retVal);
 
-        Ship ship = shipService.getShipById(id);
-        if (ship == null) return new ResponseEntity<>("Cant find ship with id " + id + ".", HttpStatus.BAD_REQUEST);
-        ship.setName(shipDTO.getName());
-        ship.setAddress(shipDTO.getAddress());
-        ship.setPromoDescription(shipDTO.getPromoDescription());
-        ship.setLength(shipDTO.getLength());
-        ship.setEngineNum(shipDTO.getEngineNum());
-        ship.setEnginePower(shipDTO.getEnginePower());
-        ship.setMaxNumOfPersons(shipDTO.getMaxNumOfPersons());
-        ship.setMaxSpeed(shipDTO.getMaxSpeed());
-        ship.setEntityCancelationRate(shipDTO.getEntityCancelationRate());
-        ship.setShipType(shipDTO.getShipType());
-        ship.setEntityType(EntityType.SHIP);
 
-        Place p = shipDTO.getPlace();
-        if (p == null) return new ResponseEntity<>("Cant find chosen place.", HttpStatus.BAD_REQUEST);
-        Place place = placeService.getPlaceByZipCode(p.getZipCode());
-        ship.setPlace(place);
-
-        Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();
-        Ship oldShip = shipService.getShipById(id);
-        shipService.tryToEditShipRulesOfConduct(shipDTO, oldShip, rules);
-        ship.setRulesOfConduct(rules);
-
-        Set<NavigationEquipment> navigationEquipments = new HashSet<>();
-        oldShip = shipService.getShipById(id);
-        shipService.tryToEditNavigationEquipment(shipDTO, oldShip, navigationEquipments);
-        ship.setNavigationalEquipment(navigationEquipments);
-        Set<FishingEquipment> fishingEquipment = fishingEquipmentService.createEquipmentFromDTO(shipDTO.getFishingEquipment());
-        ship.setFishingEquipment(fishingEquipment);
-        bookingEntityService.setNewImagesForBookingEntity(ship, shipDTO.getImages());
-        ship = shipService.save(ship);
-        return new ResponseEntity<>(ship.getId().toString(), HttpStatus.OK);
     }
 
     @PostMapping(value = "{idShipOwner}", consumes = "application/json")
-    @Transactional
     //@PreAuthorize("hasRole('ROLE_SHIP_OWNER')")
     public ResponseEntity<String> saveShip(@PathVariable Long idShipOwner, @Valid @RequestBody ShipDTO shipDTO) {
-        System.out.println("CAOOOO");
-        Ship ship = new Ship();
-        ship.setName(shipDTO.getName());
-        ship.setAddress(shipDTO.getAddress());
-        ship.setPromoDescription(shipDTO.getPromoDescription());
-        ship.setLength(shipDTO.getLength());
-        ship.setEngineNum(shipDTO.getEngineNum());
-        ship.setEnginePower(shipDTO.getEnginePower());
-        ship.setMaxNumOfPersons(shipDTO.getMaxNumOfPersons());
-        ship.setMaxSpeed(shipDTO.getMaxSpeed());
-        ship.setEntityCancelationRate(shipDTO.getEntityCancelationRate());
-        ship.setEntityType(EntityType.SHIP);
-        ship.setShipType(shipDTO.getShipType());
-        System.out.println("CAOOOO");
-        if (shipDTO.getPlace() == null) return new ResponseEntity<>("Cant find place.", HttpStatus.BAD_REQUEST);
-        Place place1 = placeService.getPlaceByZipCode(shipDTO.getPlace().getZipCode());
-        if (place1 == null) return new ResponseEntity<>("Cant find place with zip code: " + shipDTO.getPlace().getZipCode(), HttpStatus.BAD_REQUEST);
-        ship.setPlace(place1);
-        System.out.println("CAOOOO");
-        ShipOwner shipOwner = (ShipOwner) userService.findUserById(idShipOwner);
-        if (shipOwner == null) return new ResponseEntity<>("Cant find ship owner with id: " + idShipOwner, HttpStatus.BAD_REQUEST);
-        ship.setShipOwner(shipOwner);
-        System.out.println("CAOOOO");
-        ship.setRulesOfConduct(shipDTO.getRulesOfConduct());
-        if (!shipDTO.getImages().isEmpty()) {
-            Set<Picture> createdPictures = pictureService.createPicturesFromDTO(shipDTO.getImages());
-            ship.setPictures(createdPictures);
+        try{
+            String retVal = shipService.saveShip(idShipOwner, shipDTO);
+            Integer.parseInt(retVal);
+            return new ResponseEntity<>(retVal, HttpStatus.CREATED);
         }
-        System.out.println("CAOOOO");
-        Set<NavigationEquipment> navigationEquipments = new HashSet<>();
-        shipService.tryToEditNavigationEquipment(shipDTO, navigationEquipments);
-        ship.setNavigationalEquipment(shipDTO.getNavigationalEquipment());
-        System.out.println("CAOOOO NAV");
-        ship.setFishingEquipment(shipDTO.getFishingEquipment());
-        System.out.println(" CAOOOO fishing");
+        catch (NumberFormatException ex){
+            throw new ApiRequestException("Someone is changing your values of new entity!");
+        }
 
-        ship.setVersion(0);
-        ship.setLocked(false);
-        ship = shipService.save(ship);
-
-        return new ResponseEntity<>(ship.getId().toString(), HttpStatus.CREATED);
     }
 
     @PostMapping(value="/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

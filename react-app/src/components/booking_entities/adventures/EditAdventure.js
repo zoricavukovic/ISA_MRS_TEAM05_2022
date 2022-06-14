@@ -18,6 +18,8 @@ import { getAllPictureBase64ForEntityId } from "../../../service/PictureService.
 import { getCurrentUser } from '../../../service/AuthService.js';
 import { propsLocationStateFound } from "../../forbiddenNotFound/notFoundChecker.js";
 import { userLoggedInAsInstructor } from "../../../service/UserService.js";
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 import { MAX_NUMBER_OF_IMAGES_TO_UPLOAD, _fillImageListFromBase64Images, _getImagesInJsonBase64 } from "../common/images_utils.js";
 import { _getAdditionalServicesJson, _handleAddAdditionalServiceChip, _setInitialAdditionalServices } from "../common/additional_services_utils.js";
@@ -38,6 +40,21 @@ export default function EditAdventure(props) {
     const history = useHistory();
     let adventureId = null;
 
+    const [message, setMessage] = useState("");
+
+
+    /////////////////////error message////////////////////
+    const [open, setOpen] = React.useState(false);
+    const handleClose = (_event, reason) => {
+        if (reason === 'clickaway') {
+        return;
+        }
+        setOpen(false);
+    };
+
+    const handleClick = () => {
+        setOpen(true);
+    };
 
 //-------------------------------------------------------------------------------------
     const [images, setImages] = React.useState([]);
@@ -115,6 +132,7 @@ export default function EditAdventure(props) {
             maxNumOfPersons: data.maxNumOfPersons,
             promoDescription: data.promoDescription,
             shortBio: data.shortBio,
+            version: currentAdventure.version,
             entityCancelationRate: data.entityCancelationRate,
             additionalServices: _getAdditionalServicesJson(additionalServices),
             fishingEquipment: _getFishingEquipmentNamesJson(fishingEquipment),
@@ -130,9 +148,10 @@ export default function EditAdventure(props) {
                     state: { bookingEntityId: parseInt(adventureId) }
                 });
             })
-            .catch(res => {
-                console.log(res);
-                alert("Error happened on server. Update not succesfull. " + res.response.data);
+            .catch(resError => {
+                setMessage(resError.response.data.message);
+                handleClick();
+                return;
             });
     }
 
@@ -204,7 +223,7 @@ export default function EditAdventure(props) {
                     noValidate
                     onSubmit={handleSubmit(onFormSubmit)}
                 >
-                    <h4 style={{ color: 'rgb(5, 30, 52)', textAlign: 'center', fontWeight: 'bold' }}>Basic Information About Cottage</h4>
+                    <h4 style={{ color: 'rgb(5, 30, 52)', textAlign: 'center', fontWeight: 'bold' }}>Basic Information About Adventure</h4>
 
                     <Grid
                         direction="column"
@@ -366,6 +385,11 @@ export default function EditAdventure(props) {
 
 
                 </Box >
+                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                        {message}
+                    </Alert>
+                </Snackbar>
             </div >
         );
     }

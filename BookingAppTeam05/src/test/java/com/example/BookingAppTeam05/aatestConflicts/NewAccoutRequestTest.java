@@ -1,10 +1,6 @@
-package com.example.BookingAppTeam05.testConflicts;
+package com.example.BookingAppTeam05.aatestConflicts;
 
-import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
-import com.example.BookingAppTeam05.dto.users.UserDTO;
-import com.example.BookingAppTeam05.model.Complaint;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.service.ComplaintService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

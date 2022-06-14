@@ -1,7 +1,5 @@
-package com.example.BookingAppTeam05.testConflicts;
+package com.example.BookingAppTeam05.aatestConflicts;
 
-import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
-import com.example.BookingAppTeam05.model.Complaint;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.users.Client;

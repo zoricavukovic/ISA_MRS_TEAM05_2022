@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.testConflicts;
+package com.example.BookingAppTeam05.aatestConflicts;
 
 import com.example.BookingAppTeam05.model.DeleteAccountRequest;
 import com.example.BookingAppTeam05.service.DeleteAccountService;

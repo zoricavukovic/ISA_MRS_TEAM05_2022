@@ -475,7 +475,8 @@ VALUES (10, '2022-03-04'),
 --cotages res
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
 VALUES ('2022-05-29 7:00 pm',5,3,1,9,'False','False', 1, 290, 5, 5, 30),
-       ('2022-06-05 7:00 pm',5,3,1,7,'False','False', 1, 359, 5, 5, 30);
+       ('2022-06-22 7:00 pm',5,3,1,7,'False','False', 1, 359, 5, 5, 30),
+       ('2022-06-12 7:00 pm',9,3,1,7,'False','False', 1, 359, 5, 5, 30);
 
 --fast cotages res
 INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)

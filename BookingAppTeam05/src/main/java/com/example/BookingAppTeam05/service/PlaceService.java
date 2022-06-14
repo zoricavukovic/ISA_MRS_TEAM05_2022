@@ -28,5 +28,6 @@ public class PlaceService {
         return placeResult.orElse(null);
     }
 
-    public Place getPlaceByZipCode(String zipCode) { return placeRepository.getPlaceByZipCode(zipCode);  }
+    public Place getPlaceByZipCode(String zipCode) {
+        return placeRepository.getPlaceByZipCode(zipCode);  }
 }

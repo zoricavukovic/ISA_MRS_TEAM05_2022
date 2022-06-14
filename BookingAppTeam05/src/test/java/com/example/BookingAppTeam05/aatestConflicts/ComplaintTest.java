@@ -1,9 +1,7 @@
-package com.example.BookingAppTeam05.testConflicts;
+package com.example.BookingAppTeam05.aatestConflicts;
 
-import com.example.BookingAppTeam05.model.Rating;
-import com.example.BookingAppTeam05.model.Report;
-import com.example.BookingAppTeam05.service.RatingService;
-import com.example.BookingAppTeam05.service.ReportService;
+import com.example.BookingAppTeam05.model.Complaint;
+import com.example.BookingAppTeam05.service.ComplaintService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +18,10 @@ import java.util.concurrent.Future;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RatingReviewTest {
+public class ComplaintTest {
 
     @Autowired
-    private RatingService ratingService;
+    private ComplaintService complaintService;
 
     @Transactional
     @Rollback(true)
@@ -35,10 +33,10 @@ public class RatingReviewTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 1");
-                Rating rating = ratingService.findById(3L);
-                rating.setProcessed(true);
+                Complaint complaint = complaintService.findById(1L);
+                complaint.setProcessed(true);
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
-                ratingService.save(rating);
+                complaintService.save(complaint);
             }
         });
         executor.submit(new Runnable() {
@@ -46,9 +44,9 @@ public class RatingReviewTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 2");
-                Rating rating = ratingService.findById(3L);
-                rating.setProcessed(true);
-                ratingService.save(rating);
+                Complaint complaint = complaintService.findById(1L);
+                complaint.setProcessed(true);
+                complaintService.save(complaint);
             }
         });
         try {

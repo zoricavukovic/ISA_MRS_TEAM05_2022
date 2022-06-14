@@ -1,9 +1,7 @@
-package com.example.BookingAppTeam05.testConflicts;
+package com.example.BookingAppTeam05.aatestConflicts;
 
-import com.example.BookingAppTeam05.model.Complaint;
-import com.example.BookingAppTeam05.model.DeleteAccountRequest;
-import com.example.BookingAppTeam05.service.ComplaintService;
-import org.checkerframework.common.util.report.qual.ReportOverride;
+import com.example.BookingAppTeam05.model.Report;
+import com.example.BookingAppTeam05.service.ReportService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +18,12 @@ import java.util.concurrent.Future;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ComplaintTest {
+
+public class ReportReviewTest {
+
 
     @Autowired
-    private ComplaintService complaintService;
+    private ReportService reportService;
 
     @Transactional
     @Rollback(true)
@@ -35,10 +35,10 @@ public class ComplaintTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 1");
-                Complaint complaint = complaintService.findById(1L);
-                complaint.setProcessed(true);
+                Report report = reportService.findById(1L);
+                report.setProcessed(true);
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
-                complaintService.save(complaint);
+                reportService.save(report);
             }
         });
         executor.submit(new Runnable() {
@@ -46,9 +46,9 @@ public class ComplaintTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 2");
-                Complaint complaint = complaintService.findById(1L);
-                complaint.setProcessed(true);
-                complaintService.save(complaint);
+                Report report = reportService.findById(1L);
+                report.setProcessed(true);
+                reportService.save(report);
             }
         });
         try {

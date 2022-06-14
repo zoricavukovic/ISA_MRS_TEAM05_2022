@@ -2,6 +2,7 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.NewImageDTO;
 import com.example.BookingAppTeam05.model.Picture;
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.repository.PictureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,5 +92,36 @@ public class PictureService {
             File f = new File(path);
             f.delete();
         } catch (Exception ignored) { }
+    }
+
+    public void setNewImagesForBookingEntity(BookingEntity bookingEntity, List<NewImageDTO> images) {
+        Set<Picture> pictures = new HashSet<>();
+
+        for (Picture currentPicture : bookingEntity.getPictures()) {
+            boolean found = false;
+            for (NewImageDTO newImage : images) {
+                if (newImage.getImageName().equals(currentPicture.getPicturePath())) {
+                    found = true;
+                    pictures.add(currentPicture);
+                    break;
+                }
+            }
+            if (!found) {
+                deletePictureByName(currentPicture.getPicturePath());
+            }
+        }
+        for (NewImageDTO newImage : images) {
+            boolean found = false;
+            for (Picture picture : pictures) {
+                if (picture.getPicturePath().equals(newImage.getImageName())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                tryToSaveNewPictureAndAddToOtherPictures(pictures, newImage);
+            }
+        }
+        bookingEntity.setPictures(pictures);
     }
 }

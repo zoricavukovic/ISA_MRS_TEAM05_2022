@@ -7,14 +7,17 @@ import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.model.repository.entities.AdventureRepository;
-import com.example.BookingAppTeam05.service.FishingEquipmentService;
-import com.example.BookingAppTeam05.service.PictureService;
-import com.example.BookingAppTeam05.service.PricelistService;
-import com.example.BookingAppTeam05.service.RuleOfConductService;
+import com.example.BookingAppTeam05.service.*;
+import com.example.BookingAppTeam05.service.users.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,7 +28,9 @@ public class AdventureService {
     private FishingEquipmentService fishingEquipmentService;
     private RuleOfConductService ruleOfConductService;
     private PictureService pictureService;
-    private BookingEntityService bookingEntityService;
+    private PlaceService placeService;
+    private InstructorService instructorService;
+    private ReservationService reservationService;
 
     @Autowired
     public AdventureService(AdventureRepository adventureRepository,
@@ -33,14 +38,18 @@ public class AdventureService {
                             PricelistService pricelistService,
                             FishingEquipmentService fishingEquipmentService,
                             PictureService pictureService,
-                            @Lazy BookingEntityService bookingEntityService)
+                            PlaceService placeService,
+                            InstructorService instructorService,
+                            ReservationService reservationService)
     {
         this.adventureRepository = adventureRepository;
         this.pricelistService = pricelistService;
         this.ruleOfConductService = ruleOfConductService;
         this.fishingEquipmentService = fishingEquipmentService;
         this.pictureService = pictureService;
-        this.bookingEntityService = bookingEntityService;
+        this.placeService = placeService;
+        this.instructorService = instructorService;
+        this.reservationService = reservationService;
     }
 
     public Adventure getAdventureById(Long id) {
@@ -67,6 +76,49 @@ public class AdventureService {
 
     public List<Adventure> getAdventuresByOwnerId(Long id) {
         return this.adventureRepository.getAdventuresForOwnerId(id);
+    }
+
+    @Transactional
+    public String createAdventure(NewAdventureDTO newAdventureDTO){
+        Place place = placeService.getPlaceById(newAdventureDTO.getPlaceId());
+        if (place == null) {
+            return "Cant find place with id: " + newAdventureDTO.getPlaceId();
+        }
+        Instructor instructor = instructorService.findById(newAdventureDTO.getInstructorId());
+        if (instructor == null) {
+            return "Cant find instructor with id: " + newAdventureDTO.getInstructorId();
+        }
+        Adventure newAdventure = createNewAdventure(newAdventureDTO, place, instructor);
+        if (newAdventure == null) {
+            return "Error. Cant create adventure";
+        }
+        return newAdventure.getId().toString();
+    }
+
+    public String updateAdventure(NewAdventureDTO newAdventureDTO, Long id){
+        try{
+            if (reservationService.findAllActiveReservationsForEntityid(id).size() != 0)
+                return "Cant update adventure because there exist active reservations";
+
+            Place place = placeService.getPlaceById(newAdventureDTO.getPlaceId());
+            if (place == null) {
+                return "Cant find place with id: " + newAdventureDTO.getPlaceId();
+            }
+            Instructor instructor = instructorService.findById(newAdventureDTO.getInstructorId());
+            if (instructor == null) {
+                return "Cant find instructor with id: " + newAdventureDTO.getInstructorId();
+            }
+            Adventure adventure = getAdventureById(id);
+            if (adventure == null) {
+                return "Cant find adventure with id: " + id;
+            }
+            if (adventure.getVersion() != newAdventureDTO.getVersion()) return "Conflict seems to have occurred, someone changed your adventure data before you. Please refresh page and try again";
+
+            editAdventureById(id, newAdventureDTO, place);
+            return "";
+        } catch (ObjectOptimisticLockingFailureException e) {
+            return "Conflict seems to have occurred, someone changed your adventure before you. Please refresh page and try again";
+        }
     }
 
     public Adventure createNewAdventure(NewAdventureDTO newAdventureDTO, Place place, Instructor instructor) {
@@ -108,7 +160,7 @@ public class AdventureService {
         Set<FishingEquipment> fishingEquipment = fishingEquipmentService.createEquipmentFromDTOArray(newAdventureDTO.getFishingEquipment());
         existingAdventure.setFishingEquipment(fishingEquipment);
         setNewPricelistIfNeeded(existingAdventure, newAdventureDTO);
-        bookingEntityService.setNewImagesForBookingEntity(existingAdventure, newAdventureDTO.getImages());
+        pictureService.setNewImagesForBookingEntity(existingAdventure, newAdventureDTO.getImages());
         existingAdventure = adventureRepository.save(existingAdventure);
         return existingAdventure;
     }
