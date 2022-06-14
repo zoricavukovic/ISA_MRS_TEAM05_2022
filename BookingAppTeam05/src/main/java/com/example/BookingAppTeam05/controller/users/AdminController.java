@@ -39,7 +39,7 @@ public class AdminController {
 
 
     @GetMapping(value="/allRequestsNums")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<AllRequestsNumsDTO> getAllRequestsNums() {
         AllRequestsNumsDTO a = adminService.getAllRequestsNumsDTO();
         return new ResponseEntity<>(a, HttpStatus.OK);

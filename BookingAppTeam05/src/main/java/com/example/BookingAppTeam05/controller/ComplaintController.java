@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -55,10 +56,9 @@ public class ComplaintController {
     }
 
     @PutMapping(value="/giveResponse", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<String> giveResponse(@RequestBody ComplaintReviewDTO c) {
-        String errorCode = complaintService.giveResponse(c);
-        if (errorCode != null)
-            return new ResponseEntity<>(errorCode, HttpStatus.BAD_REQUEST);
+        complaintService.giveResponse(c);
         return new ResponseEntity<>("sve ok", HttpStatus.OK);
     }
 
