@@ -4,6 +4,7 @@ import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.dto.users.CottageOwnerDTO;
+import com.example.BookingAppTeam05.exception.ApiRequestException;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
@@ -142,69 +143,26 @@ public class CottageController {
     }
 
     @PostMapping(value = "{idCottageOwner}", consumes = "application/json")
-    @Transactional
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
     public ResponseEntity<String> saveCottage(@PathVariable Long idCottageOwner,@Valid @RequestBody CottageDTO cottageDTO) {
-
-        Cottage cottage = new Cottage();
-        cottage.setName(cottageDTO.getName());
-        cottage.setAddress(cottageDTO.getAddress());
-        cottage.setPromoDescription(cottageDTO.getPromoDescription());
-        cottage.setEntityCancelationRate(cottageDTO.getEntityCancelationRate());
-
-        cottage.setEntityType(EntityType.COTTAGE);
-        if (cottageDTO.getPlace() == null) return new ResponseEntity<>("Cant find place.", HttpStatus.BAD_REQUEST);
-        Place place1 = placeService.getPlaceByZipCode(cottageDTO.getPlace().getZipCode());
-        if (place1 == null) return new ResponseEntity<>("Cant find place with zip code: " + cottageDTO.getPlace().getZipCode(), HttpStatus.BAD_REQUEST);
-        cottage.setPlace(place1);
-        CottageOwner co = (CottageOwner) userService.findUserById(idCottageOwner);
-        if (co == null) return new ResponseEntity<>("Cant find cottage owner with id: " + idCottageOwner, HttpStatus.BAD_REQUEST);
-        cottage.setCottageOwner(co);
-        if (cottageDTO.getRooms().isEmpty()) return new ResponseEntity<>("Cannot create new cottage without room", HttpStatus.BAD_REQUEST);
-        cottage.setRooms(cottageDTO.getRooms());
-        cottage.setRulesOfConduct(cottageDTO.getRulesOfConduct());
-        if (!cottageDTO.getImages().isEmpty()) {
-            Set<Picture> createdPictures = pictureService.createPicturesFromDTO(cottageDTO.getImages());
-            cottage.setPictures(createdPictures);
+        try{
+            String retVal = cottageService.saveCottage(cottageDTO, idCottageOwner);
+            Integer.parseInt(retVal);
+            return new ResponseEntity<>(retVal, HttpStatus.CREATED);
         }
-        cottage.setVersion(0);
-        cottage.setLocked(false);
-        cottage = cottageService.save(cottage);
+        catch (NumberFormatException ex){
+            throw new ApiRequestException("Someone is changing your values of new entity!");
+        }
 
-        return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.CREATED);
     }
 
     @PutMapping(value="/{id}", consumes = "application/json")
     @PreAuthorize("hasRole('ROLE_COTTAGE_OWNER')")
-    public ResponseEntity<String> updateCottage(@Valid @RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
-        if (bookingEntityService.checkExistActiveReservationForEntityId(id))
-            return new ResponseEntity<>("Cant update cottage because there exist active reservations", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> updateCottage(@Valid @RequestBody CottageDTO cottageDTO, @PathVariable Long id) {
+        String retVal = cottageService.updateCottage(cottageDTO, id);
+        if (retVal.isEmpty()) return new ResponseEntity<>(HttpStatus.OK);
+        throw new ApiRequestException(retVal);
 
-        Cottage cottage = cottageService.getCottageById(id);
-        if (cottage == null) return new ResponseEntity<>("Cant find cottage with id " + id + ".", HttpStatus.BAD_REQUEST);
-        cottage.setName(cottageDTO.getName());
-        cottage.setAddress(cottageDTO.getAddress());
-        cottage.setPromoDescription(cottageDTO.getPromoDescription());
-        cottage.setEntityCancelationRate(cottageDTO.getEntityCancelationRate());
-        cottage.setEntityType(EntityType.COTTAGE);
-
-        Place p = cottageDTO.getPlace();
-        if (p == null) return new ResponseEntity<>("Cant find chosen place.", HttpStatus.BAD_REQUEST);
-        Place place = placeService.getPlaceByZipCode(p.getZipCode());
-        cottage.setPlace(place);
-
-        if (cottageDTO.getRooms().isEmpty()) return new ResponseEntity<>("Cannot change cottage to be without room.", HttpStatus.BAD_REQUEST);
-        Cottage oldCottage = cottageService.getCottageById(id);
-        Set<Room> rooms = cottageService.tryToEditCottageRooms(cottageDTO, oldCottage);
-        cottage.setRooms(rooms);
-
-        Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();
-
-        cottageService.tryToEditCottageRulesOfConduct(cottageDTO, oldCottage, rules);
-        cottage.setRulesOfConduct(rules);
-        bookingEntityService.setNewImagesForBookingEntity(cottage, cottageDTO.getImages());
-        cottage = cottageService.save(cottage);
-        return new ResponseEntity<>(cottage.getId().toString(), HttpStatus.OK);
     }
 
     @PostMapping(value="/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

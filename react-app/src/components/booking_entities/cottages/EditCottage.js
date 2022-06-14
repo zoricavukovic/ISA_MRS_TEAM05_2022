@@ -167,6 +167,7 @@ export default function EditCottage(props) {
         cityName: "",
         zipCode: zip
       },
+      version: cottageBasicData.version,
       promoDescription: data.promoDescription,
       entityCancelationRate: data.entityCancelationRate,
       additionalServices: _getAdditionalServicesJson(additionalServices),
@@ -194,7 +195,7 @@ export default function EditCottage(props) {
       })
     }).catch(resError => {
       console.log("Greska!!");
-      setMessage(resError.response.data);
+      setMessage(resError.response.data.message);
       handleClick();
       return;
     })

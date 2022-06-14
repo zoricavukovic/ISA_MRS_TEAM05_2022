@@ -63,6 +63,7 @@ export default function EntityBasicCard(props) {
     };
 
     const handleClickOpen = (event) => {
+        event.stopPropagation();
         setOpenDialog(true);
     };
 
@@ -72,6 +73,7 @@ export default function EntityBasicCard(props) {
 
     const logicDeleteBookingEntity = (event) => {
         event.stopPropagation();
+        console.log("brisnaje");
         logicalDeleteBookingEntityById(props.bookingEntity.id, getCurrentUser().id, password).then(res => {
             setPassword("");
             handleClick();
@@ -93,6 +95,7 @@ export default function EntityBasicCard(props) {
 
     const showBookingEntity = (event) => {
         event.stopPropagation();
+        if (getCurrentUser() == undefined || getCurrentUser() == null) return;
         if (props.bookingEntity.entityType === "COTTAGE") {
             history.push({
                 pathname: "/showCottageProfile",
@@ -142,6 +145,7 @@ export default function EntityBasicCard(props) {
                 setIsSubscribed(true);
         });
     }
+
     const unsubscribe =(event)=>{
         event.stopPropagation();
         unsubscribeClientWithEntity(getCurrentUser().id, props.bookingEntity.id).then(res=>{
@@ -214,10 +218,13 @@ export default function EntityBasicCard(props) {
                 <Typography style={{ textAlign: "left" }} gutterBottom variant="h5" component="div">
                     <div style={{display:'flex'}}>
                         <h3>{props.bookingEntity.name}
+                        {getCurrentUser() != null && getCurrentUser().userType.name == "ROLE_CLIENT"?(
+                            <>
                         {isSubsribed?
                                     <Button size="small" style={{marginLeft:'5px', padding:'0px'}} onClick={unsubscribe}><Favorite fontSize="large" style={{ margin: "5px" }} /></Button>:
                                     <Button size="small" style={{ margin: "5px", padding:'0px' }} onClick={subscribe}><FavoriteBorder fontSize="large"  /></Button>
                                     }
+                                    </>):(<div></div>)}
                                     </h3>
                     </div>
                 </Typography>

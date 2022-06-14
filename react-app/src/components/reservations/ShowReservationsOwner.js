@@ -153,7 +153,7 @@ function ShowReservationsOwner() {
     if (isLoading) { return <div><CircularProgress /></div> }
     return (
         <div>
-            <div style={{ marginRight: '0px', display: "flex", justifyContent:'right' , margin: "2%", width:"100%",  backgroundColor: "aliceblue", borderRadius: "5px", minWidth:'200px' }}>
+            <div style={{display: "flex", justifyContent:'right' , margin: "2%", width:"100%",  backgroundColor: "aliceblue", borderRadius: "5px", minWidth:'200px' }}>
                 
                 
                 <CssBaseline />
@@ -230,7 +230,7 @@ function ShowReservationsOwner() {
                 </Drawer>
 
             </div>
-            <div style={{ display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center", flex:"3" }} className="App">
+            <div style={{ margin: "3%", display: "flex", flexWrap: 'wrap', flexDirection: "row", justifyContent: "center", flex:"3" }} className="App">
                 {displayReservations}
                 {/* <ReactPaginate
                 previousLabel="Previous"
