@@ -84,6 +84,8 @@ public class UserControllerTest {
 
 
     @Test
+    @Transactional
+    @Rollback(true)
     @WithMockUser(roles={"CLIENT"})
     public void getById() throws Exception {
         mockMvc.perform(get(URL_PREFIX+"/"+7L)).andExpect(status().isOk())
@@ -94,6 +96,8 @@ public class UserControllerTest {
     }
 
     @Test
+    @Transactional
+    @Rollback(true)
     public void getAll() throws Exception {
         mockMvc.perform(get(URL_PREFIX)).andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
@@ -144,6 +148,7 @@ public class UserControllerTest {
         clientDTO.setEmail("pera@gmail.com");
         clientDTO.setPhoneNumber("456464654");
         clientDTO.setLoyaltyProgram(LoyaltyProgramEnum.REGULAR);
+        clientDTO.setAccountAllowed(true);
 
         String json = TestUtil.json(clientDTO);
         this.mockMvc.perform(post(URL_PREFIX+"/createUser").contentType(contentType).content(json)).

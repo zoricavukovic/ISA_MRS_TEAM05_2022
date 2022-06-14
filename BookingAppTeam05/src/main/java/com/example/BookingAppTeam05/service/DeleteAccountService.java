@@ -59,6 +59,7 @@ public class DeleteAccountService {
                 return "This request is already processed";
 
             deleteAccountRequest.setProcessed(true);
+            deleteAccountRepository.save(deleteAccountRequest);
             deleteAccountRequest.setAccepted(d.isAccepted());
             deleteAccountRepository.delete(deleteAccountRequest);
 

@@ -86,7 +86,7 @@ public class AdventureController {
         }
         System.out.println("------------------");
         System.out.println(newAdventure.getId());
-        return new ResponseEntity<>(newAdventure.getId().toString(), HttpStatus.OK);
+        return new ResponseEntity<>(newAdventure.getId().toString(), HttpStatus.CREATED);
     }
 
     @Transactional

@@ -1,5 +1,9 @@
 package com.example.BookingAppTeam05.service;
 import com.example.BookingAppTeam05.dto.ComplaintDTO;
+import com.example.BookingAppTeam05.exception.ConflictException;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.NotificationByEmailException;
+import com.example.BookingAppTeam05.exception.RequestAlreadyProcessedException;
 import com.example.BookingAppTeam05.model.Complaint;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.repository.ComplaintRepository;
@@ -81,13 +85,13 @@ public class ComplaintService {
     }
 
     @Transactional
-    public String giveResponse(ComplaintReviewDTO c) {
+    public void giveResponse(ComplaintReviewDTO c) {
         try {
             Complaint complaint = complaintRepository.findById(c.getId()).orElse(null);
             if (complaint == null)
-                return "Cant' find complaint with id: " + c.getId();
+                throw new ItemNotFoundException("Can't find complaint with id: " + c.getId());
             if (complaint.isProcessed())
-                return "This complaint is already processed.";
+                throw new RequestAlreadyProcessedException("This complaint is already processed.");
 
             complaint.setAdminResponse(c.getAdminResponse());
             complaint.setProcessed(true);
@@ -96,12 +100,11 @@ public class ComplaintService {
             try {
                 emailService.sendEmailAsAdminResponseFromComplaint(c);
             } catch (Exception e) {
-                return "Error happened while sending email to owner and client";
+                throw new NotificationByEmailException("\"Error happened while sending email to owner and client about complaint processed\"");
             }
-            return null;
         }
         catch (ObjectOptimisticLockingFailureException e) {
-            return "Conflict seems to have occurred, another admin has reviewed this complaint before you. Please refresh page and try again";
+            throw new ConflictException("Conflict seems to have occurred, another admin has reviewed this complaint before you. Please refresh page and try again");
         }
     }
 }

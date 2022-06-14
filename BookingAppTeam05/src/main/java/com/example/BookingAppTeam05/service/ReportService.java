@@ -112,8 +112,8 @@ public class ReportService {
             if (report.isProcessed())
                 return "This report is already processed";
 
-            report.setAdminResponse(c.getAdminResponse());
             report.setProcessed(true);
+            report.setAdminResponse(c.getAdminResponse());
             report.setAdminPenalizeClient(c.isAdminPenalizeClient());
             report = reportRepository.save(report);
 

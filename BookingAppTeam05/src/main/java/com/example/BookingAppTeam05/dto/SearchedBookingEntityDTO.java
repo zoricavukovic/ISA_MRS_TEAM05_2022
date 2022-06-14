@@ -31,6 +31,17 @@ public class SearchedBookingEntityDTO {
         bookingEntity.getPictures().forEach(p -> this.pictures.add(p.getPicturePath()));
     }
 
+    public SearchedBookingEntityDTO(String name, String address, Place place, String promoDescription, double entityPricePerPerson, Float averageRating, List<String> pictures, EntityType entityType) {
+        this.name = name;
+        this.address = address;
+        this.place = place;
+        this.promoDescription = promoDescription;
+        this.entityPricePerPerson = entityPricePerPerson;
+        this.averageRating = averageRating;
+        this.pictures = pictures;
+        this.entityType = entityType;
+    }
+
     public EntityType getEntityType() {
         return entityType;
     }

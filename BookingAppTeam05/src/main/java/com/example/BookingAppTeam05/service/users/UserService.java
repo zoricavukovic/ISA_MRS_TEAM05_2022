@@ -189,10 +189,10 @@ public class UserService {
             if (!user.isNotYetActivated())
                 return "This user account is already approved.";
 
-            if (d.isAccepted()) {
-                user.setNotYetActivated(false);
-                userRepository.save(user);
-            } else {
+            user.setNotYetActivated(false);
+            userRepository.save(user);
+
+            if (!d.isAccepted()) {
                 userRepository.physicalDeleteUserById(d.getUser().getId());
             }
             try {

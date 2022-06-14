@@ -39,7 +39,7 @@ public class LoyaltyProgramController {
         if (created == null) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(created, HttpStatus.OK);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
 }
