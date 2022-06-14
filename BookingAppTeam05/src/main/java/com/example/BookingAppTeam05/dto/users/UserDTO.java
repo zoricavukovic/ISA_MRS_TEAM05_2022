@@ -61,24 +61,27 @@ public class UserDTO {
 
 
     private void setAdditionalFieldIfNeeded(User user) {
-        switch (user.getRole().getName()) {
-            case "ROLE_CLIENT":
-                setPenalties(((Client) user).getPenalties());
-                break;
-            case "ROLE_ADMIN":
-                setPasswordChanged(((Admin) user).isPasswordChanged());
-                break;
-            case "ROLE_SHIP_OWNER":
-                setCaptain(((ShipOwner) user).isCaptain());
-                setReason(((ShipOwner) user).getReason());
-                break;
-            case "ROLE_COTTAGE_OWNER":
-                setReason(((CottageOwner) user).getReason());
-                break;
-            case "ROLE_INSTRUCTOR":
-                setReason(((Instructor) user).getReason());
-                break;
-        }
+        if(user.getRole().getName() != null)
+            switch (user.getRole().getName()) {
+                case "ROLE_CLIENT":
+                    setPenalties(((Client) user).getPenalties());
+                    break;
+                case "ROLE_ADMIN":
+                    setPasswordChanged(((Admin) user).isPasswordChanged());
+                    break;
+                case "ROLE_SHIP_OWNER":
+                    setCaptain(((ShipOwner) user).isCaptain());
+                    setReason(((ShipOwner) user).getReason());
+                    break;
+                case "ROLE_COTTAGE_OWNER":
+                    setReason(((CottageOwner) user).getReason());
+                    break;
+                case "ROLE_INSTRUCTOR":
+                    setReason(((Instructor) user).getReason());
+                    break;
+                default:
+                    break;
+            }
     }
 
     public boolean isPasswordChanged() {

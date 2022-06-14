@@ -118,7 +118,6 @@ public class ReservationController {
     }
 
 
-    @Transactional
     @PostMapping(value = "/addReservation", consumes = "application/json")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR')")
     public ResponseEntity<String> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {

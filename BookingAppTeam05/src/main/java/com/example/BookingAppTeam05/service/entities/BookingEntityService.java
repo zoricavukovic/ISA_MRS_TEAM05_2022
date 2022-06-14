@@ -71,6 +71,10 @@ public class BookingEntityService {
         this.adventureRepository = adventureRepository;
     }
 
+    public BookingEntity findBookingEntityById(Long id){
+        return bookingEntityRepository.findById(id).orElse(null);
+    }
+
     public List<SearchedBookingEntityDTO> getSearchedBookingEntitiesDTOsByOwnerId(Long id) {
         User owner = userService.findUserById(id);
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
@@ -277,11 +281,18 @@ public class BookingEntityService {
             }
         }
         Set<LocalDateTime> additionalDates = new HashSet<>();
+
+
+
         for(LocalDateTime unDate: allUnavailableDates){
             for(LocalDateTime lastDay: lastDates){
                 long hours = Math.abs(ChronoUnit.HOURS.between(unDate, lastDay));
                 if(hours < 24)
                     additionalDates.add(lastDay);
+            }
+            if(unDate.getHour() < 9){
+                LocalDateTime newDate = unDate.minusDays(1);
+                additionalDates.add(newDate);
             }
         }
         allUnavailableDates.addAll(additionalDates);
@@ -427,5 +438,9 @@ public class BookingEntityService {
 
         bookingEntityRepository.logicalDeleteBookingEntityById(entityId);
         return null;
+    }
+
+    public void save(BookingEntity bookingEntity) {
+        bookingEntityRepository.save(bookingEntity);
     }
 }

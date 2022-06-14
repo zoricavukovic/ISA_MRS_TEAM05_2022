@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+   // @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         List<UserDTO> retVal = new ArrayList<>();
@@ -147,7 +147,7 @@ public class UserController {
     }
 
     @DeleteMapping(value="/{userId}/{adminId}")
-    //@PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
     public ResponseEntity<String> logicalDeleteUserById(@PathVariable Long userId, @PathVariable  Long adminId, @RequestBody String confirmPass){
         String errorMassage = userService.tryToLogicalDeleteUserAndReturnErrorCode(userId, adminId, confirmPass);
         if (errorMassage == null)

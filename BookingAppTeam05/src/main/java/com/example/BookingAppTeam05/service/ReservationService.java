@@ -264,6 +264,7 @@ public class ReservationService {
         return retVal;
     }
 
+    @Transactional
     public Reservation addReservation(ReservationDTO reservationDTO) {
         try{
             Reservation res = new Reservation();
@@ -288,6 +289,9 @@ public class ReservationService {
             Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
 
 
+            if(!dateRangeAvailable(reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
+                return null;
+
             entity.setLocked(true);
             bookingEntityRepository.save(entity);
             res.setClient(client);
@@ -300,6 +304,11 @@ public class ReservationService {
             System.out.println("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again\";");
         }
         return null;
+    }
+
+    private boolean dateRangeAvailable(Long entityId, LocalDateTime startDate, int numOfDays) {
+        return false;
+
     }
 
 
@@ -328,8 +337,20 @@ public class ReservationService {
             Long clientId = Long.parseLong(tokens[2].substring(1, tokens[2].length()-1));
             Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(clientId);
             res.setClient(client);
+
+            entity.setLocked(true);
+            bookingEntityRepository.save(entity);
+            res.setClient(client);
             reservationRepository.save(res);
-            emailService.sendNotificationAboutResToClient(client, res);
+//            entity.setLocked(false);
+//            bookingEntityRepository.save(entity);
+
+
+
+            //reservationRepository.save(res);
+            //emailService.sendNotificationAboutResToClient(client, res);
+
+
             return res;
         }catch (OptimisticLockException e){
             System.out.println("EXCEPTION HAS HAPPENED!!!!");
@@ -400,5 +421,13 @@ public class ReservationService {
             System.out.println("Conflict seems to have occurred, another user reserved this entity before you. Please refresh page and try again\"");
         }
         return null;
+    }
+
+    public Reservation findById(long Id) {
+        return reservationRepository.findById(Id).orElse(null);
+    }
+
+    public void save(Reservation fastReservation) {
+        reservationRepository.save(fastReservation);
     }
 }

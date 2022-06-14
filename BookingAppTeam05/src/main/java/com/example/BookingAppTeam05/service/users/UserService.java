@@ -157,11 +157,11 @@ public class UserService {
             return "Error happened on server. Cant create user: " + userDTO.getEmail() + " " + userDTO.getFirstName() + " " + userDTO.getLastName();
         }
         try {
-            assert false;
+            //assert false;
             u.setVersion(0L);
             userRepository.save(u);
             if (userDTO.getUserTypeValue().equals("ROLE_CLIENT")){
-                emailService.sendActivationMessage(u);
+                //emailService.sendActivationMessage(u);
             }
             return null;
         } catch (Exception e) {

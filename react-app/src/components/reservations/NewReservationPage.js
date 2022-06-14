@@ -86,9 +86,8 @@ export default function NewReservationPage(props) {
             let unaDates = []
             for(let unDate of res.data.allUnavailableDates)
                 unaDates.push(new Date(unDate[0],unDate[1]-1,unDate[2],unDate[3],unDate[4]));
-            setUnavailableDates(unaDates);
+            
             console.log("prosao");
-            //findUnavailableDates(res.data);
             let searchParams = null;
             if(props.history.location.state != null || props.history.location.state.searchParams != null)
                  searchParams = props.history.location.state.searchParams;
@@ -98,9 +97,12 @@ export default function NewReservationPage(props) {
                     findNextAvailableDate(unaDates);
                 else
                     findNextAvailableDateRange(unaDates);
+
+                setUnavailableDates(unaDates);
             }
             else
                 setFieldsWithSearchedParams(searchParams);
+            console.log("posle ifa");
             setLoaded(true);
             setPrice(res.data.pricelists[0].entityPricePerPerson);
             setType(res.data.entityType);
@@ -124,7 +126,6 @@ export default function NewReservationPage(props) {
     const findUnavailableDates = (bookEntity)=>{
         var uDates = [];
         bookEntity.unavailableDates.forEach(e => {
-            //----------DODATNO PROVERITI PO SATIM------------------------
             var startDateTime = new Date(e.startTime[0],e.startTime[1]-1,e.startTime[2],e.startTime[3],e.startTime[4]);
             console.log("UNA DATES");
             console.log(startDateTime);
@@ -165,19 +166,44 @@ export default function NewReservationPage(props) {
         })
     };
 
+    const isDateTimeUnavailable = (date, unavDates)=>{
+        date.setHours(12);
+        return unavDates.some(e =>{ 
+            const date1WithoutTime = new Date(date.getTime());
+            const date2WithoutTime = new Date(e.getTime());
+            date1WithoutTime.setUTCHours(0, 0, 0, 0);
+            date2WithoutTime.setUTCHours(0, 0, 0, 0);
+
+            const date1 = new Date(date.getTime());
+            const date2 = new Date(e.getTime());
+            date1.setUTCHours(9,0,0,0);
+            console.log("date1:"+date1+"\ndate2:"+date2);
+            return date1WithoutTime.getTime() === date2WithoutTime.getTime() && date1 > date2;
+        })
+    };
+
     const findNextAvailableDateRange = (unavDates)=>{
         
         var nextAvailableDates = [new Date(), new Date(new Date().getTime() + oneDay)];
         var foundRange = false;
-        while(!foundRange){
-            if(isDateUnavailable(nextAvailableDates[0],unavDates))
-                nextAvailableDates[0] = new Date(nextAvailableDates[0].getTime()+oneDay);
-            else{
-                nextAvailableDates[1] = new Date(nextAvailableDates[0].getTime()+oneDay);
-                if(!isDateUnavailable(nextAvailableDates[1],unavDates))
-                    foundRange = true;
+        console.log(unavDates);
+        if(unavDates.length > 0)
+            while(!foundRange){
+                if(isDateTimeUnavailable(nextAvailableDates[0], unavDates)){
+                    nextAvailableDates[0] = new Date(nextAvailableDates[0].getTime()+oneDay);
+                }
+                else{
+
+                    nextAvailableDates[1] = new Date(nextAvailableDates[0].getTime()+oneDay);
+                    
+                    if(!isDateTimeUnavailable(nextAvailableDates[1], unavDates))
+                        foundRange = true;
+                    else{
+                        unavDates.push(nextAvailableDates[0]);
+                        nextAvailableDates[0] = new Date(nextAvailableDates[0].getTime()+oneDay);
+                    }
+                }
             }
-        }
         setSelectionRange({
             startDate: nextAvailableDates[0],
             endDate: nextAvailableDates[1],
@@ -191,7 +217,7 @@ export default function NewReservationPage(props) {
         console.log(unavDates);
         if(unavDates.length > 0)
             while(!foundRange){
-                if(isDateUnavailable(nextAvailableDate,unavDates)){
+                if(isDateTimeUnavailable(nextAvailableDate, unavDates)){
                     nextAvailableDate = new Date(nextAvailableDate.getTime()+oneDay);
                     foundRange = true;
                 }
@@ -201,14 +227,23 @@ export default function NewReservationPage(props) {
 
     useEffect(() => {
         if(Object.keys(bookingEntity).length !== 0)
-            for(var reservation of bookingEntity.reservations)
+            for(var unavailableDate of bookingEntity.allUnavailableDates)
             {
-                if(isDateUnavailable(selectionRange.startDate, [new Date(new Date(reservation.startDate).getTime()+reservation.numOfDays*oneDay)]))
+                let unaDate = new Date(unavailableDate[0], unavailableDate[1]-1, unavailableDate[2], unavailableDate[3], unavailableDate[4]);
+
+                if(isDateUnavailable(selectionRange.startDate, [unaDate]))
                     availableTimes.forEach(time => {
                         time.available = true;
-                        if(parseInt(time.value.split(':')[0]) <= new Date(reservation.startDate).getHours())
+                        if(parseInt(time.value.split(':')[0]) <= unaDate.getHours())
                             time.available = false;
                 })
+                if(isDateUnavailable(selectionRange.endDate, [unaDate])){
+                    availableTimes.forEach(time => {
+                        time.available = true;
+                        if(parseInt(time.value.split(':')[0]) >= unaDate.getHours())
+                            time.available = false;
+                    })
+                }
             }
         for(var time of availableTimes){
             if(time.available == true){
@@ -220,26 +255,26 @@ export default function NewReservationPage(props) {
         setTimes(availableTimes);
     }, [selectionRange]);
 
-    useEffect(() => {
-        if(Object.keys(bookingEntity).length !== 0)
-            for(var unavailableDate of bookingEntity.allUnavailableDates)
-            {
-                if(isDateUnavailable(startDate, [new Date(unavailableDate)]))
-                    availableTimes.forEach(time => {
-                        time.available = true;
-                        if(parseInt(time.value.split(':')[0]) == new Date(unavailableDate).getHours())
-                            time.available = false;
-                })
-            }
-        for(var time of availableTimes){
-            if(time.available == true){
-                setCheckedTime(time);
-                break;
-            }
-        }
-        console.log(availableTimes);
-        setTimes(availableTimes);
-    }, [selectionRange]);
+    // useEffect(() => {
+    //     if(Object.keys(bookingEntity).length !== 0)
+    //         for(var unavailableDate of bookingEntity.allUnavailableDates)
+    //         {
+    //             if(isDateUnavailable(startDate, [new Date(unavailableDate)]))
+    //                 availableTimes.forEach(time => {
+    //                     time.available = true;
+    //                     if(parseInt(time.value.split(':')[0]) == new Date(unavailableDate).getHours())
+    //                         time.available = false;
+    //             })
+    //         }
+    //     for(var time of availableTimes){
+    //         if(time.available == true){
+    //             setCheckedTime(time);
+    //             break;
+    //         }
+    //     }
+    //     console.log(availableTimes);
+    //     setTimes(availableTimes);
+    // }, [selectionRange]);
 
     useEffect(() => {
         if(Object.keys(bookingEntity).length !== 0)
