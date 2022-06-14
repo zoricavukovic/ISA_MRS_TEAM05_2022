@@ -65,6 +65,21 @@ public class LoyaltyProgram {
         this.startDate = LocalDateTime.now();
     }
 
+    public LoyaltyProgram(Integer bronzeLimit, Integer silverLimit, Integer goldLimit, Double clientBronzeDiscount, Double clientSilverDiscount, Double clientGoldDiscount, Double ownerBronzeBonus, Double ownerSilverBonus, Double ownerGoldBonus, Integer clientPointsPerReservation, Integer ownerPointsPerReservation, LocalDateTime startDate) {
+        this.bronzeLimit = bronzeLimit;
+        this.silverLimit = silverLimit;
+        this.goldLimit = goldLimit;
+        this.clientBronzeDiscount = clientBronzeDiscount;
+        this.clientSilverDiscount = clientSilverDiscount;
+        this.clientGoldDiscount = clientGoldDiscount;
+        this.ownerBronzeBonus = ownerBronzeBonus;
+        this.ownerSilverBonus = ownerSilverBonus;
+        this.ownerGoldBonus = ownerGoldBonus;
+        this.clientPointsPerReservation = clientPointsPerReservation;
+        this.ownerPointsPerReservation = ownerPointsPerReservation;
+        this.startDate = startDate;
+    }
+
     public Long getId() {
         return id;
     }

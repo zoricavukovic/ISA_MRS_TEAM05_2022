@@ -32,11 +32,11 @@ public class UnavailableDateController {
     }
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UnavailableDateDTO> addNewUnavaiableDate(@Valid @RequestBody UnavailableDateDTO unavailableDateDTO) {
+    public ResponseEntity<UnavailableDateDTO> addNewUnavailableDate(@Valid @RequestBody UnavailableDateDTO unavailableDateDTO) {
         UnavailableDateDTO retVal = unavailableDateService.addNewUnavailableDateForEntityId(unavailableDateDTO);
         if (retVal == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(retVal, HttpStatus.OK);
+        return new ResponseEntity<>(retVal, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/setAvailable/", consumes = MediaType.APPLICATION_JSON_VALUE)

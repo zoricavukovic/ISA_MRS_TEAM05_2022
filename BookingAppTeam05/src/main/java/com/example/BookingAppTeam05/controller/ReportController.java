@@ -48,6 +48,7 @@ public class ReportController {
     }
 
     @GetMapping(value="/all/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<CreatedReportReviewDTO>> getListOfCreatedReports(@PathVariable String type) {
         List<CreatedReportReviewDTO> retVal = null;
         if (type.equals("processed"))

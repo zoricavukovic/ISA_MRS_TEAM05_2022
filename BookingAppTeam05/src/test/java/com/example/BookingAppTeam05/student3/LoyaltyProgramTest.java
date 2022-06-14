@@ -3,26 +3,16 @@ package com.example.BookingAppTeam05.student3;
 import com.example.BookingAppTeam05.dto.LoyaltyProgramDTO;
 import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
-import com.example.BookingAppTeam05.model.repository.LoyaltyProgramRepository;
 import com.example.BookingAppTeam05.service.LoyaltyProgramService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
-
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +22,8 @@ public class LoyaltyProgramTest {
 
 
     @Test
+    @Transactional
+    @Rollback(true)
     public void testGetProgramFromLoyaltyPoints() {
         LoyaltyProgramService ls = new LoyaltyProgramService();
         LoyaltyProgramService loyaltyProgramService = Mockito.spy(ls);

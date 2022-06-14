@@ -9,26 +9,18 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -44,8 +36,19 @@ public class UnavailableDatesTest {
     private UnavailableDateService unavailableDateService;
 
     @Test
+    @Transactional
+    @Rollback(true)
     public void getActiveUnavailableDateDTOsForEntityIdTest() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        LocalDate now = LocalDate.now();
+        LocalDate dt1 = now.plusDays(1);
+        LocalDate dt2 = now.plusDays(10);
+
+        LocalDate dt3 = now.plusDays(25);
+        LocalDate dt4 = now.plusDays(30);
+
+
         LocalDateTime t1 = LocalDateTime.parse("2022-06-04 00:00", formatter);
         LocalDateTime t2 = LocalDateTime.parse("2022-06-10 00:00", formatter);
 
@@ -55,11 +58,12 @@ public class UnavailableDatesTest {
         LocalDateTime t5 = LocalDateTime.parse("2022-05-05 00:00", formatter);
         LocalDateTime t6 = LocalDateTime.parse("2022-05-06 00:00", formatter);
 
-        LocalDateTime t7 = LocalDateTime.parse("2022-04-20 00:00", formatter);
-        LocalDateTime t8 = LocalDateTime.parse("2022-04-20 00:00", formatter);
+        LocalDateTime t7 = LocalDateTime.parse( dt1.toString() + " 00:00", formatter);
+        LocalDateTime t8 = LocalDateTime.parse(dt2.toString() + " 00:00", formatter);
 
-        LocalDateTime t9 = LocalDateTime.parse("2022-06-20 00:00", formatter);
-        LocalDateTime t10 = LocalDateTime.parse("2022-06-25 00:00", formatter);
+        LocalDateTime t9 = LocalDateTime.parse( dt3.toString() + " 00:00", formatter);
+        LocalDateTime t10 = LocalDateTime.parse(dt4.toString() + " 00:00", formatter);
+
 
         UnavailableDate unavailableDate1 = new UnavailableDate(t1, t2);
         UnavailableDate unavailableDate2 = new UnavailableDate(t3, t4);

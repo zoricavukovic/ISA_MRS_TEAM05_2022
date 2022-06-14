@@ -6,19 +6,13 @@ import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.service.SearchService;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -30,6 +24,8 @@ public class SearchBookingEntitiesTest {
     private SearchService searchService;
 
     @Test
+    @Transactional
+    @Rollback(true)
     public void testSearchBookingEntities() {
         SearchedBookingEntityDTO s1 = new SearchedBookingEntityDTO("naziv1", "adresa1", null, "opis1", 34.0, 3.4f, null, EntityType.COTTAGE);
         SearchedBookingEntityDTO s2 = new SearchedBookingEntityDTO("naziv2", "adresa2", null, "opis2", 50.0, 3.0f, null, EntityType.COTTAGE);
