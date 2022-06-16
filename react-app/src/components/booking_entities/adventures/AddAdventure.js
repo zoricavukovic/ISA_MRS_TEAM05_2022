@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
-
 import AddingAdditionalService from "../common/AddingAdditionalService.js";
 import AddingRulesOfConduct from "../common/AddingRulesOfConduct.js";
 import AddingEquipment from "../common/AddingEquipment.js";
@@ -14,22 +13,35 @@ import ImageUploader from "../../image_uploader/ImageUploader.js";
 import { useHistory } from "react-router-dom";
 import { getAllPlaces } from "../../../service/PlaceService.js";
 import { addNewAdventure } from "../../../service/AdventureService.js";
-import { getToken, getCurrentUser } from '../../../service/AuthService.js';
+import { getCurrentUser } from '../../../service/AuthService.js';
 import { userLoggedInAsInstructor } from "../../../service/UserService.js";
-
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 import { MAX_NUMBER_OF_IMAGES_TO_UPLOAD, _fillImageListFromBase64Images, _getImagesInJsonBase64 } from "../common/images_utils.js";
 import { _getAdditionalServicesJson, _handleAddAdditionalServiceChip, _setInitialAdditionalServices } from "../common/additional_services_utils.js";
 import { _getFishingEquipmentNamesJson, _handleAddFishingEquipmentChip, _setInitialFishingEquipment } from "../common/fishiing_equipment_utils.js";
 import { _getRuleNamesJson, _handleAddRuleChip, _setInitialRulesOfConduct } from "../common/rules_of_conduct_utils.js";
 
-
-
 export default function AddAdventure() {
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [isLoading, setLoading] = useState(true);
     const history = useHistory();
+    const [message, setMessage] = useState("");
+  
+    /////////////////////error message////////////////////
+    const [open, setOpen] = React.useState(false);
+    const handleClose = (_event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpen(false);
+    };
+  
+    const handleClick = () => {
+      setOpen(true);
+    };
 
     //-------------------------------------------------------------------------------------
     const [images, setImages] = React.useState([]);
@@ -123,8 +135,11 @@ export default function AddAdventure() {
                 });
             })
             .catch(res => {
-                console.log(res.response);
-                alert("Error happened on server. Can't create adventure." + res.response.data);
+              
+                console.log(res.response.data);
+                setMessage(res.response.data);
+                handleClick();
+                return;
             });
 
 
@@ -169,7 +184,7 @@ export default function AddAdventure() {
                 noValidate
                 onSubmit={handleSubmit(onFormSubmit)}
             >
-                <h4 style={{ color: 'rgb(5, 30, 52)', textAlign: 'center', fontWeight: 'bold' }}>Basic Information About Cottage</h4>
+                <h4 style={{ color: 'rgb(5, 30, 52)', textAlign: 'center', fontWeight: 'bold' }}>Basic Information About Adventure</h4>
 
                 <Grid
                     direction="column"
@@ -319,6 +334,11 @@ export default function AddAdventure() {
 
 
             </Box >
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                    {message}
+                </Alert>
+            </Snackbar>
         </div >
     );
 }

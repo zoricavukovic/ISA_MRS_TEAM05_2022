@@ -20,6 +20,8 @@ public class NavigationEquipmentService {
         this.navigationEquipmentRepository = navigationEquipmentRepository;
     }
 
+    public NavigationEquipmentService(){}
+
     public Set<NavigationEquipment> createEquipmentFromDTO(Set<NavigationEquipment> navigationEquipment, Long shipId) {
         Set<NavigationEquipment> retVal = new HashSet<>();
         for (NavigationEquipment f : navigationEquipment) {

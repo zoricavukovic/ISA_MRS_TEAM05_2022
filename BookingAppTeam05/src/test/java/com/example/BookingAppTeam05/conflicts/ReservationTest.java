@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.aatestConflicts;
+package com.example.BookingAppTeam05.conflicts;
 
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;

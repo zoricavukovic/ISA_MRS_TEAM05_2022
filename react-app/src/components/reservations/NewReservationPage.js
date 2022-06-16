@@ -11,6 +11,8 @@ import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined } from '@mui
 import { getBookingEntityById } from '../../service/BookingEntityService';
 import { addReservation } from '../../service/ReservationService';
 import { getCurrentUser } from '../../service/AuthService';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 export default function NewReservationPage(props) {
     const [type, setType] = useState("");
@@ -29,6 +31,9 @@ export default function NewReservationPage(props) {
     const [maxNumOfPersons, setMaxNumOfPersons] = useState(10);
     const history = useHistory();
     const [reservationDTO,setReservationDTO] = useState({});
+    const [message, setMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
+    const [open, setOpen] = React.useState(false);
 
     var availableTimes = [{
         text:"9 AM",
@@ -60,7 +65,6 @@ export default function NewReservationPage(props) {
 
     useEffect(() => {
         const entityId = props.history.location.state.bookingEntityId;
-        console.log(entityId);
         getBookingEntityById(entityId).then(res => {
             console.log("+++++++++ ENTITY+++++++");
             console.log(res.data);
@@ -322,6 +326,17 @@ export default function NewReservationPage(props) {
         setOpenDialog(false);
     };
 
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (_event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
     const changePrice=()=>{
         var difference = selectionRange.endDate.getTime() - selectionRange.startDate.getTime();
         var daysBetweenDates = Math.ceil(difference/(1000*3600*24));
@@ -341,11 +356,17 @@ export default function NewReservationPage(props) {
         addReservation(reservationDTO).then(res=>{
             console.log("Adding temp res success");
             console.log(res.data);
-
-        }).catch(res=>{
-            console.log("Adding temp res failed");
-        });
-        history.goBack();
+            handleClick();
+            setTypeAlert("success");
+            setMessage("Successful reservation");
+            history.goBack();
+        }).catch(res => {
+            setTypeAlert("error");
+            setMessage(res.response.data);
+            handleClick();
+            setOpenDialog(false);
+            return;
+        })
     };
 
     const additionalServiceChecked =(event,service)=>{
@@ -538,6 +559,11 @@ export default function NewReservationPage(props) {
                     
                 </Paper>
             </Grid>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
+                    {message}
+                </Alert>
+            </Snackbar>
         </div>
     )
 }

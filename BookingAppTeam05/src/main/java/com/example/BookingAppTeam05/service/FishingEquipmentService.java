@@ -12,13 +12,15 @@ import java.util.Set;
 
 @Service
 public class FishingEquipmentService {
-    @Autowired
+
     private FishingEquipmentRepository fishingEquipmentRepository;
 
+    @Autowired
     public FishingEquipmentService(FishingEquipmentRepository fishingEquipmentRepository) {
         this.fishingEquipmentRepository = fishingEquipmentRepository;
     }
 
+    public FishingEquipmentService(){}
 
     public Set<FishingEquipment> createEquipmentFromDTOArray(List<NewFishingEquipmentDTO> fishingEquipment) {
         Set<FishingEquipment> retVal = new HashSet<>();

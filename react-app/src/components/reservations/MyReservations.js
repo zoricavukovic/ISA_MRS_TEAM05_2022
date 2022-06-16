@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
-import ImgReservation from "./ReservationBasicCard.js";
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import { styled, useTheme } from "@mui/material/styles";
-import { getReservationsByClientId, getReservationsByOwnerId, getReservationsByOwnerIdAndFilter } from '../../service/ReservationService.js';
+import { getReservationsByClientId } from '../../service/ReservationService.js';
 import ReactPaginate from "react-paginate";
 import CssBaseline from '@mui/material/CssBaseline';
 import CottageIcon from '@mui/icons-material/Cottage';
@@ -15,7 +12,6 @@ import { useHistory } from 'react-router-dom';
 import { getCurrentUser } from '../../service/AuthService.js';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
@@ -24,8 +20,6 @@ import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ReservationCardForClient from './ReservationCardForClient.js';
 
@@ -145,10 +139,13 @@ export default function MyReservations() {
         setFilteredReservations(res);
     }
 
-    const displayReservations = filteredReservations.map(res=> {
-                                            console.log(res);
-                                            return <ReservationCardForClient reservation={res} reservationId={res.id} details="true"></ReservationCardForClient>
-                                        })
+    const displayReservations = 
+        filteredReservations.length > 0 ? 
+        filteredReservations.map(res=> {
+                        console.log(res);
+                        return <ReservationCardForClient reservation={res} reservationId={res.id} details="true"></ReservationCardForClient>
+                        
+            }): (<h1>No reservations</h1>)
 
     const [open, setOpen] = React.useState(false);
 

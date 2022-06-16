@@ -16,6 +16,8 @@ public class ShipOwnerService {
         this.shipOwnerRepository = shipOwnerRepository;
     }
 
+    public ShipOwnerService(){}
+
     public ShipOwner getShipOwnerWithShipsById(Long id) {
         return shipOwnerRepository.getShipOwnerWithShipsById(id);
     }

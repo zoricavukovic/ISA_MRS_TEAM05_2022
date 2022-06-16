@@ -24,13 +24,11 @@ export default function ShowAdventures(props) {
             if (getCurrentUser().userType.name === "ROLE_CLIENT") {
                 getAllSubscribedEntities(getCurrentUser().id).then(res => {
                     setSubscribedEntities(res.data);
-                    console.log(res.data);
-                });    
+                });  
+                setIsLoaded(true);
             }
             else 
                 setIsLoaded(true);
-            
-            
         }
         else 
             setIsLoaded(true);

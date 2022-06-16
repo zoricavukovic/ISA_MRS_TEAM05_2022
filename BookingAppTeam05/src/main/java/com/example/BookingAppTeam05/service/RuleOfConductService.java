@@ -21,6 +21,8 @@ public class RuleOfConductService {
         this.ruleOfConductRepository = ruleOfConductRepository;
     }
 
+    public RuleOfConductService(){}
+
     public RuleOfConduct getRuleOfConductById(Long id){return this.ruleOfConductRepository.getById(id);}
 
     @Transactional(readOnly = false)

@@ -1,5 +1,6 @@
 package com.example.BookingAppTeam05.service.users;
 
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
 import com.example.BookingAppTeam05.model.Report;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.users.Client;
@@ -22,18 +23,21 @@ public class ClientService {
         this.clientRepository = clientRepository;
     }
 
-    public String penalizeClientFromReportAndReturnErrorMessage(Report r) {
+    public ClientService(){}
+
+    public void penalizeClientFromReportAndReturnErrorMessage(Report r) {
         Client client = clientRepository.findById(r.getReservation().getClient().getId()).orElse(null);
         if (client == null)
-            return "Cant find client with id: " + r.getReservation().getClient().getId();
+            throw new ItemNotFoundException("Can't find client with id: " + r.getReservation().getClient().getId());
         int currPenalties = client.getPenalties();
         client.setPenalties(currPenalties + 1);
         clientRepository.save(client);
-        return null;
     }
 
     public List<Long> findSubscribedEntitiesByClientId(Long clientId) {
         Client client = clientRepository.findById(clientId).orElse(null);
+        if (client == null)
+            throw new ItemNotFoundException("Can't find client with id: " + clientId);
         List<Long> idEntities = new ArrayList<>();
         for (BookingEntity entity : client.getWatchedEntities()) {
             idEntities.add(entity.getId());
@@ -41,6 +45,9 @@ public class ClientService {
         return idEntities;
     }
 
+    public Client findClientByIdWithoutReservationsAndWatchedEntities(Long id){
+        return clientRepository.findByIdWithoutReservationsAndWatchedEntities(id);
+    }
 
     public Client findById(Long clientId) {
         return clientRepository.findById(clientId).orElse(null);

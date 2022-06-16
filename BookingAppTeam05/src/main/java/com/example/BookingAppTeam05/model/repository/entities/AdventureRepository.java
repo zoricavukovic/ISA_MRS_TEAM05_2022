@@ -1,12 +1,9 @@
 package com.example.BookingAppTeam05.model.repository.entities;
 
 import com.example.BookingAppTeam05.model.entities.Adventure;
-import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -14,12 +11,13 @@ public interface AdventureRepository extends JpaRepository<Adventure, Long> {
 
     @Query("select a from Adventure a left join fetch a.place p left join fetch a.fishingEquipment f " +
             "left join fetch a.rulesOfConduct r left join fetch a.pictures s left join fetch a.reservations res left join fetch a.instructor " +
+            "left join fetch a.pricelists " +
             "where a.id=?1 and a.deleted = false")
     Adventure getAdventureById(Long id);
 
     @Query("select a from Adventure a left join fetch a.place p left join fetch a.fishingEquipment f " +
             "left join fetch a.rulesOfConduct r left join fetch a.pictures s left join fetch a.reservations res " +
-            "where a.id=?1")
+            "left join fetch a.instructor where a.id=?1")
     Adventure getAdventureByIdCanBeDeleted(Long id);
 
     @Query("select distinct a from Adventure a left join fetch a.place p left join fetch a.pictures s where a.instructor.id=?1 and a.deleted = false")

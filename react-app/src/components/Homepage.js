@@ -1,4 +1,4 @@
-import { Landscape, VpnKey } from '@material-ui/icons';
+import { VpnKey } from '@material-ui/icons';
 import { Login } from '@mui/icons-material';
 import { Button, Grid } from '@mui/material';
 import * as React from 'react';

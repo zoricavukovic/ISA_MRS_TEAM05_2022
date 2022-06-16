@@ -13,13 +13,13 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u left join fetch u.place p left join fetch u.role r where u.id=?1")
-    public User findUserById(Long id);
+    User findUserById(Long id);
 
     @Query("select u from User u join fetch u.place p join fetch u.role r where u.email=?1 and u.deleted=false and u.notYetActivated=false")
-    public User findByEmail(String email);
+    User findByEmail(String email);
 
     @Query("select u from User u join fetch u.place p join fetch u.role r where u.email=?1 and u.deleted=false")
-    public User findByEmailAndNotYetActivated(String email);
+    User findByEmailAndNotYetActivated(String email);
 
     @Query("select u from User u join fetch u.place p join fetch u.role r where u.email=?1")
     User findByEmailAllUser(String email);

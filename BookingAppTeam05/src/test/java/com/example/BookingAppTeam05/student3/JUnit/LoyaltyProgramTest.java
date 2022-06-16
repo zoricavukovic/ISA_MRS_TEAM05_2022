@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.astudent3.JUnit;
+package com.example.BookingAppTeam05.student3.JUnit;
 
 import com.example.BookingAppTeam05.dto.LoyaltyProgramDTO;
 import com.example.BookingAppTeam05.model.LoyaltyProgram;

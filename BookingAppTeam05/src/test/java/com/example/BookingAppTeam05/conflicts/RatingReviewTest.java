@@ -1,7 +1,7 @@
-package com.example.BookingAppTeam05.aatestConflicts;
+package com.example.BookingAppTeam05.conflicts;
 
-import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.service.users.UserService;
+import com.example.BookingAppTeam05.model.Rating;
+import com.example.BookingAppTeam05.service.RatingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +18,10 @@ import java.util.concurrent.Future;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class NewAccoutRequestTest {
+public class RatingReviewTest {
 
     @Autowired
-    private UserService userService;
+    private RatingService ratingService;
 
     @Transactional
     @Rollback(true)
@@ -33,10 +33,10 @@ public class NewAccoutRequestTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 1");
-                User user = userService.findUserById(22L);
-                user.setNotYetActivated(false);
+                Rating rating = ratingService.findById(3L);
+                rating.setProcessed(true);
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
-                userService.save(user);
+                ratingService.save(rating);
             }
         });
         executor.submit(new Runnable() {
@@ -44,9 +44,9 @@ public class NewAccoutRequestTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 2");
-                User user = userService.findUserById(22L);
-                user.setNotYetActivated(false);
-                userService.save(user);
+                Rating rating = ratingService.findById(3L);
+                rating.setProcessed(true);
+                ratingService.save(rating);
             }
         });
         try {

@@ -149,13 +149,20 @@ export default function ReservationBasicCard(props) {
             setPricelist(res.data);
             getAdditionalServicesByReservationId(props.reservation.id).then(addServices => {
               setAdditionalServices(addServices.data);
-              let updatedResCost = res.data.entityPricePerPerson*props.reservation.cost;
-              if (addServices.data.length>0){
-                for (let addService of addServices.data){
-                  updatedResCost += addService.price;
-                }
+              if (props.reservation.fastReservation == true){
+                let updatedResCost = props.reservation.cost;
+                setReservationCost(updatedResCost);
               }
-              setReservationCost(updatedResCost);
+              else{
+                let updatedResCost = res.data.entityPricePerPerson*props.reservation.cost;
+                if (addServices.data.length>0){
+                  for (let addService of addServices.data){
+                    updatedResCost += addService.price;
+                  }
+                }
+                setReservationCost(updatedResCost);
+              }
+              
               getReportByReservationId(props.reservation.id).then(reported => {
                 setReported(true);
                 setReport(reported.data);

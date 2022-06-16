@@ -2,12 +2,13 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenueForPeriodDTO;
 import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenuePercentageDTO;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.database.DatabaseException;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.SystemRevenuePercentage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.repository.SystemRevenuePercentageRepository;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,22 +25,35 @@ public class SystemRevenuePercentageService {
         this.reservationService = reservationService;
     }
 
+    public SystemRevenuePercentageService(){}
+
     public SystemRevenuePercentage getCurrentSystemRevenuePercentage() {
-        return systemRevenuePercentageRepository.getAllSystemRevenuePercentagesOrderByStartDate().get(0);
+        List<SystemRevenuePercentage> systemRevenuePercentages = systemRevenuePercentageRepository.getAllSystemRevenuePercentagesOrderByStartDate();
+        if (systemRevenuePercentages == null || systemRevenuePercentages.size() == 0)
+            throw new ItemNotFoundException("Can't find revenue for this system.");
+        return systemRevenuePercentages.get(0);
+    }
+
+    public SystemRevenuePercentageDTO getCurrentSystemRevenuePercentageDTO() {
+        SystemRevenuePercentage s = getCurrentSystemRevenuePercentage();
+        return new SystemRevenuePercentageDTO(s);
     }
 
     @Transactional
     public SystemRevenuePercentageDTO setNewSystemRevenuePercentageDTO(SystemRevenuePercentageDTO systemRevenuePercentageDTO) {
         SystemRevenuePercentage systemRevenuePercentage = new SystemRevenuePercentage(systemRevenuePercentageDTO.getPercentage(), LocalDateTime.now());
         SystemRevenuePercentageDTO retVal = new SystemRevenuePercentageDTO(systemRevenuePercentage);
-        systemRevenuePercentageRepository.save(systemRevenuePercentage);
+        try{
+            systemRevenuePercentageRepository.save(systemRevenuePercentage);
+        } catch (Exception ex){
+            throw new DatabaseException("Can't save new revenue at the moment. Try again!");
+        }
         return retVal;
     }
 
     public SystemRevenueForPeriodDTO getSystemRevenueDTOForPeriod(LocalDate startDate, LocalDate endDate) {
         List<Reservation> reservations = reservationService.getAllFinishedReservations();
         double total = 0; double adventuresTotal = 0; double shipsTotal = 0; double cottagesTotal = 0;
-
         for (Reservation r : reservations) {
             LocalDate rEndDate = r.getEndDate().toLocalDate();
             if ((rEndDate.equals(startDate) || rEndDate.isAfter(startDate)) && (rEndDate.equals(endDate) || rEndDate.isBefore(endDate)))
@@ -61,7 +75,6 @@ public class SystemRevenuePercentageService {
     public SystemRevenueForPeriodDTO getSystemRevenueDTOForAll() {
         List<Reservation> reservations = reservationService.getAllFinishedReservations();
         double total = 0; double adventuresTotal = 0; double shipsTotal = 0; double cottagesTotal = 0;
-
         for (Reservation r : reservations) {
             double revenue =  (r.getSystemTakes() - r.getOwnerBonus() - r.getClientDiscountValue());
             total += revenue;

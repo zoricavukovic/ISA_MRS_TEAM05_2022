@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.astudent3.Integration;
+package com.example.BookingAppTeam05.student3.Integration;
 
 import org.junit.Before;
 import org.junit.Test;

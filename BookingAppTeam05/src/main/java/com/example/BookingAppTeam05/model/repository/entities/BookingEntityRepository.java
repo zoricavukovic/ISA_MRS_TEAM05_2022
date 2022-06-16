@@ -22,10 +22,6 @@ public interface BookingEntityRepository extends JpaRepository<BookingEntity, Lo
     @Query("select b from BookingEntity b left join fetch b.unavailableDates p where b.id =?1 and b.deleted = false")
     BookingEntity getEntityWithUnavailableDatesById(Long id);
 
-    @Query(value = "update BookingEntity b SET b.deleted = true where b.id = ?1")
-    @Modifying
-    void logicalDeleteBookingEntityById(Long id);
-
     @Query("select b.entityType from BookingEntity b where b.id =?1 and b.deleted = false")
     Optional<EntityType> findEntityTypeById(Long id);
 

@@ -1,6 +1,5 @@
 package com.example.BookingAppTeam05.controller;
 
-
 import com.example.BookingAppTeam05.dto.AnalyticsDTO;
 import com.example.BookingAppTeam05.dto.calendar.CalendarEntryDTO;
 import com.example.BookingAppTeam05.service.CalendarService;
@@ -9,12 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/calendar")
-@CrossOrigin
+//@CrossOrigin
 public class CalendarController {
 
     private CalendarService calendarService;
@@ -24,6 +22,7 @@ public class CalendarController {
         this.calendarService = calendarService;
     }
 
+    public CalendarController(){}
 
     @GetMapping(value="/entity/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CalendarEntryDTO>> getCalendarEntriesForBookingEntity(@PathVariable  Long id) {
@@ -54,5 +53,4 @@ public class CalendarController {
         List<AnalyticsDTO> retVal = calendarService.getAnalyticsYearDTOByEntityId(id);
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
-
 }

@@ -1,8 +1,10 @@
 package com.example.BookingAppTeam05.service.entities;
 
-import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
-import com.example.BookingAppTeam05.exception.ApiRequestException;
+import com.example.BookingAppTeam05.dto.users.ShipOwnerDTO;
+import com.example.BookingAppTeam05.exception.*;
+import com.example.BookingAppTeam05.exception.database.CreateItemException;
+import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.entities.Ship;
@@ -12,17 +14,10 @@ import com.example.BookingAppTeam05.model.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.validation.Valid;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ShipService {
@@ -51,6 +46,50 @@ public class ShipService {
         this.userService = userService;
     }
 
+    public ShipService(){}
+
+    public Ship getShipById(Long id) {
+        return shipRepository.getShipById(id);
+    }
+
+    public Ship getShipByIdCanBeDeleted(Long id) {
+        return shipRepository.getShipByIdCanBeDeleted(id);
+    }
+
+    public ShipDTO getShipDTOById(Long id) {
+        Ship ship = getShipById(id);
+        if (ship == null)
+            throw new ItemNotFoundException("Can't find ship with id: " + id);
+        return getShipDTO(ship);
+    }
+
+    public ShipDTO getShipDTOByIdCanBeDeleted(Long id) {
+        Ship ship = getShipByIdCanBeDeleted(id);
+        if (ship == null)
+            throw new ItemNotFoundException("Can't find ship with id: " + id);
+        return getShipDTO(ship);
+    }
+
+    private ShipDTO getShipDTO(Ship ship) {
+        ShipDTO shipDTO = new ShipDTO(ship);
+        shipDTO.setPlace(ship.getPlace());
+        if (ship.getRulesOfConduct() != null){
+            shipDTO.setRulesOfConduct(ship.getRulesOfConduct());
+        }
+        shipDTO.setPictures(ship.getPictures());
+        if (ship.getFishingEquipment() != null){
+            shipDTO.setFishingEquipment(ship.getFishingEquipment());
+        }
+        if (ship.getNavigationalEquipment() != null){
+            shipDTO.setNavigationalEquipment(ship.getNavigationalEquipment());
+        }
+        if(ship.getShipOwner() != null){
+            shipDTO.setShipOwner(new ShipOwnerDTO(ship.getShipOwner()));
+        }
+
+        return shipDTO;
+    }
+
     public List<Ship> findAll() {
         return shipRepository.findAll();
     }
@@ -62,12 +101,17 @@ public class ShipService {
     public User getShipOwnerOfShipId(Long id) {
         return this.shipRepository.getShipOwnerOfShipId(id);
     }
-    public Ship getShipById(Long id) {
-        return shipRepository.getShipById(id);
-    }
 
-    public Ship getShipByIdCanBeDeleted(Long id) {
-        return shipRepository.getShipByIdCanBeDeleted(id);
+    public List<ShipDTO> getShipsDTOByOwnerId(Long id){
+        List<Ship> shipFound = getShipsByOwnerId(id);
+        List<ShipDTO> shipDTOs = new ArrayList<>();
+        for (Ship ship : shipFound) {
+            ShipDTO sDTO = new ShipDTO(ship);
+            sDTO.setPlace(ship.getPlace());
+            sDTO.setPictures(ship.getPictures());
+            shipDTOs.add(sDTO);
+        }
+        return shipDTOs;
     }
 
     public Ship save(Ship ship) {
@@ -84,14 +128,15 @@ public class ShipService {
     }
 
     @Transactional
-    public String updateShip(ShipDTO shipDTO, Long id){
+    public void updateShip(ShipDTO shipDTO, Long id){
         try {
             if (reservationService.findAllActiveReservationsForEntityid(id).size() != 0)
-                return "Cant update ship because there exist active reservations";
+                throw new EditItemException("Can't update ship because there exist active reservations");
 
             Ship ship = getShipById(id);
-            if (ship == null)  return "Cant find ship with id " + id + ".";
-            if (ship.getVersion() != shipDTO.getVersion()) return "Conflict seems to have occurred, someone changed your ship data before you. Please refresh page and try again";
+            if (ship == null)  throw new ItemNotFoundException("Cant find ship with id: " + id);
+            if (ship.getVersion() != shipDTO.getVersion())
+                throw new ConflictException("Conflict seems to have occurred, someone changed your ship data before you. Please refresh page and try again!");
             ship.setName(shipDTO.getName());
             ship.setAddress(shipDTO.getAddress());
             ship.setPromoDescription(shipDTO.getPromoDescription());
@@ -105,11 +150,11 @@ public class ShipService {
             ship.setEntityType(EntityType.SHIP);
 
             Place p = shipDTO.getPlace();
-            if (p == null) return "Cant find chosen place.";
+            if (p == null) throw new ItemNotFoundException("Can't find chosen place");
             Place place = placeService.getPlaceByZipCode(p.getZipCode());
             ship.setPlace(place);
 
-            Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();
+            Set<RuleOfConduct> rules = new HashSet<>();
             Ship oldShip = getShipById(id);
             tryToEditShipRulesOfConduct(shipDTO, oldShip, rules);
             ship.setRulesOfConduct(rules);
@@ -121,11 +166,9 @@ public class ShipService {
             Set<FishingEquipment> fishingEquipment = fishingEquipmentService.createEquipmentFromDTO(shipDTO.getFishingEquipment());
             ship.setFishingEquipment(fishingEquipment);
             pictureService.setNewImagesForBookingEntity(ship, shipDTO.getImages());
-            if (save(ship) == null ) return "Conflict seems to have occurred, someone changed your ship before you. Please refresh page and try again";
         } catch (ObjectOptimisticLockingFailureException e) {
-            return "Conflict seems to have occurred, someone changed your ship before you. Please refresh page and try again";
+            throw new ConflictException("Conflict seems to have occurred, someone changed your ship data before you. Please refresh page and try again!");
         }
-        return "";
     }
 
     @Transactional
@@ -142,12 +185,13 @@ public class ShipService {
         ship.setEntityCancelationRate(shipDTO.getEntityCancelationRate());
         ship.setEntityType(EntityType.SHIP);
         ship.setShipType(shipDTO.getShipType());
-        if (shipDTO.getPlace() == null) return "Cant find place.";
+        if (shipDTO.getPlace() == null) throw new ItemNotFoundException("Can't create ship without set place");
         Place place1 = placeService.getPlaceByZipCode(shipDTO.getPlace().getZipCode());
-        if (place1 == null) return "Cant find place with zip code: " + shipDTO.getPlace().getZipCode();
+        if (place1 == null)
+            throw new ItemNotFoundException("Can't find place with zip code: " + shipDTO.getPlace().getZipCode());
         ship.setPlace(place1);
         ShipOwner shipOwner = (ShipOwner) userService.findUserById(idShipOwner);
-        if (shipOwner == null) return "Cant find ship owner with id: " + idShipOwner;
+        if (shipOwner == null) throw new ItemNotFoundException("Can't find ship owner with id: " + idShipOwner);
         ship.setShipOwner(shipOwner);
         ship.setRulesOfConduct(shipDTO.getRulesOfConduct());
         if (!shipDTO.getImages().isEmpty()) {
@@ -162,9 +206,9 @@ public class ShipService {
         ship.setVersion(0);
         ship.setLocked(false);
         ship = save(ship);
-        if (ship != null) return ship.getId().toString();
-        return "Entity cant save. Try again later!";
-
+        if (ship == null)
+            throw new CreateItemException("Can't create new cottage. Try again!");
+        return ship.getId().toString();
     }
 
     public void tryToEditShipRulesOfConduct(ShipDTO shipDTO, Ship oldShip, Set<RuleOfConduct> rules) {
@@ -255,5 +299,17 @@ public class ShipService {
                 retVal.add(s);
         }
         return retVal;
+    }
+
+    public List<ShipDTO> findAllShipsDTO() {
+        List<Ship> ships = findAll();
+        List<ShipDTO> shipDTOs = new ArrayList<>();
+        for (Ship ship:ships) {
+            ShipDTO sDTO = new ShipDTO(ship);
+            sDTO.setPlace(ship.getPlace());
+            sDTO.setRulesOfConduct(ship.getRulesOfConduct());
+            shipDTOs.add(sDTO);
+        }
+        return shipDTOs;
     }
 }

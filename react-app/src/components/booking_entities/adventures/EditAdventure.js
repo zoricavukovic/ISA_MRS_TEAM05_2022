@@ -149,7 +149,7 @@ export default function EditAdventure(props) {
                 });
             })
             .catch(resError => {
-                setMessage(resError.response.data.message);
+                setMessage(resError.response.data);
                 handleClick();
                 return;
             });

@@ -17,6 +17,8 @@ public class InstructorService {
         this.instructorRepository = instructorRepository;
     }
 
+    public InstructorService(){}
+
     public Instructor findById(Long id) {
         Optional<Instructor> instructorResult =  instructorRepository.findById(id);
         return instructorResult.orElse(null);
