@@ -2,18 +2,15 @@ package com.example.BookingAppTeam05.controller;
 
 import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenueForPeriodDTO;
 import com.example.BookingAppTeam05.dto.systemRevenue.SystemRevenuePercentageDTO;
-import com.example.BookingAppTeam05.model.SystemRevenuePercentage;
 import com.example.BookingAppTeam05.service.SystemRevenuePercentageService;
-import org.springframework.boot.origin.SystemEnvironmentOrigin;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/systemRevenuePercentages")
@@ -25,34 +22,30 @@ public class SystemRevenuePercentageController {
         this.systemRevenuePercentageService = systemRevenuePercentageService;
     }
 
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
+    public SystemRevenuePercentageController(){}
+
     @GetMapping(value="/current", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
     public ResponseEntity<SystemRevenuePercentageDTO> getCurrentSystemRevenuePercentage() {
-        SystemRevenuePercentage s = systemRevenuePercentageService.getCurrentSystemRevenuePercentage();
-        SystemRevenuePercentageDTO retVal = new SystemRevenuePercentageDTO(s);
+        SystemRevenuePercentageDTO retVal = systemRevenuePercentageService.getCurrentSystemRevenuePercentageDTO();
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @PostMapping(value="/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SystemRevenuePercentageDTO> setNewLoyaltyProgram(@Valid @RequestBody SystemRevenuePercentageDTO systemRevenuePercentageDTO) {
         SystemRevenuePercentageDTO created = systemRevenuePercentageService.setNewSystemRevenuePercentageDTO(systemRevenuePercentageDTO);
-        if (created == null) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
         return new ResponseEntity<>(created, HttpStatus.OK);
     }
 
     @GetMapping(value="/revenueInPeriod")
     public ResponseEntity<SystemRevenueForPeriodDTO> getRevenueForPeriod(@RequestParam("startDate") @DateTimeFormat(pattern="yyyy-dd-MM") LocalDate startDate , @RequestParam("endDate") @DateTimeFormat(pattern="yyyy-dd-MM") LocalDate endDate) {
-        SystemRevenueForPeriodDTO s = systemRevenuePercentageService.getSystemRevenueDTOForPeriod(startDate, endDate);
-        return new ResponseEntity<>(s, HttpStatus.OK);
+        SystemRevenueForPeriodDTO retVal = systemRevenuePercentageService.getSystemRevenueDTOForPeriod(startDate, endDate);
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @GetMapping(value="/allRevenue")
     public ResponseEntity<SystemRevenueForPeriodDTO> getAllRevenue() {
-        SystemRevenueForPeriodDTO s = systemRevenuePercentageService.getSystemRevenueDTOForAll();
-        return new ResponseEntity<>(s, HttpStatus.OK);
+        SystemRevenueForPeriodDTO retVal = systemRevenuePercentageService.getSystemRevenueDTOForAll();
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
-
-
 }

@@ -12,13 +12,10 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import RatingEntity from "../../Rating";
-import Collapse from "@mui/material/Collapse";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
 import { getAdventureById } from "../../../service/AdventureService";
 import { checkIfCanEditEntityById } from "../../../service/BookingEntityService";
@@ -39,6 +36,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import StyledAvatar from "../../StyledAvatar";
 import { subscribeClientWithEntity, unsubscribeClientWithEntity } from "../../../service/UserService";
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import Approved from "../../../icons/approval.png";
+import NotApproved from "../../../icons/notApprowed.png"
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -85,9 +84,20 @@ function AdventureAdditionalInfo(props) {
 function RenderRulesOfConduct(props) {
     return (
         props.rulesOfConduct.map((page) => (
-            <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
-                <FormControlLabel disabled control={<Checkbox size="small" checked={page.allowed} />} />
-                <Typography textAlign="center">{page.ruleName}</Typography>
+            <Button disabled style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
+                <table>
+                        <tr>
+                        <th><Typography textAlign="left">{page.ruleName}</Typography></th>
+                            <th>
+                            
+                                {page.allowed == true ? (
+                                    <img style={{height:'70%', width:'70%'}} src={Approved}></img>):(
+                                    <img style={{height:'70%', width:'70%'}} src={NotApproved}></img>  
+                                )}
+                            </th>
+                            
+                        </tr>
+                    </table>
             </Button>
         ))
     )
@@ -141,9 +151,9 @@ function AdventureActions(props) {
     const showFastReservations = (event) => {
         event.preventDefault();
         props.history.push({
-            pathname: "/showFastReservations",
-            state: { adventureId: props.adventureId }
-        });
+            pathname: "/addFastReservation",
+            state: { bookingEntityId: props.adventureId } 
+          })
 
     };
 
@@ -157,11 +167,11 @@ function AdventureActions(props) {
                 <Chip icon={<EditIcon />} label="Edit Adventure" />
             </IconButton>
             <IconButton value="module" aria-label="module" onClick={showFastReservations}>
-                <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
+                <Chip icon={<LocalFireDepartmentIcon />} label="Create Action" />
             </IconButton>
             <IconButton value="module" aria-label="module">
-                    <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
-                </IconButton>
+                <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
+            </IconButton>
             <ExpandMore
                 expand={props.expanded}
                 onClick={props.handleExpandClick}
@@ -384,9 +394,11 @@ export default function AdventureProfile(props) {
                                         <Typography variant="subtitle1" component="div">
                                             {res.cost*res.numOfDays*res.numOfPersons}€
                                         </Typography>
-                                            <Button onClick={() =>FastReserve(res)} disabled={getCurrentUser().penalties>2?true:false} variant='contained' style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}>
-                                                Reserve Now
-                                            </Button>
+                                            {getCurrentUser().userType.name == "ROLE_CLIENT"?(
+                                                <Button onClick={() =>FastReserve(res)} disabled={getCurrentUser().penalties>2?true:false} variant='contained' style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}>
+                                                    Reserve Now
+                                                </Button>
+                                            ):(<></>)}
                                         </Grid>
                                         </Grid>
                                     </Grid>
@@ -426,7 +438,7 @@ export default function AdventureProfile(props) {
                             <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
                                 <h4>Promo Description: </h4><h3>{adventureData.promoDescription} </h3>
                             </Typography>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item xs={12} sm={4} style={{ width: '30%'}} minWidth="200px">
                                     <AdventureAdditionalInfo
                                         header="Rules of conduct"
                                         additionalData={<RenderRulesOfConduct rulesOfConduct={adventureData.rulesOfConduct} />}
@@ -438,7 +450,7 @@ export default function AdventureProfile(props) {
                                         additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item xs={12} sm={4} style={{ width: '30%'}} minWidth="200px">
                                     <AdventureAdditionalInfo
                                         header="Fishing equipment"
                                         additionalData={<RenderFishingEquipment fishingEquipment={adventureData.fishingEquipment} />}

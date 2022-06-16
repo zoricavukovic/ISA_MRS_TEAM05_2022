@@ -39,14 +39,18 @@ export default function EntityBasicCard(props) {
     const [isSubsribed, setIsSubscribed] = React.useState(false);
 
     React.useEffect(() => {
+        console.log(props);
         if (getCurrentUser() !== null && getCurrentUser() !== undefined) {
             if (getCurrentUser().userType.name === "ROLE_CLIENT") {
                 let subsc = [];
+                setIsSubscribed(false);   
                 console.log(props.subscribedEntities);
-                if(props.subscribedEntities != null && props.subscribedEntities != "undefined" && props.subscribedEntities.length > 0)
-                    subsc = props.subscribedEntities.some(e=>e.id === props.bookingEntity.id)
-                console.log("IS SUBSRCIBED:"+subsc);
-                setIsSubscribed(subsc);        
+                if(props.subscribedEntities != null && props.subscribedEntities != "undefined" && props.subscribedEntities.length > 0){
+                    subsc = props.subscribedEntities.some(e=>e.id === props.bookingEntity.id);
+                    console.log("IS SUBSRCIBED:"+subsc);   
+                    setIsSubscribed(subsc); 
+                }
+                console.log("IS SUBSRCIBED:"+subsc);     
             }
         }
     }, []);
@@ -73,7 +77,6 @@ export default function EntityBasicCard(props) {
 
     const logicDeleteBookingEntity = (event) => {
         event.stopPropagation();
-        console.log("brisnaje");
         logicalDeleteBookingEntityById(props.bookingEntity.id, getCurrentUser().id, password).then(res => {
             setPassword("");
             handleClick();

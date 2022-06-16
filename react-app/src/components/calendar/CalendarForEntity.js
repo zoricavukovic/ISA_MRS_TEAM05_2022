@@ -22,10 +22,11 @@ import styles from './datePickerStyle.module.css';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { useHistory } from "react-router-dom";
-
-
-
-import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
+import ShipOwner from "../../icons/shipOwner.png";
+import CottageOwner from "../../icons/cottageOwner.png";
+import Instructor from "../../icons/instructor.png";
+import Tooltip from '@mui/material/Tooltip';
+import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
     Scheduler,
     MonthView,
@@ -40,7 +41,7 @@ import {
 import { addNewUnavailableDate, checkOverlapForUnavailableDate, setUnavailablePeriodAsAvailable } from "../../service/UnavailablePeriodService";
 import { userLoggedInAsOwner } from "../../service/UserService";
 import { propsLocationStateFound } from "../forbiddenNotFound/notFoundChecker";
-
+import { getCurrentUser } from '../../service/AuthService.js';
 
 const resources = [{
     fieldName: 'type',
@@ -251,6 +252,11 @@ export default function CalendarForEntity(props) {
             });
     }
 
+    const returnToBookingEntitieProfile = (event) => {
+        event.preventDefault();
+        history.goBack();
+      }
+
 
     if (isLoadingData) {
         return <div className="App">Loading...</div>
@@ -264,6 +270,20 @@ export default function CalendarForEntity(props) {
                 justifyContent="center"
             >
                 <Box style={{ display: "flex", flexDirection: "row", margin: "1% auto 1% auto" }}>
+                {getCurrentUser().userType.name == "ROLE_COTTAGE_OWNER"?
+                  (<Tooltip title="Show Cottage"><img toolTip onClick={returnToBookingEntitieProfile} src={CottageOwner}></img></Tooltip>):(
+                    <>
+                      {getCurrentUser().userType.name == "ROLE_SHIP_OWNER"?
+                      (<Tooltip title="Show Ship"><img onClick={returnToBookingEntitieProfile} src={ShipOwner}></img></Tooltip>):(
+                        <>
+                          {getCurrentUser().userType.name == "ROLE_INSTRUCTOR"?
+                      (<Tooltip title="Show Adventure"><img onClick={returnToBookingEntitieProfile} src={Instructor}></img></Tooltip>):(
+                          <></>
+                        )}
+                          </>
+                        )}
+                      </>
+                    )}
                     <Button variant="contained" onClick={handleOpenDialog} style={{ color: 'rgb(5, 30, 52)', fontSize: '10px', fontWeight: 'bold', textAlign: 'center', backgroundColor: 'rgb(244, 177, 77)', marginTop: '1%', padding: '1%', borderRadius: '10px', width: '15%' }}>
                         Add unavailable period
                     </Button>

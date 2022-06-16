@@ -16,6 +16,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(itemNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(value = UnauthorisedException.class)
+    public ResponseEntity<String> UnauthorisedException(UnauthorisedException unauthorisedException) {
+        return new ResponseEntity<>(unauthorisedException.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(value = ItemAlreadyExistException.class)
     public ResponseEntity<String> itemAlreadyExistException(ItemAlreadyExistException itemAlreadyExistException) {
         return new ResponseEntity<>(itemAlreadyExistException.getMessage(), HttpStatus.CONFLICT);

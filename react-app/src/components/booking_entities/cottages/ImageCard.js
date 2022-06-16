@@ -44,22 +44,20 @@ import { DateRange,Calendar } from 'react-date-range';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined } from '@mui/icons-material';
-import { getBookingEntityById } from '../../../service/BookingEntityService';
-import { addReservation, getAvailableFastReservationsByBookingEntityId, reserveFastReservation } from '../../../service/ReservationService';
+import { getAvailableFastReservationsByBookingEntityId, reserveFastReservation } from '../../../service/ReservationService';
 import { getCurrentUser } from '../../../service/AuthService';
-import { Paper, TextField, Link, ListItemText, InputAdornment, FormControl, FormLabel, FormGroup, DialogTitle, DialogContent, DialogContentText, DialogActions, ListItem, Autocomplete, Rating, ButtonBase, List, Tooltip } from '@mui/material';
+import { DialogTitle, DialogContent, DialogContentText, DialogActions, ListItem, Autocomplete, Rating, ButtonBase, List, Tooltip } from '@mui/material';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import CreateReservationForClient from '../../reservations/CreateReservationForClient';
 import { findAllClientsWithActiveReservations} from '../../../service/ReservationService';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import { getReportsByEntityId } from '../../../service/ReportService';
 import { getRatingsByEntityId } from '../../../service/RatingService';
 import StyledAvatar from '../../StyledAvatar';
 import { subscribeClientWithEntity, unsubscribeClientWithEntity } from '../../../service/UserService';
 import Approved from "../../../icons/approval.png";
-import NotApproved from "../../../icons/notApprowed.png"
+import NotApproved from "../../../icons/notApprowed.png";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -135,10 +133,9 @@ export default function ImageCard(props) {
     const showFastReservations = (event) => {
         event.preventDefault();
         history.push({
-            pathname: "./showFastReservations",
-            state: { bookingEntityId: props.cottageId }
-        })
-
+            pathname: "/addFastReservation",
+            state: { bookingEntityId: props.cottageId } 
+          })
     };
 
     function createReservationForClient() {
@@ -194,13 +191,22 @@ export default function ImageCard(props) {
     function RenderRulesOfConduct(props) {
         return (
             props.rulesOfConduct.map((page) => (
-                <Button disabled style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
-                 
-                    {page.allowed == true ? (
-                        <img src={Approved}></img>):(
-                        <img src={NotApproved}></img>  
-                    )}
-                    <Typography textAlign="center">{page.ruleName}</Typography>
+                <Button disabled style={{borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
+                    <table>
+                        <tr>
+                        <th><Typography textAlign="left">{page.ruleName}</Typography></th>
+                            <th>
+                            
+                                {page.allowed == true ? (
+                                    <img style={{height:'70%', width:'70%'}} src={Approved}></img>):(
+                                    <img style={{height:'70%', width:'70%'}} src={NotApproved}></img>  
+                                )}
+                            </th>
+                            
+                        </tr>
+                    </table>
+                    
+                    
                 </Button>
             ))
         )
@@ -350,7 +356,7 @@ export default function ImageCard(props) {
                     <Chip icon={<EditIcon />} label="Edit Cottage" />
                 </IconButton>
                 <IconButton value="module" aria-label="module" onClick={showFastReservations}>
-                    <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
+                    <Chip icon={<LocalFireDepartmentIcon />} label="Create Action" />
                 </IconButton>
                 <IconButton value="module" aria-label="module" onClick={createReservationForClient}>
                     <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
@@ -447,13 +453,13 @@ export default function ImageCard(props) {
                 <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
                     <h4>Promo Description: </h4><h3>{cottageBasicData.promoDescription} </h3>
                 </Typography>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4} style={{ width: '30%'}} minWidth="200px">
                         <CottageAdditionalInfo
                             header="Rules of conduct"
                             additionalData={<RenderRulesOfConduct rulesOfConduct={cottageBasicData.rulesOfConduct} />}
                         />
                     </Grid>
-                <Grid item xs={12} sm={4} minWidth="300px">
+                <Grid item xs={12} sm={4} style={{ width: '30%'}} minWidth="300px">
                     <CottageAdditionalInfo
                         header="Additional services"
                         additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}

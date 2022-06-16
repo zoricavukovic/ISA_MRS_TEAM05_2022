@@ -5,26 +5,29 @@ import com.example.BookingAppTeam05.dto.ReservationForClientDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.dto.users.ClientDTO;
+import com.example.BookingAppTeam05.exception.ConflictException;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.NotificationByEmailException;
+import com.example.BookingAppTeam05.exception.database.CreateItemException;
+import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.Ship;
-import com.example.BookingAppTeam05.model.repository.AdditionalServiceRepository;
 import com.example.BookingAppTeam05.model.repository.ReservationRepository;
-import com.example.BookingAppTeam05.model.repository.SubscriberRepository;
 import com.example.BookingAppTeam05.model.users.Client;
-import com.example.BookingAppTeam05.model.repository.entities.AdventureRepository;
-import com.example.BookingAppTeam05.model.repository.entities.BookingEntityRepository;
-import com.example.BookingAppTeam05.model.repository.entities.CottageRepository;
-import com.example.BookingAppTeam05.model.repository.entities.ShipRepository;
-import com.example.BookingAppTeam05.model.repository.users.ClientRepository;
-import com.example.BookingAppTeam05.model.repository.users.UserRepository;
+import com.example.BookingAppTeam05.service.entities.AdventureService;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
+import com.example.BookingAppTeam05.service.entities.CottageService;
+import com.example.BookingAppTeam05.service.entities.ShipService;
+import com.example.BookingAppTeam05.service.users.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.mail.MailException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,66 +39,81 @@ import java.util.Set;
 public class ReservationService {
 
     private ReservationRepository reservationRepository;
-    private CottageRepository cottageRepository;
-    private ShipRepository shipRepository;
-    private AdventureRepository adventureRepository;
-    private ClientRepository clientRepository;
-    private BookingEntityRepository bookingEntityRepository;
+    private BookingEntityService bookingEntityService;
+    private AdditionalServiceService additionalServiceService;
+    private CottageService cottageService;
+    private ShipService shipService;
+    private AdventureService adventureService;
+    private ClientService clientService;
+    private SubscriberService subscriberService;
     private EmailService emailService;
-    private SubscriberRepository subscriberRepository;
-    private UserRepository userRepository;
-    private AdditionalServiceRepository additionalServiceRepository;
-
-    private LoyaltyProgramService loyaltyProgramService;
-
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository, CottageRepository cottageRepository,
-                              ShipRepository shipRepository, AdventureRepository adventureRepository,
-                              ClientRepository clientRepository, BookingEntityRepository bookingEntityRepository,
-                              EmailService emailService, SubscriberRepository subscriberRepository, UserRepository userRepository,
-                              AdditionalServiceRepository additionalServiceRepository
-                              ){
+    public ReservationService(ReservationRepository reservationRepository,
+                              EmailService emailService, @Lazy BookingEntityService bookingEntityService,
+                              AdditionalServiceService additionalServiceService,  @Lazy CottageService cottageService,
+                              @Lazy ShipService shipService,  @Lazy AdventureService adventureService,
+                              @Lazy ClientService clientService, SubscriberService subscriberService){
         this.reservationRepository = reservationRepository;
-        this.cottageRepository = cottageRepository;
-        this.shipRepository = shipRepository;
-        this.adventureRepository = adventureRepository;
-        this.clientRepository = clientRepository;
-        this.bookingEntityRepository = bookingEntityRepository;
+        this.bookingEntityService = bookingEntityService;
+        this.additionalServiceService = additionalServiceService;
+        this.cottageService = cottageService;
+        this.shipService = shipService;
+        this.adventureService = adventureService;
+        this.clientService = clientService;
+        this.subscriberService = subscriberService;
         this.emailService = emailService;
-        this.subscriberRepository = subscriberRepository;
-        this.userRepository = userRepository;
-        this.additionalServiceRepository = additionalServiceRepository;
     }
 
-
-
-    public List<Reservation> findAllActiveReservationsForEntity(Long entityId){return reservationRepository.findAllActiveReservationsForBookingEntity(entityId);}
+    public ReservationService(){}
 
     public List<Reservation> getReservationsByOwnerId(Long ownerId, String type) {
         List<Reservation> reservations = new ArrayList<>();
-
         switch (type) {
             case "COTTAGE": {
-                List<Cottage> entities = cottageRepository.getCottagesByOwnerId(ownerId);
+                List<Cottage> entities = cottageService.getCottagesByOwnerId(ownerId);
                 for (BookingEntity entity : entities)
                     addingReservations(reservations, entity);
                 break;
             }
             case "SHIP": {
-                List<Ship> entities = shipRepository.getShipsByOwnerId(ownerId);
+                List<Ship> entities = shipService.getShipsByOwnerId(ownerId);
                 for (BookingEntity entity : entities)
                     addingReservations(reservations, entity);
                 break;
             }
             case "ADVENTURE": {
-                List<Adventure> entities = adventureRepository.getAdventuresForOwnerId(ownerId);
+                List<Adventure> entities = adventureService.getAdventuresByOwnerId(ownerId);
                 for (BookingEntity entity : entities)
                     addingReservations(reservations, entity);
                 break;
             }
+            default:
+                throw new ItemNotFoundException("Reservations not found for this type [" + type + "].");
         }
         return reservations;
+    }
+
+    public List<ReservationDTO> getReservationDTOs(Long ownerId, String type) {
+        List<Reservation> reservationsFound = getReservationsByOwnerId(ownerId, type);
+        return createReservationDTOs(reservationsFound);
+    }
+
+    public List<ReservationDTO> getFastReservationDTOs(Long bookingEntityId) {
+        List<Reservation> reservationsFound = getFastReservationsByBookingEntityId(bookingEntityId);
+        return createReservationDTOs(reservationsFound);
+    }
+
+    private List<ReservationDTO> createReservationDTOs(List<Reservation> reservationsFound) {
+        List<ReservationDTO> reservationDTOs = new ArrayList<>();
+        for (Reservation reservation: reservationsFound) {
+            ReservationDTO rDTO = new ReservationDTO(reservation);
+            rDTO.setBookingEntity(new BookingEntityDTO(reservation.getBookingEntity()));
+            if (reservation.getClient() != null)
+                rDTO.setClient(new ClientDTO(reservation.getClient()));
+            reservationDTOs.add(rDTO);
+        }
+        return reservationDTOs;
     }
 
     public List<ReservationDTO> filterReservation(List<ReservationDTO> reservationDTOs, String name, String time){
@@ -156,6 +174,11 @@ public class ReservationService {
         return filteredReservationDTOs;
     }
 
+    public List<ReservationDTO> filterReservationsByOwnerId(Long ownerId, String type, String name, String time) {
+        List<ReservationDTO> reservationDTOs = getReservationDTOs(ownerId, type);
+        return filterReservation(reservationDTOs, name, time);
+    }
+
     private void addingReservations(List<Reservation> reservations, BookingEntity entity) {
         List<Reservation> reservationsByCottageId = getReservationsByEntityId(entity.getId());
         for (Reservation reservation : reservationsByCottageId) {
@@ -164,23 +187,20 @@ public class ReservationService {
         }
     }
 
-    public List<Reservation> getReservationsByEntityId(Long cottageId){return reservationRepository.getReservationsByEntityId(cottageId);}
+    public List<Reservation> getReservationsByEntityId(Long cottageId){return this.reservationRepository.getReservationsByEntityId(cottageId);}
 
     public List<Reservation> findAllReservationsForEntityId(Long id) {
         return this.reservationRepository.findAllReservationsForEntityId(id);
     }
 
-    public List<Reservation> findAllFastReservationsForEntityid(Long id) {
+    public List<Reservation> findAllFastReservationsForEntityId(Long id) {
         return this.reservationRepository.findAllFastReservationsForEntityId(id);
     }
 
-
     public List<Reservation> getFastReservationsByBookingEntityId(Long bookingEntityId) {
         List<Reservation> allFastRes = reservationRepository.getFastReservationsByBookingEntityId(bookingEntityId);
-        //System.out.println("caocao" + " " + allFastRes.size());
         List<Reservation> activeFastRes = new ArrayList<>();
         for (Reservation r : allFastRes){
-            System.out.println(allFastRes.size());
             if ((r.getStartDate()).isAfter(LocalDateTime.now())) activeFastRes.add(r);
         }
         return activeFastRes;
@@ -188,10 +208,8 @@ public class ReservationService {
 
     public List<ReservationDTO> getFastAvailableReservationsDTO(Long bookingEntityId) {
         List<Reservation> allFastRes = reservationRepository.getFastReservationsByBookingEntityId(bookingEntityId);
-        //System.out.println("caocao" + " " + allFastRes.size());
         List<ReservationDTO> activeFastRes = new ArrayList<>();
         for (Reservation r : allFastRes){
-            System.out.println(allFastRes.size());
             if ((r.getStartDate()).isAfter(LocalDateTime.now()) && r.getClient() == null)
             {
                 ReservationDTO reservationDTO = new ReservationDTO(r);
@@ -202,10 +220,20 @@ public class ReservationService {
         return activeFastRes;
     }
 
+    public Reservation findById(long Id) {
+        return reservationRepository.findById(Id).orElse(null);
+    }
+
+    public void save(Reservation fastReservation) {
+        reservationRepository.save(fastReservation);
+    }
+
+    @Transactional
     public Reservation addFastReservation(ReservationDTO reservationDTO){
         try{
             Reservation res = new Reservation();
-            if (reservationDTO.getStartDate().isBefore(LocalDateTime.now())) return null;
+            if (reservationDTO.getStartDate().isBefore(LocalDateTime.now()))
+                throw new CreateItemException("Can't create action with start date before today.");
             res.setStartDate(reservationDTO.getStartDate());
             res.setCost(reservationDTO.getCost());
             res.setCanceled(false);
@@ -214,50 +242,44 @@ public class ReservationService {
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
             Set<AdditionalService> additionalServices = new HashSet<>();
             for (NewAdditionalServiceDTO nas: reservationDTO.getAdditionalServices()) {
-                AdditionalService as = additionalServiceRepository.findById(nas.getId()).orElse(null);
+                AdditionalService as = additionalServiceService.findAdditionalServiceById(nas.getId());
+                if (as == null) throw new ItemNotFoundException("Can't find additional service with name: " + nas.getServiceName());
                 additionalServices.add(as);
             }
             res.setAdditionalServices(additionalServices);
             BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
-            if (entityDTO == null) return null;
-            BookingEntity entity = bookingEntityRepository.getEntityById(entityDTO.getId());
-            if (entity == null) return null;
+            if (entityDTO == null)  throw new CreateItemException("Can't create action without set entity for reservation.");
+            BookingEntity entity = bookingEntityService.getBookingEntityById(entityDTO.getId());
+            if (entity == null) throw new ItemNotFoundException("Can't find entity for reservation.");
             res.setBookingEntity(entity);
             res.setVersion(1);
             //resavanje konfliktne situacije student 2.
             entity.setLocked(true);
-            bookingEntityRepository.save(entity);
+            bookingEntityService.save(entity);
             res.setVersion(1);
             reservationRepository.save(res);
             entity.setLocked(false);
-            bookingEntityRepository.save(entity);
+            bookingEntityService.save(entity);
 
-            List<Long> subscribersIds = subscriberRepository.findAllSubscribersForEntityId(res.getBookingEntity().getId());
+            List<Long> subscribersIds = subscriberService.findAllSubscribersForEntityId(res.getBookingEntity().getId());
             List<Client> subscribers = new ArrayList<>();
             for (Long s: subscribersIds){
-                Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(s);
+                Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(s);
                 if (client != null) subscribers.add(client);
             }
-            //if (sendMail(res, subscribers).equals("error")) return null;
+            //sendMail(res, subscribers);
             return res;
-        }catch (OptimisticLockException e){
-            System.out.println("EXCEPTION HAS HAPPENED!!!!");
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ConflictException("Conflict seems to have occurred. This entity has reservation in same period. Please refresh page and try again");
         }
-        return null;
     }
 
-    private String sendMail(Reservation reservation, List<Client> subscribers){
-
-        //slanje emaila
+    private void sendMail(Reservation reservation, List<Client> subscribers){
         try {
-            System.out.println("Thread id: " + Thread.currentThread().getId());
             emailService.sendNotificaitionAsync(reservation, subscribers);
-        }catch( Exception e ){
-            System.out.println("Greska prilikom slanja emaila: " + e.getMessage());
-            return "error";
+        } catch(  MailException | InterruptedException e ){
+            throw new NotificationByEmailException("Error happened during sending email.");
         }
-
-        return "success";
     }
 
 
@@ -275,7 +297,6 @@ public class ReservationService {
     public Reservation addReservation(ReservationDTO reservationDTO) {
         try{
             Reservation res = new Reservation();
-
             res.setStartDate(reservationDTO.getStartDate());
             res.setCost(reservationDTO.getCost());
             res.setCanceled(false);
@@ -283,46 +304,45 @@ public class ReservationService {
             res.setNumOfDays(reservationDTO.getNumOfDays());
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
             Set<AdditionalService> aServices = new HashSet<>();
-            for (NewAdditionalServiceDTO as:reservationDTO.getAdditionalServices()) {
-                aServices.add(additionalServiceRepository.findById(as.getId()).orElse(null));
+
+            for (NewAdditionalServiceDTO nas:reservationDTO.getAdditionalServices()) {
+                AdditionalService as = additionalServiceService.findAdditionalServiceById(nas.getId());
+                if (as == null) throw new ItemNotFoundException("Can't find additional service with name: " + nas.getServiceName());
+                aServices.add(as);
             }
             res.setAdditionalServices(aServices);
             BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
-            if (entityDTO == null) return null;
-            BookingEntity entity = bookingEntityRepository.getEntityById(entityDTO.getId());
-            if (entity == null) return null;
+            if (entityDTO == null) throw new CreateItemException("Can't create reservation without set entity for reservation.");
+            BookingEntity entity = bookingEntityService.getBookingEntityById(entityDTO.getId());
+            if (entity == null) throw new ItemNotFoundException("Can't find entity for reservation.");
             res.setBookingEntity(entity);
             res.setVersion(0);
-            Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
-
-
+            if (reservationDTO.getClient() == null) throw new CreateItemException("Can't reserve reservation without set client.");
+            Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
+            if (client == null) throw new ItemNotFoundException("Can't find client who want to reserve reservation.");
             if(!dateRangeAvailable(reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
-                return null;
+                throw new CreateItemException("Can't create reservation cause date range is already unavailable. Refresh page and try again!");
 
             entity.setLocked(true);
-            bookingEntityRepository.save(entity);
+            bookingEntityService.save(entity);
             res.setClient(client);
             reservationRepository.save(res);
             entity.setLocked(false);
-            bookingEntityRepository.save(entity);
-
+            bookingEntityService.save(entity);
             return res;
-        }catch (OptimisticLockException e){
-            System.out.println("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again\";");
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ConflictException("Conflict seems to have occurred. Another user just reserved this entity. Please refresh page and try again");
         }
-        return null;
     }
 
     private boolean dateRangeAvailable(Long entityId, LocalDateTime startDate, int numOfDays) {
-        return false;
-
+        return true;
     }
 
-
-    public Reservation addReservationForClient(ReservationForClientDTO reservationDTO) {
+    @Transactional
+    public String addReservationForClient(ReservationForClientDTO reservationDTO) {
         try{
             Reservation res = new Reservation();
-
             res.setStartDate(reservationDTO.getStartDate());
             res.setCost(reservationDTO.getCost());
             res.setCanceled(false);
@@ -330,43 +350,38 @@ public class ReservationService {
             res.setNumOfDays(reservationDTO.getNumOfDays());
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
             Set<AdditionalService> aServices = new HashSet<>();
-            for (NewAdditionalServiceDTO as:reservationDTO.getAdditionalServices()) {
-                aServices.add(additionalServiceRepository.findById(as.getId()).orElse(null));
+
+            for (NewAdditionalServiceDTO nas:reservationDTO.getAdditionalServices()) {
+                AdditionalService as = additionalServiceService.findAdditionalServiceById(nas.getId());
+                if (as == null) throw new ItemNotFoundException("Can't find additional service with name: " + nas.getServiceName());
+                aServices.add(as);
             }
             res.setAdditionalServices(aServices);
             BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
-            if (entityDTO == null) return null;
-            BookingEntity entity = bookingEntityRepository.getEntityById(entityDTO.getId());
-            if (entity == null) return null;
+            if (entityDTO == null) throw new CreateItemException("Can't create reservation for client without set entity for reservation.");
+            BookingEntity entity = bookingEntityService.getEntityById(entityDTO.getId());
+            if (entity == null) throw new ItemNotFoundException("Can't find entity for reservation.");
             res.setBookingEntity(entity);
             res.setVersion(1);
+            if (reservationDTO.getClient() == null) throw new CreateItemException("Can't reserve reservation for client without set client.");
             String[] tokens = reservationDTO.getClient().split(" ");
             Long clientId = Long.parseLong(tokens[2].substring(1, tokens[2].length()-1));
-            Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(clientId);
+            Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(clientId);
+            if (client == null) throw new ItemNotFoundException("Can't find client for reservation.");
 
-            if (entity.isLocked()){
-                System.out.println("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again\";");
-                return null;
-            }
             //resavanje konfliktne situacije student 2.
             entity.setLocked(true);
-            bookingEntityRepository.save(entity);
-            res.setClient(client);
-
-            entity.setLocked(true);
-            bookingEntityRepository.save(entity);
+            bookingEntityService.save(entity);
             res.setClient(client);
             reservationRepository.save(res);
             entity.setLocked(false);
-            bookingEntityRepository.save(entity);
+            bookingEntityService.save(entity);
 
             //emailService.sendNotificationAboutResToClient(client, res);
-            return res;
-        }catch (OptimisticLockException e){
-            System.out.println("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again\";");
-
+            return res.getId().toString();
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ConflictException("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again");
         }
-        return null;
     }
 
     public List<ReservationDTO> getReservationsByClientId(Long clientId) {
@@ -400,8 +415,7 @@ public class ReservationService {
     }
 
     public List<String> findAllClientsWithActiveReservations(Long bookingEntityId) {
-        List<Reservation> reservations = new ArrayList<>();
-        reservations = reservationRepository.findAllRegularAndFastReservationsForEntityIdWithClient(bookingEntityId);
+        List<Reservation> reservations = reservationRepository.findAllRegularAndFastReservationsForEntityIdWithClient(bookingEntityId);
         List<String> clients = new ArrayList<>();
         for (Reservation r : reservations) {
             if (r.getStartDate().isBefore(LocalDateTime.now()) && r.getEndDate().isAfter(LocalDateTime.now()))
@@ -420,25 +434,20 @@ public class ReservationService {
         return retVal;
     }
 
+    @Transactional
     public Reservation reserveFastReservation(ReservationDTO reservationDTO) {
         try{
             Reservation res = reservationRepository.findById(reservationDTO.getId()).orElse(null);
-            Client client = clientRepository.findByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
+            if (res == null) throw new ItemNotFoundException("Can't find fast reservation entity for reservation.");
+            if (reservationDTO.getClient() == null) throw new EditItemException("Can't reserve fast reservation without set client.");
+            Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
+            if (client == null) throw new ItemNotFoundException("Can't find client who want to reserve fast reservation.");
             res.setClient(client);
             reservationRepository.save(res);
-            emailService.sendNotificationAboutResToClient(client, res);
+            //emailService.sendNotificationAboutResToClient(client, res);
             return res;
-        }catch (OptimisticLockException e){
-            System.out.println("Conflict seems to have occurred, another user reserved this entity before you. Please refresh page and try again\"");
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ConflictException("Conflict seems to have occurred, another user reserved this entity in before you create this action in same period. Please refresh page and try again");
         }
-        return null;
-    }
-
-    public Reservation findById(long Id) {
-        return reservationRepository.findById(Id).orElse(null);
-    }
-
-    public void save(Reservation fastReservation) {
-        reservationRepository.save(fastReservation);
     }
 }

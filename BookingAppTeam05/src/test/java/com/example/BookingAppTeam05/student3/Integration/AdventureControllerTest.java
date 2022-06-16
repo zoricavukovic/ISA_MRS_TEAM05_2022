@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.astudent3.Integration;
+package com.example.BookingAppTeam05.student3.Integration;
 
 import com.example.BookingAppTeam05.dto.users.NewAdventureDTO;
 import com.example.BookingAppTeam05.model.entities.Adventure;

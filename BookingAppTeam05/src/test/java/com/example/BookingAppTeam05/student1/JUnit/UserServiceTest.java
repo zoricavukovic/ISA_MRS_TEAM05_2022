@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -39,24 +40,10 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepositoryMock;
-    @Mock
+    @Autowired
     private PlaceService placeService;
-    @Mock
-    private EmailService emailService;
-    @Mock
+    @Autowired
     private RoleService roleService;
-    @Mock
-    private LoyaltyProgramService loyaltyProgramService;
-    @Mock
-    private BookingEntityService bookingEntityService;
-    @Mock
-    private ReservationService reservationService;
-    @Mock
-    private InstructorService instructorService;
-    @Mock
-    private CottageOwnerService cottageOwnerService;
-    @Mock
-    private ShipOwnerService shipOwnerService;
 
     private @Mock List<User> users;
 
@@ -83,19 +70,16 @@ class UserServiceTest {
     @Transactional
     @Rollback(true)
     void updateUser() {
-
-
-        when(userRepositoryMock.findUserById(7L)).thenReturn(new Client("bookingapp05mzr++jescieMullins@gmail.com", "Jescie", "Mullins", "Ap #769-2030 Mauris. Rd.", LocalDate.of(1971,12,20), "034-33-356-88", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", false, new Place(),new Role(), 0));
+        Place place = placeService.getPlaceById(1L);
+        Role role = roleService.findByName("ROLE_CLIENT");
+        when(userRepositoryMock.findUserById(7L)).thenReturn(new Client("bookingapp05mzr++jescieMullins@gmail.com", "Jescie", "Mullins", "Ap #769-2030 Mauris. Rd.", LocalDate.of(1971,12,20), "034-33-356-88", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", false, place,role, 0));
 
         User userForUpdate = userRepositoryMock.findUserById(7L);
 
         UserDTO userDTO = new UserDTO(userForUpdate);
         userDTO.setPlace(userForUpdate.getPlace());
         userDTO.setLastName("Janes");
-
-        when(userService.updateUser(7L, userDTO)).thenReturn(userForUpdate);
-
-        userForUpdate = userService.updateUser(7L, userDTO);
+        userService.updateUser(7L, userDTO);
 
         assertThat(userForUpdate).isNotNull();
 

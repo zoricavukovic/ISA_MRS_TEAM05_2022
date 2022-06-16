@@ -77,7 +77,6 @@ export default function EditCottage(props) {
 
   const handleDeleteAdditionalServiceChip = (chipToDelete) => {
     console.log(chipToDelete);
-    console.log("baaaaaaaaaaa");
     console.log(additionalServices);
     setAdditionalServices((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
   };
@@ -188,14 +187,12 @@ export default function EditCottage(props) {
           state: { bookingEntityId: cottageBasicData.id }
         })
       }).catch(resError => {
-        console.log("Greska!!");
         setMessage(resError.response.data);
         handleClick();
         return;
       })
     }).catch(resError => {
-      console.log("Greska!!");
-      setMessage(resError.response.data.message);
+      setMessage(resError.response.data);
       handleClick();
       return;
     })

@@ -1,22 +1,20 @@
 package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.NewImageDTO;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
 import com.example.BookingAppTeam05.model.Picture;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.repository.PictureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Base64;
+import java.util.*;
 
 @Service
 public class PictureService {
     private PictureRepository pictureRepository;
+
     public PictureService() {}
 
     @Autowired
@@ -34,10 +32,20 @@ public class PictureService {
             f.close();
             return bytes;
         } catch (Exception e) {
-            return null;
+            throw new ItemNotFoundException("Picture not found.");
         }
     }
 
+    public List<String> getBase64ImagesForEntityId(Long id) {
+        List<String> pictureNames = findAllPictureNamesForEntityId(id);
+        List<String> retVal = new ArrayList<>();
+        for (String s : pictureNames) {
+            String converted = convertPictureToBase64ByName(s);
+            if (converted != null)
+                retVal.add(s + ',' + converted);
+        }
+        return retVal;
+    }
 
     private boolean tryConvertBase64ToImageAndSave(String imageName, String base64) {
         try{
@@ -72,7 +80,6 @@ public class PictureService {
             return null;
         return Base64.getEncoder().encodeToString(pictureData);
     }
-
 
     public boolean tryToSaveNewPictureAndAddToOtherPictures(Set<Picture> otherPictures, NewImageDTO newImage) {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());

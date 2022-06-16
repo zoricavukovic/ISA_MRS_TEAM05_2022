@@ -180,7 +180,14 @@ export default function ReservationCardForClient(props) {
             setPricelist(res.data);
             getAdditionalServicesByReservationId(props.reservation.id).then(addServices => {
               setAdditionalServices(addServices.data);
-              let updatedResCost = res.data.entityPricePerPerson*props.reservation.numOfDays*props.reservation.numOfPersons;
+              let updatedResCost = 0;
+              if (props.reservation.fastReservation == true){
+                updatedResCost = props.reservation.cost;
+                setReservationCost(updatedResCost);
+              }else{
+                let updatedResCost = res.data.entityPricePerPerson*props.reservation.numOfDays*props.reservation.numOfPersons;
+                setReservationCost(updatedResCost);
+              }
               if (addServices.data.length>0){
                 for (let addService of addServices.data){
                   updatedResCost += addService.price;

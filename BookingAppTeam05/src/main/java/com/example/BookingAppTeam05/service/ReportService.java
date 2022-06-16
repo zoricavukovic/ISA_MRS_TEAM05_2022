@@ -6,17 +6,19 @@ import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.users.ClientDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
+import com.example.BookingAppTeam05.exception.ConflictException;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.NotificationByEmailException;
+import com.example.BookingAppTeam05.exception.RequestAlreadyProcessedException;
 import com.example.BookingAppTeam05.model.Report;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.repository.ReportRepository;
 import com.example.BookingAppTeam05.model.repository.ReservationRepository;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.ClientService;
-import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +33,17 @@ public class ReportService {
     private EmailService emailService;
 
     @Autowired
-    public ReportService(ReportRepository reportRepository, ReservationRepository reservationRepository, BookingEntityService bookingEntityService, UserService userService, ClientService clientService, EmailService emailService){
+    public ReportService(ReportRepository reportRepository, ReservationRepository reservationRepository,
+                         BookingEntityService bookingEntityService, ClientService clientService,
+                         EmailService emailService){
         this.reportRepository = reportRepository;
         this.reservationRepository = reservationRepository;
         this.bookingEntityService = bookingEntityService;
         this.clientService = clientService;
         this.emailService = emailService;
     }
+
+    public ReportService(){}
 
     public Report findById(Long id) {
         return this.reportRepository.findById(id).orElse(null);
@@ -48,23 +54,22 @@ public class ReportService {
     }
 
     @Transactional
-    public Report addReportAndNotifyClientIfHeDidNotCome(ReportDTO reportDTO) {
+    public void addReportAndNotifyClientIfHeDidNotCome(ReportDTO reportDTO) {
         Reservation reservation = reservationRepository.getReservationById(reportDTO.getReservationId());
-        if (reservation == null) return null;
+        if (reservation == null)
+            throw new ItemNotFoundException("Can't find reservation.");
         Report report = new Report(reportDTO.getComment(), reportDTO.isPenalizeClient(),!reportDTO.isClientCome() , reportDTO.isClientCome(), reservation);
         report.setVersion(0L);
-        reportRepository.save(report);
+        report = reportRepository.save(report);
 
         if (!report.isComeClient()) {
-            String errMessage = clientService.penalizeClientFromReportAndReturnErrorMessage(report);
+            clientService.penalizeClientFromReportAndReturnErrorMessage(report);
             try {
                 emailService.notifyClientThatHeDidNotCome(report);
-            } catch (Exception e) {
-                return null;
+            } catch (InterruptedException e) {
+                throw new NotificationByEmailException("Error happened while sending email about report.");
             }
-            if (errMessage != null) return null;
         }
-        return report;
     }
 
     public Boolean isReportedResByReservationId(Long reservationId) {
@@ -74,7 +79,7 @@ public class ReportService {
     public ReportDTO getReportByReservationId(Long reservationId) {
         Report report = reportRepository.getReportByReservationId(reservationId);
         if (report == null)
-            return null;
+            throw new ItemNotFoundException("Can't find report for this reservation.");
         return new ReportDTO(report);
     }
 
@@ -103,32 +108,39 @@ public class ReportService {
         return retVal;
     }
 
+    public List<CreatedReportReviewDTO> getListOfCreatedReports(String type) {
+        List<CreatedReportReviewDTO> retVal = null;
+        if (type.equals("processed"))
+            retVal = getAllProcessedReportReviewDTOs();
+        else if (type.equals("unprocessed"))
+            retVal = getAllUnprocessedReportReviewDTOs();
+
+        if (retVal == null)
+            throw new ItemNotFoundException("Can't find created reports for type " + type);
+        return retVal;
+    }
+
     @Transactional
-    public String giveResponse(CreatedReportReviewDTO c) {
+    public void giveResponse(CreatedReportReviewDTO c) {
         try {
             Report report = reportRepository.findById(c.getId()).orElse(null);
             if (report == null)
-                return "Cant' find report with id: " + c.getId();
+                throw new ItemNotFoundException("Can't find report with id: " + c.getId());
             if (report.isProcessed())
-                return "This report is already processed";
-
+                throw new RequestAlreadyProcessedException("This report is already processed.");
             report.setProcessed(true);
             report.setAdminResponse(c.getAdminResponse());
             report.setAdminPenalizeClient(c.isAdminPenalizeClient());
             report = reportRepository.save(report);
-
-            if (c.isAdminPenalizeClient()) {
-                String err = clientService.penalizeClientFromReportAndReturnErrorMessage(report);
-                if (err != null) return err;
-            }
+            if (c.isAdminPenalizeClient())
+                clientService.penalizeClientFromReportAndReturnErrorMessage(report);
             try {
                 emailService.sendEmailAsAdminResponseFromReport(c);
-            } catch (Exception e) {
-                return "Error happened while sending email to owner and client";
+            } catch (InterruptedException e) {
+                throw new NotificationByEmailException("Error happened while sending email about report.");
             }
-            return null;
         } catch (ObjectOptimisticLockingFailureException e) {
-            return "Conflict seems to have occurred, another admin has reviewed this report before you. Please refresh page and try again";
+            throw new ConflictException("Conflict seems to have occurred, another admin has reviewed this report before you. Please refresh page and try again");
         }
     }
 }

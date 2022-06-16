@@ -1,7 +1,11 @@
 package com.example.BookingAppTeam05.service.entities;
 
-import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
+import com.example.BookingAppTeam05.dto.users.CottageOwnerDTO;
+import com.example.BookingAppTeam05.exception.ConflictException;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.database.CreateItemException;
+import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.Picture;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.Room;
@@ -14,14 +18,11 @@ import com.example.BookingAppTeam05.model.repository.entities.CottageRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CottageService {
@@ -46,19 +47,66 @@ public class CottageService {
         this.userService = userService;
     }
 
+    public CottageService(){}
+
     public Cottage getCottageById(Long id) {
         return cottageRepository.getCottageById(id);
+    }
+
+    public CottageDTO getCottageDTOById(Long id) {
+        Cottage cottage = getCottageById(id);
+        if (cottage == null)
+            throw new ItemNotFoundException("Can't find cottage with id: " + id);
+        return getCottageDTO(cottage);
     }
 
     public Cottage getCottageByIdCanBeDeleted(Long id) {
         return cottageRepository.getCottageByIdCanBeDeleted(id);
     }
 
+    public CottageDTO getCottageDTOByIdCanBeDeleted(Long id) {
+        Cottage cottage = getCottageByIdCanBeDeleted(id);
+        if (cottage == null)
+            throw new ItemNotFoundException("Can't find cottage with id: " + id);
+        return getCottageDTO(cottage);
+    }
+
+    private CottageDTO getCottageDTO(Cottage cottage) {
+        CottageDTO cottageDTO = new CottageDTO(cottage);
+
+        cottageDTO.setPlace(cottage.getPlace());
+        if (cottage.getRulesOfConduct() != null){
+            cottageDTO.setRulesOfConduct(cottage.getRulesOfConduct());
+        }
+        if (cottage.getRooms() != null){
+            cottageDTO.setRooms(cottage.getRooms());
+        }
+        if(cottage.getCottageOwner() != null){
+            cottageDTO.setCottageOwnerDTO(new CottageOwnerDTO(cottage.getCottageOwner()));
+        }
+
+        cottageDTO.setPictures(cottage.getPictures());
+        return cottageDTO;
+    }
+
     public List<Cottage> getCottagesByOwnerId(Long id) {
         return cottageRepository.getCottagesByOwnerId(id);
     }
 
-    public List<Cottage> findAll() { return cottageRepository.findAll();    }
+    public List<CottageDTO> getCottagesDTOsByOwnerId(Long id) {
+        List<Cottage> cottageFound = getCottagesByOwnerId(id);
+        List<CottageDTO> cottageDTOs = new ArrayList<>();
+
+        for (Cottage cottage:cottageFound) {
+            CottageDTO cDTO = new CottageDTO(cottage);
+            cDTO.setPlace(cottage.getPlace());
+            cDTO.setPictures(cottage.getPictures());
+            cottageDTOs.add(cDTO);
+        }
+        return cottageDTOs;
+    }
+
+    public List<Cottage> findAll() { return cottageRepository.findAll(); }
 
     public List<Cottage> findAllByOwnerId(Long id) {
         List<Cottage> all = findAll();
@@ -70,14 +118,39 @@ public class CottageService {
         return retVal;
     }
 
-    public String updateCottage(CottageDTO cottageDTO, Long id){
+    public List<CottageDTO> findAllCottageDTOs(){
+        List<Cottage> cottages = findAll();
+        List<CottageDTO> cottageDTOs = new ArrayList<>();
+        for (Cottage cottage:cottages) {
+            CottageDTO cDTO = new CottageDTO(cottage);
+            cDTO.setPlace(cottage.getPlace());
+            cDTO.setRulesOfConduct(cottage.getRulesOfConduct());
+            cDTO.setRooms(cottage.getRooms());
+            cDTO.setPictures(cottage.getPictures());
+            cottageDTOs.add(cDTO);
+        }
+        return cottageDTOs;
+    }
+
+    public User getCottageOwnerOfCottageId(Long id) {
+        return this.cottageRepository.getCottageOwnerOfCottageId(id);
+    }
+
+    public Cottage findById(Long id) {
+        Optional<Cottage> cottage = cottageRepository.findById(id);
+        return cottage.orElse(null);
+    }
+
+    public void updateCottage(CottageDTO cottageDTO, Long id){
         try {
             if (reservationService.findAllActiveReservationsForEntityid(id).size() != 0)
-                return "Cant update cottage because there exist active reservations";
-
+                throw new EditItemException("Can't update cottage because there exist active reservations");
             Cottage cottage = getCottageById(id);
-            if (cottage == null) return "Cant find cottage with id " + id + ".";
-            if (cottage.getVersion() != cottageDTO.getVersion()) return "Conflict seems to have occurred, someone changed your cottage data before you. Please refresh page and try again";
+            if (cottage == null)
+                throw new ItemNotFoundException("Cant find cottage with id: " + id);
+            if (cottage.getVersion() != cottageDTO.getVersion())
+                throw new ConflictException("Conflict seems to have occurred, someone changed your cottage data before you. Please refresh page and try again!");
+
             cottage.setName(cottageDTO.getName());
             cottage.setAddress(cottageDTO.getAddress());
             cottage.setPromoDescription(cottageDTO.getPromoDescription());
@@ -85,24 +158,25 @@ public class CottageService {
             cottage.setEntityType(EntityType.COTTAGE);
 
             Place p = cottageDTO.getPlace();
-            if (p == null) return "Cant find chosen place.";
+            if (p == null)
+                throw new ItemNotFoundException("Can't find chosen place");
             Place place = placeService.getPlaceByZipCode(p.getZipCode());
             cottage.setPlace(place);
 
-            if (cottageDTO.getRooms().isEmpty()) return "Cannot change cottage to be without room.";
+            if (cottageDTO.getRooms().isEmpty())
+                throw new ItemNotFoundException("Can't change cottage to be without room.");
             Cottage oldCottage = getCottageById(id);
             Set<Room> rooms = tryToEditCottageRooms(cottageDTO, oldCottage);
             cottage.setRooms(rooms);
 
-            Set<RuleOfConduct> rules = new HashSet<RuleOfConduct>();
-
+            Set<RuleOfConduct> rules = new HashSet<>();
             tryToEditCottageRulesOfConduct(cottageDTO, oldCottage, rules);
             cottage.setRulesOfConduct(rules);
+
             pictureService.setNewImagesForBookingEntity(cottage, cottageDTO.getImages());
-            cottage = save(cottage);
-            return "";
+            save(cottage);
         } catch (ObjectOptimisticLockingFailureException e) {
-            return "Conflict seems to have occurred, someone changed your ship before you. Please refresh page and try again";
+            throw new ConflictException("Conflict seems to have occurred, someone changed your cottage before you. Please refresh page and try again!");
         }
     }
 
@@ -113,16 +187,19 @@ public class CottageService {
         cottage.setAddress(cottageDTO.getAddress());
         cottage.setPromoDescription(cottageDTO.getPromoDescription());
         cottage.setEntityCancelationRate(cottageDTO.getEntityCancelationRate());
-
         cottage.setEntityType(EntityType.COTTAGE);
-        if (cottageDTO.getPlace() == null) return "Cant find place.";
+        if (cottageDTO.getPlace() == null)
+            throw new ItemNotFoundException("Can't create cottage without set place.");
         Place place1 = placeService.getPlaceByZipCode(cottageDTO.getPlace().getZipCode());
-        if (place1 == null) return "Cant find place with zip code: " + cottageDTO.getPlace().getZipCode();
+        if (place1 == null)
+            throw new ItemNotFoundException("Can't find place with zip code: " + cottageDTO.getPlace().getZipCode());
         cottage.setPlace(place1);
         CottageOwner co = (CottageOwner) userService.findUserById(idCottageOwner);
-        if (co == null) return "Cant find cottage owner with id: " + idCottageOwner;
+        if (co == null)
+            throw new ItemNotFoundException("Can't find cottage owner with id: " + idCottageOwner);
         cottage.setCottageOwner(co);
-        if (cottageDTO.getRooms().isEmpty()) return "Cannot create new cottage without room";
+        if (cottageDTO.getRooms().isEmpty())
+            throw new CreateItemException("Can't create new cottage without room.");
         cottage.setRooms(cottageDTO.getRooms());
         cottage.setRulesOfConduct(cottageDTO.getRulesOfConduct());
         if (!cottageDTO.getImages().isEmpty()) {
@@ -132,7 +209,7 @@ public class CottageService {
         cottage.setVersion(0);
         cottage.setLocked(false);
         cottage = save(cottage);
-
+        if (cottage == null) throw new CreateItemException("Can't create new cottage. Try again!");
         return cottage.getId().toString();
     }
 
@@ -203,15 +280,5 @@ public class CottageService {
             }
             if (!found) { rules.add(rule); }
         }
-    }
-
-
-    public User getCottageOwnerOfCottageId(Long id) {
-        return this.cottageRepository.getCottageOwnerOfCottageId(id);
-    }
-
-    public Cottage findById(Long id) {
-        Optional<Cottage> cottage = cottageRepository.findById(id);
-        return cottage.orElse(null);
     }
 }
