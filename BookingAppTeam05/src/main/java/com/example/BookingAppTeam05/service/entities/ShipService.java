@@ -10,7 +10,7 @@ import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.entities.Ship;
 import com.example.BookingAppTeam05.model.users.ShipOwner;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.model.repository.entities.ShipRepository;
+import com.example.BookingAppTeam05.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

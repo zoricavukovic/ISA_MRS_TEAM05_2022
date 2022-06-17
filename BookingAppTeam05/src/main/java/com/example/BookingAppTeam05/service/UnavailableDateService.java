@@ -5,7 +5,7 @@ import com.example.BookingAppTeam05.exception.database.CreateItemException;
 import com.example.BookingAppTeam05.exception.database.DeleteItemException;
 import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.repository.UnavailableDateRepository;
+import com.example.BookingAppTeam05.repository.UnavailableDateRepository;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

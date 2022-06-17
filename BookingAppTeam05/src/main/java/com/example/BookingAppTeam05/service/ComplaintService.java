@@ -8,7 +8,7 @@ import com.example.BookingAppTeam05.exception.RequestAlreadyProcessedException;
 import com.example.BookingAppTeam05.exception.database.CreateItemException;
 import com.example.BookingAppTeam05.model.Complaint;
 import com.example.BookingAppTeam05.model.Reservation;
-import com.example.BookingAppTeam05.model.repository.ComplaintRepository;
+import com.example.BookingAppTeam05.repository.ComplaintRepository;
 import com.example.BookingAppTeam05.dto.ComplaintReviewDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;

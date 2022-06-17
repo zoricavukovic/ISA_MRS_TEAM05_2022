@@ -2,11 +2,9 @@ package com.example.BookingAppTeam05.student2;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -19,7 +17,7 @@ import javax.transaction.Transactional;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
-import com.example.BookingAppTeam05.model.repository.entities.CottageRepository;
+import com.example.BookingAppTeam05.repository.entities.CottageRepository;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.model.users.CottageOwner;
 import com.example.BookingAppTeam05.service.*;

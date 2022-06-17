@@ -17,7 +17,7 @@ import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.RatingService;
 import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.model.repository.entities.BookingEntityRepository;
+import com.example.BookingAppTeam05.repository.entities.BookingEntityRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.ClientService;
 import com.example.BookingAppTeam05.service.users.UserService;
@@ -137,6 +137,19 @@ public class BookingEntityService {
                 if (date.isAfter(r.getStartDate()) && date.isBefore(r.getEndDate()))
                     return true;
                 if (date.equals(r.getStartDate()) || date.equals(r.getEndDate()))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkIfClientCanceledReservation(Long clientId, Long entityId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Reservation> reservations = reservationService.findAllCanceledReservationsForEntityid(entityId);
+        for (LocalDateTime date = startDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
+            for (Reservation r : reservations) {
+                if (date.isAfter(r.getStartDate()) && date.isBefore(r.getEndDate()) && r.getClient().getId() == clientId)
+                    return true;
+                if ((date.equals(r.getStartDate()) || date.equals(r.getEndDate())) && r.getClient().getId() == clientId)
                     return true;
             }
         }
@@ -445,4 +458,6 @@ public class BookingEntityService {
         }
         return retVal;
     }
+
+
 }

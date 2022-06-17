@@ -16,7 +16,7 @@ import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.Ship;
-import com.example.BookingAppTeam05.model.repository.ReservationRepository;
+import com.example.BookingAppTeam05.repository.ReservationRepository;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.entities.AdventureService;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
@@ -221,7 +221,7 @@ public class ReservationService {
     }
 
     public Reservation findById(long Id) {
-        return reservationRepository.findById(Id).orElse(null);
+        return reservationRepository.findFastReservationsById(Id).orElse(null);
     }
 
     public void save(Reservation fastReservation) {
@@ -321,7 +321,11 @@ public class ReservationService {
             Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
             if (client == null) throw new ItemNotFoundException("Can't find client who want to reserve reservation.");
             if(!dateRangeAvailable(reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
-                throw new CreateItemException("Can't create reservation cause date range is already unavailable. Refresh page and try again!");
+                throw new CreateItemException("Can't create reservation cause date range is unavailable. Refresh page and try again!");
+
+            if(clientCanceledInPeriod(reservationDTO.getClient().getId(), reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
+                throw new CreateItemException("Can't create reservation cause you already canceled this booking entity in this period.");
+
 
             entity.setLocked(true);
             bookingEntityService.save(entity);
@@ -335,8 +339,14 @@ public class ReservationService {
         }
     }
 
+    private boolean clientCanceledInPeriod(Long clientId, Long entityId, LocalDateTime startDate, int numOfDays) {
+        LocalDateTime endDate = startDate.plusDays(numOfDays);
+        return bookingEntityService.checkIfClientCanceledReservation(clientId, entityId, startDate, endDate);
+    }
+
     private boolean dateRangeAvailable(Long entityId, LocalDateTime startDate, int numOfDays) {
-        return true;
+        LocalDateTime endDate = startDate.plusDays(numOfDays);
+        return !bookingEntityService.checkExistReservationInPeriodForEntityId(entityId, startDate, endDate);
     }
 
     @Transactional
@@ -368,6 +378,12 @@ public class ReservationService {
             Long clientId = Long.parseLong(tokens[2].substring(1, tokens[2].length()-1));
             Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(clientId);
             if (client == null) throw new ItemNotFoundException("Can't find client for reservation.");
+
+            if(!dateRangeAvailable(reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
+                throw new CreateItemException("Can't create reservation cause date range is already unavailable. Refresh page and try again!");
+
+            if(clientCanceledInPeriod(clientId, reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
+                throw new CreateItemException("Can't create reservation cause you already canceled this booking entity in this period.");
 
             //resavanje konfliktne situacije student 2.
             entity.setLocked(true);
@@ -437,17 +453,28 @@ public class ReservationService {
     @Transactional
     public Reservation reserveFastReservation(ReservationDTO reservationDTO) {
         try{
-            Reservation res = reservationRepository.findById(reservationDTO.getId()).orElse(null);
+            Reservation res = reservationRepository.findFastReservationsById(reservationDTO.getId()).orElse(null);
             if (res == null) throw new ItemNotFoundException("Can't find fast reservation entity for reservation.");
             if (reservationDTO.getClient() == null) throw new EditItemException("Can't reserve fast reservation without set client.");
             Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
             if (client == null) throw new ItemNotFoundException("Can't find client who want to reserve fast reservation.");
             res.setClient(client);
+
+            if(!dateRangeAvailable(reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
+                throw new CreateItemException("Can't create reservation cause date range is already unavailable. Refresh page and try again!");
+
+            if(clientCanceledInPeriod(reservationDTO.getClient().getId(), reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
+                throw new CreateItemException("Can't create reservation cause you already canceled this booking entity in this period.");
+
             reservationRepository.save(res);
             emailService.sendNotificationAboutResToClient(client, res);
             return res;
         }catch (ObjectOptimisticLockingFailureException e){
             throw new ConflictException("Conflict seems to have occurred, another user reserved this entity in before you create this action in same period. Please refresh page and try again");
         }
+    }
+
+    public List<Reservation> findAllCanceledReservationsForEntityid(Long entityId) {
+        return reservationRepository.findAllCanceledReservationsForEntityId(entityId);
     }
 }

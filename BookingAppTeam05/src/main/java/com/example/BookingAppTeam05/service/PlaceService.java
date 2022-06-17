@@ -2,7 +2,7 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.PlaceDTO;
 import com.example.BookingAppTeam05.model.Place;
-import com.example.BookingAppTeam05.model.repository.PlaceRepository;
+import com.example.BookingAppTeam05.repository.PlaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;

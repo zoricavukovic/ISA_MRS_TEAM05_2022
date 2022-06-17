@@ -6,13 +6,12 @@ import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
 import com.example.BookingAppTeam05.exception.*;
 import com.example.BookingAppTeam05.exception.database.CreateItemException;
-import com.example.BookingAppTeam05.exception.database.DatabaseException;
 import com.example.BookingAppTeam05.exception.database.DeleteItemException;
 import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.repository.users.UserRepository;
+import com.example.BookingAppTeam05.repository.users.UserRepository;
 import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.EmailService;
 import com.example.BookingAppTeam05.service.LoyaltyProgramService;
@@ -26,6 +25,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +109,9 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setDateOfBirth(userDTO.getDateOfBirth());
         user.setPhoneNumber(userDTO.getPhoneNumber());
+
+        if(userDTO.getVersion() != user.getVersion())
+            throw new OptimisticLockException("Can't update user because it's already updated with new data, please refresh page.");
         if (userDTO.getPlace() == null)
             throw new ItemNotFoundException("Can't update user without set place");
         Place place = placeService.getPlaceById(userDTO.getPlace().getId());

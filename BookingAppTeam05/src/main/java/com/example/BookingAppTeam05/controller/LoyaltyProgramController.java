@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +29,14 @@ public class LoyaltyProgramController {
     public LoyaltyProgramController(){}
 
     @GetMapping(value="/current", produces= MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'CLIENT', 'COTTAGE_OWNER', 'INSTRUCTOR', 'SHIP_OWNER')")
     public ResponseEntity<LoyaltyProgramDTO> getCurrentLoyaltyProgram() {
         LoyaltyProgramDTO loyaltyProgramDTO = loyaltyProgramService.getCurrentLoyaltyProgramDTO();
         return new ResponseEntity<>(loyaltyProgramDTO, HttpStatus.OK);
     }
 
     @PostMapping(value="/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<LoyaltyProgramDTO> setNewLoyaltyProgram(@Valid @RequestBody LoyaltyProgramDTO loyaltyProgramDTO) {
         LoyaltyProgramDTO created = loyaltyProgramService.createNewLoyaltyProgram(loyaltyProgramDTO);
         return new ResponseEntity<>(created, HttpStatus.CREATED);

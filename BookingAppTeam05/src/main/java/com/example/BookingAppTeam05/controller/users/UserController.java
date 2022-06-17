@@ -2,6 +2,7 @@ package com.example.BookingAppTeam05.controller.users;
 
 import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.dto.users.*;
+import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.service.PlaceService;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.UserService;
@@ -71,18 +72,21 @@ public class UserController {
     }
 
     @GetMapping(value="/checkIfEmailAlreadyExist/{email}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<String> checkIfCanEdit(@PathVariable String email) {
         userService.checkIfCanEditUser(email);
         return new ResponseEntity<>("Email is unique.", HttpStatus.OK);
     }
 
     @GetMapping(value="/getAllNewAccountRequests")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<NewAccountRequestDTO>> getAllNewAccountRequests() {
         List<NewAccountRequestDTO> retVal = userService.getAllNewAccountRequestDTOs();
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @PutMapping(value="/giveResponseForNewAccountRequest", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<String> giveResponse(@RequestBody NewAccountRequestDTO d) {
         userService.giveResponseForNewAccountRequest(d);
         return new ResponseEntity<>("ok", HttpStatus.OK);
@@ -108,5 +112,7 @@ public class UserController {
         userService.tryToLogicalDeleteUser(userId, adminId, confirmPass);
         return new ResponseEntity<>("User successfully deleted.", HttpStatus.OK);
     }
+
+
 }
 

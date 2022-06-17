@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.service.users;
 
-import com.example.BookingAppTeam05.model.repository.users.CottageOwnerRepository;
+import com.example.BookingAppTeam05.repository.users.CottageOwnerRepository;
 import com.example.BookingAppTeam05.model.users.CottageOwner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

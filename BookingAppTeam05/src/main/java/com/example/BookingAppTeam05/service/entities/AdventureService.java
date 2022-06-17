@@ -3,7 +3,7 @@ package com.example.BookingAppTeam05.service.entities;
 import com.example.BookingAppTeam05.dto.*;
 import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
 import com.example.BookingAppTeam05.dto.users.InstructorDTO;
-import com.example.BookingAppTeam05.dto.users.NewAdventureDTO;
+import com.example.BookingAppTeam05.dto.entities.NewAdventureDTO;
 import com.example.BookingAppTeam05.exception.ConflictException;
 import com.example.BookingAppTeam05.exception.ItemNotFoundException;
 import com.example.BookingAppTeam05.exception.database.EditItemException;
@@ -11,7 +11,7 @@ import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.users.Instructor;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.model.repository.entities.AdventureRepository;
+import com.example.BookingAppTeam05.repository.entities.AdventureRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,6 +113,7 @@ public class AdventureService {
         return newAdventure.getId().toString();
     }
 
+    @Transactional
     public void updateAdventure(NewAdventureDTO newAdventureDTO, Long id){
         try{
             if (reservationService.findAllActiveReservationsForEntityid(id).size() != 0)

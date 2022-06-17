@@ -5,7 +5,7 @@ import com.example.BookingAppTeam05.exception.ItemNotFoundException;
 import com.example.BookingAppTeam05.exception.database.DatabaseException;
 import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
-import com.example.BookingAppTeam05.model.repository.LoyaltyProgramRepository;
+import com.example.BookingAppTeam05.repository.LoyaltyProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;

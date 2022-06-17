@@ -5,9 +5,11 @@ import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.exception.ConflictException;
 import com.example.BookingAppTeam05.exception.ItemNotFoundException;
 import com.example.BookingAppTeam05.exception.NotificationByEmailException;
+import com.example.BookingAppTeam05.exception.database.CreateItemException;
 import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.DeleteAccountRequest;
-import com.example.BookingAppTeam05.model.repository.DeleteAccountRepository;
+import com.example.BookingAppTeam05.repository.DeleteAccountRepository;
+import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -74,5 +76,29 @@ public class DeleteAccountService {
         catch (ObjectOptimisticLockingFailureException e) {
             throw new ConflictException("Conflict seems to have occurred, another admin has reviewed this request before you. Please refresh page and try again");
         }
+    }
+
+    @Transactional
+    public void createDeleteRequest(DeleteAccountRequestDTO deleteRequest) {
+        try{
+            DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest();
+            deleteAccountRequest.setProcessed(false);
+            deleteAccountRequest.setAccepted(false);
+            deleteAccountRequest.setAdminResponse(null);
+            deleteAccountRequest.setReason(deleteRequest.getReason());
+            User user = userService.findUserById(deleteRequest.getUser().getId());
+            deleteAccountRequest.setUser(user);
+            deleteAccountRequest.setVersion(0L);
+            deleteAccountRepository.save(deleteAccountRequest);
+        }catch (Exception e){
+            throw new CreateItemException("Failed to create request");
+        }
+    }
+
+    public Boolean hasUserRequest(Long id) {
+        DeleteAccountRequest dar = deleteAccountRepository.findByUserId(id);
+        if(dar == null)
+            return false;
+        return true;
     }
 }

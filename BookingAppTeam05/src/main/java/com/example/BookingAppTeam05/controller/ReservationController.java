@@ -28,36 +28,42 @@ public class ReservationController {
     public ReservationController(){}
 
     @GetMapping(value="/owner/{ownerId}/{type}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<ReservationDTO>> getReservationsByOwnerId(@PathVariable Long ownerId,@PathVariable String type) {
         List<ReservationDTO> reservationDTOs = reservationService.getReservationDTOs(ownerId, type);
         return new ResponseEntity<>(reservationDTOs, HttpStatus.OK);
     }
 
     @GetMapping(value="/client/{clientId}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<ReservationDTO>> getReservationsByClientId(@PathVariable Long clientId) {
         List<ReservationDTO> reservationDTOs = reservationService.getReservationsByClientId(clientId);
         return new ResponseEntity<>(reservationDTOs, HttpStatus.OK);
     }
 
     @GetMapping(value="/fast/{bookingEntityId}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<ReservationDTO>> getFastReservationsByBookingEntityId(@PathVariable Long bookingEntityId) {
         List<ReservationDTO> reservationDTOs = reservationService.getFastReservationDTOs(bookingEntityId);
         return new ResponseEntity<>(reservationDTOs, HttpStatus.OK);
     }
 
     @GetMapping(value="/fastAvailable/{bookingEntityId}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<ReservationDTO>> getFastAvailableReservationsByBookingEntityId(@PathVariable Long bookingEntityId) {
         List<ReservationDTO> reservationDTOs = reservationService.getFastAvailableReservationsDTO(bookingEntityId);
         return new ResponseEntity<>(reservationDTOs, HttpStatus.OK);
     }
 
     @GetMapping(value="/owner/{ownerId}/{type}/filter/name/{name}/time/{time}")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<ReservationDTO>> filterReservationsByOwnerId(@PathVariable Long ownerId, @PathVariable String type, @PathVariable String name, @PathVariable String time) {
         List<ReservationDTO> filteredReservationDTOs = reservationService.filterReservationsByOwnerId(ownerId, type, name, time);
         return new ResponseEntity<>(filteredReservationDTOs, HttpStatus.OK);
     }
 
     @GetMapping(value="/bookingEntity/{bookingEntityId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<String>> findAllClientsWithActiveReservations(@PathVariable Long bookingEntityId) {
         List<String> clients = reservationService.findAllClientsWithActiveReservations(bookingEntityId);
         return new ResponseEntity<>(clients, HttpStatus.OK);

@@ -4,14 +4,12 @@ import com.example.BookingAppTeam05.exception.ItemNotFoundException;
 import com.example.BookingAppTeam05.model.Report;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.users.Client;
-import com.example.BookingAppTeam05.model.repository.users.ClientRepository;
-import com.example.BookingAppTeam05.model.users.User;
+import com.example.BookingAppTeam05.repository.users.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ClientService {
@@ -55,5 +53,9 @@ public class ClientService {
 
     public void save(Client client) {
         clientRepository.save(client);
+    }
+
+    public void resetPenaltyPointsForAllClients() {
+        clientRepository.resetPenaltyPointsForAllClients();
     }
 }
