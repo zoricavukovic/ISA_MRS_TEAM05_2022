@@ -1,11 +1,10 @@
 package com.example.BookingAppTeam05.model.repository.users;
 
-import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.users.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
@@ -15,4 +14,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     @Query("select u from Client u join fetch u.place p join fetch u.role r where u.id=?1")
     Client findByIdWithoutReservationsAndWatchedEntities(Long id);
+
+    @Query(value = "update Client c SET c.penalties=0")
+    @Modifying
+    void resetPenaltyPointsForAllClients();
 }

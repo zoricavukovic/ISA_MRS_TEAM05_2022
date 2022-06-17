@@ -1,4 +1,4 @@
-package com.example.BookingAppTeam05.dto.users;
+package com.example.BookingAppTeam05.dto.entities;
 
 import com.example.BookingAppTeam05.dto.NewAdditionalServiceDTO;
 import com.example.BookingAppTeam05.dto.NewFishingEquipmentDTO;

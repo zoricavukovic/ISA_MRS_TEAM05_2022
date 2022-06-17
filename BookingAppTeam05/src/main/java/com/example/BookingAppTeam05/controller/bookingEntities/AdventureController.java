@@ -2,7 +2,7 @@ package com.example.BookingAppTeam05.controller.bookingEntities;
 
 import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
-import com.example.BookingAppTeam05.dto.users.NewAdventureDTO;
+import com.example.BookingAppTeam05.dto.entities.NewAdventureDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.exception.ApiRequestException;
 import com.example.BookingAppTeam05.model.entities.Adventure;

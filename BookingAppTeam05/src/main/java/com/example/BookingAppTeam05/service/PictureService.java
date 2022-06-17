@@ -24,7 +24,7 @@ public class PictureService {
 
     public byte[] getPictureDataByName(String name) {
         try {
-            String path = new File("src/main/resources/images/" + name)
+            String path = new File("src/main/java/com/example/BookingAppTeam05/data/images/" + name)
                     .getAbsolutePath();
             RandomAccessFile f = new RandomAccessFile(path, "r");
             byte[] bytes = new byte[(int) f.length()];
@@ -49,7 +49,7 @@ public class PictureService {
 
     private boolean tryConvertBase64ToImageAndSave(String imageName, String base64) {
         try{
-            String path = new File("src/main/resources/images/" + imageName)
+            String path = new File("src/main/java/com/example/BookingAppTeam05/data/images/" + imageName)
                     .getAbsolutePath();
             byte[] image = Base64.getDecoder().decode(base64);
             OutputStream out = new FileOutputStream(path);
@@ -92,7 +92,7 @@ public class PictureService {
     }
 
     public void deletePictureByName(String picturePath) {
-        String path = new File("src/main/resources/images/" + picturePath)
+        String path = new File("src/main/java/com/example/BookingAppTeam05/data/images/" + picturePath)
                 .getAbsolutePath();
         try {
             pictureRepository.deleteByPicturePath(picturePath);

@@ -27,6 +27,7 @@ public class ReportController {
     public ReportController(){}
 
     @GetMapping(value="/{reservationId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'CLIENT', 'COTTAGE_OWNER', 'INSTRUCTOR', 'SHIP_OWNER')")
     public ResponseEntity<ReportDTO> getReportByReservationId(@PathVariable Long reservationId) {
         ReportDTO reportDTO = reportService.getReportByReservationId(reservationId);
         return new ResponseEntity<>(reportDTO, HttpStatus.OK);
@@ -45,13 +46,14 @@ public class ReportController {
     }
 
     @GetMapping(value="/all/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<List<CreatedReportReviewDTO>> getListOfCreatedReports(@PathVariable String type) {
         List<CreatedReportReviewDTO> retVal = reportService.getListOfCreatedReports(type);
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @PutMapping(value="/giveResponse", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<String> giveResponse(@RequestBody CreatedReportReviewDTO c) {
         reportService.giveResponse(c);
         return new ResponseEntity<>("OK", HttpStatus.OK);

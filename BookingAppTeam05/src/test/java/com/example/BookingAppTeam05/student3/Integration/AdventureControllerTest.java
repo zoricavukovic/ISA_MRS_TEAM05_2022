@@ -1,6 +1,6 @@
 package com.example.BookingAppTeam05.student3.Integration;
 
-import com.example.BookingAppTeam05.dto.users.NewAdventureDTO;
+import com.example.BookingAppTeam05.dto.entities.NewAdventureDTO;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.service.PlaceService;
