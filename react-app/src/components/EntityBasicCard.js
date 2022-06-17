@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 import RatingEntity from "./Rating";
 import { getCurrentUser } from "../service/AuthService";
 import { logicalDeleteBookingEntityById } from "../service/BookingEntityService";
-
+import { getBookingEntityById } from '../service/BookingEntityService';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -37,6 +37,8 @@ export default function EntityBasicCard(props) {
     const [message, setMessage] = React.useState("");
     const [typeAlert, setTypeAlert] = React.useState("");
     const [isSubsribed, setIsSubscribed] = React.useState(false);
+    const [ownerId, setOwnerId] = React.useState();
+    const [isLoading, setIsLoading] = React.useState(true);
 
     React.useEffect(() => {
         console.log(props);
@@ -53,6 +55,25 @@ export default function EntityBasicCard(props) {
                 console.log("IS SUBSRCIBED:"+subsc);     
             }
         }
+    }, []);
+
+    React.useEffect(() => {
+        getBookingEntityById(props.bookingEntity.id).then(res => {
+            if (res.data.entityType === "COTTAGE"){
+                setOwnerId(res.data.cottageOwnerDTO.id);
+            }
+            if (res.data.entityType === "SHIP"){
+                setOwnerId(res.data.shipOwner.id);
+            }
+            if (res.data.entityType === "ADVENTURE"){
+                setOwnerId(res.data.instructor.id);
+            }
+            setOwnerId(res.data.cottageOwnerDTO.id);
+            setIsLoading(false);
+            
+        }).catch(res => {
+            setIsLoading(false);
+        })
     }, []);
 
     const handleClick = () => {
@@ -161,7 +182,7 @@ export default function EntityBasicCard(props) {
         });
     }
 
-
+    if (isLoading) { return <div></div> } 
     return (
         <Card style={{ margin: "2%" }} sx={{ maxWidth: 345 }} onClick={showBookingEntity}>
             <Dialog open={openDialog} onClose={handleCloseDialog}>
@@ -274,7 +295,9 @@ export default function EntityBasicCard(props) {
                                     )
                                     :
                                     ( <span>
+                                        {getCurrentUser().id === ownerId ? (
                                         <Button size="small" onClick={handleClickOpen}><DeleteIcon />Delete</Button>
+                                        ):(<></>)}
                                         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                                             <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
                                                 {message}

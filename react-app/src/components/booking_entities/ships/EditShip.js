@@ -209,13 +209,13 @@ export default function EditShip(props) {
         })
       }).catch(resError => {
         console.log("Greska!!");
-        setMessage(resError.response.data.message);
+        setMessage(resError.response.data);
         handleClick();
         return;
       })
     }).catch(resError => {
       //console.log(resError.response.data.message);
-      setMessage(resError.response.data.message);
+      setMessage(resError.response.data);
       handleClick();
       return;
     })

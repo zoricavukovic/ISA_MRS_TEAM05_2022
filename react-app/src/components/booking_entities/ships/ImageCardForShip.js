@@ -111,19 +111,31 @@ export default function ImageCardForShip(props) {
 
     const showCalendarForEntity = (event) => {
         event.preventDefault();
-        history.push({
-            pathname: "/calendarForEntity",
-            state: { bookingEntityId: props.shipId }
-        })
+        getShipById(props.shipId).then(res => {
+            history.push({
+                pathname: "/calendarForEntity",
+                state: { bookingEntityId: props.shipId } 
+            })
+        }).catch(res => {
+            setMessage(res.response.data);
+            handleClick();
+            return;
+        });
     }
 
 
     const showFastReservations = (event) => {
         event.preventDefault();
-        history.push({
-            pathname: "/addFastReservation",
-            state: { bookingEntityId: props.shipId } 
-          })
+        getShipById(props.shipId).then(res => {
+            history.push({
+                pathname: "/addFastReservation",
+                state: { bookingEntityId: props.shipId } 
+            })
+        }).catch(res => {
+            setMessage(res.response.data);
+            handleClick();
+            return;
+        });
 
     };
     //============================= DIALOG =====================================
@@ -133,16 +145,23 @@ export default function ImageCardForShip(props) {
     //=======================================================================================
 
     function createReservationForClient() {
-        findAllClientsWithActiveReservations(props.shipId).then(res => {
-            console.log(res.data);
-            if (res.data.length !== 0){
-                setOpenDialogCreate(true);
-            }
-            else{
-                setMessage("Don't have clients with active reservations.");
-                handleClick();
-            }
+        getShipById(props.shipId).then(res => {
+            findAllClientsWithActiveReservations(props.shipId).then(res => {
+                console.log(res.data);
+                if (res.data.length !== 0){
+                    setOpenDialogCreate(true);
+                }
+                else{
+                    setMessage("Don't have clients with active reservations.");
+                    handleClick();
+                }
+            });
+        }).catch(res => {
+            setMessage(res.response.data);
+            handleClick();
+            return;
         });
+        
        
     };
 
@@ -294,7 +313,9 @@ export default function ImageCardForShip(props) {
             setLoadingShip(false);
         }).catch(res => {
             props.setMessage(res.response.data);
+            console.log(res.response.data);
             props.handleClick();
+            history.push('/ships');
             return;
         });
         getPricelistByEntityId(props.shipId).then(res => {

@@ -33,7 +33,6 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/ships")
-//@CrossOrigin
 public class ShipController {
 
     private ShipService shipService;
@@ -89,6 +88,7 @@ public class ShipController {
     }
 
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_SHIP_OWNER')")
     public ResponseEntity<Object> updateShip(@RequestBody ShipDTO shipDTO, @PathVariable Long id) {
         shipService.updateShip(shipDTO, id);
         return new ResponseEntity<>("ok", HttpStatus.OK);
@@ -115,7 +115,6 @@ public class ShipController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
-
 
     private List<SearchedBookingEntityDTO> getSearchedBookingEntitiesFromShips(List<Ship> ships) {
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();

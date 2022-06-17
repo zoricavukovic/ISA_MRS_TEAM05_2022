@@ -196,7 +196,7 @@ public class UserService {
             u.setVersion(0L);
             userRepository.save(u);
             if (userDTO.getUserTypeValue().equals("ROLE_CLIENT")){
-                //emailService.sendActivationMessage(u);
+                emailService.sendActivationMessage(u);
             }
         } catch (Exception e) {
             throw new CreateItemException("Error happened on server. Can't create user: " + userDTO.getEmail() + " " + userDTO.getFirstName() + " " + userDTO.getLastName());

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@CrossOrigin
 @RequestMapping("/bookingEntities")
 public class BookingEntityController {
     private BookingEntityService bookingEntityService;
@@ -32,6 +31,7 @@ public class BookingEntityController {
     }
 
     @GetMapping(value = "/allByOwner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<SearchedBookingEntityDTO>> getAllBookingEntitiesByOwnerId(@PathVariable Long id) {
         List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOwnerId(id);
         return new ResponseEntity<>(entities, HttpStatus.OK);
@@ -64,13 +64,14 @@ public class BookingEntityController {
     }
 
     @DeleteMapping(value="/{entityId}/{ownerId}")
-    //@PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<String> logicalDeleteEntityById(@PathVariable Long entityId, @PathVariable  Long ownerId, @RequestBody String confirmPass){
         bookingEntityService.tryToLogicalDeleteBookingEntityAndReturnErrorCode(entityId, ownerId, confirmPass);
         return new ResponseEntity<>("Entity successfully deleted.", HttpStatus.OK);
     }
 
     @GetMapping(value="/getAllForOwnerId/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<List<BookingEntityDTO>> getBookingEntitiesForOwnerId(@PathVariable Long id) {
         List<BookingEntityDTO> bookingEntityDTOs = bookingEntityService.getBookingEntitiesDTOsForOwnerId(id);
         return new ResponseEntity<>(bookingEntityDTOs, HttpStatus.OK);

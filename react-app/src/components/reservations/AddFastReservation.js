@@ -229,6 +229,7 @@ export default function AddFastReservation(props) {
     }).catch(error => {
         setMessage(error.response.data);
         handleClick();
+        history.goBack(2);
     });
 
     getPricelistByEntityId(props.history.location.state.bookingEntityId).then(res => {

@@ -117,10 +117,8 @@ export default function ReservationBasicCard(props) {
           setTypeAlert("success");
           setMessage("Successfully send report");
           handleClick();
-          setTimeout(() => {
-            
-          }, 2000);
-          window.location.reload(false);
+          setOpen(false);
+          
         }).catch(resError => {
           setTypeAlert("error");
           setMessage(resError.response.data);
@@ -133,8 +131,61 @@ export default function ReservationBasicCard(props) {
     const [reservationStatus, setReservationStatus] = useState('');
 
     useEffect(() => {
-        console.log("doslo");
-        console.log(props.reservation);
+        
+      let end = new Date(props.reservation.startDate);
+      let currDate = new Date();
+      if(new Date(props.reservation.startDate).getTime() <= currDate.getTime() &&  currDate.getTime()< end.getTime())
+          setReservationStatus('Started');
+
+      end.setDate(end.getDate() + props.reservation.numOfDays);
+      setDates({
+          startDate: new Date(props.reservation.startDate),
+          endDate:end
+      });
+      getPricelistByEntityId(props.reservation.bookingEntity.id).then(res => {
+          setPricelist(res.data);
+          getAdditionalServicesByReservationId(props.reservation.id).then(addServices => {
+            setAdditionalServices(addServices.data);
+            if (props.reservation.fastReservation == true){
+              let updatedResCost = props.reservation.cost;
+              setReservationCost(updatedResCost);
+            }
+            else{
+              let updatedResCost = res.data.entityPricePerPerson*props.reservation.cost;
+              if (addServices.data.length>0){
+                for (let addService of addServices.data){
+                  updatedResCost += addService.price;
+                }
+              }
+              setReservationCost(updatedResCost);
+            }
+            
+            getReportByReservationId(props.reservation.id).then(reported => {
+              setReported(true);
+              setReport(reported.data);
+              setLoadingAddServices(false);
+              setCheckedCome(reported.data.clientCome);
+              setCheckedPenalizeClient(reported.data.penalizeClient);
+              setReason(reported.data.comment);
+              setProcessed(reported.data.processed);
+              setLoadingReport(false);
+              setLoading(false);
+            }).catch(error => {
+              setReported(false);
+              setLoadingAddServices(false);
+              setLoadingReport(false);
+              setLoading(false);
+            });
+             
+      });
+          
+      });
+      
+  }, [typeAlert])
+    
+
+    useEffect(() => {
+        
         let end = new Date(props.reservation.startDate);
         let currDate = new Date();
         if(new Date(props.reservation.startDate).getTime() <= currDate.getTime() &&  currDate.getTime()< end.getTime())

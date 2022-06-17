@@ -22,20 +22,6 @@ public class NavigationEquipmentService {
 
     public NavigationEquipmentService(){}
 
-    public Set<NavigationEquipment> createEquipmentFromDTO(Set<NavigationEquipment> navigationEquipment, Long shipId) {
-        Set<NavigationEquipment> retVal = new HashSet<>();
-        for (NavigationEquipment f : navigationEquipment) {
-            NavigationEquipment fResult = navigationEquipmentRepository.findNavigationEquipmentByNameAndShipId(f.getName(), shipId);
-            System.out.println("MOLIM TE, " + fResult.getName());
-            if (fResult != null) {
-                retVal.add(fResult);
-            } else {
-                retVal.add(new NavigationEquipment(f.getName()));
-            }
-        }
-        return retVal;
-    }
-
     @Transactional(readOnly = false)
     public void deleteNavigationEquipment(Long navId){
         this.navigationEquipmentRepository.deleteById(navId);

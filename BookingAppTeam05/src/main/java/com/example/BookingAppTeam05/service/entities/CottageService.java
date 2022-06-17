@@ -56,7 +56,7 @@ public class CottageService {
     public CottageDTO getCottageDTOById(Long id) {
         Cottage cottage = getCottageById(id);
         if (cottage == null)
-            throw new ItemNotFoundException("Can't find cottage with id: " + id);
+            throw new ItemNotFoundException("Can't find cottage with id: " + id + ". Refresh page and try again!");
         return getCottageDTO(cottage);
     }
 
@@ -67,7 +67,7 @@ public class CottageService {
     public CottageDTO getCottageDTOByIdCanBeDeleted(Long id) {
         Cottage cottage = getCottageByIdCanBeDeleted(id);
         if (cottage == null)
-            throw new ItemNotFoundException("Can't find cottage with id: " + id);
+            throw new ItemNotFoundException("Can't find cottage with id: " + id + ". Refresh page and try again!");
         return getCottageDTO(cottage);
     }
 
@@ -147,7 +147,7 @@ public class CottageService {
                 throw new EditItemException("Can't update cottage because there exist active reservations");
             Cottage cottage = getCottageById(id);
             if (cottage == null)
-                throw new ItemNotFoundException("Cant find cottage with id: " + id);
+                throw new ItemNotFoundException("Cant find cottage with id: " + id+ ". Refresh page and try again!");
             if (cottage.getVersion() != cottageDTO.getVersion())
                 throw new ConflictException("Conflict seems to have occurred, someone changed your cottage data before you. Please refresh page and try again!");
 
@@ -159,7 +159,7 @@ public class CottageService {
 
             Place p = cottageDTO.getPlace();
             if (p == null)
-                throw new ItemNotFoundException("Can't find chosen place");
+                throw new ItemNotFoundException("Can't find chosen place.");
             Place place = placeService.getPlaceByZipCode(p.getZipCode());
             cottage.setPlace(place);
 

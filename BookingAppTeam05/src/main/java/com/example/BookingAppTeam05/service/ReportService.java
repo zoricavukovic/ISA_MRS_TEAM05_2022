@@ -58,6 +58,8 @@ public class ReportService {
         Reservation reservation = reservationRepository.getReservationById(reportDTO.getReservationId());
         if (reservation == null)
             throw new ItemNotFoundException("Can't find reservation.");
+        if (reportRepository.getReportByReservationId(reportDTO.getReservationId()) != null)
+            throw new ConflictException("Conflict seems to have occurred. This reservation is already reviewed. Please refresh page and try again.");
         Report report = new Report(reportDTO.getComment(), reportDTO.isPenalizeClient(),!reportDTO.isClientCome() , reportDTO.isClientCome(), reservation);
         report.setVersion(0L);
         report = reportRepository.save(report);

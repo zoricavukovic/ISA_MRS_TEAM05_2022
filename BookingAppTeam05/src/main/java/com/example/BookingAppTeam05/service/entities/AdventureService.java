@@ -69,7 +69,7 @@ public class AdventureService {
 
     private AdventureDTO getAdventureDTO(Adventure adventure, Long id) {
         if (adventure == null)
-            throw new ItemNotFoundException("Can't find adventure with id: " + id);
+            throw new ItemNotFoundException("Can't find adventure with id: " + id + ". Refresh page and try again!");
 
         AdventureDTO adventureDTO = new AdventureDTO(adventure);
         adventureDTO.setPlace(adventure.getPlace());

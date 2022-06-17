@@ -116,7 +116,7 @@ public class BookingEntityService {
     public SearchedBookingEntityDTO getSearchedBookingEntityDTOByEntityId(Long id) {
         BookingEntity bookingEntity = bookingEntityRepository.getEntityById(id);
         if (bookingEntity == null)
-            throw new ItemNotFoundException("Can't find entity with id: " + id);
+            throw new ItemNotFoundException("Can't find entity with id: " + id + ". Refresh page and try again!");
         SearchedBookingEntityDTO retVal = new SearchedBookingEntityDTO(bookingEntity);
         setPriceListAndRatingForSearchedBookingEntityDTO(retVal);
         return retVal;
@@ -146,7 +146,7 @@ public class BookingEntityService {
     public BookingEntity getEntityById(Long id) {
         BookingEntity retVal = bookingEntityRepository.getEntityById(id);
         if (retVal == null)
-            throw new ItemNotFoundException("Entity is not found.");
+            throw new ItemNotFoundException("Entity is not found. Refresh page and try again!");
         return retVal;
     }
 
@@ -168,7 +168,7 @@ public class BookingEntityService {
     public BookingEntityDTO findById(Long id) {
         Optional<EntityType> entityType = bookingEntityRepository.findEntityTypeById(id);
         if (!entityType.isPresent())
-            throw new ItemNotFoundException("Can't find entity with id " + id);
+            throw new ItemNotFoundException("Can't find entity with id " + id + ". Refresh page and try again!");
 
         BookingEntityDTO entityDTO = null;
         switch (entityType.get().name()){
@@ -208,7 +208,7 @@ public class BookingEntityService {
                 break;
         }
         if (entityDTO == null)
-            throw new ItemNotFoundException("Can't find entity with id " + id);
+            throw new ItemNotFoundException("Can't find entity with id " + id + ". Refresh page and try again!");
 
         if(entityDTO.getEntityType() != EntityType.ADVENTURE)
             setAllUnavailableDatesForRange(entityDTO);
@@ -345,7 +345,7 @@ public class BookingEntityService {
         Client client = clientService.findById(clientId);
         BookingEntity bookingEntity = bookingEntityRepository.findByIdWithoutParams(entityId).orElse(null);
         if (bookingEntity == null)
-            throw new ItemNotFoundException("Can't find entity with id " + entityId);
+            throw new ItemNotFoundException("Can't find entity with id " + entityId + ". Refresh page and try again!");
         Set<BookingEntity> watched = client.getWatchedEntities();
         if(watched.stream().filter(entity -> Objects.equals(entity.getId(), bookingEntity.getId())).collect(Collectors.toList()).size() == 0) {
             watched.add(bookingEntity);
@@ -367,7 +367,7 @@ public class BookingEntityService {
         Client client = clientService.findById(clientId);
         BookingEntity bookingEntity = bookingEntityRepository.findById(entityId).orElse(null);
         if (bookingEntity == null)
-            throw new ItemNotFoundException("Can't find entity with id " + entityId);
+            throw new ItemNotFoundException("Can't find entity with id " + entityId + ". Refresh page and try again!");
         Set<Client> clients = bookingEntity.getSubscribedClients();
         clients.removeIf(client1 -> Objects.equals(client1.getId(), clientId));
         bookingEntity.setSubscribedClients(clients);

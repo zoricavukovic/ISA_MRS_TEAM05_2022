@@ -143,17 +143,30 @@ function AdventureActions(props) {
 
     const showCalendarForEntity = (event) => {
         event.preventDefault();
-        props.history.push({
-            pathname: "/calendarForEntity",
-            state: { bookingEntityId: props.adventureId }
-        })
+        getAdventureById(props.adventureId).then(res => {
+            props.history.push({
+                pathname: "/calendarForEntity",
+                state: { bookingEntityId: props.adventureId }
+            })
+        }).catch(res => {
+            props.setMessage(res.response.data);
+            props.handleClick();
+            return;
+        });
+        
     }
     const showFastReservations = (event) => {
         event.preventDefault();
-        props.history.push({
-            pathname: "/addFastReservation",
-            state: { bookingEntityId: props.adventureId } 
-          })
+        getAdventureById(props.adventureId).then(res => {
+            props.history.push({
+                pathname: "/addFastReservation",
+                state: { bookingEntityId: props.adventureId } 
+            })
+        }).catch(res => {
+            props.setMessage(res.response.data);
+            props.handleClick();
+            return;
+        });
 
     };
 
@@ -220,13 +233,22 @@ export default function AdventureProfile(props) {
     };
 
     const FastReserve = (fastReservation)=> {
-        console.log(fastReservation);
-        setSelectedFastReservation(fastReservation);
-        setOpenDialog(true);
+        getAdventureById(adventureData.id).then(res => {
+            console.log(fastReservation);
+            setSelectedFastReservation(fastReservation);
+            setOpenDialog(true);
+        }).catch(res => {
+            handleClick();
+            setMessage(res.response.data);
+            return;
+
+        })
+        
     }
 
     const confirmReservation = ()=>{
-        console.log(getCurrentUser());
+        getAdventureById(adventureData.id).then(res => {
+            console.log(getCurrentUser());
         selectedFastReservation.client = getCurrentUser();
         reserveFastReservation(selectedFastReservation).then(res=>{
             console.log("Adding temp res success");
@@ -239,40 +261,72 @@ export default function AdventureProfile(props) {
         }).catch(res=>{
             console.log("Adding temp res failed");
         });
+        }).catch(res => {
+            handleClick();
+            setMessage(res.response.data);
+            return;
+
+        })
+        
     } 
 
     const reserveBookingEntity = () => {
-        console.log("Evo me");
-        console.log(props.searchParams);
-        history.push({
+        getAdventureById(adventureData.id).then(res => {
+            console.log("Evo me");
+            console.log(props.searchParams);
+            history.push({
             pathname: "/newReservation",
             state: {
                 bookingEntityId: props.location.state.bookingEntityId,
                 searchParams: {}
             }
         })
+        }).catch(res => {
+            handleClick();
+            setMessage(res.response.data);
+            return;
+
+        })
+        
     }
 
     const subscribe =()=>{
-        subscribeClientWithEntity(getCurrentUser().id, adventureData.id).then(res=>{
-            console.log("Uspesno sub");
-            console.log(res.data);
-            if(typeof(props.setSubscribedEntities) !== "undefined" )
-                props.setSubscribedEntities(res.data);
-            else
-                setIsSubscribed(true);
-        });
+        getAdventureById(adventureData.id).then(res => {
+            subscribeClientWithEntity(getCurrentUser().id, adventureData.id).then(res=>{
+                console.log("Uspesno sub");
+                console.log(res.data);
+                if(typeof(props.setSubscribedEntities) !== "undefined" )
+                    props.setSubscribedEntities(res.data);
+                else
+                    setIsSubscribed(true);
+            });
+        }).catch(res => {
+            handleClick();
+            setMessage(res.response.data);
+            return;
+
+        })
+        
+        
     }
 
     const unsubscribe =()=>{
-        unsubscribeClientWithEntity(getCurrentUser().id, adventureData.id).then(res=>{
-            console.log("Uspesno unsub");
-            console.log(res.data);
-            if(typeof(props.setSubscribedEntities) !== "undefined" )
-                props.setSubscribedEntities(res.data);
-            else
-            setIsSubscribed(false);
-        });
+        getAdventureById(adventureData.id).then(res => {
+            unsubscribeClientWithEntity(getCurrentUser().id, adventureData.id).then(res=>{
+                console.log("Uspesno unsub");
+                console.log(res.data);
+                if(typeof(props.setSubscribedEntities) !== "undefined" )
+                    props.setSubscribedEntities(res.data);
+                else
+                setIsSubscribed(false);
+            });
+        }).catch(res => {
+            handleClick();
+            setMessage(res.response.data);
+            return;
+
+        })
+       
     }
 
 
@@ -286,6 +340,12 @@ export default function AdventureProfile(props) {
                 if(res.data.instructor.id == getCurrentUser().id)
                     setHasAuthority(true);
                 setLoading(false);
+            }).catch(res => {
+                handleClick();
+                setMessage(res.response.data);
+                console.log(res.response.data);
+                history.push('/adventures');
+
             })
             getPricelistByEntityId(props.location.state.bookingEntityId).then(result => {
                 setPricelistData(result.data);

@@ -19,7 +19,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/cottages")
-//@CrossOrigin
 public class CottageController {
 
     private CottageService cottageService;

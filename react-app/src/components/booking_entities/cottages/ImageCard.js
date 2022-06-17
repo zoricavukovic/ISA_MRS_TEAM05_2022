@@ -123,33 +123,50 @@ export default function ImageCard(props) {
 
     const showCalendarForEntity = (event) => {
         event.preventDefault();
-        history.push({
-            pathname: "/calendarForEntity",
-            state: { bookingEntityId: props.cottageId }
-        })
+        getCottageById(props.cottageId).then(res => {
+            history.push({
+                pathname: "/calendarForEntity",
+                state: { bookingEntityId: props.cottageId } 
+            })
+        }).catch(res => {
+            setMessage(res.response.data);
+            handleClick();
+            return;
+        });
     }
 
 
     const showFastReservations = (event) => {
         event.preventDefault();
-        history.push({
-            pathname: "/addFastReservation",
-            state: { bookingEntityId: props.cottageId } 
-          })
+        getCottageById(props.cottageId).then(res => {
+            history.push({
+                pathname: "/addFastReservation",
+                state: { bookingEntityId: props.cottageId } 
+            })
+        }).catch(res => {
+            setMessage(res.response.data);
+            handleClick();
+            return;
+        });
     };
 
     function createReservationForClient() {
-        findAllClientsWithActiveReservations(props.cottageId).then(res => {
-            console.log(res.data);
-            if (res.data.length !== 0){
-                setOpenDialogCreate(true);
-            }
-            else{
-                setMessage("Don't have clients with active reservations.");
-                handleClick();
-            }
+        getCottageById(props.cottageId).then(res => {
+            findAllClientsWithActiveReservations(props.cottageId).then(res => {
+                console.log(res.data);
+                if (res.data.length !== 0){
+                    setOpenDialogCreate(true);
+                }
+                else{
+                    setMessage("Don't have clients with active reservations.");
+                    handleClick();
+                }
+            });
+        }).catch(res => {
+            setMessage(res.response.data);
+            handleClick();
+            return;
         });
-       
     };
 
     function CottageAdditionalInfo(props) {
@@ -297,6 +314,12 @@ export default function ImageCard(props) {
             if(getCurrentUser().id == res.data.cottageOwnerDTO.id)
                 setHasAuthority(true);
             setLoadingCottage(false);
+        }).catch(res => {
+            handleClick();
+            setMessage(res.response.data);
+            console.log(res.response.data);
+            history.push('/cottages');
+
         });
         getPricelistByEntityId(props.cottageId).then(res => {
             setPricelistData(res.data);

@@ -17,6 +17,7 @@ public class SearchedBookingEntityDTO {
     private Float averageRating;
     private List<String> pictures;
     private EntityType entityType;
+    private Long ownerId;
 
     public SearchedBookingEntityDTO() {}
 

@@ -49,6 +49,8 @@ export default function ClientDetails(props) {
             setUserData(res.data);
             console.log(res.data);
             setLoading(false);
+        }).catch(res => {
+          return <div>This user isn't part of this system.</div>
         })
     }, [])
     if (isLoading) { return <div className="App"><CircularProgress /></div> }

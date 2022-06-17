@@ -57,6 +57,7 @@ public class AdventureController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> editAdventure(@RequestBody NewAdventureDTO newAdventureDTO, @PathVariable Long id) {
         adventureService.updateAdventure(newAdventureDTO, id);

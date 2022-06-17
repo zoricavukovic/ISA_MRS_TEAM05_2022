@@ -59,14 +59,14 @@ public class ShipService {
     public ShipDTO getShipDTOById(Long id) {
         Ship ship = getShipById(id);
         if (ship == null)
-            throw new ItemNotFoundException("Can't find ship with id: " + id);
+            throw new ItemNotFoundException("Can't find ship with id: " + id + ". Refresh page and try again!");
         return getShipDTO(ship);
     }
 
     public ShipDTO getShipDTOByIdCanBeDeleted(Long id) {
         Ship ship = getShipByIdCanBeDeleted(id);
         if (ship == null)
-            throw new ItemNotFoundException("Can't find ship with id: " + id);
+            throw new ItemNotFoundException("Can't find ship with id: " + id + ". Refresh page and try again!");
         return getShipDTO(ship);
     }
 

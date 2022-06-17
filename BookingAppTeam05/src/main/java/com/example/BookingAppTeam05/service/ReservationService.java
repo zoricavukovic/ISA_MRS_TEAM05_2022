@@ -267,7 +267,7 @@ public class ReservationService {
                 Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(s);
                 if (client != null) subscribers.add(client);
             }
-            //sendMail(res, subscribers);
+            sendMail(res, subscribers);
             return res;
         }catch (ObjectOptimisticLockingFailureException e){
             throw new ConflictException("Conflict seems to have occurred. This entity has reservation in same period. Please refresh page and try again");
@@ -377,7 +377,7 @@ public class ReservationService {
             entity.setLocked(false);
             bookingEntityService.save(entity);
 
-            //emailService.sendNotificationAboutResToClient(client, res);
+            emailService.sendNotificationAboutResToClient(client, res);
             return res.getId().toString();
         }catch (ObjectOptimisticLockingFailureException e){
             throw new ConflictException("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again");
@@ -444,7 +444,7 @@ public class ReservationService {
             if (client == null) throw new ItemNotFoundException("Can't find client who want to reserve fast reservation.");
             res.setClient(client);
             reservationRepository.save(res);
-            //emailService.sendNotificationAboutResToClient(client, res);
+            emailService.sendNotificationAboutResToClient(client, res);
             return res;
         }catch (ObjectOptimisticLockingFailureException e){
             throw new ConflictException("Conflict seems to have occurred, another user reserved this entity in before you create this action in same period. Please refresh page and try again");

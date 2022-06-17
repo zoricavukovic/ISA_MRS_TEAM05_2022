@@ -105,7 +105,7 @@ function ShowReservationsOwner() {
                 }
                 if (found === false) {newOpts.push(res.bookingEntity.name);}
             }
-            setReservations(result.data);
+            setReservations(result.data.sort((a,b)=>new Date(b.startDate) - new Date(a.startDate)));
             setLoading(false);
             setOptions(newOpts);
         })
@@ -126,7 +126,8 @@ function ShowReservationsOwner() {
             type = "ADVENTURE";
         }
         getReservationsByOwnerIdAndFilter(getCurrentUser().id, nameChoosen, timeChoosen, type).then(res => {
-            setReservations(res.data);
+            let allRes = res.data.sort((a,b)=>new Date(b.startDate) - new Date(a.startDate));
+            setReservations(allRes);
             setNameChoosen("ALL");
             setTimeChoosen("ALL");
             setLoading(false);
@@ -134,11 +135,11 @@ function ShowReservationsOwner() {
     }
 
     
-    const displayReservations = reservations
-    .map(res=> {
-        
-        return <ReservationBasicCard reservation={res} reservationId={res.id} details="true"></ReservationBasicCard>
-    })
+    const displayReservations = 
+        reservations.length > 0 ? 
+        reservations.map(res=> {
+            return <ReservationBasicCard reservation={res} reservationId={res.id} details="true"></ReservationBasicCard>
+        }) : (<h1>No reservation history.</h1>)
 
     const [open, setOpen] = React.useState(false);
 
