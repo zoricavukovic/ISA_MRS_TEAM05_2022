@@ -122,7 +122,7 @@ export default function ReviewAllUsers() {
             <Box
                 alignItems="center"
                 justifyContent="center"
-                style={{ margin: '1% 5% 1% 10%' }}
+                style={{ margin: '1% 5% 1% 20%' }}
             >
                 <ConfirmPassDialog
                     handleClickOpenConfirmPassDialog={handleClickOpenConfirmPassDialog}

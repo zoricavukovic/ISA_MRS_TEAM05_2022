@@ -27,7 +27,7 @@ import Alert from '@mui/material/Alert';
 import { propsLocationStateFound } from "../../forbiddenNotFound/notFoundChecker";
 import RenderImageSlider from "../../image_slider/RenderImageSlider.js";
 import { getCurrentUser } from "../../../service/AuthService";
-import { getAvailableFastReservationsByBookingEntityId, reserveFastReservation } from "../../../service/ReservationService";
+import { findAllClientsWithActiveReservations, getAvailableFastReservationsByBookingEntityId, reserveFastReservation } from "../../../service/ReservationService";
 import { getRatingsByEntityId } from "../../../service/RatingService";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, Tooltip } from "@mui/material";
 import { DateRangeOutlined, Favorite, FavoriteBorder } from "@mui/icons-material";
@@ -38,6 +38,7 @@ import { subscribeClientWithEntity, unsubscribeClientWithEntity } from "../../..
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import Approved from "../../../icons/approval.png";
 import NotApproved from "../../../icons/notApprowed.png"
+import CreateReservationForClient from '../../reservations/CreateReservationForClient';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -123,7 +124,8 @@ function RenderFishingEquipment(props) {
 
 function AdventureActions(props) {
 
-    
+    const [openDialogCreate, setOpenDialogCreate] = React.useState(false);
+
 
     const editAdventure = (event) => {
         event.preventDefault();
@@ -153,12 +155,25 @@ function AdventureActions(props) {
         props.history.push({
             pathname: "/addFastReservation",
             state: { bookingEntityId: props.adventureId } 
-          })
-
+          });
     };
+
+    const createReservationForClient = (event) => {
+        event.preventDefault();
+        findAllClientsWithActiveReservations(props.adventureId).then(res => {
+            if (res.data.length !== 0){
+                setOpenDialogCreate(true);
+            }
+            else{
+                props.setMessage("Don't have clients with active reservations.");
+                props.handleClick();
+            }
+        });
+    }
 
     return (
         <CardActions disableSpacing>
+            <CreateReservationForClient bookingEntityId={props.adventureId} openDialog={openDialogCreate}/>
             <IconButton onClick={showCalendarForEntity}>
                 <Chip icon={<CalendarMonthIcon />} label="Calendar" />
             </IconButton>
@@ -169,7 +184,7 @@ function AdventureActions(props) {
             <IconButton value="module" aria-label="module" onClick={showFastReservations}>
                 <Chip icon={<LocalFireDepartmentIcon />} label="Create Action" />
             </IconButton>
-            <IconButton value="module" aria-label="module">
+            <IconButton value="module" aria-label="module" onClick={createReservationForClient}>
                 <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
             </IconButton>
             <ExpandMore

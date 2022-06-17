@@ -484,3 +484,10 @@ VALUES ('2022-07-29 7:00 pm',5,3,1,null,'True','False', 1, 290, 5, 5, 30),
        ('2022-07-05 7:00 pm',3,4,1,null,'True','False', 1, 359, 5, 5, 30),
        ('2022-07-15 7:00 pm',2,2,1,null,'True','False', 1, 425, 5, 5, 30),
        ('2022-08-05 7:00 pm',10,5,1,null,'True','False', 1, 440, 5, 5, 30);
+
+
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
+VALUES
+    ('2022-06-16 5:00 am',2,2,14,8,'False','False', 1, 45, 5, 5, 30),
+    ('2022-06-17 7:00 am',1,3,14,7,'False','True', 1, 66, 5, 5, 40),
+    ('2022-06-15 7:00 am',5,3,14,9,'False','False', 1, 80, 5, 5, 30);

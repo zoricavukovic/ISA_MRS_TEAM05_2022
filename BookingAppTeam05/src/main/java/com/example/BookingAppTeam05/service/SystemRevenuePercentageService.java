@@ -8,6 +8,7 @@ import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.SystemRevenuePercentage;
 import com.example.BookingAppTeam05.model.entities.EntityType;
 import com.example.BookingAppTeam05.model.repository.SystemRevenuePercentageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class SystemRevenuePercentageService {
     private SystemRevenuePercentageRepository systemRevenuePercentageRepository;
     private ReservationService reservationService;
 
+    @Autowired
     public SystemRevenuePercentageService(SystemRevenuePercentageRepository systemRevenuePercentageRepository, ReservationService reservationService) {
         this.systemRevenuePercentageRepository = systemRevenuePercentageRepository;
         this.reservationService = reservationService;
