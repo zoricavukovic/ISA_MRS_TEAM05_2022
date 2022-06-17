@@ -16,7 +16,7 @@ import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
 import com.example.BookingAppTeam05.model.entities.Cottage;
 import com.example.BookingAppTeam05.model.entities.Ship;
-import com.example.BookingAppTeam05.model.repository.ReservationRepository;
+import com.example.BookingAppTeam05.repository.ReservationRepository;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.entities.AdventureService;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;

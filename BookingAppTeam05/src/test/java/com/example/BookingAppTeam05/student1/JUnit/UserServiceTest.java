@@ -2,18 +2,11 @@ package com.example.BookingAppTeam05.student1.JUnit;
 
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.model.Place;
-import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.entities.Cottage;
-import com.example.BookingAppTeam05.model.repository.users.UserRepository;
+import com.example.BookingAppTeam05.repository.users.UserRepository;
 import com.example.BookingAppTeam05.model.users.Client;
-import com.example.BookingAppTeam05.model.users.CottageOwner;
 import com.example.BookingAppTeam05.model.users.Role;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.service.EmailService;
-import com.example.BookingAppTeam05.service.LoyaltyProgramService;
 import com.example.BookingAppTeam05.service.PlaceService;
-import com.example.BookingAppTeam05.service.ReservationService;
-import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.*;
 import static org.junit.Assert.assertThat;
 import org.junit.jupiter.api.Test;
@@ -27,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

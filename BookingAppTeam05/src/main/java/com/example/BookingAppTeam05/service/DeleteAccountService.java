@@ -8,7 +8,7 @@ import com.example.BookingAppTeam05.exception.NotificationByEmailException;
 import com.example.BookingAppTeam05.exception.database.CreateItemException;
 import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.DeleteAccountRequest;
-import com.example.BookingAppTeam05.model.repository.DeleteAccountRepository;
+import com.example.BookingAppTeam05.repository.DeleteAccountRepository;
 import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

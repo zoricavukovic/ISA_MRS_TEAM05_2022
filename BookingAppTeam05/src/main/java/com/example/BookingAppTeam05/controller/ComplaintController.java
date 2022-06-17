@@ -27,25 +27,28 @@ public class ComplaintController {
     public ComplaintController(){}
 
     @GetMapping("/getByReservationId/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN', 'COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR', 'CLIENT')")
     public ResponseEntity<ComplaintDTO> getComplaintByReservationId(@PathVariable Long id) {
         ComplaintDTO complaintDTO = complaintService.getComplaintByReservationId(id);
         return new ResponseEntity<>(complaintDTO, HttpStatus.OK);
     }
 
     @PostMapping(value="/createComplaint", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<ComplaintDTO> createComplaint(@RequestBody ComplaintDTO complaintDTO) {
         Complaint complaint = complaintService.createComplaint(complaintDTO);
         return ResponseEntity.ok(new ComplaintDTO(complaint));
     }
 
     @GetMapping(value="/all/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<List<ComplaintReviewDTO>> getListOfCreatedReports(@PathVariable String type) {
         List<ComplaintReviewDTO> retVal = complaintService.getListOfCreatedReports(type);
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @PutMapping(value="/giveResponse", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<String> giveResponse(@RequestBody ComplaintReviewDTO c) {
         complaintService.giveResponse(c);
         return new ResponseEntity<>("OK", HttpStatus.OK);

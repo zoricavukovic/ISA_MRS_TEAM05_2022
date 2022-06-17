@@ -17,7 +17,7 @@ import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.RatingService;
 import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.model.repository.entities.BookingEntityRepository;
+import com.example.BookingAppTeam05.repository.entities.BookingEntityRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.ClientService;
 import com.example.BookingAppTeam05.service.users.UserService;

@@ -45,13 +45,6 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value="loyaltyProgram/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
-    public ResponseEntity<String> getUsersLoyalityProgramById(@PathVariable Long id) {
-        LoyaltyProgramEnum loyaltyProgramEnum = userService.findUsersLoyalityProgramById(id);
-        return new ResponseEntity<>(loyaltyProgramEnum.name(), HttpStatus.OK);
-    }
-
     @PutMapping("/updateUser/{id}")
     @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<UserDTO> updateUser(@PathVariable(value = "id") Long userId, @RequestBody UserDTO userDTO)  {

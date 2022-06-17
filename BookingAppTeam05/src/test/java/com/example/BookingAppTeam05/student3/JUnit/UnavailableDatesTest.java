@@ -2,7 +2,7 @@ package com.example.BookingAppTeam05.student3.JUnit;
 
 import com.example.BookingAppTeam05.dto.calendar.UnavailableDateDTO;
 import com.example.BookingAppTeam05.model.UnavailableDate;
-import com.example.BookingAppTeam05.model.repository.UnavailableDateRepository;
+import com.example.BookingAppTeam05.repository.UnavailableDateRepository;
 import com.example.BookingAppTeam05.service.UnavailableDateService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

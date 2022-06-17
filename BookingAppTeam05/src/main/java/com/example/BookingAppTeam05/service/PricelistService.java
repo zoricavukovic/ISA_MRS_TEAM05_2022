@@ -6,7 +6,7 @@ import com.example.BookingAppTeam05.exception.ItemNotFoundException;
 import com.example.BookingAppTeam05.exception.database.DatabaseException;
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Pricelist;
-import com.example.BookingAppTeam05.model.repository.PricelistRepository;
+import com.example.BookingAppTeam05.repository.PricelistRepository;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

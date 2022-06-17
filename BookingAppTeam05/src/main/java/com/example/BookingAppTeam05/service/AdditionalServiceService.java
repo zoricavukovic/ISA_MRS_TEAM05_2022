@@ -2,13 +2,12 @@ package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.NewAdditionalServiceDTO;
 import com.example.BookingAppTeam05.model.AdditionalService;
-import com.example.BookingAppTeam05.model.repository.AdditionalServiceRepository;
+import com.example.BookingAppTeam05.repository.AdditionalServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AdditionalServiceService {

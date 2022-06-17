@@ -26,12 +26,14 @@ public class DeleteAccountController {
     public DeleteAccountController(){}
 
     @GetMapping(value="/unprocessed", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<List<DeleteAccountRequestDTO>> getAllUnprocessedDeleteAccountRequests() {
         List<DeleteAccountRequestDTO> retVal = deleteAccountService.getAllUnprocessedDeleteAccountRequestDTOs();
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
     @PutMapping(value="/giveResponse", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<String> giveResponse(@RequestBody DeleteAccountRequestDTO d) {
         deleteAccountService.giveResponse(d);
         return new ResponseEntity<>("OK", HttpStatus.OK);

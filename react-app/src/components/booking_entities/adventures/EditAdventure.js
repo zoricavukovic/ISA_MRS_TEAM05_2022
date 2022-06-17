@@ -138,6 +138,7 @@ export default function EditAdventure(props) {
             fishingEquipment: _getFishingEquipmentNamesJson(fishingEquipment),
             rulesOfConduct: _getRuleNamesJson(rulesOfConduct),
             images: _getImagesInJsonBase64(images),
+            version: data.version,
         }
         console.log("EDITEDD adventure");
         console.log(editedAdventure);

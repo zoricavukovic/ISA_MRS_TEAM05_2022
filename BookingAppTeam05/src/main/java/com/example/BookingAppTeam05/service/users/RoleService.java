@@ -1,7 +1,7 @@
 package com.example.BookingAppTeam05.service.users;
 
 import com.example.BookingAppTeam05.model.users.Role;
-import com.example.BookingAppTeam05.model.repository.users.RoleRepository;
+import com.example.BookingAppTeam05.repository.users.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

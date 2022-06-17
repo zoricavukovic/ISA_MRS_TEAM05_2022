@@ -13,7 +13,7 @@ import com.example.BookingAppTeam05.exception.database.CreateItemException;
 import com.example.BookingAppTeam05.exception.database.DeleteItemException;
 import com.example.BookingAppTeam05.model.Rating;
 import com.example.BookingAppTeam05.model.Reservation;
-import com.example.BookingAppTeam05.model.repository.RatingRepository;
+import com.example.BookingAppTeam05.repository.RatingRepository;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

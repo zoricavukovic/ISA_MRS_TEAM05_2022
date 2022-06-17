@@ -1,19 +1,17 @@
 package com.example.BookingAppTeam05.service.users;
 
 import com.example.BookingAppTeam05.dto.ChangePasswordDTO;
-import com.example.BookingAppTeam05.dto.LoyaltyProgramDTO;
 import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
 import com.example.BookingAppTeam05.exception.*;
 import com.example.BookingAppTeam05.exception.database.CreateItemException;
-import com.example.BookingAppTeam05.exception.database.DatabaseException;
 import com.example.BookingAppTeam05.exception.database.DeleteItemException;
 import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.repository.users.UserRepository;
+import com.example.BookingAppTeam05.repository.users.UserRepository;
 import com.example.BookingAppTeam05.model.users.*;
 import com.example.BookingAppTeam05.service.EmailService;
 import com.example.BookingAppTeam05.service.LoyaltyProgramService;
@@ -348,10 +346,5 @@ public class UserService {
         User user = findUserByEmail(email);
         if (user != null)
             throw new EditItemException("This email is already taken.x");
-    }
-
-    public LoyaltyProgramEnum findUsersLoyalityProgramById(Long id) {
-        User user = userRepository.findUsersLoyaltyProgram(id);
-        return  user.getLoyaltyProgramEnum();
     }
 }
