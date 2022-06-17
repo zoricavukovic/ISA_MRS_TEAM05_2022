@@ -25,7 +25,7 @@ export default function ShowCottages(props) {
             if (getCurrentUser().userType.name === "ROLE_CLIENT") {
                 getAllSubscribedEntities(getCurrentUser().id).then(res => {
                     setSubscribedEntities(res.data);
-                    console.log(res.data);
+                    setIsLoaded(true);
                 });
             }
             else 

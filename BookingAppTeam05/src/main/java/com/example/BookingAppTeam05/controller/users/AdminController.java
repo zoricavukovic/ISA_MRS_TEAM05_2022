@@ -28,21 +28,19 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    public AdminController(){}
+
     @PostMapping( consumes = MediaType.APPLICATION_JSON_VALUE)
-    //@PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
     public ResponseEntity<String> createAdmin(@Valid @RequestBody NewAdminDTO newAdminDTO) {
-        String errorMessage = adminService.createAdminAndReturnErrorMessage(newAdminDTO);
-        if (errorMessage != null)
-            return new ResponseEntity<String>(errorMessage, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<String>("Successfully created new admin", HttpStatus.OK);
+        adminService.createAdmin(newAdminDTO);
+        return new ResponseEntity<>("Successfully created new admin", HttpStatus.OK);
     }
 
-
     @GetMapping(value="/allRequestsNums")
-    //@PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public ResponseEntity<AllRequestsNumsDTO> getAllRequestsNums() {
         AllRequestsNumsDTO a = adminService.getAllRequestsNumsDTO();
         return new ResponseEntity<>(a, HttpStatus.OK);
     }
-
 }

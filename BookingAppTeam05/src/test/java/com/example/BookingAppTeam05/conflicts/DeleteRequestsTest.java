@@ -1,7 +1,7 @@
-package com.example.BookingAppTeam05.aatestConflicts;
+package com.example.BookingAppTeam05.conflicts;
 
-import com.example.BookingAppTeam05.model.Rating;
-import com.example.BookingAppTeam05.service.RatingService;
+import com.example.BookingAppTeam05.model.DeleteAccountRequest;
+import com.example.BookingAppTeam05.service.DeleteAccountService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +18,10 @@ import java.util.concurrent.Future;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RatingReviewTest {
+public class DeleteRequestsTest {
 
     @Autowired
-    private RatingService ratingService;
+    private DeleteAccountService deleteAccountService;
 
     @Transactional
     @Rollback(true)
@@ -33,10 +33,10 @@ public class RatingReviewTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 1");
-                Rating rating = ratingService.findById(3L);
-                rating.setProcessed(true);
+                DeleteAccountRequest request = deleteAccountService.findById(1L);
+                request.setProcessed(true);
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
-                ratingService.save(rating);
+                deleteAccountService.save(request);
             }
         });
         executor.submit(new Runnable() {
@@ -44,9 +44,9 @@ public class RatingReviewTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 2");
-                Rating rating = ratingService.findById(3L);
-                rating.setProcessed(true);
-                ratingService.save(rating);
+                DeleteAccountRequest request = deleteAccountService.findById(1L);
+                request.setProcessed(true);
+                deleteAccountService.save(request);
             }
         });
         try {

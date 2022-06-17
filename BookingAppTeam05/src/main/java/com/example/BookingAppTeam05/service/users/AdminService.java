@@ -1,6 +1,8 @@
 package com.example.BookingAppTeam05.service.users;
 
 import com.example.BookingAppTeam05.dto.AllRequestsNumsDTO;
+import com.example.BookingAppTeam05.exception.BookingAppException;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
 import com.example.BookingAppTeam05.model.Place;
 import com.example.BookingAppTeam05.model.users.Admin;
 import com.example.BookingAppTeam05.dto.users.NewAdminDTO;
@@ -18,7 +20,6 @@ public class AdminService {
     private PlaceService placeService;
     private UserService userService;
     private RoleService roleService;
-
     private ComplaintService complaintService;
     private ReportService reportService;
     private DeleteAccountService deleteAccountService;
@@ -36,23 +37,25 @@ public class AdminService {
         this.ratingService = ratingService;
     }
 
+    public AdminService(){}
+
     @Transactional
-    public String createAdminAndReturnErrorMessage(NewAdminDTO newAdminDTO) {
+    public void createAdmin(NewAdminDTO newAdminDTO) {
         Place place = placeService.getPlaceById(newAdminDTO.getPlaceId());
         if (place == null)
-            return "Can't find place with id: " + newAdminDTO.getPlaceId();
+            throw new ItemNotFoundException("Can't find place");
         if (userService.findUserByEmail(newAdminDTO.getEmail()) != null)
-            return "User with email adress: " + newAdminDTO.getAddress() + " already exist.";
-
+            throw new ItemNotFoundException("User with email address: " + newAdminDTO.getAddress() + " already exist.");
         String password = userService.getHashedNewUserPassword(newAdminDTO.getPassword());
         Role role = roleService.findByName("ROLE_ADMIN");
 
-        Admin admin = new Admin(newAdminDTO.getEmail(), newAdminDTO.getName(), newAdminDTO.getSurname(), newAdminDTO.getAddress(), newAdminDTO.getPhoneNumber(), password, false, place, role);
+        Admin admin = new Admin(newAdminDTO.getEmail(), newAdminDTO.getName(),
+                newAdminDTO.getSurname(), newAdminDTO.getAddress(), newAdminDTO.getPhoneNumber(),
+                password, false, place, role);
         try {
             adminRepository.save(admin);
-            return null;
         } catch (Exception e) {
-            return "Error happend on server. Cant save admin: " + newAdminDTO.getEmail() + " " + newAdminDTO.getName() + " " + newAdminDTO.getSurname();
+            throw new BookingAppException("Error happened on server. Can't save admin: " + newAdminDTO.getEmail() + ", " + newAdminDTO.getName() + " " + newAdminDTO.getSurname());
         }
     }
 

@@ -6,27 +6,25 @@ import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.entities.CottageDTO;
 import com.example.BookingAppTeam05.dto.entities.ShipDTO;
-import com.example.BookingAppTeam05.model.Picture;
+import com.example.BookingAppTeam05.exception.BookingAppException;
+import com.example.BookingAppTeam05.exception.ConflictException;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.UnauthorisedException;
+import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.Pricelist;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.RatingService;
-import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.example.BookingAppTeam05.model.entities.*;
 import com.example.BookingAppTeam05.model.users.User;
-import com.example.BookingAppTeam05.model.repository.entities.AdventureRepository;
 import com.example.BookingAppTeam05.model.repository.entities.BookingEntityRepository;
-import com.example.BookingAppTeam05.model.repository.entities.CottageRepository;
-import com.example.BookingAppTeam05.model.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.ClientService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -35,7 +33,6 @@ import java.util.stream.Collectors;
 @Service
 public class BookingEntityService {
     private BookingEntityRepository bookingEntityRepository;
-    private CottageRepository cottageRepository;
     private UserService userService;
     private ClientService clientService;
     private AdventureService adventureService;
@@ -45,16 +42,12 @@ public class BookingEntityService {
     private RatingService ratingService;
     private PricelistService pricelistService;
     private ReservationService reservationService;
-    private PictureService pictureService;
-    private ShipRepository shipRepository;
-    private AdventureRepository adventureRepository;
 
     @Autowired
     public BookingEntityService(BookingEntityRepository bookingEntityRepository, UserService userService,
                                 ClientService clientService, CottageService cottageService, AdventureService adventureService, ShipService shipService,
                                 SearchService searchService, RatingService ratingService, PricelistService pricelistService,
-                                ReservationService reservationService, PictureService pictureService,
-                                CottageRepository cottageRepository, ShipRepository shipRepository, AdventureRepository adventureRepository) {
+                                ReservationService reservationService) {
         this.bookingEntityRepository = bookingEntityRepository;
         this.userService = userService;
         this.clientService = clientService;
@@ -65,11 +58,9 @@ public class BookingEntityService {
         this.ratingService = ratingService;
         this.pricelistService = pricelistService;
         this.reservationService = reservationService;
-        this.pictureService = pictureService;
-        this.cottageRepository = cottageRepository;
-        this.shipRepository = shipRepository;
-        this.adventureRepository = adventureRepository;
     }
+
+    public BookingEntityService(){}
 
     public BookingEntity findBookingEntityById(Long id){
         return bookingEntityRepository.findById(id).orElse(null);
@@ -77,6 +68,8 @@ public class BookingEntityService {
 
     public List<SearchedBookingEntityDTO> getSearchedBookingEntitiesDTOsByOwnerId(Long id) {
         User owner = userService.findUserById(id);
+        if (owner == null)
+            throw new ItemNotFoundException("Can't find user with id: " + id);
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         switch (owner.getRole().getName()) {
             case "ROLE_COTTAGE_OWNER": {
@@ -95,7 +88,7 @@ public class BookingEntityService {
                 break;
             }
             default: {
-                return null;
+                throw new UnauthorisedException("Unauthorised action for user with id " + id);
             }
         }
         for (SearchedBookingEntityDTO s : retVal) {
@@ -113,20 +106,20 @@ public class BookingEntityService {
     }
 
     public List<SearchedBookingEntityDTO> simpleFilterSearchForBookingEntities(List<SearchedBookingEntityDTO> entities, SimpleSearchForBookingEntityOwnerDTO s) {
-        return searchService.simpleFilterSearchForBookingEntities(entities, s);
+        try {
+            return searchService.simpleFilterSearchForBookingEntities(entities, s);
+        } catch (BookingAppException be){
+            throw new BookingAppException("Something happen with server. Try again later!");
+        }
     }
 
     public SearchedBookingEntityDTO getSearchedBookingEntityDTOByEntityId(Long id) {
         BookingEntity bookingEntity = bookingEntityRepository.getEntityById(id);
         if (bookingEntity == null)
-            return null;
+            throw new ItemNotFoundException("Can't find entity with id: " + id);
         SearchedBookingEntityDTO retVal = new SearchedBookingEntityDTO(bookingEntity);
         setPriceListAndRatingForSearchedBookingEntityDTO(retVal);
         return retVal;
-    }
-
-    public BookingEntity getBookingEntityById(Long id) {
-        return this.bookingEntityRepository.getEntityById(id);
     }
 
     public BookingEntity getBookingEntityWithUnavailableDatesById(Long id) {
@@ -151,7 +144,14 @@ public class BookingEntityService {
     }
 
     public BookingEntity getEntityById(Long id) {
-        return bookingEntityRepository.getEntityById(id);
+        BookingEntity retVal = bookingEntityRepository.getEntityById(id);
+        if (retVal == null)
+            throw new ItemNotFoundException("Entity is not found.");
+        return retVal;
+    }
+
+    public BookingEntity getBookingEntityById(Long id) {
+        return getEntityById(id);
     }
 
     public User getOwnerOfEntityId(Long entityId) {
@@ -168,7 +168,7 @@ public class BookingEntityService {
     public BookingEntityDTO findById(Long id) {
         Optional<EntityType> entityType = bookingEntityRepository.findEntityTypeById(id);
         if (!entityType.isPresent())
-            return null;
+            throw new ItemNotFoundException("Can't find entity with id " + id);
 
         BookingEntityDTO entityDTO = null;
         switch (entityType.get().name()){
@@ -207,6 +207,9 @@ public class BookingEntityService {
             default:
                 break;
         }
+        if (entityDTO == null)
+            throw new ItemNotFoundException("Can't find entity with id " + id);
+
         if(entityDTO.getEntityType() != EntityType.ADVENTURE)
             setAllUnavailableDatesForRange(entityDTO);
         else
@@ -216,26 +219,19 @@ public class BookingEntityService {
     }
 
     public List<SearchedBookingEntityDTO> findTopRated(String type) {
-        List<BookingEntity> entities = null;
+        List<BookingEntity> entities;
         if(type.equals("cottage"))
-            entities = (List<BookingEntity>)(List<?>)cottageRepository.findAll();
+            entities = (List<BookingEntity>)(List<?>)cottageService.findAll();
         else if(type.equals("ship"))
-            entities = (List<BookingEntity>)(List<?>)shipRepository.findAll();
+            entities = (List<BookingEntity>)(List<?>)shipService.findAll();
         else
-            entities = (List<BookingEntity>)(List<?>)adventureRepository.findAll();
+            entities = (List<BookingEntity>)(List<?>)adventureService.findAll();
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         for (BookingEntity entity : entities) {
             SearchedBookingEntityDTO s = getSearchedBookingEntityDTOByEntityId(entity.getId());
             retVal.add(s);
         }
-        Collections.sort(retVal, (o1, o2) -> {
-            if(o1.getAverageRating() > o2.getAverageRating())
-                return -1;
-            else if(o1.getAverageRating() < o2.getAverageRating())
-                return 1;
-            else
-                return 0;
-        });
+        retVal.sort((o1, o2) -> o2.getAverageRating().compareTo(o1.getAverageRating()));
         retVal = retVal.stream().limit(3).collect(Collectors.toList());
         return retVal;
     }
@@ -282,8 +278,6 @@ public class BookingEntityService {
         }
         Set<LocalDateTime> additionalDates = new HashSet<>();
 
-
-
         for(LocalDateTime unDate: allUnavailableDates){
             for(LocalDateTime lastDay: lastDates){
                 long hours = Math.abs(ChronoUnit.HOURS.between(unDate, lastDay));
@@ -300,46 +294,20 @@ public class BookingEntityService {
 
     }
 
-//    public void setNewImagesForBookingEntity(BookingEntity bookingEntity, List<NewImageDTO> images) {
-//        Set<Picture> pictures = new HashSet<>();
-//
-//        for (Picture currentPicture : bookingEntity.getPictures()) {
-//            boolean found = false;
-//            for (NewImageDTO newImage : images) {
-//                if (newImage.getImageName().equals(currentPicture.getPicturePath())) {
-//                    found = true;
-//                    pictures.add(currentPicture);
-//                    break;
-//                }
-//            }
-//            if (!found) {
-//                pictureService.deletePictureByName(currentPicture.getPicturePath());
-//            }
-//        }
-//        for (NewImageDTO newImage : images) {
-//            boolean found = false;
-//            for (Picture picture : pictures) {
-//                if (picture.getPicturePath().equals(newImage.getImageName())) {
-//                    found = true;
-//                    break;
-//                }
-//            }
-//            if (!found) {
-//                pictureService.tryToSaveNewPictureAndAddToOtherPictures(pictures, newImage);
-//            }
-//        }
-//        bookingEntity.setPictures(pictures);
-//    }
-
     public List<SearchedBookingEntityDTO> getSearchedBookingEntities(SearchParamsForEntity searchParams, String type) {
         try {
             List<BookingEntity> entity = null;
-            if(type.equals("cottage"))
-                entity = (List<BookingEntity>)(List<?>) cottageRepository.findAll();
-            else if(type.equals("ship"))
-                entity = (List<BookingEntity>)(List<?>) shipRepository.findAll();
-            else if(type.equals("instructor"))
-                entity = (List<BookingEntity>)(List<?>) adventureRepository.findAll();
+            switch (type) {
+                case "cottage":
+                    entity = (List<BookingEntity>) (List<?>) cottageService.findAll();
+                    break;
+                case "ship":
+                    entity = (List<BookingEntity>) (List<?>) shipService.findAll();
+                    break;
+                case "instructor":
+                    entity = (List<BookingEntity>) (List<?>) adventureService.findAll();
+                    break;
+            }
             if (entity == null)
                 return null;
 
@@ -357,10 +325,13 @@ public class BookingEntityService {
 
     public List<SearchedBookingEntityDTO> getSubscribedEntitiesForClient(Long clientId) {
         List<Long> subsEntitiesIds = clientService.findSubscribedEntitiesByClientId(clientId);
-        return convertToSearchBookingEntitiyDTOList(subsEntitiesIds);
+        List<SearchedBookingEntityDTO> retVal = convertToSearchBookingEntitiesDTOList(subsEntitiesIds);
+        if (retVal == null)
+            throw new ItemNotFoundException("Can't load subscribed entities for client. Try again!");
+        return retVal;
     }
 
-    public List<SearchedBookingEntityDTO> convertToSearchBookingEntitiyDTOList(List<Long> entitiesIds){
+    public List<SearchedBookingEntityDTO> convertToSearchBookingEntitiesDTOList(List<Long> entitiesIds){
         List<SearchedBookingEntityDTO> retVal = new ArrayList<>();
         for (Long entityId: entitiesIds) {
             SearchedBookingEntityDTO item = getSearchedBookingEntityDTOByEntityId(entityId);
@@ -372,10 +343,11 @@ public class BookingEntityService {
 
     public List<SearchedBookingEntityDTO> subscribeClientWithEntity(Long clientId, Long entityId) {
         Client client = clientService.findById(clientId);
-       // BookingEntity bookingEntity = bookingEntityRepository.findById(entityId).orElse(null);
         BookingEntity bookingEntity = bookingEntityRepository.findByIdWithoutParams(entityId).orElse(null);
+        if (bookingEntity == null)
+            throw new ItemNotFoundException("Can't find entity with id " + entityId);
         Set<BookingEntity> watched = client.getWatchedEntities();
-        if(watched.stream().filter(entity -> entity.getId() == bookingEntity.getId()).collect(Collectors.toList()).size() == 0) {
+        if(watched.stream().filter(entity -> Objects.equals(entity.getId(), bookingEntity.getId())).collect(Collectors.toList()).size() == 0) {
             watched.add(bookingEntity);
             //client.setWatchedEntities(watched);
             clientService.save(client);
@@ -388,14 +360,16 @@ public class BookingEntityService {
         for (BookingEntity entity : watched) {
             entityIds.add(entity.getId());
         }
-        return convertToSearchBookingEntitiyDTOList(entityIds);
+        return convertToSearchBookingEntitiesDTOList(entityIds);
     }
 
     public List<SearchedBookingEntityDTO> unsubscribeClientWithEntity(Long clientId, Long entityId) {
         Client client = clientService.findById(clientId);
         BookingEntity bookingEntity = bookingEntityRepository.findById(entityId).orElse(null);
+        if (bookingEntity == null)
+            throw new ItemNotFoundException("Can't find entity with id " + entityId);
         Set<Client> clients = bookingEntity.getSubscribedClients();
-        clients.removeIf(client1 -> client1.getId() == clientId);
+        clients.removeIf(client1 -> Objects.equals(client1.getId(), clientId));
         bookingEntity.setSubscribedClients(clients);
         Set<BookingEntity> watched = client.getWatchedEntities();
         watched.removeIf(entity -> Objects.equals(entity.getId(), entityId));
@@ -406,47 +380,69 @@ public class BookingEntityService {
         for (BookingEntity entity : watched) {
             entityIds.add(entity.getId());
         }
-        return convertToSearchBookingEntitiyDTOList(entityIds);
+        return convertToSearchBookingEntitiesDTOList(entityIds);
     }
 
     private boolean userWithIdOwnsEntityWithId(Long ownerId, Long entityId) {
         User user = this.getOwnerOfEntityId(entityId);
+        if (user == null)
+            throw new ItemNotFoundException("Can't find user data in system. Try again!");
         return user.getId().equals(ownerId);
     }
 
     @Transactional
-    public String tryToLogicalDeleteBookingEntityAndReturnErrorCode(Long entityId, Long userId, String confirmPass) {
-        BookingEntity bookingEntity = this.getEntityById(entityId);
-        if (bookingEntity == null)
-            return "Entity for deleting is not found. Entity id requested: " + entityId;
+    public void tryToLogicalDeleteBookingEntityAndReturnErrorCode(Long entityId, Long userId, String confirmPass) {
+        try {
+            BookingEntity bookingEntity = this.getEntityById(entityId);
+            if (bookingEntity == null)
+                throw new ItemNotFoundException("Entity for deleting is not found. Entity id requested: " + entityId);
 
-        User user = userService.findUserById(userId);
-        if (!user.getRole().getName().equals("ROLE_ADMIN") && !user.getRole().getName().equals("ROLE_SUPER_ADMIN")) {
-            if (!this.userWithIdOwnsEntityWithId(userId, entityId)) {
-                return "Invalid delete request. User with id: " + userId + " does not owns entity with id: " + entityId;
+            User user = userService.findUserById(userId);
+            if (user == null)
+                throw new ItemNotFoundException("Can't find your data in system. Try again!");
+
+            if (!user.getRole().getName().equals("ROLE_ADMIN") && !user.getRole().getName().equals("ROLE_SUPER_ADMIN")) {
+                if (!this.userWithIdOwnsEntityWithId(userId, entityId))
+                    throw new EditItemException("Invalid delete request. User with id: " + userId + " does not owns entity with id: " + entityId);
             }
+
+            if (user.getRole().getName().equals("ROLE_CLIENT"))
+                throw new UnauthorisedException("It seems like you dont have permission to delete this entity. Please try again, or login with another account");
+
+            if (!userService.passwordIsCorrect(user, confirmPass))
+                throw new EditItemException("Confirmation password is incorrect.");
+
+            if (checkExistActiveReservationForEntityId(entityId))
+                throw new EditItemException("Entity can't be deleted cause has reservations.");
+
+            //resavanje konfliktne situacije student 2.
+            bookingEntity.setLocked(true);
+            bookingEntityRepository.save(bookingEntity);
+            bookingEntity.setDeleted(true);
+            bookingEntity.setLocked(false);
+            bookingEntityRepository.save(bookingEntity);
+        } catch (ObjectOptimisticLockingFailureException e){
+            throw new ConflictException("Conflict seems to have occurred. Can't delete entity cause another user just reserved this entity. Please refresh page and try again");
         }
-        if (user.getRole().getName().equals("ROLE_CLIENT")) {
-            return "It seems like you dont have permission to delete this entity. Please try again, or login with another account";
-        }
-
-        if (!userService.passwordIsCorrect(user, confirmPass))
-            return "Confirmation password is incorrect.";
-
-        if (checkExistActiveReservationForEntityId(entityId))
-            return "Entity cant be deleted  cause has reservations.";
-
-        //resavanje konfliktne situacije student 2.
-        bookingEntity.setLocked(true);
-        bookingEntityRepository.save(bookingEntity);
-        bookingEntityRepository.logicalDeleteBookingEntityById(entityId);
-        bookingEntity.setLocked(false);
-        bookingEntityRepository.save(bookingEntity);
-
-        return null;
     }
 
     public void save(BookingEntity bookingEntity) {
         bookingEntityRepository.save(bookingEntity);
+    }
+
+    public void checkIfCanEdit(Long entityId) {
+        getEntityById(entityId);
+        if (checkExistActiveReservationForEntityId(entityId)){
+            throw new ItemNotFoundException("Can't edit entity cause has reservations.");
+        }
+    }
+
+    public List<BookingEntityDTO> getBookingEntitiesDTOsForOwnerId(Long id) {
+        List<BookingEntity> bookingEntities = userService.getBookingEntitiesByOwnerId(id);
+        List<BookingEntityDTO> retVal = new ArrayList<>();
+        for (BookingEntity b : bookingEntities) {
+            retVal.add(new BookingEntityDTO(b));
+        }
+        return retVal;
     }
 }

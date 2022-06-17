@@ -27,6 +27,12 @@ import { getPricelistByEntityId } from '../../service/PricelistService';
 import { addNewFastReservation } from '../../service/ReservationService';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import CardHeader from "@mui/material/CardHeader";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import ShipOwner from "../../icons/shipOwner.png";
+import CottageOwner from "../../icons/cottageOwner.png";
+import Instructor from "../../icons/instructor.png";
+import Tooltip from '@mui/material/Tooltip';
 
 const Input = styled(MuiInput)`
   width: 42px;
@@ -105,6 +111,9 @@ export default function AddFastReservation(props) {
     //////////////////ADITIONAL SERVICES////////////////////////
     const [additionalServices, setAdditionalServices] = React.useState([
     ]);
+
+    const [startAdditionalServices, setStartAdditionalServices] = React.useState([]);
+
     const [addedAdditionalServices, setAddedAdditionalServices] = React.useState([
     ]);
 
@@ -137,28 +146,48 @@ export default function AddFastReservation(props) {
         }
         let retVal = [];
         for (let service of addedAdditionalServices) {
-            retVal.push({
-                serviceName : service.serviceName,
-                price : 0.0
-            });
+          console.log(service);
+          for (let trueService of startAdditionalServices) {
+              console.log(trueService);
+              if (trueService.serviceName === service.serviceName){
+                retVal.push({
+                    serviceName : service.serviceName,
+                    price : 0.0,
+                    id: trueService.id
+                });
+              }
+          }
+      
         }
         return retVal;
     }
     ////////////////////////////////////////////
 
+    const showCalendarForEntity = (event) => {
+      event.preventDefault();
+      history.push({
+          pathname: "/calendarForEntity",
+          state: { bookingEntityId: entityBasicData.id }
+      })
+    }
+
+    const returnToBookingEntitieProfile = (event) => {
+      event.preventDefault();
+      history.goBack();
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 
 
     const onFormSubmit = data => {
       
-      if (getCurrentUser() == null || getCurrentUser() == undefined || (getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER" && getCurrentUser().userType.name!=="ROLE_SHIP_OWNER" && getCurrentUser().userType.name!=="ROLE_INSTRUCTOR_OWNER")) {
+      if (getCurrentUser() == null || getCurrentUser() == undefined || (getCurrentUser().userType.name!=="ROLE_COTTAGE_OWNER" && getCurrentUser().userType.name!=="ROLE_SHIP_OWNER" && getCurrentUser().userType.name!== "ROLE_INSTRUCTOR")) {
         history.push('/forbiddenPage');
       }
       let newDate = new Date(value);
       
       let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getUTCDate(), parseInt(checkedTime.value.split(':')[0]), 0];
-      console.log("bla");
+    
       console.log(newDate);
       let newFastReservation={
         canceled:false,
@@ -173,11 +202,8 @@ export default function AddFastReservation(props) {
       }
       console.log(newFastReservation);
       addNewFastReservation(newFastReservation).then(res => {
-        console.log(res.data);
-        history.push({
-          pathname: "./showFastReservations",
-          state: { bookingEntityId: props.history.location.state.bookingEntityId }
-      })
+        console.log(entityBasicData)
+        history.goBack();
       }).catch(error => {
           setMessage(error.response.data);
           handleClick();
@@ -209,6 +235,7 @@ export default function AddFastReservation(props) {
       console.log(res.data);
       setPricelistData(res.data);
       setAdditionalServices(res.data.additionalServices);
+      setStartAdditionalServices(res.data.additionalServices);
       setLoadingPricelist(false);
     }).catch(error => {
         setMessage(error.response.data);
@@ -236,55 +263,41 @@ export default function AddFastReservation(props) {
         >
           
           <div style={{  display: "flex", flexDirection: "row", color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'left', backgroundColor: 'rgb(191, 230, 255)', marginLeft: '4%', padding: '1%', borderRadius: '10px', width: '30%', height: '100%', minWidth:"320px" }} >
-            <table>
-              <tr>
-                <td>
-                  <TextField
-                      id="outlined-read-only-input"
-                      label="Entity Name"
-                      multiline
-                      defaultValue={entityBasicData.name}
-                      InputProps={{
-                          readOnly: true,
-                      }}
-                    />
-                 </td>      
-              </tr>
-              
-              <tr>
-                <td>
-                <TextField
-                      id="outlined-read-only-input"
-                      label="Place"
-                      multiline
-                      defaultValue={entityBasicData.address + ", " +  entityBasicData.place.zipCode + " " + entityBasicData.place.cityName + ", " + entityBasicData.place.stateName}
-                      InputProps={{
-                          readOnly: true,
-                      }}
-                    />
-                  </td>
-              </tr>
-              <tr>
-                <td>
-                <TextField
-                      id="outlined-read-only-input"
-                      label="Cost Per Person"
-                      multiline
-                      defaultValue={pricelistData.entityPricePerPerson + "€"}
-                      InputProps={{
-                          readOnly: true,
-                      }}
-                    />
-                  </td>
-              </tr>
-              <tr>
-                <td>
-                  <IconButton >
-                    <Chip icon={<CalendarMonthIcon />} label="Calendar" />
-                  </IconButton>
-                </td>
-              </tr>
-            </table>
+          <CardHeader
+                style={{marginTop:'20px'}}
+                title={<div>
+                  {getCurrentUser().userType.name == "ROLE_COTTAGE_OWNER"?
+                  (<Tooltip title="Show Cottage"><img toolTip onClick={returnToBookingEntitieProfile} src={CottageOwner}></img></Tooltip>):(
+                    <>
+                      {getCurrentUser().userType.name == "ROLE_SHIP_OWNER"?
+                      (<Tooltip title="Show Ship"><img onClick={returnToBookingEntitieProfile} src={ShipOwner}></img></Tooltip>):(
+                        <>
+                          {getCurrentUser().userType.name == "ROLE_INSTRUCTOR"?
+                      (<Tooltip title="Show Adventure"><img onClick={returnToBookingEntitieProfile} src={Instructor}></img></Tooltip>):(
+                          <></>
+                        )}
+                          </>
+                        )}
+                      </>
+                    )}
+                  <div style={{display:'flex'}}><h2>{entityBasicData.name}</h2></div>
+                  </div>
+                }
+                subheader={
+                <div>
+                  <h3><LocationOnIcon/>{entityBasicData.address + ", " + entityBasicData.place.cityName + ", " + entityBasicData.place.zipCode}</h3>
+                  <h3 style={{marginLeft:'7%'}}>{entityBasicData.place.stateName}</h3>
+                  <div>
+                    <h3 style={{marginLeft:'7%'}}>{"Cost Per Day: " + pricelistData.entityPricePerPerson + "€"}</h3>
+                  </div>
+                  <div>  
+                    <IconButton onClick={showCalendarForEntity}>
+                      <Chip icon={<CalendarMonthIcon />} label="Calendar" />
+                    </IconButton></div>
+                </div>}
+                
+            
+            />
           </div>
           
           <div style={{ display: 'block', color: 'rgb(5, 30, 52)', fontWeight: 'bold', textAlign: 'left', backgroundColor: 'rgb(191, 230, 255)', marginLeft: '4%', marginBottom:"1%",padding: '1%', borderRadius: '10px', width: '40%', height: '100%', minWidth:"300px" }} >

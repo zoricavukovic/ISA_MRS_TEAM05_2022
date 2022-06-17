@@ -1,113 +1,78 @@
 package com.example.BookingAppTeam05.controller.bookingEntities;
 
-import com.example.BookingAppTeam05.dto.SearchParamsForEntity;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
 import com.example.BookingAppTeam05.dto.SimpleSearchForBookingEntityOwnerDTO;
-import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
-import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+//@CrossOrigin
 @RequestMapping("/bookingEntities")
 public class BookingEntityController {
     private BookingEntityService bookingEntityService;
-    private UserService userService;
 
     @Autowired
-    public BookingEntityController(BookingEntityService bookingEntityService, UserService userService) {
+    public BookingEntityController(BookingEntityService bookingEntityService) {
         this.bookingEntityService = bookingEntityService;
-        this.userService = userService;
     }
+
+    public BookingEntityController(){}
 
     @GetMapping(value = "/byId/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookingEntityDTO> getBookingEntityById(@PathVariable Long id) {
         BookingEntityDTO entity = bookingEntityService.findById(id);
-        if (entity == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(entity, HttpStatus.OK);
     }
 
     @GetMapping(value = "/allByOwner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getAllBookingEntitiesByOwnerId(@PathVariable Long id) {
         List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOwnerId(id);
-        if (entities == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 
     @GetMapping(value = "/view/{id}")
     public ResponseEntity<SearchedBookingEntityDTO> getBookingEntityInfoForView(@PathVariable Long id) {
         SearchedBookingEntityDTO s = bookingEntityService.getSearchedBookingEntityDTOByEntityId(id);
-        if (s == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(s, HttpStatus.OK);
     }
 
-
     @GetMapping(value = "/subscribedEntities/{clientId}")
-    public ResponseEntity<List<SearchedBookingEntityDTO>> getSubsribedBookingEntityForClient(@PathVariable Long clientId) {
+    public ResponseEntity<List<SearchedBookingEntityDTO>> getSubscribedBookingEntityForClient(@PathVariable Long clientId) {
         List<SearchedBookingEntityDTO> retVal = bookingEntityService.getSubscribedEntitiesForClient(clientId);
-        if (retVal == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
-
     @PostMapping(value="/simpleSearch", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchedBookingEntityDTO>> getSearchedBookingEntitiesForOwner(@RequestBody SimpleSearchForBookingEntityOwnerDTO s) {
-        try {
-            List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOwnerId(s.getOwnerId());
-            if (entities == null)
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            entities = bookingEntityService.simpleFilterSearchForBookingEntities(entities, s);
-            if (entities == null)
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<>(entities, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        List<SearchedBookingEntityDTO> entities = bookingEntityService.getSearchedBookingEntitiesDTOsByOwnerId(s.getOwnerId());
+        entities = bookingEntityService.simpleFilterSearchForBookingEntities(entities, s);
+        return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 
     @GetMapping(value="/checkIfCanEdit/{entityId}")
     @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
     public ResponseEntity<String> checkIfCanEdit(@PathVariable Long entityId) {
-        BookingEntity bookingEntity = bookingEntityService.getEntityById(entityId);
-        if (bookingEntity == null) return new ResponseEntity<String>("Entity for editing is not found.", HttpStatus.BAD_REQUEST);
-        if (bookingEntityService.checkExistActiveReservationForEntityId(entityId)){
-            return new ResponseEntity<String>("Cannot edit entity cause has reservations.", HttpStatus.BAD_REQUEST);
-        }
+        bookingEntityService.checkIfCanEdit(entityId);
         return new ResponseEntity<>("Entity can edit.", HttpStatus.OK);
     }
 
     @DeleteMapping(value="/{entityId}/{ownerId}")
     //@PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
     public ResponseEntity<String> logicalDeleteEntityById(@PathVariable Long entityId, @PathVariable  Long ownerId, @RequestBody String confirmPass){
-        String errorMassage = bookingEntityService.tryToLogicalDeleteBookingEntityAndReturnErrorCode(entityId, ownerId, confirmPass);
-        if (errorMassage == null)
-            return new ResponseEntity<>("Entity successfully deleted.", HttpStatus.OK);
-        return new ResponseEntity<>(errorMassage, HttpStatus.BAD_REQUEST);
+        bookingEntityService.tryToLogicalDeleteBookingEntityAndReturnErrorCode(entityId, ownerId, confirmPass);
+        return new ResponseEntity<>("Entity successfully deleted.", HttpStatus.OK);
     }
 
     @GetMapping(value="/getAllForOwnerId/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BookingEntityDTO>> getBookingEntitesForOwnerId(@PathVariable Long id) {
-        List<BookingEntity> bookingEntities = userService.getBookingEntitiesByOwnerId(id);
-        List<BookingEntityDTO> retVal = new ArrayList<>();
-        for (BookingEntity b : bookingEntities) {
-            retVal.add(new BookingEntityDTO(b));
-        }
-        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    public ResponseEntity<List<BookingEntityDTO>> getBookingEntitiesForOwnerId(@PathVariable Long id) {
+        List<BookingEntityDTO> bookingEntityDTOs = bookingEntityService.getBookingEntitiesDTOsForOwnerId(id);
+        return new ResponseEntity<>(bookingEntityDTOs, HttpStatus.OK);
     }
 }

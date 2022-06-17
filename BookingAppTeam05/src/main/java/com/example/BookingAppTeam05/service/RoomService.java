@@ -14,5 +14,7 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
+    public RoomService(){}
+
     public void deleteById(Long id){this.roomRepository.deleteById(id);}
 }

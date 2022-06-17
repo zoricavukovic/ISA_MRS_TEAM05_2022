@@ -21,7 +21,6 @@ public class SearchService {
 
 
     public SearchService( ) {
-
     }
 
     private List<SearchedBookingEntityDTO> searchByName(List<SearchedBookingEntityDTO> entities, SimpleSearchForBookingEntityOwnerDTO s) {

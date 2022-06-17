@@ -1,14 +1,14 @@
 package com.example.BookingAppTeam05.service;
 
 import com.example.BookingAppTeam05.dto.LoyaltyProgramDTO;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.database.DatabaseException;
 import com.example.BookingAppTeam05.model.LoyaltyProgram;
 import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.repository.LoyaltyProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,12 +29,23 @@ public class LoyaltyProgramService {
         return all.get(0);
     }
 
+    public LoyaltyProgramDTO getCurrentLoyaltyProgramDTO() {
+        LoyaltyProgram loyaltyProgram = getCurrentLoyaltyProgram();
+        if (loyaltyProgram == null)
+            throw new ItemNotFoundException("Can't find loyalty program in system.");
+        return new LoyaltyProgramDTO(loyaltyProgram);
+    }
+
     @Transactional
     public LoyaltyProgramDTO createNewLoyaltyProgram(LoyaltyProgramDTO loyaltyProgramDTO) {
-        LoyaltyProgram loyaltyProgram = new LoyaltyProgram(loyaltyProgramDTO);
-        LoyaltyProgramDTO retVal = new LoyaltyProgramDTO(loyaltyProgram);
-        loyaltyProgramRepository.save(loyaltyProgram);
-        return retVal;
+        try{
+            LoyaltyProgram loyaltyProgram = new LoyaltyProgram(loyaltyProgramDTO);
+            LoyaltyProgramDTO retVal = new LoyaltyProgramDTO(loyaltyProgram);
+            loyaltyProgramRepository.save(loyaltyProgram);
+            return retVal;
+        } catch (Exception ex){
+            throw new DatabaseException("Can't create new loyalty program at the moment. Try again!");
+        }
     }
 
     public LoyaltyProgramEnum getLoyaltyProgramTypeFromUserPoints(int loyaltyPoints) {

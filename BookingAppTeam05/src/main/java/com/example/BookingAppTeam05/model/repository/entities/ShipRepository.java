@@ -27,7 +27,7 @@ public interface ShipRepository extends JpaRepository<Ship, Long> {
     @Query(value="select s from Ship s left join fetch s.place p left join fetch s.rulesOfConduct d left join fetch s.pictures pic left join fetch s.fishingEquipment fe left join fetch s.navigationalEquipment ne left join fetch s.shipOwner where s.id=?1 and s.deleted = false")
     Ship getShipById(Long id);
 
-    @Query(value="select s from Ship s left join fetch s.place p left join fetch s.rulesOfConduct d left join fetch s.pictures pic left join fetch s.fishingEquipment fe left join fetch s.navigationalEquipment ne where s.id=?1")
+    @Query(value="select s from Ship s left join fetch s.place p left join fetch s.rulesOfConduct d left join fetch s.pictures pic left join fetch s.fishingEquipment fe left join fetch s.navigationalEquipment ne left join fetch s.shipOwner where s.id=?1")
     Ship getShipByIdCanBeDeleted(Long id);
 
     @Override

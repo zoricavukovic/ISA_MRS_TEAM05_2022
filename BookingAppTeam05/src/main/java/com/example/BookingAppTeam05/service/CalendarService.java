@@ -9,7 +9,6 @@ import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,16 +20,16 @@ public class CalendarService {
 
     private BookingEntityService bookingEntityService;
     private ReservationService reservationService;
-    private PricelistService pricelistService;
     private UserService userService;
 
     @Autowired
-    public CalendarService(BookingEntityService bookingEntityService, ReservationService reservationService, PricelistService pricelistService, UserService userService) {
+    public CalendarService(BookingEntityService bookingEntityService, ReservationService reservationService, UserService userService) {
         this.bookingEntityService = bookingEntityService;
         this.reservationService = reservationService;
-        this.pricelistService = pricelistService;
         this.userService = userService;
     }
+
+    public CalendarService(){}
 
     @Transactional
     public List<CalendarEntryDTO> getCalendarEntriesDTOByEntityId(Long id) {
@@ -41,7 +40,7 @@ public class CalendarService {
         List<Reservation> reservations = reservationService.findAllReservationsForEntityId(bookingEntity.getId());
         fillResultWithReservations(retVal, reservations);
 
-        List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(bookingEntity.getId());
+        List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityId(bookingEntity.getId());
         fillResultWithFastReservations(retVal, fastReservations);
         return retVal;
     }
@@ -54,7 +53,7 @@ public class CalendarService {
             List<Reservation> reservations = reservationService.findAllReservationsForEntityId(b.getId());
             fillResultWithReservations(retVal, reservations);
 
-            List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(b.getId());
+            List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityId(b.getId());
             fillResultWithFastReservations(retVal, fastReservations);
         }
         return retVal;
@@ -123,6 +122,7 @@ public class CalendarService {
         }
         return retVal;
     }
+
     private List<AnalyticsDTO> getNumOfResPerMonth(List<Reservation> reservations) {
         List<AnalyticsDTO> retVal = new ArrayList<>();
         for (Reservation reservation: reservations){
@@ -164,7 +164,7 @@ public class CalendarService {
 
     private List<Reservation> getReservations(Long id) {
         List<Reservation> reservations = reservationService.findAllReservationsForEntityId(id);
-        List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityid(id);
+        List<Reservation> fastReservations = reservationService.findAllFastReservationsForEntityId(id);
         reservations.addAll(fastReservations);
         return reservations;
     }

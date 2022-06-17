@@ -1,7 +1,12 @@
 package com.example.BookingAppTeam05.service.entities;
 
 import com.example.BookingAppTeam05.dto.*;
+import com.example.BookingAppTeam05.dto.entities.AdventureDTO;
+import com.example.BookingAppTeam05.dto.users.InstructorDTO;
 import com.example.BookingAppTeam05.dto.users.NewAdventureDTO;
+import com.example.BookingAppTeam05.exception.ConflictException;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.*;
 import com.example.BookingAppTeam05.model.entities.Adventure;
 import com.example.BookingAppTeam05.model.users.Instructor;
@@ -10,16 +15,10 @@ import com.example.BookingAppTeam05.model.repository.entities.AdventureRepositor
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class AdventureService {
@@ -52,20 +51,39 @@ public class AdventureService {
         this.reservationService = reservationService;
     }
 
+    public AdventureService(){}
+
     public Adventure getAdventureById(Long id) {
         return this.adventureRepository.getAdventureById(id);
     }
 
-    public Adventure getAdventureByIdCanBeDeleted(Long id) {
-        return this.adventureRepository.getAdventureByIdCanBeDeleted(id);
+    public AdventureDTO getAdventureDTO(Long id){
+        Adventure adventure = this.adventureRepository.getAdventureById(id);
+        return getAdventureDTO(adventure, id);
     }
 
-    public List<Adventure> findAll() {
-        return this.adventureRepository.findAll();
+    public AdventureDTO getAdventureDTOByIdCanBeDeleted(Long id) {
+        Adventure adventure =  this.adventureRepository.getAdventureByIdCanBeDeleted(id);
+        return getAdventureDTO(adventure, id);
     }
+
+    private AdventureDTO getAdventureDTO(Adventure adventure, Long id) {
+        if (adventure == null)
+            throw new ItemNotFoundException("Can't find adventure with id: " + id);
+
+        AdventureDTO adventureDTO = new AdventureDTO(adventure);
+        adventureDTO.setPlace(adventure.getPlace());
+        adventureDTO.setRulesOfConduct((adventure.getRulesOfConduct()));
+        adventureDTO.setFishingEquipment(adventure.getFishingEquipment());
+        adventureDTO.setPictures(adventure.getPictures());
+        adventureDTO.setInstructor(new InstructorDTO(adventure.getInstructor()));
+        return adventureDTO;
+    }
+
+    public List<Adventure> findAll() { return this.adventureRepository.findAll(); }
 
     public List<Adventure> findAllForOwnerId(Long id) {
-        List<Adventure> all = findAll();
+        List<Adventure> all = this.adventureRepository.findAll();
         List<Adventure> retVal = new ArrayList<>();
         for (Adventure a : all) {
             if (a.getInstructor().getId().equals(id))
@@ -81,43 +99,43 @@ public class AdventureService {
     @Transactional
     public String createAdventure(NewAdventureDTO newAdventureDTO){
         Place place = placeService.getPlaceById(newAdventureDTO.getPlaceId());
-        if (place == null) {
-            return "Cant find place with id: " + newAdventureDTO.getPlaceId();
-        }
+        if (place == null)
+            throw new ItemNotFoundException("Can't find place with id: " + newAdventureDTO.getPlaceId());
+
         Instructor instructor = instructorService.findById(newAdventureDTO.getInstructorId());
-        if (instructor == null) {
-            return "Cant find instructor with id: " + newAdventureDTO.getInstructorId();
-        }
+        if (instructor == null)
+            throw new ItemNotFoundException("Can't find instructor with id: " + newAdventureDTO.getInstructorId());
+
         Adventure newAdventure = createNewAdventure(newAdventureDTO, place, instructor);
-        if (newAdventure == null) {
-            return "Error. Cant create adventure";
-        }
+        if (newAdventure == null)
+            throw new ItemNotFoundException("Error. Can't create adventure");
+
         return newAdventure.getId().toString();
     }
 
-    public String updateAdventure(NewAdventureDTO newAdventureDTO, Long id){
+    public void updateAdventure(NewAdventureDTO newAdventureDTO, Long id){
         try{
             if (reservationService.findAllActiveReservationsForEntityid(id).size() != 0)
-                return "Cant update adventure because there exist active reservations";
+                throw new EditItemException("Can't update adventure because there exist active reservations");
 
             Place place = placeService.getPlaceById(newAdventureDTO.getPlaceId());
-            if (place == null) {
-                return "Cant find place with id: " + newAdventureDTO.getPlaceId();
-            }
+            if (place == null)
+                throw new ItemNotFoundException("Can't find place with id: " + newAdventureDTO.getPlaceId());
+
             Instructor instructor = instructorService.findById(newAdventureDTO.getInstructorId());
-            if (instructor == null) {
-                return "Cant find instructor with id: " + newAdventureDTO.getInstructorId();
-            }
+            if (instructor == null)
+                throw new ItemNotFoundException("Can't find instructor with id: " + newAdventureDTO.getInstructorId());
+
             Adventure adventure = getAdventureById(id);
-            if (adventure == null) {
-                return "Cant find adventure with id: " + id;
-            }
-            if (adventure.getVersion() != newAdventureDTO.getVersion()) return "Conflict seems to have occurred, someone changed your adventure data before you. Please refresh page and try again";
+            if (adventure == null)
+                throw new ItemNotFoundException("Cant find adventure with id: " + id);
+
+            if (adventure.getVersion() != newAdventureDTO.getVersion())
+                throw new ConflictException("Conflict seems to have occurred, someone changed your adventure data before you. Please refresh page and try again!");
 
             editAdventureById(id, newAdventureDTO, place);
-            return "";
         } catch (ObjectOptimisticLockingFailureException e) {
-            return "Conflict seems to have occurred, someone changed your adventure before you. Please refresh page and try again";
+            throw new ConflictException("Conflict seems to have occurred, someone changed your adventure before you. Please refresh page and try again!");
         }
     }
 
@@ -139,7 +157,7 @@ public class AdventureService {
             adventure.setPictures(createdPictures);
         }
 
-        Pricelist createNewPricelist = pricelistService.createPrilistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
+        Pricelist createNewPricelist = pricelistService.createPricelistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
         adventure.addPriceList(createNewPricelist);
         adventure.setVersion(0);
         adventure.setLocked(false);
@@ -170,7 +188,7 @@ public class AdventureService {
         double newCostPerPerson = newAdventureDTO.getCostPerPerson();
         Pricelist createNewPricelist = null;
         if (pricelist.getEntityPricePerPerson() != newCostPerPerson) {
-            createNewPricelist = pricelistService.createPrilistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
+            createNewPricelist = pricelistService.createPricelistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
             adventure.addPriceList(createNewPricelist);
             return;
         }
@@ -184,7 +202,7 @@ public class AdventureService {
                 }
             }
             if (!found) {
-                createNewPricelist = pricelistService.createPrilistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
+                createNewPricelist = pricelistService.createPricelistFromDTO(newAdventureDTO.getAdditionalServices(), newAdventureDTO.getCostPerPerson());
                 adventure.addPriceList(createNewPricelist);
                 return;
             }

@@ -1,20 +1,24 @@
 package com.example.BookingAppTeam05.service;
+
 import com.example.BookingAppTeam05.dto.RatingDTO;
 import com.example.BookingAppTeam05.dto.RatingReviewDTO;
 import com.example.BookingAppTeam05.dto.ReservationDTO;
 import com.example.BookingAppTeam05.dto.entities.BookingEntityDTO;
 import com.example.BookingAppTeam05.dto.users.ClientDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
+import com.example.BookingAppTeam05.exception.ConflictException;
+import com.example.BookingAppTeam05.exception.ItemNotFoundException;
+import com.example.BookingAppTeam05.exception.NotificationByEmailException;
+import com.example.BookingAppTeam05.exception.database.CreateItemException;
+import com.example.BookingAppTeam05.exception.database.DeleteItemException;
 import com.example.BookingAppTeam05.model.Rating;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.repository.RatingRepository;
-import com.example.BookingAppTeam05.model.repository.ReservationRepository;
 import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,40 +28,46 @@ import java.util.List;
 public class RatingService {
     private RatingRepository ratingRepository;
     private BookingEntityService bookingEntityService;
-    private ReservationRepository reservationRepository;
+    private ReservationService reservationService;
     private EmailService emailService;
 
     @Autowired
-    public RatingService(RatingRepository ratingRepository, @Lazy BookingEntityService bookingEntityService, ReservationRepository reservationRepository, EmailService emailService) {
+    public RatingService(RatingRepository ratingRepository, @Lazy BookingEntityService bookingEntityService,
+                         ReservationService reservationService, EmailService emailService) {
         this.ratingRepository = ratingRepository;
         this.bookingEntityService = bookingEntityService;
-        this.reservationRepository = reservationRepository;
+        this.reservationService = reservationService;
         this.emailService = emailService;
     }
+
+    public RatingService(){}
 
     public Float getAverageRatingForEntityId(Long id) {
         return this.ratingRepository.getAverageRatingForEntityId(id);
     }
 
-    public RatingDTO findByReservationId(Long id) {
+    public RatingDTO findRatingByReservationId(Long id) {
         Rating rating = ratingRepository.findByReservationId(id).orElse(null);
         if(rating == null)
-            return null;
+            throw new ItemNotFoundException("Can't find rating for this reservation.");
         return new RatingDTO(rating);
     }
 
-    public Rating createRating(RatingDTO ratingDTO) {
+    public void createRating(RatingDTO ratingDTO) {
         Rating rating = new Rating();
         rating.setComment(ratingDTO.getComment());
         rating.setValue(ratingDTO.getValue());
         rating.setReviewDate(LocalDateTime.now());
         rating.setProcessed(false);
         rating.setApproved(false);
-        Reservation res = reservationRepository.findById(ratingDTO.getReservation().getId()).orElse(null);
+        if (ratingDTO.getReservation() == null)
+            throw new CreateItemException("Can't create rating without set reservation");
+        Reservation res = reservationService.findById(ratingDTO.getReservation().getId());
+        if (res == null)
+            throw new ItemNotFoundException("Can't find reservation for rate.");
         rating.setReservation(res);
         rating.setVersion(0L);
         ratingRepository.save(rating);
-        return rating;
     }
 
     public List<RatingReviewDTO> getAllProcessedRatingReviewDTOs() {
@@ -88,40 +98,36 @@ public class RatingService {
     }
 
     @Transactional
-    public String setRatingForPublicationAndNotifyOwner(RatingReviewDTO rating) {
+    public void setRatingForPublicationAndNotifyOwner(RatingReviewDTO rating) {
         try {
             Rating r = findById(rating.getId());
             if (r == null)
-                return "Can't find rating with id: " + rating.getId();
+                throw new ItemNotFoundException("Error. Can't find rating with id: " + rating.getId());
             if (r.isProcessed())
-                return "This rating is already processed.";
-
+                throw new ItemNotFoundException("This rating is already processed.");
             r.setProcessed(true);
             this.ratingRepository.save(r);
-
             try {
                 emailService.notifyOwnerAboutApprovedReviewOnHisEntity(rating);
-                return null;
-            } catch (Exception e) {
-                return "Error happened while sending email to owner";
+            } catch (InterruptedException e) {
+                throw new NotificationByEmailException("Error happened while sending email to owner.");
             }
         }
         catch (ObjectOptimisticLockingFailureException e) {
-            return "Conflict seems to have occurred, another admin has reviewed this rating before you. Please refresh page and try again";
+            throw new ConflictException("Conflict seems to have occurred, another admin has reviewed this rating before you. Please refresh page and try again");
         }
     }
 
     @Transactional
-    public String deleteRatingById(Long id) {
-        Rating r = ratingRepository.findById(id).orElse(null);
+    public void deleteRatingById(Long id) {
+        Rating r = findById(id);
         if (r == null)
-            return "Can't find rating with id: " + id;
+            throw new ItemNotFoundException("Error. Can't find rating with id: " + id);
         try {
             ratingRepository.deleteById(id);
         } catch (Exception e) {
-            return "Error happened while trying to delete rating with id: " + id;
+            throw new DeleteItemException("Error happened while trying to delete rating with id: " + id);
         }
-        return null;
     }
 
     public List<RatingReviewDTO> getProcessedRatingsForEntity(Long id) {
@@ -137,4 +143,21 @@ public class RatingService {
         return this.ratingRepository.save(rating);
     }
 
+    public List<RatingReviewDTO> getListOfRatingReviewDTO(String type) {
+        List<RatingReviewDTO> retVal = new ArrayList<>();
+        if (type.equals("processed"))
+            retVal = getAllProcessedRatingReviewDTOs();
+        else if (type.equals("unprocessed"))
+            retVal = getAllUnprocessedRatingReviewDTOs();
+        if (retVal == null)
+            throw new ItemNotFoundException("Can't find created rating reviews for type " + type);
+        return retVal;
+    }
+
+    public void updateClientReviewForPublication(RatingReviewDTO rating) {
+        Rating r = findById(rating.getId());
+        if (r == null)
+            throw new ItemNotFoundException("Error. Can't find rating with id: " + rating.getId());
+        setRatingForPublicationAndNotifyOwner(rating);
+    }
 }

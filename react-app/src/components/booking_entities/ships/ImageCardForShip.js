@@ -21,12 +21,10 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RatingEntity from '../../Rating';
 import Snackbar from '@mui/material/Snackbar';
-import { editShipById, getShipById } from '../../../service/ShipService';
+import { getShipById } from '../../../service/ShipService';
 import { getPricelistByEntityId } from '../../../service/PricelistService';
 import Chip from '@mui/material/Chip';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
@@ -35,7 +33,6 @@ import ShipSpecificationCard from "./ShipSpecificationCard";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import { checkIfCanEditEntityById } from '../../../service/BookingEntityService';
-import { URL_PICTURE_PATH } from '../../../service/PictureService';
 import RenderImageSlider from '../../image_slider/RenderImageSlider';
 import { getAvailableFastReservationsByBookingEntityId, reserveFastReservation } from '../../../service/ReservationService';
 import { getRatingsByEntityId } from '../../../service/RatingService';
@@ -47,6 +44,8 @@ import StyledAvatar from '../../StyledAvatar';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CreateReservationForClient from '../../reservations/CreateReservationForClient';
 import { findAllClientsWithActiveReservations} from '../../../service/ReservationService';
+import Approved from "../../../icons/approval.png";
+import NotApproved from "../../../icons/notApprowed.png"
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -122,9 +121,9 @@ export default function ImageCardForShip(props) {
     const showFastReservations = (event) => {
         event.preventDefault();
         history.push({
-            pathname: "./showFastReservations",
-            state: { bookingEntityId: props.shipId }
-        })
+            pathname: "/addFastReservation",
+            state: { bookingEntityId: props.shipId } 
+          })
 
     };
     //============================= DIALOG =====================================
@@ -181,9 +180,20 @@ export default function ImageCardForShip(props) {
     function RenderRulesOfConduct(props) {
         return (
             props.rulesOfConduct.map((page) => (
-                <Button style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
-                    <FormControlLabel disabled control={<Checkbox size="small" checked={page.allowed} />} />
-                    <Typography textAlign="center">{page.ruleName}</Typography>
+                <Button disabled style={{ borderRadius: '10px', backgroundColor: 'rgb(252, 234, 207)', color: 'black' }} key={page.ruleName}>
+                    <table>
+                        <tr>
+                        <th><Typography textAlign="left">{page.ruleName}</Typography></th>
+                            <th>
+                            
+                                {page.allowed == true ? (
+                                    <img style={{height:'70%', width:'70%'}} src={Approved}></img>):(
+                                    <img style={{height:'70%', width:'70%'}} src={NotApproved}></img>  
+                                )}
+                            </th>
+                            
+                        </tr>
+                    </table>
                 </Button>
             ))
         )
@@ -282,9 +292,10 @@ export default function ImageCardForShip(props) {
             if(getCurrentUser().id == res.data.shipOwner.id)
                 setHasAuthority(true);
             setLoadingShip(false);
-        }).catch(res=>{
-            console.log("Desila se greska");
-
+        }).catch(res => {
+            props.setMessage(res.response.data);
+            props.handleClick();
+            return;
         });
         getPricelistByEntityId(props.shipId).then(res => {
             setPricelistData(res.data);
@@ -298,6 +309,7 @@ export default function ImageCardForShip(props) {
         });
 
         getRatingsByEntityId(props.shipId).then(res=>{
+            console.log("ratingd");
             console.log(res.data);
             setClientReviews(res.data);
 
@@ -307,7 +319,7 @@ export default function ImageCardForShip(props) {
     if (isLoadingShip || isLoadingPricelist) { return <div className="App">Loading...</div> }
     return (
         <Card style={{ margin: "1% 9% 1% 9%" }} sx={{}}>
-            <CreateReservationForClient bookingEntityId={props.cottageId} openDialog={openDialogCreate}/>
+            <CreateReservationForClient bookingEntityId={props.shipId} openDialog={openDialogCreate}/>
         
             <RenderImageSlider pictures={shipBasicData.pictures}/>
             <CardHeader
@@ -348,7 +360,7 @@ export default function ImageCardForShip(props) {
                     <Chip icon={<EditIcon />} label="Edit Ship" />
                 </IconButton>
                 <IconButton value="module" aria-label="module" onClick={showFastReservations}>
-                    <Chip icon={<LocalFireDepartmentIcon />} label="Fast Reservations" />
+                    <Chip icon={<LocalFireDepartmentIcon />} label="Create Action" />
                 </IconButton>
                 <IconButton value="module" aria-label="module" onClick={createReservationForClient}>
                     <Chip icon={<EventAvailableIcon />} label="Create Reservation For Client" />
@@ -401,9 +413,11 @@ export default function ImageCardForShip(props) {
                                         <Typography variant="subtitle1" component="div">
                                             {res.cost*res.numOfDays*res.numOfPersons}€
                                         </Typography>
-                                            <Button onClick={() =>FastReserve(res)} disabled={getCurrentUser().penalties>2?true:false} variant='contained' style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}>
-                                                Reserve Now
-                                            </Button>
+                                            {getCurrentUser().userType.name == "ROLE_CLIENT"?(
+                                                <Button onClick={() =>FastReserve(res)} disabled={getCurrentUser().penalties>2?true:false} variant='contained' style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}>
+                                                    Reserve Now
+                                                </Button>
+                                            ):(<></>)}
                                         </Grid>
                                         </Grid>
                                     </Grid>
@@ -441,24 +455,20 @@ export default function ImageCardForShip(props) {
 
             <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap', marginTop:'10px' }}>
                 <ShipSpecificationCard ship={shipBasicData} />
-                <Typography variant="body2" style={{ width: '25%', minWidth: "200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
-                    <Typography variant="body2" color="text.secondary" style={{ width: '100%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
-                        <h4>Promo Description: </h4><h3>{shipBasicData.promoDescription} </h3>
-                    </Typography>
-                </Typography>
-                <Grid item xs={12} sm={4} minWidth="300px">
+            
+                <Grid item xs={12} sm={4} style={{ width: '30%'}} minWidth="200px">
                         <ShipAdditionalInfo
                             header="Rules of conduct"
                             additionalData={<RenderRulesOfConduct rulesOfConduct={shipBasicData.rulesOfConduct} />}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={4} minWidth="300px">
+                    <Grid item xs={12} sm={4} style={{ width: '30%'}} minWidth="300px">
                         <ShipAdditionalInfo
                             header="Additional services"
                             additionalData={<RenderAdditionalServices additionalServices={pricelistData.additionalServices} />}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={4} minWidth="300px">
+                    <Grid item xs={12} sm={4} style={{ width: '30%'}} minWidth="300px">
                         <ShipAdditionalInfo
                             header="Fishing equipment"
                             additionalData={<RenderFishingEquipment fishingEquipment={shipBasicData.fishingEquipment} />}
@@ -470,6 +480,11 @@ export default function ImageCardForShip(props) {
                             additionalData={<RenderNavigationalEquipment navigationalEquipment={shipBasicData.navigationalEquipment} />}
                         />
                     </Grid>
+                    <Typography variant="body2" style={{ width: '25%', minWidth: "200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
+                    <Typography variant="body2" color="text.secondary" style={{ width: '100%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
+                        <h4>Promo Description: </h4><h3>{shipBasicData.promoDescription} </h3>
+                    </Typography>
+                    </Typography>
             </div >
             <hr></hr>
                 <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'20px', marginLeft:'40px'}}>
