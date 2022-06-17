@@ -4,9 +4,6 @@ import com.example.BookingAppTeam05.model.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +33,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query(value="select distinct r from Reservation r left join fetch r.bookingEntity b left join fetch r.client c where c.id=?1 and r.canceled = false ")
     List<Reservation> getReservationsByClientId(Long clientId);
 
-    @Override
     @Query(value="select r from Reservation r left join fetch r.bookingEntity b left join fetch r.client c left join fetch r.additionalServices where r.id=?1 and r.fastReservation=true and r.canceled=false")
+    Optional<Reservation> findFastReservationsById(Long id);
+
+    @Query(value="select r from Reservation r left join fetch r.bookingEntity b left join fetch r.client c left join fetch r.additionalServices where r.id=?1 and r.canceled=false")
     Optional<Reservation> findById(Long id);
 
     @Query(value="select distinct r from Reservation r left join fetch r.bookingEntity b left join fetch r.client c where r.canceled = false and r.fastReservation = false")
@@ -46,4 +45,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query(value="select distinct r from Reservation  r left join fetch r.client c where r.bookingEntity.id=?1 and r.canceled=false")
     List<Reservation> findAllRegularAndFastReservationsForEntityIdWithClient(Long id);
 
+    @Query(value="select distinct r from Reservation  r left join fetch r.client c where r.bookingEntity.id=?1 and r.canceled=true")
+    List<Reservation> findAllCanceledReservationsForEntityId(Long entityId);
 }

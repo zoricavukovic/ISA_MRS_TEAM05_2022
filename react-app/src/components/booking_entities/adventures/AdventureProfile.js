@@ -294,7 +294,6 @@ export default function AdventureProfile(props) {
             getAvailableFastReservationsByBookingEntityId(props.location.state.bookingEntityId).then(res=>{
                 console.log(res.data);
                 setFastReservations(res.data);
-    
             });
     
             getRatingsByEntityId(props.location.state.bookingEntityId).then(res=>{
@@ -474,7 +473,7 @@ export default function AdventureProfile(props) {
                     <Grid item xs={6} style={{marginBottom:'50px', height:'100%', marginLeft:'40px'}}>
                         <h3 >Reviews from clients:</h3>
                         <Typography style={{ borderRadius: '10px', marginRight: '2%', marginTop:'10px', overflow:'auto', height:'100%' }}>
-                            {clientReviews.lenght > 0?  clientReviews.map((review, index)=>(
+                            {clientReviews.length > 0?  clientReviews.map((review, index)=>(
                                 <Card variant="outlined" style={{width:'100%'}}>
                                     <React.Fragment>
                                         <CardContent>

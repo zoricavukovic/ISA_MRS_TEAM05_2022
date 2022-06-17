@@ -10,6 +10,12 @@ export function getUserById(id) {
     return api.get('/users/' + id);
 }
 
+export function getUsersLoyaltyProgramById(id) {
+    return api.get('/loyaltyProgram/' + id);
+}
+
+
+
 export function editUserById(id, editedUser) {
     return api.put('/users/updateUser/' + id, editedUser);
 }

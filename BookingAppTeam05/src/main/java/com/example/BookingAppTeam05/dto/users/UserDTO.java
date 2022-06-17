@@ -40,6 +40,7 @@ public class UserDTO {
     private boolean passwordChanged; // only for admins
     private String reason; //only for owners
     private LoyaltyProgramEnum loyaltyProgram;
+    private Long version;
 
     public UserDTO() {}
 
@@ -56,6 +57,7 @@ public class UserDTO {
         this.accountAllowed = user.isNotYetActivated();
         this.userType = user.getRole();
         this.loyaltyProgram = user.getLoyaltyProgramEnum();
+        this.version = user.getVersion();
         setAdditionalFieldIfNeeded(user);
     }
 
@@ -226,5 +228,13 @@ public class UserDTO {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }
