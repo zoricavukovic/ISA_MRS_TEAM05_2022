@@ -10,11 +10,13 @@ import RadioGroup from '@mui/material/RadioGroup';
 import { AddCircleOutlined, DateRangeOutlined, RemoveCircleOutlined} from '@mui/icons-material';
 import { getBookingEntityById } from '../../service/BookingEntityService';
 import { addReservationForClient } from '../../service/ReservationService';
-import { getCurrentUser } from '../../service/AuthService';
 import { Person } from '@mui/icons-material';
 import { findAllClientsWithActiveReservations} from '../../service/ReservationService';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 export default function CreateReservationForClient(props) {
+    
     const [type, setType] = useState("");
     const [openDate,setOpenDate] = useState(false);
     const [personNumber,setPersonNumber] = useState(1);
@@ -31,6 +33,9 @@ export default function CreateReservationForClient(props) {
     const [maxNumOfPersons, setMaxNumOfPersons] = useState(10);
     const history = useHistory();
     const [reservationDTO,setReservationDTO] = useState({});
+    const [message, setMessage] = React.useState("");
+    const [typeAlert, setTypeAlert] = React.useState("");
+    const [open, setOpen] = React.useState(false);
 
     const [openDialogCreate, setOpenDialogCreate] = React.useState(props.openDialog);
 
@@ -78,6 +83,17 @@ export default function CreateReservationForClient(props) {
             setSelectedClientId(null);
         }
     }
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (_event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     useEffect(() => {
         getBookingEntityById(props.bookingEntityId).then(res => {
@@ -358,12 +374,19 @@ export default function CreateReservationForClient(props) {
         console.log(reservationDTO);
         addReservationForClient(reservationDTO).then(res=>{
             console.log("Adding temp res success");
+            handleClick();
+            setTypeAlert("success");
+            setMessage("Successful reservation");
+            history.push('/showReservationsOwner');
             console.log(res.data);
-
         }).catch(res=>{
             console.log("Adding temp res failed");
+            setTypeAlert("error");
+            setMessage(res.response.data);
+            handleClick();
+            setOpenDialog(false);
+            return;
         });
-        history.goBack();
     };
 
     const additionalServiceChecked =(event,service)=>{
@@ -581,6 +604,11 @@ export default function CreateReservationForClient(props) {
                     
                 </Paper>
             </Grid>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
+                    {message}
+                </Alert>
+            </Snackbar>
         </Dialog>
     )
 }

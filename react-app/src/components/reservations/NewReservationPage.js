@@ -382,7 +382,7 @@ export default function NewReservationPage(props) {
             handleClick();
             setTypeAlert("success");
             setMessage("Successful reservation");
-            history.goBack();
+            history.push('/myReservations');
         }).catch(res => {
             setTypeAlert("error");
             setMessage(res.response.data);

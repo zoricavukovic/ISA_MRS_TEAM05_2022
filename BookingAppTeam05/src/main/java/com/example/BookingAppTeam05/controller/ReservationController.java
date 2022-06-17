@@ -35,7 +35,7 @@ public class ReservationController {
     }
 
     @GetMapping(value="/client/{clientId}")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
     public ResponseEntity<List<ReservationDTO>> getReservationsByClientId(@PathVariable Long clientId) {
         List<ReservationDTO> reservationDTOs = reservationService.getReservationsByClientId(clientId);
         return new ResponseEntity<>(reservationDTOs, HttpStatus.OK);

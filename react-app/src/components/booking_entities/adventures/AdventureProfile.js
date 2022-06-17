@@ -232,6 +232,7 @@ export default function AdventureProfile(props) {
     const [openDialog, setOpenDialog] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [selectedFastReservation, setSelectedFastReservation] = useState({});
+    const [typeAlert, setTypeAlert] = useState("success");
     let adventureId;
 
     const handleExpandClick = () => {
@@ -255,6 +256,7 @@ export default function AdventureProfile(props) {
         }).catch(res => {
             handleClick();
             setMessage(res.response.data);
+            setTypeAlert("error");
             return;
 
         })
@@ -264,20 +266,27 @@ export default function AdventureProfile(props) {
     const confirmReservation = ()=>{
         getAdventureById(adventureData.id).then(res => {
             console.log(getCurrentUser());
-        selectedFastReservation.client = getCurrentUser();
-        reserveFastReservation(selectedFastReservation).then(res=>{
-            console.log("Adding temp res success");
-            console.log(res.data);
-            setOpenDialog(false);
-            let fRes = fastReservations;
-            fRes = fRes.filter(elem => elem.id != selectedFastReservation.id);
-            console.log(fRes);
-            setFastReservations(fRes);
-        }).catch(res=>{
-            console.log("Adding temp res failed");
-        });
+            selectedFastReservation.client = getCurrentUser();
+            reserveFastReservation(selectedFastReservation).then(res=>{
+                console.log("Adding temp res success");
+                console.log(res.data);
+                setOpenDialog(false);
+                let fRes = fastReservations;
+                fRes = fRes.filter(elem => elem.id != selectedFastReservation.id);
+                console.log(fRes);
+                setFastReservations(fRes);
+                setTypeAlert("success");
+                handleClick();
+                setMessage("Successfully reserved entity.");
+            }).catch(res=>{
+                console.log("Adding temp res failed");
+                handleClick();
+                setTypeAlert("error");
+                setMessage(res.response.data);
+            });
         }).catch(res => {
             handleClick();
+            setTypeAlert("error");
             setMessage(res.response.data);
             return;
 
@@ -298,6 +307,7 @@ export default function AdventureProfile(props) {
         })
         }).catch(res => {
             handleClick();
+            setTypeAlert("error");
             setMessage(res.response.data);
             return;
 
@@ -317,6 +327,7 @@ export default function AdventureProfile(props) {
             });
         }).catch(res => {
             handleClick();
+            setTypeAlert("error");
             setMessage(res.response.data);
             return;
 
@@ -337,6 +348,7 @@ export default function AdventureProfile(props) {
             });
         }).catch(res => {
             handleClick();
+            setTypeAlert("error");
             setMessage(res.response.data);
             return;
 
@@ -357,6 +369,7 @@ export default function AdventureProfile(props) {
                 setLoading(false);
             }).catch(res => {
                 handleClick();
+                setTypeAlert("error");
                 setMessage(res.response.data);
                 console.log(res.response.data);
                 history.push('/adventures');
@@ -571,7 +584,7 @@ export default function AdventureProfile(props) {
                 </Grid>
                    
                 <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                    <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
                         {message}
                     </Alert>
                 </Snackbar>

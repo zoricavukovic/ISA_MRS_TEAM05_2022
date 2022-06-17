@@ -85,6 +85,7 @@ export default function ImageCard(props) {
     const [selectedFastReservation, setSelectedFastReservation] = useState({});
     const [clientReviews, setClientReviews] = useState([]);
     const [isSubscribed, setIsSubscribed] = useState(false);
+    const [typeAlert, setTypeAlert] = useState("success");
     const history = useHistory();
 
     const handleClick = () => {
@@ -115,6 +116,7 @@ export default function ImageCard(props) {
                 });
             })
             .catch(res => {
+                setTypeAlert("error");
                 setMessage(res.response.data);
                 handleClick();
                 return;
@@ -130,6 +132,7 @@ export default function ImageCard(props) {
             })
         }).catch(res => {
             setMessage(res.response.data);
+            setTypeAlert("error");
             handleClick();
             return;
         });
@@ -145,6 +148,7 @@ export default function ImageCard(props) {
             })
         }).catch(res => {
             setMessage(res.response.data);
+            setTypeAlert("error");
             handleClick();
             return;
         });
@@ -158,12 +162,14 @@ export default function ImageCard(props) {
                     setOpenDialogCreate(true);
                 }
                 else{
+                    setTypeAlert("error");
                     setMessage("Don't have clients with active reservations.");
                     handleClick();
                 }
             });
         }).catch(res => {
             setMessage(res.response.data);
+            setTypeAlert("error");
             handleClick();
             return;
         });
@@ -264,8 +270,14 @@ export default function ImageCard(props) {
             fRes = fRes.filter(elem => elem.id != selectedFastReservation.id);
             console.log(fRes);
             setFastReservations(fRes);
+            setTypeAlert("success");
+            handleClick();
+            setMessage("Successfully reserved entity.");
         }).catch(res=>{
             console.log("Adding temp res failed");
+            setTypeAlert("error");
+            handleClick();
+            setMessage(res.response.data);
         });
     }
 
@@ -316,6 +328,7 @@ export default function ImageCard(props) {
             setLoadingCottage(false);
         }).catch(res => {
             handleClick();
+            setTypeAlert("error");
             setMessage(res.response.data);
             console.log(res.response.data);
             history.push('/cottages');
@@ -533,7 +546,7 @@ export default function ImageCard(props) {
                     </Grid>
                 </Grid>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
                     {message}
                 </Alert>
 

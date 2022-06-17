@@ -25,6 +25,7 @@ import com.example.BookingAppTeam05.service.entities.ShipService;
 import com.example.BookingAppTeam05.service.users.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -252,6 +253,9 @@ public class ReservationService {
             BookingEntity entity = bookingEntityService.getBookingEntityById(entityDTO.getId());
             if (entity == null) throw new ItemNotFoundException("Can't find entity for reservation.");
             res.setBookingEntity(entity);
+            if(!dateRangeAvailable(reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
+                throw new CreateItemException("Can't create action cause date range is unavailable. Refresh page and try again!");
+
             res.setVersion(1);
             //resavanje konfliktne situacije student 2.
             entity.setLocked(true);
@@ -392,8 +396,11 @@ public class ReservationService {
             reservationRepository.save(res);
             entity.setLocked(false);
             bookingEntityService.save(entity);
-
-            emailService.sendNotificationAboutResToClient(client, res);
+            try {
+                emailService.sendNotificationAboutResToClient(client, res);
+            } catch (MailAuthenticationException e){
+                throw new NotificationByEmailException("Error happened while sending email.");
+            }
             return res.getId().toString();
         }catch (ObjectOptimisticLockingFailureException e){
             throw new ConflictException("Conflict seems to have occurred, another user just reserved this entity. Please refresh page and try again");
@@ -456,18 +463,20 @@ public class ReservationService {
             Reservation res = reservationRepository.findFastReservationsById(reservationDTO.getId()).orElse(null);
             if (res == null) throw new ItemNotFoundException("Can't find fast reservation entity for reservation.");
             if (reservationDTO.getClient() == null) throw new EditItemException("Can't reserve fast reservation without set client.");
+            if (res.getClient() != null) throw new EditItemException("Action is already reserved by another client. Refresh page and try again!");
             Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
             if (client == null) throw new ItemNotFoundException("Can't find client who want to reserve fast reservation.");
             res.setClient(client);
-
-            if(!dateRangeAvailable(reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
-                throw new CreateItemException("Can't create reservation cause date range is already unavailable. Refresh page and try again!");
 
             if(clientCanceledInPeriod(reservationDTO.getClient().getId(), reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
                 throw new CreateItemException("Can't create reservation cause you already canceled this booking entity in this period.");
 
             reservationRepository.save(res);
-            emailService.sendNotificationAboutResToClient(client, res);
+            try {
+                emailService.sendNotificationAboutResToClient(client, res);
+            } catch (MailAuthenticationException e){
+                throw new NotificationByEmailException("Error happened while sending email.");
+            }
             return res;
         }catch (ObjectOptimisticLockingFailureException e){
             throw new ConflictException("Conflict seems to have occurred, another user reserved this entity in before you create this action in same period. Please refresh page and try again");
