@@ -37,5 +37,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select distinct u from User u left join fetch u.role r where u.notYetActivated = false and u.deleted = false")
     List<User> getAllUsers();
+
 }
 
