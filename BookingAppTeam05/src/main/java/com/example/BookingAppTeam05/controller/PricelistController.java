@@ -6,6 +6,7 @@ import com.example.BookingAppTeam05.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,7 +29,7 @@ public class PricelistController {
     }
 
     @PostMapping(value="/{idBookingEntity}", consumes = "application/json")
-    //@PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER','ROLE_SHIP_OWNER')")
+    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
     public ResponseEntity<PricelistDTO> updatePricelist(@PathVariable Long idBookingEntity, @RequestBody PricelistDTO pricelistDTO)  {
         Pricelist pricelist = pricelistService.updatePricelist(idBookingEntity, pricelistDTO);
         return new ResponseEntity<>(new PricelistDTO(pricelist), HttpStatus.CREATED);

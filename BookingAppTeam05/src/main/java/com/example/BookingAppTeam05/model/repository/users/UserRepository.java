@@ -1,6 +1,7 @@
 package com.example.BookingAppTeam05.model.repository.users;
 
 import com.example.BookingAppTeam05.dto.SearchedBookingEntityDTO;
+import com.example.BookingAppTeam05.model.LoyaltyProgramEnum;
 import com.example.BookingAppTeam05.model.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -37,5 +38,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select distinct u from User u left join fetch u.role r where u.notYetActivated = false and u.deleted = false")
     List<User> getAllUsers();
+
+    @Query("select u from User u where u.id=?1")
+    User findUsersLoyaltyProgram(Long id);
 }
 

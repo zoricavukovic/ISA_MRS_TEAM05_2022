@@ -143,6 +143,19 @@ public class BookingEntityService {
         return false;
     }
 
+    public boolean checkIfClientCanceledReservation(Long clientId, Long entityId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Reservation> reservations = reservationService.findAllCanceledReservationsForEntityid(entityId);
+        for (LocalDateTime date = startDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
+            for (Reservation r : reservations) {
+                if (date.isAfter(r.getStartDate()) && date.isBefore(r.getEndDate()) && r.getClient().getId() == clientId)
+                    return true;
+                if ((date.equals(r.getStartDate()) || date.equals(r.getEndDate())) && r.getClient().getId() == clientId)
+                    return true;
+            }
+        }
+        return false;
+    }
+
     public BookingEntity getEntityById(Long id) {
         BookingEntity retVal = bookingEntityRepository.getEntityById(id);
         if (retVal == null)
@@ -445,4 +458,6 @@ public class BookingEntityService {
         }
         return retVal;
     }
+
+
 }

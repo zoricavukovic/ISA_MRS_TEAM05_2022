@@ -1,6 +1,7 @@
 package com.example.BookingAppTeam05.service.users;
 
 import com.example.BookingAppTeam05.dto.ChangePasswordDTO;
+import com.example.BookingAppTeam05.dto.LoyaltyProgramDTO;
 import com.example.BookingAppTeam05.dto.users.NewAccountRequestDTO;
 import com.example.BookingAppTeam05.dto.users.UserDTO;
 import com.example.BookingAppTeam05.dto.users.UserRequestDTO;
@@ -26,6 +27,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +111,9 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setDateOfBirth(userDTO.getDateOfBirth());
         user.setPhoneNumber(userDTO.getPhoneNumber());
+
+        if(userDTO.getVersion() != user.getVersion())
+            throw new OptimisticLockException("Can't update user because it's already updated with new data, please refresh page.");
         if (userDTO.getPlace() == null)
             throw new ItemNotFoundException("Can't update user without set place");
         Place place = placeService.getPlaceById(userDTO.getPlace().getId());
@@ -342,5 +348,10 @@ public class UserService {
         User user = findUserByEmail(email);
         if (user != null)
             throw new EditItemException("This email is already taken.x");
+    }
+
+    public LoyaltyProgramEnum findUsersLoyalityProgramById(Long id) {
+        User user = userRepository.findUsersLoyaltyProgram(id);
+        return  user.getLoyaltyProgramEnum();
     }
 }

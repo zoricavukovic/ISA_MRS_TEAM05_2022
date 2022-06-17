@@ -11,4 +11,8 @@ public interface DeleteAccountRepository extends JpaRepository<DeleteAccountRequ
 
     @Query(value="select distinct r from DeleteAccountRequest r left join fetch r.user s where r.processed=false")
     List<DeleteAccountRequest> getAllUnprocessedDeleteAccountRequests();
+
+
+    @Query(value="select r from DeleteAccountRequest r left join fetch r.user s where r.processed=false and s.id=?1")
+    DeleteAccountRequest findByUserId(Long id);
 }

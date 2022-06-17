@@ -384,7 +384,7 @@ export default function ReservationCardForClient(props) {
             <table style={{whiteSpace: "nowrap"}}>
                 <tr>
                     <th><h4>{props.reservation.bookingEntity.name}</h4></th>
-                    <th style={{paddingLeft:"3%"}}>€ {reservationCost}</th>
+                    <th style={{paddingLeft:"3%"}}>€ {props.reservation.cost}</th>
                 </tr>
                 
             </table>

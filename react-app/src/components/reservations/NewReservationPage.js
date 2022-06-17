@@ -13,6 +13,8 @@ import { addReservation } from '../../service/ReservationService';
 import { getCurrentUser } from '../../service/AuthService';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import { getCurrentLoyaltyProgram } from '../../service/LoyaltyProgramService';
+import { getUserById, getUsersLoyaltyProgramById } from '../../service/UserService';
 
 export default function NewReservationPage(props) {
     const [type, setType] = useState("");
@@ -29,10 +31,12 @@ export default function NewReservationPage(props) {
     const [checkedTime, setCheckedTime] = useState({});
     const [additionalServices, setAdditionalServices] = useState([]);
     const [maxNumOfPersons, setMaxNumOfPersons] = useState(10);
+    const [currentLoyaltyProgram, setCurrentLoyaltyProgram] = useState(null);
     const history = useHistory();
     const [reservationDTO,setReservationDTO] = useState({});
     const [message, setMessage] = React.useState("");
     const [typeAlert, setTypeAlert] = React.useState("");
+    const [discount, setDiscount] = useState(0);
     const [open, setOpen] = React.useState(false);
 
     var availableTimes = [{
@@ -111,7 +115,25 @@ export default function NewReservationPage(props) {
             setPrice(res.data.pricelists[0].entityPricePerPerson);
             setType(res.data.entityType);
             console.log("prosao");
+            getUserById(getCurrentUser().id).then(resu =>{
+                let usersLp = resu.data.loyaltyProgram;
+                console.log(usersLp);
+                getCurrentLoyaltyProgram().then(res=>{
+                    setCurrentLoyaltyProgram(res.data);
+                    console.log(res.data);
+                    if(usersLp == "BRONZE")
+                        setDiscount(res.data.clientBronzeDiscount);
+                    if(usersLp == "SILVER")
+                        setDiscount(res.data.clientSilverDiscount);
+                    if(usersLp == "GOLD")
+                        setDiscount(res.data.clientGoldDiscount);
+                    
+                })
+            })
+
+
         });
+
     }, []);
 
     const setFieldsWithSearchedParams =(searchParams)=> {
@@ -181,7 +203,6 @@ export default function NewReservationPage(props) {
             const date1 = new Date(date.getTime());
             const date2 = new Date(e.getTime());
             date1.setUTCHours(9,0,0,0);
-            console.log("date1:"+date1+"\ndate2:"+date2);
             return date1WithoutTime.getTime() === date2WithoutTime.getTime() && date1 > date2;
         })
     };
@@ -242,11 +263,13 @@ export default function NewReservationPage(props) {
                             time.available = false;
                 })
                 if(isDateUnavailable(selectionRange.endDate, [unaDate])){
-                    availableTimes.forEach(time => {
-                        time.available = true;
+                    console.log("DATUM ZA PROVERU :"+unaDate);
+                    availableTimes.forEach(function(time){
                         if(parseInt(time.value.split(':')[0]) >= unaDate.getHours())
                             time.available = false;
-                    })
+                    });
+                    console.log("TIMES:");
+                    console.log(availableTimes);
                 }
             }
         for(var time of availableTimes){
@@ -547,7 +570,8 @@ export default function NewReservationPage(props) {
                             </FormControl>
                             <hr></hr>
                             <div style={{margin:"10px 10px"}}>
-                                <FormLabel>Price: </FormLabel><FormLabel style={{color:'rgb(5, 30, 52)', fontWeight:'bold'}}>{price+"€"}</FormLabel>
+                                <FormLabel>Price: </FormLabel><FormLabel style={{color:'rgb(5, 30, 52)', fontWeight:'bold'}}>{price+"€"}</FormLabel><br></br>
+                                {discount > 0 && <><FormLabel>After discount: </FormLabel><FormLabel style={{color:'rgb(5, 30, 52)', fontWeight:'bold'}}>{price-price*discount+"€"}</FormLabel></>}
                             </div>
                             <br></br>
                             <div style={{justifyContent:'center', display:'flex', width:'100%'}}>
