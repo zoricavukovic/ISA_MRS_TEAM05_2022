@@ -15,6 +15,9 @@ import com.example.BookingAppTeam05.repository.entities.AdventureRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -80,6 +83,7 @@ public class AdventureService {
         return adventureDTO;
     }
 
+    @Cacheable(value="adventures", key="'allAdventures'")
     public List<Adventure> findAll() { return this.adventureRepository.findAll(); }
 
     public List<Adventure> findAllForOwnerId(Long id) {
@@ -166,6 +170,7 @@ public class AdventureService {
         return adventure;
     }
 
+    @CachePut(value="adventures")
     public Adventure editAdventureById(Long id, NewAdventureDTO newAdventureDTO, Place place) {
         Adventure existingAdventure = adventureRepository.getAdventureById(id);
         existingAdventure.setName(newAdventureDTO.getName());

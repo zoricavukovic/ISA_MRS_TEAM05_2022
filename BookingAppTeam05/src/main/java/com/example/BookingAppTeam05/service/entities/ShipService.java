@@ -14,6 +14,9 @@ import com.example.BookingAppTeam05.repository.entities.ShipRepository;
 import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,6 +93,7 @@ public class ShipService {
         return shipDTO;
     }
 
+    @Cacheable(value="ships", key="'allShips'")
     public List<Ship> findAll() {
         return shipRepository.findAll();
     }
@@ -127,6 +131,7 @@ public class ShipService {
         return ship.orElse(null);
     }
 
+    @CachePut(value="ships")
     @Transactional
     public void updateShip(ShipDTO shipDTO, Long id){
         try {
