@@ -8,6 +8,9 @@ import com.example.BookingAppTeam05.repository.PictureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -24,13 +27,8 @@ public class PictureService {
 
     public byte[] getPictureDataByName(String name) {
         try {
-            String path = new File("src/main/java/com/example/BookingAppTeam05/data/images/" + name)
-                    .getAbsolutePath();
-            RandomAccessFile f = new RandomAccessFile(path, "r");
-            byte[] bytes = new byte[(int) f.length()];
-            f.read(bytes);
-            f.close();
-            return bytes;
+            String filePath = "./src/main/data/images/" + name;
+            return Files.readAllBytes(Paths.get(filePath));
         } catch (Exception e) {
             throw new ItemNotFoundException("Picture not found.");
         }
@@ -49,8 +47,7 @@ public class PictureService {
 
     private boolean tryConvertBase64ToImageAndSave(String imageName, String base64) {
         try{
-            String path = new File("src/main/java/com/example/BookingAppTeam05/data/images/" + imageName)
-                    .getAbsolutePath();
+            String path = "./src/main/data/images/" + imageName;
             byte[] image = Base64.getDecoder().decode(base64);
             OutputStream out = new FileOutputStream(path);
             out.write(image);
@@ -92,13 +89,7 @@ public class PictureService {
     }
 
     public void deletePictureByName(String picturePath) {
-        String path = new File("src/main/java/com/example/BookingAppTeam05/data/images/" + picturePath)
-                .getAbsolutePath();
-        try {
-            pictureRepository.deleteByPicturePath(picturePath);
-            File f = new File(path);
-            f.delete();
-        } catch (Exception ignored) { }
+        pictureRepository.deleteByPicturePath(picturePath);
     }
 
     public void setNewImagesForBookingEntity(BookingEntity bookingEntity, List<NewImageDTO> images) {
