@@ -64,6 +64,7 @@ public class ShipDTO extends BookingEntityDTO {
         this.fishingEquipment = ship.getFishingEquipment();
         this.navigationalEquipment = ship.getNavigationalEquipment();
         this.shipOwner = new ShipOwnerDTO(ship.getShipOwner());
+
     }
 
     public int getVersion() {

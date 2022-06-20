@@ -90,7 +90,21 @@ export default function NewReservationPage(props) {
             else    
                 setMaxNumOfPersons(50);
             setBookingEntity(res.data);
-            setPricelistData(res.data.pricelists[0]);
+            
+            
+            let pricel = res.data.pricelists[0];
+            console.log("KAPETAN:"+res.data.shipOwner.captain);
+            if(res.data.entityType === "SHIP" && res.data.shipOwner.captain == true){
+                let captainService = {
+                    id:-1,
+                    serviceName:"Captain",
+                    price:100
+                }
+                pricel.additionalServices.push(captainService);
+            }
+            
+            setPricelistData(pricel);
+
             let unaDates = []
             for(let unDate of res.data.allUnavailableDates)
                 unaDates.push(new Date(unDate[0],unDate[1]-1,unDate[2],unDate[3],unDate[4]));
@@ -244,8 +258,10 @@ export default function NewReservationPage(props) {
             while(!foundRange){
                 if(isDateTimeUnavailable(nextAvailableDate, unavDates)){
                     nextAvailableDate = new Date(nextAvailableDate.getTime()+oneDay);
-                    foundRange = true;
                 }
+                else
+                    foundRange = true;
+
             }
         setStartDate(nextAvailableDate);
     }
@@ -281,27 +297,6 @@ export default function NewReservationPage(props) {
         console.log(availableTimes);
         setTimes(availableTimes);
     }, [selectionRange]);
-
-    // useEffect(() => {
-    //     if(Object.keys(bookingEntity).length !== 0)
-    //         for(var unavailableDate of bookingEntity.allUnavailableDates)
-    //         {
-    //             if(isDateUnavailable(startDate, [new Date(unavailableDate)]))
-    //                 availableTimes.forEach(time => {
-    //                     time.available = true;
-    //                     if(parseInt(time.value.split(':')[0]) == new Date(unavailableDate).getHours())
-    //                         time.available = false;
-    //             })
-    //         }
-    //     for(var time of availableTimes){
-    //         if(time.available == true){
-    //             setCheckedTime(time);
-    //             break;
-    //         }
-    //     }
-    //     console.log(availableTimes);
-    //     setTimes(availableTimes);
-    // }, [selectionRange]);
 
     useEffect(() => {
         if(Object.keys(bookingEntity).length !== 0)
@@ -405,7 +400,7 @@ export default function NewReservationPage(props) {
         else{
             setPrice(price-service.price);
             setAdditionalPrice(additionalPrice-service.price);
-            setAdditionalServices(additionalServices.filter(item => item.serviceName === service.serviceName));
+            setAdditionalServices(additionalServices.filter(item => item.serviceName !== service.serviceName));
         }
     };
 

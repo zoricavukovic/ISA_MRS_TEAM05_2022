@@ -86,6 +86,7 @@ export default function ImageCard(props) {
     const [clientReviews, setClientReviews] = useState([]);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [typeAlert, setTypeAlert] = useState("success");
+    const [userExists, setUserExists] = useState(false);
     const history = useHistory();
 
     const handleClick = () => {
@@ -321,10 +322,14 @@ export default function ImageCard(props) {
         console.log(props.subscribed);
         console.log(props.rating);
 
+        if(getCurrentUser() != undefined && getCurrentUser() != null)
+            setUserExists(true);
+
         getCottageById(props.cottageId).then(res => {
             setCottageBasicData(res.data);
-            if(getCurrentUser().id == res.data.cottageOwnerDTO.id)
-                setHasAuthority(true);
+            if(getCurrentUser() != undefined && getCurrentUser() != null)
+                if(getCurrentUser().id == res.data.cottageOwnerDTO.id)
+                    setHasAuthority(true);
             setLoadingCottage(false);
         }).catch(res => {
             handleClick();
@@ -339,11 +344,12 @@ export default function ImageCard(props) {
             setLoadingPricelist(false);
         });
 
-        getAvailableFastReservationsByBookingEntityId(props.cottageId).then(res=>{
-            console.log(res.data);
-            setFastReservations(res.data);
+        if(getCurrentUser() != undefined && getCurrentUser() != null)
+            getAvailableFastReservationsByBookingEntityId(props.cottageId).then(res=>{
+                console.log(res.data);
+                setFastReservations(res.data);
 
-        });
+            });
 
         getRatingsByEntityId(props.cottageId).then(res=>{
             console.log(res.data);
@@ -368,7 +374,7 @@ export default function ImageCard(props) {
                 
                 action={
                     <>
-                    {getCurrentUser().userType.name == "ROLE_CLIENT"?(
+                    {(userExists && getCurrentUser().userType.name == "ROLE_CLIENT")?(
                     <>
                     <Button onClick={reserveBookingEntity} disabled={getCurrentUser().penalties>2?true:false} variant='contained' size='large' /*style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}*/>
                         Reserve
@@ -444,7 +450,7 @@ export default function ImageCard(props) {
                                         <Typography variant="subtitle1" component="div">
                                             {res.cost*res.numOfDays*res.numOfPersons}€
                                         </Typography>
-                                            {getCurrentUser().userType.name == "ROLE_CLIENT"?(
+                                            {(userExists && getCurrentUser().userType.name == "ROLE_CLIENT")?(
                                             <Button onClick={() =>FastReserve(res)} disabled={getCurrentUser().penalties>2?true:false} variant='contained' style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}>
                                                 Reserve Now
                                             </Button>):(<div>

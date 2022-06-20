@@ -317,4 +317,8 @@ public class ShipService {
         }
         return shipDTOs;
     }
+
+    public Long getShipOwnerId(Long id) {
+        return shipRepository.getShipOwnerId(id).getShipOwner().getId();
+    }
 }

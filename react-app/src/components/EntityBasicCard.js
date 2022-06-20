@@ -119,7 +119,7 @@ export default function EntityBasicCard(props) {
 
     const showBookingEntity = (event) => {
         event.stopPropagation();
-        if (getCurrentUser() == undefined || getCurrentUser() == null) return;
+        //if (getCurrentUser() == undefined || getCurrentUser() == null) return;
         if (props.bookingEntity.entityType === "COTTAGE") {
             history.push({
                 pathname: "/showCottageProfile",

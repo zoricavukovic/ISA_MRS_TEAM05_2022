@@ -232,6 +232,7 @@ export default function AdventureProfile(props) {
     const [openDialog, setOpenDialog] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [selectedFastReservation, setSelectedFastReservation] = useState({});
+    const [userExists, setUserExists] = useState(false);
     const [typeAlert, setTypeAlert] = useState("success");
     let adventureId;
 
@@ -360,12 +361,16 @@ export default function AdventureProfile(props) {
     useEffect(() => {
         setIsSubscribed(props.location.state.subscribed);
 
+        if(getCurrentUser() != undefined && getCurrentUser() != null)
+        setUserExists(true);
+
         if (propsLocationStateFound(props, history)) {
             console.log(props.location.state.rating);
             getAdventureById(props.location.state.bookingEntityId).then(res => {
                 setAdventureData(res.data);
-                if(res.data.instructor.id == getCurrentUser().id)
-                    setHasAuthority(true);
+                if(getCurrentUser() != undefined && getCurrentUser() != null)
+                    if(getCurrentUser().id == res.data.cottageOwnerDTO.id)
+                        setHasAuthority(true);
                 setLoading(false);
             }).catch(res => {
                 handleClick();
@@ -373,16 +378,17 @@ export default function AdventureProfile(props) {
                 setMessage(res.response.data);
                 console.log(res.response.data);
                 history.push('/adventures');
-
             })
             getPricelistByEntityId(props.location.state.bookingEntityId).then(result => {
                 setPricelistData(result.data);
                 setLoadingPricelist(false);
             })
-            getAvailableFastReservationsByBookingEntityId(props.location.state.bookingEntityId).then(res=>{
-                console.log(res.data);
-                setFastReservations(res.data);
-            });
+            
+            if(getCurrentUser() != undefined && getCurrentUser() != null)
+                getAvailableFastReservationsByBookingEntityId(props.location.state.bookingEntityId).then(res=>{
+                    console.log(res.data);
+                    setFastReservations(res.data);
+                });
     
             getRatingsByEntityId(props.location.state.bookingEntityId).then(res=>{
                 console.log(res.data);
@@ -411,7 +417,7 @@ export default function AdventureProfile(props) {
 
                     action={
                         <>
-                        {getCurrentUser().userType.name == "ROLE_CLIENT"?(
+                        {(userExists && getCurrentUser().userType.name == "ROLE_CLIENT")?(
                         <>
                         <Button onClick={reserveBookingEntity} disabled={getCurrentUser().penalties>2?true:false} variant='contained' size='large' /*style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}*/>
                             Reserve
@@ -481,7 +487,7 @@ export default function AdventureProfile(props) {
                                         <Typography variant="subtitle1" component="div">
                                             {res.cost*res.numOfDays*res.numOfPersons}€
                                         </Typography>
-                                            {getCurrentUser().userType.name == "ROLE_CLIENT"?(
+                                            {(userExists && getCurrentUser().userType.name == "ROLE_CLIENT")?(
                                                 <Button onClick={() =>FastReserve(res)} disabled={getCurrentUser().penalties>2?true:false} variant='contained' style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}>
                                                     Reserve Now
                                                 </Button>
