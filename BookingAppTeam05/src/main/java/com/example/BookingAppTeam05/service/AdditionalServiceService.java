@@ -37,5 +37,9 @@ public class AdditionalServiceService {
         }
         return additionalServicesDTOs;
     }
+
+    public AdditionalService findAdditionalServiceByName(String serviceName) {
+        return additionalServiceRepository.findByServiceName(serviceName).orElse(null);
+    }
 }
 

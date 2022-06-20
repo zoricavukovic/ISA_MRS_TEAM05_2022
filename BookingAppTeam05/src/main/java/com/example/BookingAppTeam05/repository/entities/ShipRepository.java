@@ -39,4 +39,6 @@ public interface ShipRepository extends JpaRepository<Ship, Long> {
             " where s.id=?1 and s.deleted = false")
     Optional<Ship> findById(Long id);
 
+    @Query(value="select s from Ship s left join fetch s.shipOwner owner where s.id=?1 and s.deleted = false")
+    Ship getShipOwnerId(Long id);
 }

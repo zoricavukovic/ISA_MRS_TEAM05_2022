@@ -12,10 +12,9 @@ import com.example.BookingAppTeam05.exception.database.CreateItemException;
 import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
-import com.example.BookingAppTeam05.model.entities.Adventure;
-import com.example.BookingAppTeam05.model.entities.BookingEntity;
-import com.example.BookingAppTeam05.model.entities.Cottage;
-import com.example.BookingAppTeam05.model.entities.Ship;
+import com.example.BookingAppTeam05.model.entities.*;
+import com.example.BookingAppTeam05.model.users.ShipOwner;
+import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.ReservationRepository;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.entities.AdventureService;
@@ -23,6 +22,7 @@ import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.entities.CottageService;
 import com.example.BookingAppTeam05.service.entities.ShipService;
 import com.example.BookingAppTeam05.service.users.ClientService;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.MailAuthenticationException;
@@ -30,11 +30,13 @@ import org.springframework.mail.MailException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -241,13 +243,8 @@ public class ReservationService {
             res.setFastReservation(true);
             res.setNumOfDays(reservationDTO.getNumOfDays());
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
-            Set<AdditionalService> additionalServices = new HashSet<>();
-            for (NewAdditionalServiceDTO nas: reservationDTO.getAdditionalServices()) {
-                AdditionalService as = additionalServiceService.findAdditionalServiceById(nas.getId());
-                if (as == null) throw new ItemNotFoundException("Can't find additional service with name: " + nas.getServiceName());
-                additionalServices.add(as);
-            }
-            res.setAdditionalServices(additionalServices);
+
+
             BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
             if (entityDTO == null)  throw new CreateItemException("Can't create action without set entity for reservation.");
             BookingEntity entity = bookingEntityService.getBookingEntityById(entityDTO.getId());
@@ -256,6 +253,8 @@ public class ReservationService {
             if(!dateRangeAvailable(reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
                 throw new CreateItemException("Can't create action cause date range is unavailable. Refresh page and try again!");
 
+            Set<AdditionalService> aServices = getAdditionalServicesFromCreatedReservation(reservationDTO, entityDTO);
+            res.setAdditionalServices(aServices);
             res.setVersion(1);
             //resavanje konfliktne situacije student 2.
             entity.setLocked(true);
@@ -307,19 +306,15 @@ public class ReservationService {
             res.setFastReservation(false);
             res.setNumOfDays(reservationDTO.getNumOfDays());
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
-            Set<AdditionalService> aServices = new HashSet<>();
 
-            for (NewAdditionalServiceDTO nas:reservationDTO.getAdditionalServices()) {
-                AdditionalService as = additionalServiceService.findAdditionalServiceById(nas.getId());
-                if (as == null) throw new ItemNotFoundException("Can't find additional service with name: " + nas.getServiceName());
-                aServices.add(as);
-            }
-            res.setAdditionalServices(aServices);
             BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
             if (entityDTO == null) throw new CreateItemException("Can't create reservation without set entity for reservation.");
             BookingEntity entity = bookingEntityService.getBookingEntityById(entityDTO.getId());
             if (entity == null) throw new ItemNotFoundException("Can't find entity for reservation.");
             res.setBookingEntity(entity);
+            Set<AdditionalService> aServices = getAdditionalServicesFromCreatedReservation(reservationDTO, entityDTO);
+            res.setAdditionalServices(aServices);
+
             res.setVersion(0);
             if (reservationDTO.getClient() == null) throw new CreateItemException("Can't reserve reservation without set client.");
             Client client = clientService.findClientByIdWithoutReservationsAndWatchedEntities(reservationDTO.getClient().getId());
@@ -329,6 +324,7 @@ public class ReservationService {
 
             if(clientCanceledInPeriod(reservationDTO.getClient().getId(), reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
                 throw new CreateItemException("Can't create reservation cause you already canceled this booking entity in this period.");
+
 
 
             entity.setLocked(true);
@@ -343,6 +339,52 @@ public class ReservationService {
         }
     }
 
+    private Set<AdditionalService> getAdditionalServicesFromCreatedReservation(ReservationDTO reservationDTO, BookingEntityDTO entityDTO) {
+        Set<AdditionalService> aServices = new HashSet<>();
+
+        Long ownerId = bookingEntityService.getOwnerIdOfEntityId(entityDTO.getId());
+
+        for (NewAdditionalServiceDTO nas: reservationDTO.getAdditionalServices()) {
+            AdditionalService as;
+            if(nas.getServiceName().equals("Captain")){
+                if(checkIfCaptainIsAvailable(reservationDTO.getStartDate(), reservationDTO.getNumOfDays(), ownerId))
+                {
+                    as = additionalServiceService.findAdditionalServiceByName(nas.getServiceName());
+                    if(as == null) {
+                        as = new AdditionalService();
+                        as.setServiceName("Captain");
+                        as.setPrice(nas.getPrice());
+                        additionalServiceService.save(as);
+                    }
+                }
+                else
+                    throw new CreateItemException("Can't create reservation cause captain is not available in that period.");
+            }
+            else
+                 as = additionalServiceService.findAdditionalServiceById(nas.getId());
+
+            if (as == null) throw new ItemNotFoundException("Can't find additional service with name: " + nas.getServiceName());
+            aServices.add(as);
+        }
+        return aServices;
+    }
+
+    private boolean checkIfCaptainIsAvailable(LocalDateTime startDate, int numOfDays, Long shipOwnerId) {
+        List<Reservation> reservations = getReservationsByOwnerId(shipOwnerId, "SHIP");
+        for (Reservation res : reservations) {
+            if(res.getAdditionalServices().stream().filter(x->x.getServiceName().equals("Captain")).collect(Collectors.toList()).size()>0){
+                LocalDateTime end = startDate.plusDays(numOfDays);
+                for (LocalDateTime date = startDate; date.isBefore(end.plusDays(1)); date = date.plusDays(1)) {
+                    if (date.isAfter(res.getStartDate()) && date.isBefore(res.getEndDate()))
+                        return false;
+                    if (date.equals(res.getStartDate()) || date.equals(res.getEndDate()))
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private boolean clientCanceledInPeriod(Long clientId, Long entityId, LocalDateTime startDate, int numOfDays) {
         LocalDateTime endDate = startDate.plusDays(numOfDays);
         return bookingEntityService.checkIfClientCanceledReservation(clientId, entityId, startDate, endDate);
@@ -350,7 +392,8 @@ public class ReservationService {
 
     private boolean dateRangeAvailable(Long entityId, LocalDateTime startDate, int numOfDays) {
         LocalDateTime endDate = startDate.plusDays(numOfDays);
-        return !bookingEntityService.checkExistReservationInPeriodForEntityId(entityId, startDate, endDate);
+        boolean isDateRangeUna = bookingEntityService.isDateRangeUnavailable(entityId, startDate, endDate);
+        return !bookingEntityService.checkExistReservationInPeriodForEntityId(entityId, startDate, endDate) && !isDateRangeUna;
     }
 
     @Transactional
@@ -363,14 +406,7 @@ public class ReservationService {
             res.setFastReservation(false);
             res.setNumOfDays(reservationDTO.getNumOfDays());
             res.setNumOfPersons(reservationDTO.getNumOfPersons());
-            Set<AdditionalService> aServices = new HashSet<>();
 
-            for (NewAdditionalServiceDTO nas:reservationDTO.getAdditionalServices()) {
-                AdditionalService as = additionalServiceService.findAdditionalServiceById(nas.getId());
-                if (as == null) throw new ItemNotFoundException("Can't find additional service with name: " + nas.getServiceName());
-                aServices.add(as);
-            }
-            res.setAdditionalServices(aServices);
             BookingEntityDTO entityDTO = reservationDTO.getBookingEntity();
             if (entityDTO == null) throw new CreateItemException("Can't create reservation for client without set entity for reservation.");
             BookingEntity entity = bookingEntityService.getEntityById(entityDTO.getId());
@@ -388,6 +424,14 @@ public class ReservationService {
 
             if(clientCanceledInPeriod(clientId, reservationDTO.getBookingEntity().getId(),reservationDTO.getStartDate(), reservationDTO.getNumOfDays()))
                 throw new CreateItemException("Can't create reservation cause you already canceled this booking entity in this period.");
+
+            ReservationDTO resDTO = new ReservationDTO();
+            resDTO.setStartDate(reservationDTO.getStartDate());
+            resDTO.setNumOfDays(reservationDTO.getNumOfDays());
+            resDTO.setAdditionalServices(reservationDTO.getAdditionalServices());
+
+            Set<AdditionalService> aServices = getAdditionalServicesFromCreatedReservation(resDTO, entityDTO);
+            res.setAdditionalServices(aServices);
 
             //resavanje konfliktne situacije student 2.
             entity.setLocked(true);

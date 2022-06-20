@@ -14,4 +14,7 @@ public interface AdditionalServiceRepository extends JpaRepository<AdditionalSer
 
     @Override
     Optional<AdditionalService> findById(Long aLong);
+
+    @Query(value = "select * from additional_services addSer where addSer.service_name =?1", nativeQuery = true)
+    Optional<AdditionalService> findByServiceName(String serviceName);
 }

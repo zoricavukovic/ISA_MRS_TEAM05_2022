@@ -13,6 +13,7 @@ import com.example.BookingAppTeam05.exception.UnauthorisedException;
 import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.Pricelist;
 import com.example.BookingAppTeam05.model.Reservation;
+import com.example.BookingAppTeam05.model.UnavailableDate;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.RatingService;
 import com.example.BookingAppTeam05.model.entities.*;
@@ -230,6 +231,11 @@ public class BookingEntityService {
             setAllUnavailableDates(entityDTO);
 
         return entityDTO;
+    }
+
+    private void addCaptainIfAvailable(ShipDTO shipDTO) {
+        List<Reservation> reservations = reservationService.findAllReservationsForEntityId(shipDTO.getId());
+
     }
 
     public List<SearchedBookingEntityDTO> findTopRated(String type) {
@@ -461,4 +467,21 @@ public class BookingEntityService {
     }
 
 
+    public boolean isDateRangeUnavailable(Long entityId, LocalDateTime startDate, LocalDateTime endDate) {
+        BookingEntity entity = bookingEntityRepository.getEntityWithUnavailableDatesById(entityId);
+        for (LocalDateTime date = startDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
+            for (UnavailableDate unavailableDate : entity.getUnavailableDates()) {
+                if (date.isAfter(unavailableDate.getStartTime()) && date.isBefore(unavailableDate.getEndTime()))
+                    return true;
+                if (date.equals(unavailableDate.getStartTime()) || date.equals(unavailableDate.getEndTime()))
+                    return true;
+            }
+        }
+        return false;
+
+    }
+
+    public Long getOwnerIdOfEntityId(Long id) {
+        return shipService.getShipOwnerId(id);
+    }
 }

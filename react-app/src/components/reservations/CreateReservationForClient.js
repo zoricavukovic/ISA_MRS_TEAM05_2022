@@ -116,7 +116,21 @@ export default function CreateReservationForClient(props) {
             else    
                 setMaxNumOfPersons(50);
             setBookingEntity(res.data);
-            setPricelistData(res.data.pricelists[0]);
+
+            let pricel = res.data.pricelists[0];
+            console.log("KAPETAN:"+res.data.shipOwner.captain);
+            if(res.data.entityType === "SHIP" && res.data.shipOwner.captain == true){
+                let captainService = {
+                    id:-1,
+                    serviceName:"Captain",
+                    price:100
+                }
+                pricel.additionalServices.push(captainService);
+            }
+            
+            setPricelistData(pricel);
+
+            
             let unaDates = []
             for(let unDate of res.data.allUnavailableDates)
                 unaDates.push(new Date(unDate[0],unDate[1]-1,unDate[2],unDate[3],unDate[4]));
@@ -402,7 +416,7 @@ export default function CreateReservationForClient(props) {
         else{
             setPrice(price-service.price);
             setAdditionalPrice(additionalPrice-service.price);
-            setAdditionalServices(additionalServices.filter(item => item.serviceName === service.serviceName));
+            setAdditionalServices(additionalServices.filter(item => item.serviceName !== service.serviceName));
         }
     };
 
