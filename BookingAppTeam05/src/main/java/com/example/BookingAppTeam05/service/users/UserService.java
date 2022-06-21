@@ -307,6 +307,9 @@ public class UserService {
         if (userToDeleted == null)
             throw new ItemNotFoundException("Can't find user for deleting. User id: " + userId);
 
+        if (userToDeleted.isDeleted())
+            throw new ItemNotFoundException("Can't find user for deleting. User id: " + userId);
+
         if (userToDeleted.getRole().getName().equals("ROLE_ADMIN") || userToDeleted.getRole().getName().equals("ROLE_SUPER_ADMIN"))
             throw new DeleteItemException("Not allowed to delete other admins");
 
@@ -319,8 +322,10 @@ public class UserService {
         if (userToDeleted.getRole().getName().equals("ROLE_CLIENT")) {
             if (reservationService.getAllActiveOrFutureReservationsForClientId(userId).size() > 0)
                 throw new DeleteItemException("Can't delete client with id: " + userId + " because client has active or future reservations");
-            else
+            else {
                 userRepository.logicalDeleteUserById(userId);
+                return;
+            }
         }
 
         if (checkIfOwnerHaveActiveReservationsForOneOfHisEntities(userId))

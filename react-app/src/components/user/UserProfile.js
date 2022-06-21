@@ -108,7 +108,7 @@ export default function UserProfile(props) {
             setOpenSnackbar(true);
             setSnackBarType("success");
             handleClose();
-        }).chach(res=>{
+        }).catch(res=>{
             setSnackbarMessage(res.data);
             setOpenSnackbar(true);
             setSnackBarType("error");

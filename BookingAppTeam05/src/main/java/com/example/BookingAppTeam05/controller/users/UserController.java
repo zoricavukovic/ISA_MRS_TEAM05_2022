@@ -107,7 +107,7 @@ public class UserController {
     }
 
     @DeleteMapping(value="/{userId}/{adminId}")
-    @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<String> logicalDeleteUserById(@PathVariable Long userId, @PathVariable  Long adminId, @RequestBody String confirmPass){
         userService.tryToLogicalDeleteUser(userId, adminId, confirmPass);
         return new ResponseEntity<>("User successfully deleted.", HttpStatus.OK);
