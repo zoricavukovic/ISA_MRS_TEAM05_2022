@@ -139,6 +139,7 @@ VALUES
 
 
 
+
 -- rooms
 INSERT INTO rooms (num_of_beds,room_num,cottage_id, deleted)
 VALUES
@@ -491,3 +492,22 @@ VALUES
     ('2022-06-16 5:00 am',2,2,14,8,'False','False', 1, 45, 5, 5, 30),
     ('2022-06-17 7:00 am',1,3,14,7,'False','True', 1, 66, 5, 5, 40),
     ('2022-06-15 7:00 am',5,3,14,9,'False','False', 1, 80, 5, 5, 30);
+
+
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
+VALUES
+    ('2022-04-20 5:00 am',8,17,7,8,'False','False', 1, 255, 5, 5, 50),
+    ('2022-05-01 7:00 pm',10,3,7,7,'False','False', 1, 780, 10, 10, 200),
+    ('2022-06-20 7:00 pm',6,3,7,7,'False','False', 1, 780, 10, 10, 200),
+    ('2022-05-29 7:00 pm',1,5,7,7,'False','False', 1, 120, 5, 5, 60);
+
+
+INSERT INTO clients (id, not_yet_activated,address,date_of_birth,email,first_name,last_name,loyalty_points,password,phone_number,place_id,penalties, deleted, role_id, version)
+VALUES
+    (nextval('users_id_gen'), 'False','Ap #769-2030 Mauris. Rd.','1971-12-20','bookingapp05mzr++a@gmail.com','ana','anic',20,'$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','034-33-356-88',4,0, 'False', 2, 0);
+
+
+INSERT INTO reservations (start_date,num_of_days,num_of_persons,entity_id,client_id,fast_reservation,canceled, version, cost, client_discount_value, owner_bonus, system_takes)
+VALUES
+    ('2022-04-20 5:00 am',8,17,7,28,'False','False', 1, 255, 5, 5, 50),
+    ('2022-05-01 7:00 pm',10,3,7,28,'False','False', 1, 780, 10, 10, 200);

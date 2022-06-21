@@ -13,8 +13,6 @@ import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.AdditionalService;
 import com.example.BookingAppTeam05.model.Reservation;
 import com.example.BookingAppTeam05.model.entities.*;
-import com.example.BookingAppTeam05.model.users.ShipOwner;
-import com.example.BookingAppTeam05.model.users.User;
 import com.example.BookingAppTeam05.repository.ReservationRepository;
 import com.example.BookingAppTeam05.model.users.Client;
 import com.example.BookingAppTeam05.service.entities.AdventureService;
@@ -22,7 +20,6 @@ import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.entities.CottageService;
 import com.example.BookingAppTeam05.service.entities.ShipService;
 import com.example.BookingAppTeam05.service.users.ClientService;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.MailAuthenticationException;
@@ -30,7 +27,6 @@ import org.springframework.mail.MailException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -223,8 +219,12 @@ public class ReservationService {
         return activeFastRes;
     }
 
-    public Reservation findById(long Id) {
+    public Reservation findFastReservationById(long Id) {
         return reservationRepository.findFastReservationsById(Id).orElse(null);
+    }
+
+    public Reservation findById(long Id) {
+        return reservationRepository.findById(Id).orElse(null);
     }
 
     public void save(Reservation fastReservation) {
@@ -342,11 +342,10 @@ public class ReservationService {
     private Set<AdditionalService> getAdditionalServicesFromCreatedReservation(ReservationDTO reservationDTO, BookingEntityDTO entityDTO) {
         Set<AdditionalService> aServices = new HashSet<>();
 
-        Long ownerId = bookingEntityService.getOwnerIdOfEntityId(entityDTO.getId());
-
         for (NewAdditionalServiceDTO nas: reservationDTO.getAdditionalServices()) {
             AdditionalService as;
-            if(nas.getServiceName().equals("Captain")){
+            if(nas.getServiceName().equals("Captain") && entityDTO.getEntityType().name().equals("SHIP")){
+                Long ownerId = bookingEntityService.getOwnerIdOfEntityId(entityDTO.getId());
                 if(checkIfCaptainIsAvailable(reservationDTO.getStartDate(), reservationDTO.getNumOfDays(), ownerId))
                 {
                     as = additionalServiceService.findAdditionalServiceByName(nas.getServiceName());
@@ -529,5 +528,15 @@ public class ReservationService {
 
     public List<Reservation> findAllCanceledReservationsForEntityid(Long entityId) {
         return reservationRepository.findAllCanceledReservationsForEntityId(entityId);
+    }
+
+    public boolean hasClientFutureReservations(Long id) {
+        List<Reservation> reservations = reservationRepository.getReservationsByClientId(id);
+        for (Reservation res : reservations) {
+            LocalDateTime endTime = res.getStartDate().plusDays(res.getNumOfDays());
+            if(endTime.isAfter(LocalDateTime.now()))
+                return true;
+        }
+        return false;
     }
 }

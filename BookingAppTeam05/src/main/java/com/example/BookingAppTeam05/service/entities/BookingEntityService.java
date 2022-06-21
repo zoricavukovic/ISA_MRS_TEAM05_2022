@@ -23,7 +23,7 @@ import com.example.BookingAppTeam05.service.*;
 import com.example.BookingAppTeam05.service.users.ClientService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -288,12 +288,10 @@ public class BookingEntityService {
                 lastDates.add(reservation.getStartDate().plusDays(reservation.getNumOfDays()));
         }
         for(UnavailableDateDTO unavailableDate:entityDTO.getUnavailableDates()){
-            int days = 0;
             LocalDateTime date = unavailableDate.getStartDate();
             while(date.isBefore(unavailableDate.getEndDate())){
                 allUnavailableDates.add(date);
-                days++;
-                date = date.plusDays(days);
+                date = date.plusDays(1);
             }
         }
         Set<LocalDateTime> additionalDates = new HashSet<>();
@@ -306,6 +304,7 @@ public class BookingEntityService {
             }
             if(unDate.getHour() < 9){
                 LocalDateTime newDate = unDate.minusDays(1);
+                newDate = newDate.withHour(21);
                 additionalDates.add(newDate);
             }
         }
@@ -411,7 +410,7 @@ public class BookingEntityService {
     }
 
     @Transactional
-    public void tryToLogicalDeleteBookingEntityAndReturnErrorCode(Long entityId, Long userId, String confirmPass) {
+    public void tryToLogicalDeleteBookingEntity(Long entityId, Long userId, String confirmPass) {
         try {
             BookingEntity bookingEntity = this.getEntityById(entityId);
             if (bookingEntity == null)
@@ -447,6 +446,7 @@ public class BookingEntityService {
     }
 
     public void save(BookingEntity bookingEntity) {
+
         bookingEntityRepository.save(bookingEntity);
     }
 

@@ -109,7 +109,6 @@ public class CottageService {
         return cottageDTOs;
     }
 
-    @Cacheable(value="cottages", key="'allCottages'")
     public List<Cottage> findAll() { return cottageRepository.findAll(); }
 
     public List<Cottage> findAllByOwnerId(Long id) {
@@ -146,7 +145,7 @@ public class CottageService {
     }
 
 
-    @CachePut(value="cottages")
+
     @Transactional
     public void updateCottage(CottageDTO cottageDTO, Long id){
         try {
@@ -220,6 +219,7 @@ public class CottageService {
         return cottage.getId().toString();
     }
 
+
     public Cottage save(Cottage cottage) {
         return cottageRepository.save(cottage);
     }
@@ -288,4 +288,6 @@ public class CottageService {
             if (!found) { rules.add(rule); }
         }
     }
+
+
 }

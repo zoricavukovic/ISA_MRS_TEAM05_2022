@@ -53,4 +53,13 @@ public class DeleteAccountController {
         return new ResponseEntity<>(retVal, HttpStatus.OK);
     }
 
+    @GetMapping(value="/canDelete//{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_ADMIN','ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER','ROLE_INSTRUCTOR', 'ROLE_SUPER_ADMIN')")
+    public ResponseEntity<Boolean> canDelete(@PathVariable Long id) {
+        Boolean retVal = deleteAccountService.canDeleteProfile(id);
+        return new ResponseEntity<>(retVal, HttpStatus.OK);
+    }
+
+
+
 }

@@ -85,7 +85,7 @@ public class ReservationTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 1");
-                Reservation fastReservation = reservationService.findById(17L);
+                Reservation fastReservation = reservationService.findFastReservationById(17L);
                 fastReservation.setClient((Client) userService.findUserById(7L));
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
                 reservationService.save(fastReservation);
@@ -95,7 +95,7 @@ public class ReservationTest {
             @Override
             public void run() {
                 System.out.println("Startovan Thread 2");
-                Reservation fastReservation = reservationService.findById(17L);
+                Reservation fastReservation = reservationService.findFastReservationById(17L);
                 fastReservation.setClient((Client) userService.findUserById(7L));
                 reservationService.save(fastReservation);
             }

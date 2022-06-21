@@ -50,31 +50,5 @@
         </resources>
     </cache>
 
-    <cache alias="cottages" uses-template="default">
-        <key-type>java.lang.String</key-type>
-        <value-type>java.util.List</value-type>
-        <resources>
-            <heap>2</heap>
-        </resources>
-    </cache>
-
-
-    <cache alias="adventures" uses-template="default">
-        <key-type>java.lang.String</key-type>
-        <value-type>java.util.List</value-type>
-        <resources>
-            <heap>2</heap>
-        </resources>
-    </cache>
-
-
-    <cache alias="ships" uses-template="default">
-        <key-type>java.lang.String</key-type>
-        <value-type>java.util.List</value-type>
-        <resources>
-            <heap>2</heap>
-        </resources>
-    </cache>
-
 
 </config>

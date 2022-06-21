@@ -83,7 +83,7 @@ public class AdventureService {
         return adventureDTO;
     }
 
-    @Cacheable(value="adventures", key="'allAdventures'")
+
     public List<Adventure> findAll() { return this.adventureRepository.findAll(); }
 
     public List<Adventure> findAllForOwnerId(Long id) {
@@ -170,7 +170,7 @@ public class AdventureService {
         return adventure;
     }
 
-    @CachePut(value="adventures")
+
     public Adventure editAdventureById(Long id, NewAdventureDTO newAdventureDTO, Place place) {
         Adventure existingAdventure = adventureRepository.getAdventureById(id);
         existingAdventure.setName(newAdventureDTO.getName());

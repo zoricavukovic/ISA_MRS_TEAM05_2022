@@ -93,7 +93,7 @@ public class ShipService {
         return shipDTO;
     }
 
-    @Cacheable(value="ships", key="'allShips'")
+
     public List<Ship> findAll() {
         return shipRepository.findAll();
     }
@@ -131,7 +131,7 @@ public class ShipService {
         return ship.orElse(null);
     }
 
-    @CachePut(value="ships")
+
     @Transactional
     public void updateShip(ShipDTO shipDTO, Long id){
         try {

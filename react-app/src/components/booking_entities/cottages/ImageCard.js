@@ -58,6 +58,7 @@ import StyledAvatar from '../../StyledAvatar';
 import { subscribeClientWithEntity, unsubscribeClientWithEntity } from '../../../service/UserService';
 import Approved from "../../../icons/approval.png";
 import NotApproved from "../../../icons/notApprowed.png";
+import Money from "../../../icons/money.png";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -492,9 +493,7 @@ export default function ImageCard(props) {
             
 
             <div style={{ display: "flex", flexDirection: "row", flexWrap: 'wrap' }}>
-                <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
-                    <h4>Promo Description: </h4><h3>{cottageBasicData.promoDescription} </h3>
-                </Typography>
+               
                 <Grid item xs={12} sm={4} style={{ width: '30%'}} minWidth="200px">
                         <CottageAdditionalInfo
                             header="Rules of conduct"
@@ -516,7 +515,18 @@ export default function ImageCard(props) {
                     <CardContent>
 
                     </CardContent>
-                
+                <Typography variant="body2" color="text.secondary" style={{ width: '30%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
+                <h4>Promo Description: </h4><h3>{cottageBasicData.promoDescription} </h3>
+                </Typography>
+                <Typography variant="body2" color="text.primary" style={{ width: '20%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
+                        <img src={Money} height='40px' width={"40px"}></img>
+                        <div style={{marginTop:'10px', display:'flex'}}>
+                            <h3 >Cancelation rate: </h3>{cottageBasicData.entityCancelationRate > 0?<h3>{cottageBasicData.entityCancelationRate+"%"} </h3>:<h3>Free</h3>}
+                        </div>
+                        <div style={{marginTop:'10px', display:'flex'}}>
+                            <h3 >Price: {pricelistData.entityPricePerPerson+"€"} </h3>
+                        </div>
+                    </Typography>
             </div >
             <hr></hr>
                 <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'20px', marginLeft:'40px'}}>
