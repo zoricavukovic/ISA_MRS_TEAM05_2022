@@ -459,23 +459,30 @@ export default function AddFastReservation(props) {
                       size="small"
                       name="maxNumPeople"
                       type="number"
+                      InputProps={{ inputProps: { min: 1, max: entityBasicData.entityType != "COTTAGE"?entityBasicData.maxNumOfPersons:50 } }}
                       onChange={e => {
                         let data = fastResData;
                         let people = parseInt(e.target.value);
+                        if(entityBasicData.entityType != "COTTAGE" && entityBasicData.maxNumOfPersons<people)
+                          e.target.value = entityBasicData.maxNumOfPersons;
+                        if(people<0)
+                          e.target.value = 0;
                         if (people === NaN) alert("Greska");
                         else {
                           data.numOfPeople = people;
                         }
+                        
+
                         setFastResData(data);
                       }}
                       placeholder="Max Num Of People"
                       label="Max Num Of People"
                       startAdornment={<InputAdornment position="start"></InputAdornment>}
-                      {...register("maxNumPeople", { required: true, min: 1, max: 30 })}
+                      {...register("maxNumPeople", { required: true, min: 1, max: entityBasicData.entityType != "COTTAGE"?entityBasicData.maxNumOfPersons:50 })}
                     />
                   </FormControl>
               </tr>
-              <tr>{errors.maxNumPeople && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check num of people between 1-30.</p>}</tr>
+              <tr>{errors.maxNumPeople && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check num of people between 1-{entityBasicData.entityType != "COTTAGE"?entityBasicData.maxNumOfPersons:50}.</p>}</tr>
                
               <tr>
                 <td>

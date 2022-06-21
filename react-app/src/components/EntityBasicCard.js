@@ -287,26 +287,14 @@ export default function EntityBasicCard(props) {
                             ) :
                             (
                                 <span>
-                                    {((props.onlyTypeForDeleteVisible === "ADVENTURES" && (getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER" || getCurrentUser().userType.name === "ROLE_SHIP_OWNER")) ||
-                                        (props.onlyTypeForDeleteVisible === "COTTAGES" && (getCurrentUser().userType.name === "ROLE_INSTRUCTOR" || getCurrentUser().userType.name === "ROLE_SHIP_OWNER")) ||
-                                        (props.onlyTypeForDeleteVisible === "SHIPS" && (getCurrentUser().userType.name === "ROLE_INSTRUCTOR" || getCurrentUser().userType.name === "ROLE_COTTAGE_OWNER")))  
-                                        ?
-                                    (
-                                    <span>
-                                    </span>
-                                    )
-                                    :
-                                    ( <span>
-                                        {getCurrentUser().id === ownerId ? (
-                                        <Button size="small" onClick={handleClickOpen}><DeleteIcon />Delete</Button>
-                                        ):(<></>)}
-                                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                                            <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
-                                                {message}
-                                            </Alert>
-                                        </Snackbar>
-                                    </span>)
-                                    }
+                                    {getCurrentUser().userType.name === "ROLE_ADMIN" || getCurrentUser().userType.name === "ROLE_SUPER_ADMIN" ||  getCurrentUser().id === ownerId ? (
+                                    <Button size="small" onClick={handleClickOpen}><DeleteIcon />Delete</Button>
+                                    ):(<></>)}
+                                    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                        <Alert onClose={handleClose} severity={typeAlert} sx={{ width: '100%' }}>
+                                            {message}
+                                        </Alert>
+                                    </Snackbar>
                                 </span>
                             )
                         }

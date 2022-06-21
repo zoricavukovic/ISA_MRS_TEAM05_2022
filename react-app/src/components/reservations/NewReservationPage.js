@@ -29,6 +29,7 @@ export default function NewReservationPage(props) {
     const [unavailableDates, setUnavailableDates] = useState([]);
     const [times, setTimes] = useState([]);
     const [checkedTime, setCheckedTime] = useState({});
+    const [checkedTimeIndex, setCheckedTimeIndex] = useState(0);
     const [additionalServices, setAdditionalServices] = useState([]);
     const [maxNumOfPersons, setMaxNumOfPersons] = useState(10);
     const [currentLoyaltyProgram, setCurrentLoyaltyProgram] = useState(null);
@@ -93,7 +94,7 @@ export default function NewReservationPage(props) {
             
             
             let pricel = res.data.pricelists[0];
-            console.log("KAPETAN:"+res.data.shipOwner.captain);
+            
             if(res.data.entityType === "SHIP" && res.data.shipOwner.captain == true){
                 let captainService = {
                     id:-1,
@@ -162,37 +163,6 @@ export default function NewReservationPage(props) {
         if (!isNaN(searchParams.numOfPersons) && searchParams.numOfPersons != null)
             setPersonNumber(searchParams.numOfPersons);
     }
-
-    const findUnavailableDates = (bookEntity)=>{
-        var uDates = [];
-        bookEntity.unavailableDates.forEach(e => {
-            var startDateTime = new Date(e.startTime[0],e.startTime[1]-1,e.startTime[2],e.startTime[3],e.startTime[4]);
-            console.log("UNA DATES");
-            console.log(startDateTime);
-            while(startDateTime.getTime() < new Date(e.endTime[0],e.endTime[1]-1,e.endTime[2],e.endTime[3],e.endTime[4]).getTime()){
-                uDates.push(startDateTime);
-                startDateTime = new Date(startDateTime.getTime()+ oneDay);
-            }
-        });
-        console.log(uDates);
-        for(var reservation of bookEntity.reservations)
-        {
-            console.log("===============NEW RESERVATION================");
-            console.log(reservation);
-            for(var i=0;i<reservation.numOfDays;i++){
-                uDates.push(new Date(new Date(reservation.startDate).getTime()+i*oneDay));
-                console.log("ADDED:");
-                console.log(new Date(new Date(reservation.startDate).getTime()+i*oneDay));
-            }
-            if(new Date(reservation.startDate).getHours() >= 21){
-                uDates.push(new Date(new Date(reservation.startDate).getTime()+reservation.numOfDays*oneDay));
-                console.log("ADDED Extra:");
-                console.log(new Date(new Date(reservation.startDate).getTime()+reservation.numOfDays*oneDay));
-            }
-            
-        }
-        setUnavailableDates(uDates);
-    };
 
     const isDateUnavailable = (date, unavDates)=>{
         date.setHours(12);
@@ -277,7 +247,16 @@ export default function NewReservationPage(props) {
                         time.available = true;
                         if(parseInt(time.value.split(':')[0]) <= unaDate.getHours())
                             time.available = false;
-                })
+                    })
+
+                if(isDateUnavailable(new Date(selectionRange.startDate.getTime() - oneDay), [unaDate]) &&  unaDate.getHours() < 21){
+                    availableTimes.forEach(time => {
+                        time.available = true;
+                        if(parseInt(time.value.split(':')[0]) <= unaDate.getHours())
+                            time.available = false;
+                    })
+                }
+
                 if(isDateUnavailable(selectionRange.endDate, [unaDate])){
                     console.log("DATUM ZA PROVERU :"+unaDate);
                     availableTimes.forEach(function(time){
@@ -288,11 +267,15 @@ export default function NewReservationPage(props) {
                     console.log(availableTimes);
                 }
             }
+
+            let index = 0;
         for(var time of availableTimes){
             if(time.available == true){
                 setCheckedTime(time);
+                setCheckedTimeIndex(index);
                 break;
             }
+            index++;
         }
         console.log(availableTimes);
         setTimes(availableTimes);
@@ -302,6 +285,11 @@ export default function NewReservationPage(props) {
         if(Object.keys(bookingEntity).length !== 0)
             changePrice();
     }, [personNumber]);
+
+    useEffect(() => {
+        console.log("CHECKED TIME:");
+        console.log(checkedTime)
+    }, [checkedTime]);
 
     const reserve = (event) => {
         event.preventDefault()
@@ -408,6 +396,7 @@ export default function NewReservationPage(props) {
         event.preventDefault();
         console.log(event.target.value);
         setCheckedTime(times.find(time => time.value === event.target.value));
+        setCheckedTimeIndex(times.findIndex(time => time.value === event.target.value));
 
     };
 
@@ -545,7 +534,6 @@ export default function NewReservationPage(props) {
                                     isLoaded &&
                                     <RadioGroup
                                     style={{margin:"10px 20px"}}
-                                    defaultValue={checkedTime.value}
                                     row
                                     onChange={radioButtonChanged}
                                     aria-labelledby="demo-row-radio-buttons-group-label"
@@ -554,7 +542,7 @@ export default function NewReservationPage(props) {
                                 >
                                     {
                                         isLoaded? times.map((time,index)=>{
-                                            return <FormControlLabel value={time.value} control={<Radio />} label={time.text} disabled={!time.available}/>
+                                            return <FormControlLabel value={time.value} control={<Radio checked={index == checkedTimeIndex}/>} label={time.text} disabled={!time.available}/>
                                         })
                                         :<></>
                                     }

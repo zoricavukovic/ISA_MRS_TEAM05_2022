@@ -10,6 +10,7 @@ import com.example.BookingAppTeam05.exception.database.EditItemException;
 import com.example.BookingAppTeam05.model.DeleteAccountRequest;
 import com.example.BookingAppTeam05.repository.DeleteAccountRepository;
 import com.example.BookingAppTeam05.model.users.User;
+import com.example.BookingAppTeam05.service.entities.BookingEntityService;
 import com.example.BookingAppTeam05.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DeleteAccountService {
@@ -24,12 +26,16 @@ public class DeleteAccountService {
     private DeleteAccountRepository deleteAccountRepository;
     private UserService userService;
     private EmailService emailService;
+    private ReservationService reservationService;
+    private BookingEntityService bookingEntityService;
 
     @Autowired
-    public DeleteAccountService(DeleteAccountRepository deleteAccountRepository, UserService userService, EmailService emailService) {
+    public DeleteAccountService(DeleteAccountRepository deleteAccountRepository, UserService userService, EmailService emailService, ReservationService reservationService, BookingEntityService bookingEntityService) {
         this.deleteAccountRepository = deleteAccountRepository;
         this.userService = userService;
         this.emailService = emailService;
+        this.reservationService = reservationService;
+        this.bookingEntityService = bookingEntityService;
     }
 
     public DeleteAccountService(){}
@@ -97,8 +103,21 @@ public class DeleteAccountService {
 
     public Boolean hasUserRequest(Long id) {
         DeleteAccountRequest dar = deleteAccountRepository.findByUserId(id);
-        if(dar == null)
-            return false;
+        return dar != null;
+    }
+
+    public Boolean canDeleteProfile(Long id) {
+        User user = userService.findUserById(id);
+        if(user == null)
+            throw new ItemNotFoundException("Can't find user!");
+        if(Objects.equals(user.getRole().getName(), "ROLE_CLIENT")){
+            boolean hasReservations = reservationService.hasClientFutureReservations(id);
+            return !hasReservations;
+        }
+        else if(!Objects.equals(user.getRole().getName(), "ROLE_ADMIN") && !user.getRole().getName().equals("ROLE_SUPER_ADMIN")){
+            boolean hasAnyBookingEntity = bookingEntityService.getBookingEntitiesDTOsForOwnerId(id).size() > 0;
+            return !hasAnyBookingEntity;
+        }
         return true;
     }
 }

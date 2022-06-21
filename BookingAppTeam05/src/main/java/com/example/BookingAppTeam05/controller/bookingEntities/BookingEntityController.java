@@ -66,7 +66,7 @@ public class BookingEntityController {
     @DeleteMapping(value="/{entityId}/{ownerId}")
     @PreAuthorize("hasAnyRole('ROLE_COTTAGE_OWNER', 'ROLE_SHIP_OWNER', 'ROLE_INSTRUCTOR', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<String> logicalDeleteEntityById(@PathVariable Long entityId, @PathVariable  Long ownerId, @RequestBody String confirmPass){
-        bookingEntityService.tryToLogicalDeleteBookingEntityAndReturnErrorCode(entityId, ownerId, confirmPass);
+        bookingEntityService.tryToLogicalDeleteBookingEntity(entityId, ownerId, confirmPass);
         return new ResponseEntity<>("Entity successfully deleted.", HttpStatus.OK);
     }
 

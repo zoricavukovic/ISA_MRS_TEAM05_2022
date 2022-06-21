@@ -46,6 +46,7 @@ import CreateReservationForClient from '../../reservations/CreateReservationForC
 import { findAllClientsWithActiveReservations} from '../../../service/ReservationService';
 import Approved from "../../../icons/approval.png";
 import NotApproved from "../../../icons/notApprowed.png"
+import Money from "../../../icons/money.png";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -322,7 +323,7 @@ export default function ImageCardForShip(props) {
             setShipBasicData(res.data);
             console.log(res.data);
             if(getCurrentUser() != undefined && getCurrentUser() != null)
-                if(getCurrentUser().id == res.data.cottageOwnerDTO.id)
+                if(getCurrentUser().id == res.data.shipOwner.id)
                     setHasAuthority(true);
             setLoadingShip(false);
         }).catch(res => {
@@ -518,9 +519,18 @@ export default function ImageCardForShip(props) {
                         />
                     </Grid>
                     <Typography variant="body2" style={{ width: '25%', minWidth: "200px", borderRadius: '10px', paddingLeft: '1%', paddingBottom: '0.2%', paddingTop: '0.2%', margin: '2%' }}>
-                    <Typography variant="body2" color="text.secondary" style={{ width: '100%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
-                        <h4>Promo Description: </h4><h3>{shipBasicData.promoDescription} </h3>
-                    </Typography>
+                        <Typography variant="body2" color="text.secondary" style={{ width: '100%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
+                            <h4>Promo Description: </h4><h3>{shipBasicData.promoDescription} </h3>
+                        </Typography>
+                        <Typography variant="body2" color="text.primary" style={{ width: '100%', backgroundColor: 'aliceblue', borderRadius: '10px', paddingLeft: '1%', paddingTop: '0.2%', paddingBottom: '0.1%', margin: '2%' }}>
+                            <img src={Money} height='40px' width={"40px"}></img>
+                            <div style={{marginTop:'10px', display:'flex'}}>
+                                <h3 >Cancelation rate: </h3>{shipBasicData.entityCancelationRate > 0?<h3>{shipBasicData.entityCancelationRate+"%"} </h3>:<h3>Free</h3>}
+                            </div>
+                            <div style={{marginTop:'10px', display:'flex'}}>
+                                <h3 >Price: {pricelistData.entityPricePerPerson+"€"} </h3>
+                            </div>
+                        </Typography>
                     </Typography>
             </div >
             <hr></hr>
