@@ -10,7 +10,7 @@ Tema projekta: Aplikacija za rezevaciju vikendica, brodova i instruktora pecanja
 ## Pokretanje projekta:
 
 ### Deploy:
-Link za deploy backend dela aplikacije: https://isa-mrs-tim-05-back.herokuapp.com/ <br/>
+Link za deploy backend dela aplikacije: https://isa-mrs-tim5-back.herokuapp.com/ <br/>
 Link za deploy frontend dela aplikacije: https://isa-mrs-tim-o5-front.herokuapp.com/
 
 Rest servise je moguće direktno pozivati, npr https://isa-mrs-tim-05-back.herokuapp.com/bookingApp/places <br/>
