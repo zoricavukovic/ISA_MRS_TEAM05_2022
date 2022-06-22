@@ -473,11 +473,6 @@ export default function AdventureProfile(props) {
                                         <Grid item>
                                             <Grid container>
                                                 <Grid item xs={6}> 
-                                                    <Typography gutterBottom variant="subtitle1" component="div">
-                                                        {res.numOfDays} Days
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={6}> 
                                                     <Grid container>
                                                         <Grid item>
                                                             <PersonIcon size='medium'/> 
@@ -489,12 +484,15 @@ export default function AdventureProfile(props) {
                                                         </Grid>
                                                     </Grid>
                                                 </Grid> 
+                                                <Grid item xs={6}> 
+                                                    <Typography variant="subtitle1" component="div">
+                                                        {res.cost*res.numOfPersons}€
+                                                    </Typography>
+                                                </Grid> 
                                             </Grid>
                                         </Grid>
                                         <Grid item>
-                                        <Typography variant="subtitle1" component="div">
-                                            {res.cost*res.numOfDays*res.numOfPersons}€
-                                        </Typography>
+                                        
                                             {(userExists && getCurrentUser().userType.name == "ROLE_CLIENT")?(
                                                 <Button onClick={() =>FastReserve(res)} disabled={getCurrentUser().penalties>2?true:false} variant='contained' style={{backgroundColor:'rgb(244, 177, 77)', color:'rgb(5, 30, 52)'}}>
                                                     Reserve Now

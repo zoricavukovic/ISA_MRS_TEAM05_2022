@@ -121,10 +121,10 @@ export default function NewReservationPage(props) {
                 else
                     findNextAvailableDateRange(unaDates);
 
-                setUnavailableDates(unaDates);
-            }
+                }
             else
                 setFieldsWithSearchedParams(searchParams);
+            setUnavailableDates(unaDates);
             console.log("posle ifa");
             setLoaded(true);
             setPrice(res.data.pricelists[0].entityPricePerPerson);
@@ -293,6 +293,9 @@ export default function NewReservationPage(props) {
 
     const reserve = (event) => {
         event.preventDefault()
+
+
+        
         var startDateTime = selectionRange.startDate;
         var endDateTime = selectionRange.endDate;
         startDateTime.setHours(0);
@@ -304,6 +307,12 @@ export default function NewReservationPage(props) {
         
         var difference = endDateTime.getTime() - startDateTime.getTime();
         var days = Math.ceil(difference/(1000*3600*24)); 
+        
+        if(bookingEntity.entityType == "ADVENTURE"){
+            startDateTime = startDate;
+            console.log(startDate);
+            days = 0;
+        }
         startDateTime.setHours(parseInt(checkedTime.value.split(':')[0]))
         startDateTime.setMinutes(0);
         var addServ = [];
@@ -466,7 +475,8 @@ export default function NewReservationPage(props) {
                                 Reservation type:<b>{String(bookingEntity.entityType).toLowerCase()}</b> <br></br>
                                 Name: <b>{bookingEntity.name} </b>             <br></br>
                                 Place: <b>{bookingEntity.place.cityName+", "+bookingEntity.place.stateName}</b>    <br></br>
-                                Date range: <b>{`${format(selectionRange.startDate, "dd.MM.yyyy.")}`} to {`${format(selectionRange.endDate, "dd.MM.yyyy.")}`}</b><br></br>
+                                {bookingEntity.entityType != "ADVENTURE" &&<><p> Date range: </p><b>{`${format(selectionRange.startDate, "dd.MM.yyyy.")}`} to {`${format(selectionRange.endDate, "dd.MM.yyyy.")}`}</b><br></br></>}
+                                {bookingEntity.entityType == "ADVENTURE" &&<> Date: <b>{`${format(startDate, "dd.MM.yyyy.")}`}</b><br></br></>}
                                 Number of persons: <b>{personNumber}</b><br></br>
                                 Additional services selected:<b>{additionalServices.length!=0? additionalServices.map(service=>{
                                     return service.serviceName + " "+service.price+"€, ";

@@ -24,7 +24,7 @@ public class ReservationDTO {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
     @NotNull
-    @Min(1)
+    @Min(0)
     @Max(100)
     private int numOfDays;
     @NotNull

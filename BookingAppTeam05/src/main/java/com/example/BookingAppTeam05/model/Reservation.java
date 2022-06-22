@@ -72,6 +72,21 @@ public class Reservation {
       this.cost = cost;
    }
 
+   public Reservation(Reservation res){
+      this.startDate = res.getStartDate();
+      this.numOfPersons = res.getNumOfPersons();
+      this.additionalServices = res.getAdditionalServices();
+      this.fastReservation = res.isFastReservation();
+      this.bookingEntity = res.getBookingEntity();
+      this.canceled = res.isCanceled();
+      this.client = res.getClient();
+      this.numOfDays = res.getNumOfDays();
+      this.cost = res.getCost();
+      this.clientDiscountValue = res.getClientDiscountValue();
+      this.ownerBonus = res.getOwnerBonus();
+      this.systemTakes = res.getSystemTakes();
+   }
+
    public double getClientDiscountValue() {
       return clientDiscountValue;
    }

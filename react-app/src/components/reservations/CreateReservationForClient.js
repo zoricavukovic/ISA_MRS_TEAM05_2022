@@ -304,6 +304,12 @@ export default function CreateReservationForClient(props) {
         
         var difference = endDateTime.getTime() - startDateTime.getTime();
         var days = Math.ceil(difference/(1000*3600*24)); 
+
+        if(bookingEntity.entityType == "ADVENTURE"){
+            startDateTime = startDate;
+            console.log(startDate);
+            days = 0;
+        }
         startDateTime.setHours(parseInt(checkedTime.value.split(':')[0]))
         startDateTime.setMinutes(0);
         var addServ = [];
@@ -479,7 +485,8 @@ export default function CreateReservationForClient(props) {
                                 Name: <b>{bookingEntity.name} </b>             <br></br>
                                 Client: <b>{selectedClientId} </b>             <br></br>
                                 Place: <b>{bookingEntity.place.cityName+", "+bookingEntity.place.stateName}</b>    <br></br>
-                                Date range: <b>{`${format(selectionRange.startDate, "dd.MM.yyyy.")}`} to {`${format(selectionRange.endDate, "dd.MM.yyyy.")}`}</b><br></br>
+                                {bookingEntity.entityType != "ADVENTURE" &&<><p> Date range: </p><b>{`${format(selectionRange.startDate, "dd.MM.yyyy.")}`} to {`${format(selectionRange.endDate, "dd.MM.yyyy.")}`}</b><br></br></>}
+                                {bookingEntity.entityType == "ADVENTURE" &&<> Date: <b>{`${format(startDate, "dd.MM.yyyy.")}`}</b><br></br></>}
                                 Number of persons: <b>{personNumber}</b><br></br>
                                 Additional services selected:<b>{additionalServices.length!=0? additionalServices.map(service=>{
                                     return service.serviceName + " "+service.price+"€, ";

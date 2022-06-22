@@ -97,7 +97,7 @@ VALUES
 (nextval('entities_id_gen'), '368-5360 In Ave',47,'SHIP','Molly','Nulla aliquet. Proin',16,'U5F 2U3',1806,30,14,24,'BAY_BOAT',4, false, 0, false),
 (nextval('entities_id_gen'), '3885 Lacus Road',44,'SHIP','Yeo','magna a neque. Nullam ut nisi a odio semper cursus. Integer mollis. Integer tincidunt',18,'U9K 1M2',1171,8,12,45,'INFLATABLE_BOAT',4, false, 0, false),
 (nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',17,'W4T 5A6',469,23,19,88,'FLAT_BOAT',5, false, 0, false),
-(nextval('entities_id_gen'), 'Ap #650-8877 Nibh Avenue',45,'SHIP','Madison','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',23,'W4T 5A6',469,23,19,88,'FLAT_BOAT',6, false, 0, false);
+(nextval('entities_id_gen'), 'Ap #650-8877 St Avenue',23,'SHIP','Lea','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit amet ultricies sem',23,'W4T 5A6',469,23,19,88,'FLAT_BOAT',6, false, 0, false);
 
 INSERT INTO adventures(id, address, entity_cancelation_rate, entity_type, name, promo_description, place_id, max_num_of_persons, short_bio, instructor_id, deleted, version, locked)
 VALUES
@@ -427,17 +427,25 @@ INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4a.jpg', 4);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4b.jpg', 4);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4c.jpg', 4);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage4d.jpg', 4);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage5a.jpg', 5);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage5b.jpg', 5);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage5c.jpg', 5);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('cottage5d.jpg', 5);
 
 --- dodavanje slika za brod
 INSERT INTO pictures (picture_path, entity_id) VALUES ('ship1a.jpg', 6);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('ship1b.jpg', 6);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('ship1c.jpg', 6);
-INSERT INTO pictures (picture_path, entity_id) VALUES ('ship1d.jpg', 6);
-INSERT INTO pictures (picture_path, entity_id) VALUES ('ship1e.jpg', 6);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('ship2a.jpg', 7);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('ship2b.jpg', 7);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('ship2c.jpg', 7);
 INSERT INTO pictures (picture_path, entity_id) VALUES ('ship2d.jpg', 7);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('ship3a.jpg', 8);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('ship3b.jpg', 8);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('ship3c.jpg', 8);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('ship4a.jpg', 9);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('ship4b.jpg', 9);
+INSERT INTO pictures (picture_path, entity_id) VALUES ('ship5a.jpg', 10);
 
 --aditional services for adventures
 
