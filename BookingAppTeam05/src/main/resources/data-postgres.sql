@@ -1,3 +1,4 @@
+--lozinka za sve korisnike sistema je ista: 123
 INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Zurich','Switzerland',36070, 46.9841339480512, 7.4272311693535205);
 INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Bern','Switzerland',36340, 46.94289620182541, 7.460190154304473);
 INSERT INTO places (city_name, state_name, zip_code, lat, longitude) VALUES('Zlatibor','Serbia',10012, 43.71449, 19.691799);
