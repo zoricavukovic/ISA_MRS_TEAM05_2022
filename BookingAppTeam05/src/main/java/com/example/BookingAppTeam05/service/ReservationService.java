@@ -333,6 +333,12 @@ public class ReservationService {
             reservationRepository.save(res);
             entity.setLocked(false);
             bookingEntityService.save(entity);
+
+            try {
+                emailService.sendNotificationAboutResToClient(client, res);
+            } catch (MailAuthenticationException e){
+                throw new NotificationByEmailException("Error happened while sending email.");
+            }
             return res;
         }catch (ObjectOptimisticLockingFailureException e){
             throw new ConflictException("Conflict seems to have occurred. Another user just reserved this entity. Please refresh page and try again");
@@ -472,11 +478,20 @@ public class ReservationService {
         return retVal;
     }
 
+    @Transactional
     public void cancelReservation(Long id) {
         Reservation res = reservationRepository.findById(id).orElse(null);
         if(res != null){
             res.setCanceled(true);
             reservationRepository.save(res);
+
+            if(res.isFastReservation()){
+                ReservationDTO reservationDTO = new ReservationDTO(res);
+                reservationDTO.setFetchedProperties(res);
+                reservationDTO.setCanceled(false);
+                reservationDTO.setClient(null);
+                addFastReservation(reservationDTO);
+            }
         }
     }
 

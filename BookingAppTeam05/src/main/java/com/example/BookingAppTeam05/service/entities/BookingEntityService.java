@@ -270,6 +270,13 @@ public class BookingEntityService {
             if(unavailableHours.size() == 4)
                 unavailableDates.add(reservation.getStartDate());
         }
+        for(UnavailableDateDTO unavailableDate:entityDTO.getUnavailableDates()){
+            LocalDateTime date = unavailableDate.getStartDate();
+            while(date.isBefore(unavailableDate.getEndDate())){
+                unavailableDates.add(date);
+                date = date.plusDays(1);
+            }
+        }
 
         entityDTO.setAllUnavailableDates(unavailableDates);
 

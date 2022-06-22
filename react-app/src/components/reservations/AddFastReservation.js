@@ -193,6 +193,10 @@ export default function AddFastReservation(props) {
       let date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getDate(), parseInt(checkedTime.value.split(':')[0]), 0];
     
       console.log(date);
+
+      if(entityBasicData.entityType == "ADVENTURE")
+        data.numNights = 0;
+
       let newFastReservation={
         canceled:false,
         fastReservation: true,
@@ -425,9 +429,9 @@ export default function AddFastReservation(props) {
                 </FormControl>
                 </td>
               </tr>
-              <tr>
+              {entityBasicData.entityType != "ADVENTURE" && <><tr>
               <FormControl sx={{ m: 1 }}>
-                  <InputLabel htmlFor="outlined-adornment-amount">Total Num Of Nights</InputLabel>
+                  <InputLabel htmlFor="outlined-adornment-amount" >Total Num Of Nights</InputLabel>
                     <OutlinedInput
                       id="outlined-adornment-amount"
                       size="small"
@@ -450,7 +454,8 @@ export default function AddFastReservation(props) {
                   </FormControl>
               </tr>
               <tr>{errors.numNights && <p style={{ color: '#ED6663', fontSize:"10px" }}>Please check num of days between 1-100.</p>}</tr>
-               
+              </>
+              }
               <tr>
                 <FormControl sx={{ m: 1 }}>
                   <InputLabel htmlFor="outlined-adornment-amount">Max Num Of People</InputLabel>

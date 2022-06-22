@@ -261,7 +261,7 @@ export default function EntityBasicCard(props) {
                 <Typography style={{ textAlign: "left" }} gutterBottom variant="h7" component="div">
                     {props.bookingEntity.entityType === "COTTAGE" ? (
                         <div>
-                            <text style={{ fontWeight:'bold'  }}>Cost Per Night:</text><Euro></Euro> {props.bookingEntity.entityPricePerPerson} €
+                            <text style={{ fontWeight:'bold'  }}>Cost Per Night:</text> <b>{props.bookingEntity.entityPricePerPerson} €</b>
                         </div>
 
                     ) : (<div>
