@@ -9,26 +9,68 @@ public class Report {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @Column(name="comment", nullable = false)
+   @Column(name="comment", nullable = false, length = 1024)
    private String comment;
 
    @Column(name="penalizeClient", nullable = false)
    private boolean penalizeClient;
 
+   @Column(name="comeClient", nullable = false)
+   private boolean comeClient;
+
    @Column(name="processed", nullable = false)
    private boolean processed;
+
+   @Column(name="adminResponse", length = 1024)
+   private String adminResponse;
+
+   @Column(name="adminPenalizeClient")
+   private boolean adminPenalizeClient;
 
    @OneToOne(fetch = FetchType.LAZY)
    public Reservation reservation;
 
-   public Report(String comment, boolean penalizeClient, boolean processed, Reservation reservation) {
+   @Version
+   @Column(name="version", unique=false, nullable=false)
+   private Long version;
+
+   public Report(String comment, boolean penalizeClient, boolean processed, boolean comeClient, Reservation reservation) {
       this.comment = comment;
       this.penalizeClient = penalizeClient;
       this.processed = processed;
+      this.comeClient = comeClient;
       this.reservation = reservation;
    }
 
    public Report(){ }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public Long getVersion() {
+      return version;
+   }
+
+   public void setVersion(Long version) {
+      this.version = version;
+   }
+
+   public boolean isAdminPenalizeClient() {
+      return adminPenalizeClient;
+   }
+
+   public void setAdminPenalizeClient(boolean adminPenalizeClient) {
+      this.adminPenalizeClient = adminPenalizeClient;
+   }
+
+   public String getAdminResponse() {
+      return adminResponse;
+   }
+
+   public void setAdminResponse(String adminResponse) {
+      this.adminResponse = adminResponse;
+   }
 
    public Long getId() {
       return id;
@@ -44,6 +86,14 @@ public class Report {
 
    public boolean isProcessed() {
       return processed;
+   }
+
+   public boolean isComeClient() {
+      return comeClient;
+   }
+
+   public void setComeClient(boolean comeClient) {
+      this.comeClient = comeClient;
    }
 
    public Reservation getReservation() {

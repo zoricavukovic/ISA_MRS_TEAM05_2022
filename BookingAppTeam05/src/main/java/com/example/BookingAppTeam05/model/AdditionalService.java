@@ -1,5 +1,8 @@
 package com.example.BookingAppTeam05.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Entity
@@ -23,6 +26,8 @@ public class AdditionalService {
         this.serviceName = serviceName;
     }
 
+    public void setId(Long id){this.id =id;}
+
     public Long getId() {
         return id;
     }
@@ -42,4 +47,6 @@ public class AdditionalService {
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
+
 }
+

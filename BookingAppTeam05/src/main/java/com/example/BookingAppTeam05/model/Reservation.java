@@ -1,5 +1,8 @@
 package com.example.BookingAppTeam05.model;
 
+import com.example.BookingAppTeam05.model.entities.BookingEntity;
+import com.example.BookingAppTeam05.model.users.Client;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -9,7 +12,7 @@ import java.util.*;
 public class Reservation {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private int id;
+   private Long id;
 
    @Column(name="startDate", nullable = false)
    private LocalDateTime startDate;
@@ -27,6 +30,10 @@ public class Reservation {
    @Column(name="fastReservation", nullable = false)
    private boolean fastReservation;
 
+   @Version
+   @Column(name="version", unique=false, nullable=false)
+   private int version;
+
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name="entity_id")
    private BookingEntity bookingEntity;
@@ -34,13 +41,26 @@ public class Reservation {
    @Column(name="canceled")
    private boolean canceled;
 
+   @Column(name="cost")
+   private double cost;
+
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "client_id")
    private Client client;
-   
+
+   @Column(name="clientDiscountValue")
+   private double clientDiscountValue;
+
+   @Column(name="ownerBonus")
+   private double ownerBonus;
+
+   @Column(name="systemTakes")
+   private double systemTakes;
+
+
    public Reservation() {}
 
-   public Reservation(LocalDateTime startDate, int numOfDays, int numOfPersons, Set<AdditionalService> additionalServices, boolean fastReservation, BookingEntity entity, boolean canceled, Client client) {
+   public Reservation(LocalDateTime startDate, int numOfDays, double cost, int numOfPersons, Set<AdditionalService> additionalServices, boolean fastReservation, BookingEntity entity, boolean canceled, Client client) {
       this.startDate = startDate;
       this.numOfPersons = numOfPersons;
       this.additionalServices = additionalServices;
@@ -49,9 +69,49 @@ public class Reservation {
       this.canceled = canceled;
       this.client = client;
       this.numOfDays = numOfDays;
+      this.cost = cost;
    }
 
-   public int getId() {
+   public Reservation(Reservation res){
+      this.startDate = res.getStartDate();
+      this.numOfPersons = res.getNumOfPersons();
+      this.additionalServices = res.getAdditionalServices();
+      this.fastReservation = res.isFastReservation();
+      this.bookingEntity = res.getBookingEntity();
+      this.canceled = res.isCanceled();
+      this.client = res.getClient();
+      this.numOfDays = res.getNumOfDays();
+      this.cost = res.getCost();
+      this.clientDiscountValue = res.getClientDiscountValue();
+      this.ownerBonus = res.getOwnerBonus();
+      this.systemTakes = res.getSystemTakes();
+   }
+
+   public double getClientDiscountValue() {
+      return clientDiscountValue;
+   }
+
+   public void setClientDiscountValue(double clientDiscountValue) {
+      this.clientDiscountValue = clientDiscountValue;
+   }
+
+   public double getOwnerBonus() {
+      return ownerBonus;
+   }
+
+   public void setOwnerBonus(double ownerBonus) {
+      this.ownerBonus = ownerBonus;
+   }
+
+   public double getSystemTakes() {
+      return systemTakes;
+   }
+
+   public void setSystemTakes(double systemTakes) {
+      this.systemTakes = systemTakes;
+   }
+
+   public Long getId() {
       return id;
    }
 
@@ -120,4 +180,27 @@ public class Reservation {
       this.canceled = canceled;
    }
 
+   public int getNumOfDays() {
+      return numOfDays;
+   }
+
+   public void setNumOfDays(int numOfDays) {
+      this.numOfDays = numOfDays;
+   }
+
+   public int getVersion() {
+      return version;
+   }
+
+   public void setVersion(int version) {
+      this.version = version;
+   }
+
+   public double getCost() {
+      return cost;
+   }
+
+   public void setCost(double cost) {
+      this.cost = cost;
+   }
 }
